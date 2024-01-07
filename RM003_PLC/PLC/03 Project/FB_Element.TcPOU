@@ -10,19 +10,23 @@ VAR
 	eType				: E_Element_Type;
 	eState_Short		: E_Element_State_Short;
 	eState_Long			: E_Element_State_Long;
+	eState_Long_last	: E_Element_State_Long;
 	eReq				: E_Request_List;
 
 
 
 	i: INT;
 	bJump: BOOL;
+	stStateChange		: TimeStruct;
+	sState_Time			: STRING;
+
 END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[i:=i+1;
 
 act_StateMachine();
-]]></ST>
+act_StateChange_WatchGog();]]></ST>
     </Implementation>
     <Action Name="act_Oper" Id="{264439cd-e66d-494f-8c13-56f5f3d53e1b}">
       <Implementation>
@@ -665,6 +669,16 @@ act_StateMachine();
         </XmlArchive>
       </ObjectProperties>
     </Action>
+    <Action Name="act_StateChange_WatchGog" Id="{4dafd2ba-8022-4674-a1d5-a6952dfd70bd}">
+      <Implementation>
+        <ST><![CDATA[IF eState_Long<>eState_Long_last THEN;
+	eState_Long_last:=eState_Long;
+	stStateChange:=stSystemTime;
+END_IF
+
+sState_Time:=prg_RealClock.m_DeltaTime(stStartTime:=stStateChange);]]></ST>
+      </Implementation>
+    </Action>
     <Action Name="act_StateMachine" Id="{f33c6159-2800-4ae4-981a-4a8c5e4774dd}">
       <Implementation>
         <ST><![CDATA[
@@ -709,6 +723,13 @@ END_VAR
       <LineId Id="27" Count="0" />
       <LineId Id="26" Count="0" />
       <LineId Id="28" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Element.act_StateChange_WatchGog">
+      <LineId Id="1" Count="1" />
+      <LineId Id="4" Count="0" />
+      <LineId Id="3" Count="0" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_Element.act_StateMachine">
       <LineId Id="2" Count="1" />
