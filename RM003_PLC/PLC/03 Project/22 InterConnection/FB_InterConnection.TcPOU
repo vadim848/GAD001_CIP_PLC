@@ -3,27 +3,36 @@
   <POU Name="FB_InterConnection" Id="{cf5703e1-1088-4c69-a86c-87d02097d444}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_InterConnection
 VAR_INPUT
-	eCon_Tank		: E_Element_State_Short;
-	eCon_Target		: E_Element_State_Short;
+	eState_Tank		: E_Element_State_Short;
+	eState_Target	: E_Element_State_Short;
 	eProdType		: E_Product_Type;
 	eTargetTape		: E_Element_Type:=E_Element_Type.eNotSelected;
 
 
 END_VAR
 VAR_OUTPUT
+	bAvalable: BOOL;
+	bActive: BOOL;	
 END_VAR
 VAR
-	bAvalable: BOOL;
-	bActive: BOOL;
+
 
 	reqConnect: BOOL;
 	reqDisconnect: BOOL;
 END_VAR
+
+VAR_IN_OUT
+	fbTankElement: FB_Element;
+	fbTargetElement: FB_Element;	
+END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[
-IF eCon_Tank=E_Element_State_Short.eClean
-AND eCon_Target=E_Element_State_Short.eClean
+      <ST><![CDATA[CASE fbTankElement.eElementID OF
+	
+END_CASE
+
+IF fbTankElement.eState_Short=E_Element_State_Short.eClean
+AND fbTargetElement.eState_Short=E_Element_State_Short.eClean
 THEN;
 	bAvalable:=TRUE;
 ELSE;
@@ -46,6 +55,22 @@ END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF bAvalable THEN;
+	
+	CASE fbTankElement.eElementID OF
+		E_Element_List.eTank_1:;
+				eTriBlenderUsage:=E_TriBlenderUsage.eMarinada_T1;
+				
+		E_Element_List.eTank_2:;
+				eTriBlenderUsage:=E_TriBlenderUsage.eMarinada_T2;	
+				
+		E_Element_List.eTank_3:;
+				eTriBlenderUsage:=E_TriBlenderUsage.eColor_T3;	
+				
+		E_Element_List.eTank_4:;
+				eTriBlenderUsage:=E_TriBlenderUsage.eColor_T4;	
+		
+	END_CASE
+	
 	bActive:=TRUE;
 ELSE;
 
@@ -61,32 +86,51 @@ END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[
+IF eTargetTape=E_Element_Type.eTriBlender THEN;
+	IF eProdType:=E_Product_Type.Marinada THEN;
+		eTriBlenderUsage:=E_TriBlenderUsage.eMarinada_Standby;
+	END_IF
+	IF eProdType:=E_Product_Type.Color THEN;
+		eTriBlenderUsage:=E_TriBlenderUsage.eColor_Standby;
+	END_IF	
+END_IF
 
-	bAvalable:=FALSE;]]></ST>
+bActive:=FALSE;]]></ST>
       </Implementation>
     </Method>
     <LineIds Name="FB_InterConnection">
-      <LineId Id="25" Count="0" />
-      <LineId Id="15" Count="0" />
-      <LineId Id="26" Count="0" />
-      <LineId Id="28" Count="3" />
-      <LineId Id="27" Count="0" />
-      <LineId Id="16" Count="0" />
-      <LineId Id="9" Count="0" />
-      <LineId Id="17" Count="1" />
-      <LineId Id="35" Count="2" />
-      <LineId Id="34" Count="0" />
+      <LineId Id="183" Count="0" />
+      <LineId Id="185" Count="1" />
+      <LineId Id="184" Count="0" />
+      <LineId Id="112" Count="14" />
       <LineId Id="38" Count="0" />
     </LineIds>
     <LineIds Name="FB_InterConnection.m_Connect">
       <LineId Id="5" Count="0" />
+      <LineId Id="27" Count="2" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="37" Count="0" />
+      <LineId Id="32" Count="1" />
+      <LineId Id="38" Count="0" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="39" Count="0" />
+      <LineId Id="41" Count="0" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="40" Count="0" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="26" Count="0" />
       <LineId Id="8" Count="2" />
       <LineId Id="7" Count="0" />
       <LineId Id="12" Count="0" />
       <LineId Id="11" Count="0" />
     </LineIds>
     <LineIds Name="FB_InterConnection.m_Disconnect">
-      <LineId Id="6" Count="1" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="6" Count="0" />
+      <LineId Id="13" Count="4" />
+      <LineId Id="11" Count="1" />
+      <LineId Id="7" Count="0" />
       <LineId Id="5" Count="0" />
     </LineIds>
   </POU>
