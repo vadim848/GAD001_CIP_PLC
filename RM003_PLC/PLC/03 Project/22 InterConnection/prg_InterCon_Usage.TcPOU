@@ -17,16 +17,24 @@ END_IF
 act_Call_InterConnection();
 
 CASE eTriBlenderUsage OF
-	E_TriBlenderUsage.eMarinada_T1,E_TriBlenderUsage.eMarinada_T2,
-	E_TriBlenderUsage.eColor_T3,E_TriBlenderUsage.eColor_T4:;
-	
+	E_TriBlenderUsage.eMarinada_T1,E_TriBlenderUsage.eMarinada_T2:;
 		fbElement[E_Element_List.eTriBlender_Marinada].m_StateUpdate_Limit(value:=TRUE);		
-		fbElement[E_Element_List.eTriBlender_Color].m_StateUpdate_Limit(value:=TRUE);	
+		fbElement[E_Element_List.eTriBlender_Color].m_StateUpdate_Limit(value:=TRUE);
+	
+	E_TriBlenderUsage.eMarinada_Standby:;
+		fbElement[E_Element_List.eTriBlender_Marinada].m_StateUpdate_Limit(value:=FALSE);
+		fbElement[E_Element_List.eTriBlender_Color].m_StateUpdate_Limit(value:=TRUE);
+		
+	E_TriBlenderUsage.eColor_T3,E_TriBlenderUsage.eColor_T4:;	
+		fbElement[E_Element_List.eTriBlender_Marinada].m_StateUpdate_Limit(value:=TRUE);		
+		fbElement[E_Element_List.eTriBlender_Color].m_StateUpdate_Limit(value:=TRUE);
+	
+	E_TriBlenderUsage.eColor_Standby:;	
+		fbElement[E_Element_List.eTriBlender_Marinada].m_StateUpdate_Limit(value:=TRUE);
+		fbElement[E_Element_List.eTriBlender_Color].m_StateUpdate_Limit(value:=FALSE);
 ELSE;
 		fbElement[E_Element_List.eTriBlender_Marinada].m_StateUpdate_Limit(value:=FALSE);
 		fbElement[E_Element_List.eTriBlender_Color].m_StateUpdate_Limit(value:=FALSE);	
-	
-		
 END_CASE]]></ST>
     </Implementation>
     <Action Name="act_Call_InterConnection" Id="{f183bb8e-cf96-4bd4-ba1b-976dcd989a9c}">
@@ -1401,14 +1409,22 @@ END_CASE]]></ST>
       <LineId Id="15" Count="0" />
       <LineId Id="21" Count="1" />
       <LineId Id="33" Count="0" />
+      <LineId Id="46" Count="0" />
+      <LineId Id="45" Count="0" />
+      <LineId Id="52" Count="0" />
+      <LineId Id="48" Count="0" />
+      <LineId Id="55" Count="0" />
+      <LineId Id="49" Count="0" />
+      <LineId Id="53" Count="0" />
       <LineId Id="44" Count="0" />
-      <LineId Id="43" Count="0" />
       <LineId Id="34" Count="0" />
       <LineId Id="36" Count="0" />
+      <LineId Id="54" Count="0" />
+      <LineId Id="51" Count="0" />
+      <LineId Id="50" Count="0" />
+      <LineId Id="56" Count="0" />
       <LineId Id="39" Count="0" />
       <LineId Id="41" Count="1" />
-      <LineId Id="40" Count="0" />
-      <LineId Id="37" Count="0" />
       <LineId Id="20" Count="0" />
     </LineIds>
   </POU>
