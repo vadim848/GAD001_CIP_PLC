@@ -29,24 +29,31 @@ END_VAR
     <Implementation>
       <ST><![CDATA[CASE fbTargetElement.eType OF
 	E_Element_Type.eTriBlender:;
-			IF eTriBlenderUsage=E_TriBlenderUsage.eNotInUse 
+			IF (eTriBlenderUsage=E_TriBlenderUsage.eNotInUse 
 			OR(eTriBlenderUsage=E_TriBlenderUsage.eMarinada_Standby 
 				AND fbTankElement.eProdType=E_Product_Type.Marinada)
 			OR(eTriBlenderUsage=E_TriBlenderUsage.eColor_Standby 
-				AND fbTankElement.eProdType=E_Product_Type.Color)		
+				AND fbTankElement.eProdType=E_Product_Type.Color))
+			AND fbElement[E_Element_List.eTriBlender_Marinada].eState_Short<>E_Element_State_Short.eNotClean	
+			AND fbElement[E_Element_List.eTriBlender_Color].eState_Short<>E_Element_State_Short.eNotClean	
 			THEN;
-				IF fbTankElement.eState_Short=E_Element_State_Short.eClean
-				AND fbTargetElement.eState_Short=E_Element_State_Short.eClean
+				IF (fbTankElement.eState_Short=E_Element_State_Short.eClean 
+					OR fbTankElement.eState_Short=E_Element_State_Short.eProduct)
+				AND (fbTargetElement.eState_Short=E_Element_State_Short.eClean 
+					OR fbTargetElement.eState_Short=E_Element_State_Short.eProduct)
 				THEN;
 					bAvalable:=TRUE;
 				ELSE;
 					bAvalable:=FALSE;
 				END_IF	
 			ELSE;
-		
+				bAvalable:=FALSE;
 			END_IF
 		
-		
+			IF fbTargetElement.eState_Short=E_Element_State_Short.eNotClean THEN;
+				eTriBlenderUsage:=E_TriBlenderUsage.eNotInUse;
+			END_IF
+			
 			CASE eTriBlenderUsage OF
 				E_TriBlenderUsage.eMarinada_T1:;
 			END_CASE
@@ -107,27 +114,28 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[
-IF fbTargetElement.eType=E_Element_Type.eTriBlender THEN;
-	IF fbTargetElement.eState_Short=E_Element_State_Short.eProduct THEN;
+        <ST><![CDATA[IF bActive THEN;
+	IF fbTargetElement.eType=E_Element_Type.eTriBlender THEN;
+		IF fbTargetElement.eState_Short=E_Element_State_Short.eProduct THEN;
+			IF fbTankElement.eProdType=E_Product_Type.Marinada THEN;
+				eTriBlenderUsage:=E_TriBlenderUsage.eMarinada_Standby;
+			END_IF
+			IF fbTankElement.eProdType=E_Product_Type.Color THEN;
+				eTriBlenderUsage:=E_TriBlenderUsage.eColor_Standby;
+			END_IF
+		ELSE;
+			eTriBlenderUsage:=E_TriBlenderUsage.eNotInUse;
+		END_IF
+		
+		
+	ELSIF fbTargetElement.eType=E_Element_Type.eLine THEN;
 		IF fbTankElement.eProdType=E_Product_Type.Marinada THEN;
-			eTriBlenderUsage:=E_TriBlenderUsage.eMarinada_Standby;
+			ePrL_M_Usage:=E_PrLine_M_LineUsage.eNotInUse;
 		END_IF
 		IF fbTankElement.eProdType=E_Product_Type.Color THEN;
-			eTriBlenderUsage:=E_TriBlenderUsage.eColor_Standby;
-		END_IF
-	ELSE;
-		eTriBlenderUsage:=E_TriBlenderUsage.eNotInUse;
+			ePrL_C_Usage:=E_PrLine_C_Usage.eNotInUse;
+		END_IF		
 	END_IF
-	
-	
-ELSIF fbTargetElement.eType=E_Element_Type.eLine THEN;
-	IF fbTankElement.eProdType=E_Product_Type.Marinada THEN;
-		ePrL_M_Usage:=E_PrLine_M_LineUsage.eNotInUse;
-	END_IF
-	IF fbTankElement.eProdType=E_Product_Type.Color THEN;
-		ePrL_C_Usage:=E_PrLine_C_Usage.eNotInUse;
-	END_IF		
 END_IF
 
 bActive:=FALSE;]]></ST>
@@ -141,12 +149,19 @@ bActive:=FALSE;]]></ST>
       <LineId Id="210" Count="0" />
       <LineId Id="220" Count="0" />
       <LineId Id="219" Count="0" />
+      <LineId Id="234" Count="1" />
       <LineId Id="209" Count="0" />
-      <LineId Id="212" Count="5" />
+      <LineId Id="212" Count="0" />
+      <LineId Id="227" Count="0" />
+      <LineId Id="213" Count="0" />
+      <LineId Id="229" Count="0" />
+      <LineId Id="214" Count="3" />
       <LineId Id="208" Count="0" />
       <LineId Id="223" Count="1" />
       <LineId Id="200" Count="0" />
       <LineId Id="221" Count="1" />
+      <LineId Id="231" Count="1" />
+      <LineId Id="230" Count="0" />
       <LineId Id="191" Count="0" />
       <LineId Id="194" Count="1" />
       <LineId Id="193" Count="0" />
@@ -195,6 +210,7 @@ bActive:=FALSE;]]></ST>
       <LineId Id="21" Count="5" />
       <LineId Id="20" Count="0" />
       <LineId Id="12" Count="0" />
+      <LineId Id="39" Count="0" />
       <LineId Id="7" Count="0" />
       <LineId Id="5" Count="0" />
     </LineIds>
