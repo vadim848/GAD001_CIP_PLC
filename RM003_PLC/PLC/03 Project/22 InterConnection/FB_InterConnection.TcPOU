@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_InterConnection" Id="{cf5703e1-1088-4c69-a86c-87d02097d444}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_InterConnection
+VAR_INPUT
+	eCon_Tank		: E_Element_State_Short;
+	eCon_Target		: E_Element_State_Short;
+	eProdType		: E_Product_Type;
+	eTargetTape		: E_Element_Type:=E_Element_Type.eNotSelected;
+
+
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	bAvalable: BOOL;
+	bActive: BOOL;
+
+	reqConnect: BOOL;
+	reqDisconnect: BOOL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[
+IF eCon_Tank=E_Element_State_Short.eClean
+AND eCon_Target=E_Element_State_Short.eClean
+THEN;
+	bAvalable:=TRUE;
+ELSE;
+	bAvalable:=FALSE;
+END_IF
+
+IF reqConnect THEN;
+	m_Connect();
+END_IF
+
+IF reqDisconnect THEN;
+	m_Disconnect();
+END_IF
+]]></ST>
+    </Implementation>
+    <Method Name="m_Connect" Id="{e7e6d898-ed15-47b5-b661-2b6aa3ec33b3}">
+      <Declaration><![CDATA[METHOD m_Connect : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF bAvalable THEN;
+	bActive:=TRUE;
+ELSE;
+
+END_IF
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_Disconnect" Id="{8e7cefc8-01ec-43b9-a1a9-02ea327c2eac}">
+      <Declaration><![CDATA[METHOD m_Disconnect : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[
+
+	bAvalable:=FALSE;]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_InterConnection">
+      <LineId Id="25" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="28" Count="3" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="17" Count="1" />
+      <LineId Id="35" Count="2" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="38" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_InterConnection.m_Connect">
+      <LineId Id="5" Count="0" />
+      <LineId Id="8" Count="2" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="11" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_InterConnection.m_Disconnect">
+      <LineId Id="6" Count="1" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

@@ -18,7 +18,6 @@ VAR
 
 
 	i: INT;
-	bJump: BOOL;
 	stStateChange		: TimeStruct;
 	sState_Time			: STRING;
 	
@@ -34,7 +33,14 @@ END_VAR
 act_StateMachine();
 act_StateChange_WatchGog();
 
-sElementID:=TO_STRING(eElementID);]]></ST>
+sElementID:=TO_STRING(eElementID);
+
+CASE eType OF 
+	E_Element_Type.eTank:;
+				act_Tank();
+	E_Element_Type.eTriBlender:;
+	E_Element_Type.eLine:;	
+END_CASE]]></ST>
     </Implementation>
     <Action Name="act_Oper" Id="{264439cd-e66d-494f-8c13-56f5f3d53e1b}">
       <Implementation>
@@ -716,16 +722,11 @@ END_CASE
 ]]></ST>
       </Implementation>
     </Action>
-    <Method Name="m_Jump" Id="{bbf0516c-7cc4-47ce-8e30-bc6c2755afbb}">
-      <Declaration><![CDATA[METHOD m_Jump : BOOL
-VAR_INPUT
-	
-END_VAR
-]]></Declaration>
+    <Action Name="act_Tank" Id="{2dddeb0d-68bf-4477-8840-0824af0883b1}">
       <Implementation>
         <ST><![CDATA[]]></ST>
       </Implementation>
-    </Method>
+    </Action>
     <LineIds Name="FB_Element">
       <LineId Id="9" Count="0" />
       <LineId Id="27" Count="0" />
@@ -733,6 +734,12 @@ END_VAR
       <LineId Id="28" Count="0" />
       <LineId Id="61" Count="0" />
       <LineId Id="60" Count="0" />
+      <LineId Id="63" Count="0" />
+      <LineId Id="62" Count="0" />
+      <LineId Id="67" Count="0" />
+      <LineId Id="71" Count="0" />
+      <LineId Id="68" Count="1" />
+      <LineId Id="65" Count="0" />
     </LineIds>
     <LineIds Name="FB_Element.act_StateChange_WatchGog">
       <LineId Id="1" Count="1" />
@@ -759,8 +766,8 @@ END_VAR
       <LineId Id="29" Count="0" />
       <LineId Id="28" Count="0" />
     </LineIds>
-    <LineIds Name="FB_Element.m_Jump">
-      <LineId Id="5" Count="0" />
+    <LineIds Name="FB_Element.act_Tank">
+      <LineId Id="1" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>
