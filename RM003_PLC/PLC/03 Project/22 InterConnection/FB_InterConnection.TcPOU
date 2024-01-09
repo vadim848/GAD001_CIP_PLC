@@ -3,10 +3,10 @@
   <POU Name="FB_InterConnection" Id="{cf5703e1-1088-4c69-a86c-87d02097d444}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_InterConnection
 VAR_INPUT
-	eState_Tank		: E_Element_State_Short;
-	eState_Target	: E_Element_State_Short;
-	eProdType		: E_Product_Type;
-	eTargetTape		: E_Element_Type:=E_Element_Type.eNotSelected;
+	//eState_Tank		: E_Element_State_Short;
+	//eState_Target	: E_Element_State_Short;
+	//eProdType		: E_Product_Type;
+	//eTargetTape		: E_Element_Type:=E_Element_Type.eNotSelected;
 
 
 END_VAR
@@ -108,13 +108,26 @@ END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[
-IF eTargetTape=E_Element_Type.eTriBlender THEN;
-	IF eProdType=E_Product_Type.Marinada THEN;
-		eTriBlenderUsage:=E_TriBlenderUsage.eMarinada_Standby;
+IF fbTargetElement.eType=E_Element_Type.eTriBlender THEN;
+	IF fbTargetElement.eState_Short=E_Element_State_Short.eProduct THEN;
+		IF fbTankElement.eProdType=E_Product_Type.Marinada THEN;
+			eTriBlenderUsage:=E_TriBlenderUsage.eMarinada_Standby;
+		END_IF
+		IF fbTankElement.eProdType=E_Product_Type.Color THEN;
+			eTriBlenderUsage:=E_TriBlenderUsage.eColor_Standby;
+		END_IF
+	ELSE;
+		eTriBlenderUsage:=E_TriBlenderUsage.eNotInUse;
 	END_IF
-	IF eProdType=E_Product_Type.Color THEN;
-		eTriBlenderUsage:=E_TriBlenderUsage.eColor_Standby;
-	END_IF	
+	
+	
+ELSIF fbTargetElement.eType=E_Element_Type.eLine THEN;
+	IF fbTankElement.eProdType=E_Product_Type.Marinada THEN;
+		ePrL_M_Usage:=E_PrLine_M_LineUsage.eNotInUse;
+	END_IF
+	IF fbTankElement.eProdType=E_Product_Type.Color THEN;
+		ePrL_C_Usage:=E_PrLine_C_Usage.eNotInUse;
+	END_IF		
 END_IF
 
 bActive:=FALSE;]]></ST>
@@ -172,8 +185,16 @@ bActive:=FALSE;]]></ST>
     <LineIds Name="FB_InterConnection.m_Disconnect">
       <LineId Id="18" Count="0" />
       <LineId Id="6" Count="0" />
-      <LineId Id="13" Count="4" />
-      <LineId Id="11" Count="1" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="30" Count="4" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="35" Count="1" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="21" Count="5" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="12" Count="0" />
       <LineId Id="7" Count="0" />
       <LineId Id="5" Count="0" />
     </LineIds>
