@@ -14,7 +14,20 @@ THEN;
 	//eIntCon_TriB_T1_Marin:=E_InterConnection.Avalable;
 END_IF
 
-act_Call_InterConnection();]]></ST>
+act_Call_InterConnection();
+
+CASE eTriBlenderUsage OF
+	E_TriBlenderUsage.eMarinada_T1,E_TriBlenderUsage.eMarinada_T2,
+	E_TriBlenderUsage.eColor_T3,E_TriBlenderUsage.eColor_T4:;
+	
+		fbElement[E_Element_List.eTriBlender_Marinada].m_StateUpdate_Limit(value:=TRUE);		
+		fbElement[E_Element_List.eTriBlender_Color].m_StateUpdate_Limit(value:=TRUE);	
+ELSE;
+		fbElement[E_Element_List.eTriBlender_Marinada].m_StateUpdate_Limit(value:=FALSE);
+		fbElement[E_Element_List.eTriBlender_Color].m_StateUpdate_Limit(value:=FALSE);	
+	
+		
+END_CASE]]></ST>
     </Implementation>
     <Action Name="act_Call_InterConnection" Id="{f183bb8e-cf96-4bd4-ba1b-976dcd989a9c}">
       <Implementation>
@@ -1386,6 +1399,17 @@ act_Call_InterConnection();]]></ST>
       <LineId Id="8" Count="1" />
       <LineId Id="16" Count="0" />
       <LineId Id="15" Count="0" />
+      <LineId Id="21" Count="1" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="44" Count="0" />
+      <LineId Id="43" Count="0" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="39" Count="0" />
+      <LineId Id="41" Count="1" />
+      <LineId Id="40" Count="0" />
+      <LineId Id="37" Count="0" />
+      <LineId Id="20" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>

@@ -9,9 +9,6 @@ END_VAR
 VAR_OUTPUT
 END_VAR
 
-VAR
-	
-END_VAR
 
 
 VAR
@@ -28,7 +25,9 @@ VAR
 	stStateChange		: TimeStruct;
 	sState_Time			: STRING;
 	
-	sElementID: STRING;
+	sElementID			: STRING;
+	bInterConnected		: BOOL;
+	bStataUpdate_Limited: BOOL;
 
 	
 
@@ -46,7 +45,9 @@ CASE eType OF
 	E_Element_Type.eTank:;
 				act_Tank();
 	E_Element_Type.eTriBlender:;
-	E_Element_Type.eLine:;	
+
+	E_Element_Type.eLine:;
+
 END_CASE
 
 CASE eElementID OF
@@ -761,6 +762,15 @@ END_CASE
         <ST><![CDATA[]]></ST>
       </Implementation>
     </Action>
+    <Method Name="m_Disconnect" Id="{20e4c919-f24b-4fbd-ae5c-73c93cc7bd42}">
+      <Declaration><![CDATA[METHOD m_Disconnect : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[bInterConnected:=FALSE;]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="m_InterConnected_State" Id="{5873be97-3110-49a4-84ea-a94cd608159b}">
       <Declaration><![CDATA[METHOD m_InterConnected_State : BOOL
 VAR_INPUT
@@ -768,7 +778,23 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[eState_Long:=eState_Long_Set;]]></ST>
+        <ST><![CDATA[eState_Long:=eState_Long_Set;
+bInterConnected:=TRUE;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_StateUpdate_Limit" Id="{fb1d1185-6118-48f5-8cfa-978fe0325d17}">
+      <Declaration><![CDATA[METHOD m_StateUpdate_Limit : BOOL
+VAR_INPUT
+	value: BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF value THEN;
+	bStataUpdate_Limited:=TRUE;
+ELSE;
+	bStataUpdate_Limited:=FALSE;
+END_IF]]></ST>
       </Implementation>
     </Method>
     <LineIds Name="FB_Element">
@@ -782,7 +808,10 @@ END_VAR
       <LineId Id="62" Count="0" />
       <LineId Id="67" Count="0" />
       <LineId Id="71" Count="0" />
-      <LineId Id="68" Count="1" />
+      <LineId Id="68" Count="0" />
+      <LineId Id="206" Count="0" />
+      <LineId Id="69" Count="0" />
+      <LineId Id="209" Count="0" />
       <LineId Id="65" Count="0" />
       <LineId Id="104" Count="0" />
       <LineId Id="103" Count="0" />
@@ -840,7 +869,15 @@ END_VAR
     <LineIds Name="FB_Element.act_Tank">
       <LineId Id="1" Count="0" />
     </LineIds>
+    <LineIds Name="FB_Element.m_Disconnect">
+      <LineId Id="5" Count="0" />
+    </LineIds>
     <LineIds Name="FB_Element.m_InterConnected_State">
+      <LineId Id="5" Count="0" />
+      <LineId Id="7" Count="1" />
+    </LineIds>
+    <LineIds Name="FB_Element.m_StateUpdate_Limit">
+      <LineId Id="6" Count="3" />
       <LineId Id="5" Count="0" />
     </LineIds>
   </POU>
