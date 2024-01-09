@@ -3,6 +3,8 @@
   <POU Name="FB_Element" Id="{700358c5-37aa-4b9c-88fa-65bcc8fcf7eb}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_Element
 VAR_INPUT
+	eElementID: E_Element_List;
+
 END_VAR
 VAR_OUTPUT
 END_VAR
@@ -19,6 +21,10 @@ VAR
 	bJump: BOOL;
 	stStateChange		: TimeStruct;
 	sState_Time			: STRING;
+	
+	sElementID: STRING;
+
+	
 
 END_VAR
 ]]></Declaration>
@@ -26,7 +32,9 @@ END_VAR
       <ST><![CDATA[i:=i+1;
 
 act_StateMachine();
-act_StateChange_WatchGog();]]></ST>
+act_StateChange_WatchGog();
+
+sElementID:=TO_STRING(eElementID);]]></ST>
     </Implementation>
     <Action Name="act_Oper" Id="{264439cd-e66d-494f-8c13-56f5f3d53e1b}">
       <Implementation>
@@ -723,6 +731,8 @@ END_VAR
       <LineId Id="27" Count="0" />
       <LineId Id="26" Count="0" />
       <LineId Id="28" Count="0" />
+      <LineId Id="61" Count="0" />
+      <LineId Id="60" Count="0" />
     </LineIds>
     <LineIds Name="FB_Element.act_StateChange_WatchGog">
       <LineId Id="1" Count="1" />
