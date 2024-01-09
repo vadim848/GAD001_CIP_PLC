@@ -27,24 +27,46 @@ VAR_IN_OUT
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[CASE fbTankElement.eElementID OF
+      <ST><![CDATA[CASE fbTargetElement.eType OF
+	E_Element_Type.eTriBlender:;
+			IF eTriBlenderUsage=E_TriBlenderUsage.eNotInUse 
+			OR(eTriBlenderUsage=E_TriBlenderUsage.eMarinada_Standby 
+				AND fbTankElement.eProdType=E_Product_Type.Marinada)
+			OR(eTriBlenderUsage=E_TriBlenderUsage.eColor_Standby 
+				AND fbTankElement.eProdType=E_Product_Type.Color)		
+			THEN;
+				IF fbTankElement.eState_Short=E_Element_State_Short.eClean
+				AND fbTargetElement.eState_Short=E_Element_State_Short.eClean
+				THEN;
+					bAvalable:=TRUE;
+				ELSE;
+					bAvalable:=FALSE;
+				END_IF	
+			ELSE;
+		
+			END_IF
+		
+		
+			CASE eTriBlenderUsage OF
+				E_TriBlenderUsage.eMarinada_T1:;
+			END_CASE
+	
+	
+	
+	E_Element_Type.eLine:;
 	
 END_CASE
 
-IF fbTankElement.eState_Short=E_Element_State_Short.eClean
-AND fbTargetElement.eState_Short=E_Element_State_Short.eClean
-THEN;
-	bAvalable:=TRUE;
-ELSE;
-	bAvalable:=FALSE;
-END_IF
+
 
 IF reqConnect THEN;
 	m_Connect();
+	reqConnect:=FALSE;
 END_IF
 
 IF reqDisconnect THEN;
 	m_Disconnect();
+	reqDisconnect:=FALSE;
 END_IF
 ]]></ST>
     </Implementation>
@@ -87,10 +109,10 @@ END_VAR
       <Implementation>
         <ST><![CDATA[
 IF eTargetTape=E_Element_Type.eTriBlender THEN;
-	IF eProdType:=E_Product_Type.Marinada THEN;
+	IF eProdType=E_Product_Type.Marinada THEN;
 		eTriBlenderUsage:=E_TriBlenderUsage.eMarinada_Standby;
 	END_IF
-	IF eProdType:=E_Product_Type.Color THEN;
+	IF eProdType=E_Product_Type.Color THEN;
 		eTriBlenderUsage:=E_TriBlenderUsage.eColor_Standby;
 	END_IF	
 END_IF
@@ -100,9 +122,31 @@ bActive:=FALSE;]]></ST>
     </Method>
     <LineIds Name="FB_InterConnection">
       <LineId Id="183" Count="0" />
+      <LineId Id="188" Count="0" />
+      <LineId Id="196" Count="0" />
+      <LineId Id="211" Count="0" />
+      <LineId Id="210" Count="0" />
+      <LineId Id="220" Count="0" />
+      <LineId Id="219" Count="0" />
+      <LineId Id="209" Count="0" />
+      <LineId Id="212" Count="5" />
+      <LineId Id="208" Count="0" />
+      <LineId Id="223" Count="1" />
+      <LineId Id="200" Count="0" />
+      <LineId Id="221" Count="1" />
+      <LineId Id="191" Count="0" />
+      <LineId Id="194" Count="1" />
+      <LineId Id="193" Count="0" />
+      <LineId Id="192" Count="0" />
+      <LineId Id="190" Count="0" />
+      <LineId Id="189" Count="0" />
       <LineId Id="185" Count="1" />
       <LineId Id="184" Count="0" />
-      <LineId Id="112" Count="14" />
+      <LineId Id="118" Count="3" />
+      <LineId Id="225" Count="0" />
+      <LineId Id="122" Count="3" />
+      <LineId Id="226" Count="0" />
+      <LineId Id="126" Count="0" />
       <LineId Id="38" Count="0" />
     </LineIds>
     <LineIds Name="FB_InterConnection.m_Connect">
