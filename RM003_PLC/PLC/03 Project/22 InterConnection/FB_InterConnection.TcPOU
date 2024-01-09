@@ -27,7 +27,36 @@ VAR_IN_OUT
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[CASE fbTargetElement.eType OF
+      <ST><![CDATA[act_Avalable();
+act_Active();
+
+
+
+
+IF reqConnect THEN;
+	m_Connect();
+	reqConnect:=FALSE;
+END_IF
+
+IF reqDisconnect THEN;
+	m_Disconnect();
+	reqDisconnect:=FALSE;
+END_IF
+]]></ST>
+    </Implementation>
+    <Action Name="act_Active" Id="{053f14d0-d76f-455b-b23b-50bcb11975ff}">
+      <Implementation>
+        <ST><![CDATA[//fbTargetElement.eState_Long:=fbTankElement.eState_Long;
+IF bActive THEN;
+	fbTargetElement.m_InterConnected_State(eState_Long_Set:=fbTankElement.eState_Long);
+END_IF
+
+]]></ST>
+      </Implementation>
+    </Action>
+    <Action Name="act_Avalable" Id="{bbb91644-6566-4503-82ff-100a461e35c3}">
+      <Implementation>
+        <ST><![CDATA[CASE fbTargetElement.eType OF
 	E_Element_Type.eTriBlender:;
 			IF (eTriBlenderUsage=E_TriBlenderUsage.eNotInUse 
 			OR(eTriBlenderUsage=E_TriBlenderUsage.eMarinada_Standby 
@@ -62,21 +91,9 @@ END_VAR
 	
 	E_Element_Type.eLine:;
 	
-END_CASE
-
-
-
-IF reqConnect THEN;
-	m_Connect();
-	reqConnect:=FALSE;
-END_IF
-
-IF reqDisconnect THEN;
-	m_Disconnect();
-	reqDisconnect:=FALSE;
-END_IF
-]]></ST>
-    </Implementation>
+END_CASE]]></ST>
+      </Implementation>
+    </Action>
     <Method Name="m_Connect" Id="{e7e6d898-ed15-47b5-b661-2b6aa3ec33b3}">
       <Declaration><![CDATA[METHOD m_Connect : BOOL
 VAR_INPUT
@@ -114,7 +131,7 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF bActive THEN;
+        <ST><![CDATA[IF bActive AND fbTankElement.eState_Long<>E_Element_State_Long.eProduction THEN;
 	IF fbTargetElement.eType=E_Element_Type.eTriBlender THEN;
 		IF fbTargetElement.eState_Short=E_Element_State_Short.eProduct THEN;
 			IF fbTankElement.eProdType=E_Product_Type.Marinada THEN;
@@ -136,39 +153,15 @@ END_VAR
 			ePrL_C_Usage:=E_PrLine_C_Usage.eNotInUse;
 		END_IF		
 	END_IF
+	bActive:=FALSE;
 END_IF
 
-bActive:=FALSE;]]></ST>
+]]></ST>
       </Implementation>
     </Method>
     <LineIds Name="FB_InterConnection">
-      <LineId Id="183" Count="0" />
-      <LineId Id="188" Count="0" />
-      <LineId Id="196" Count="0" />
-      <LineId Id="211" Count="0" />
-      <LineId Id="210" Count="0" />
-      <LineId Id="220" Count="0" />
-      <LineId Id="219" Count="0" />
-      <LineId Id="234" Count="1" />
-      <LineId Id="209" Count="0" />
-      <LineId Id="212" Count="0" />
-      <LineId Id="227" Count="0" />
-      <LineId Id="213" Count="0" />
-      <LineId Id="229" Count="0" />
-      <LineId Id="214" Count="3" />
-      <LineId Id="208" Count="0" />
-      <LineId Id="223" Count="1" />
-      <LineId Id="200" Count="0" />
-      <LineId Id="221" Count="1" />
-      <LineId Id="231" Count="1" />
-      <LineId Id="230" Count="0" />
-      <LineId Id="191" Count="0" />
-      <LineId Id="194" Count="1" />
-      <LineId Id="193" Count="0" />
-      <LineId Id="192" Count="0" />
-      <LineId Id="190" Count="0" />
-      <LineId Id="189" Count="0" />
-      <LineId Id="185" Count="1" />
+      <LineId Id="236" Count="1" />
+      <LineId Id="186" Count="0" />
       <LineId Id="184" Count="0" />
       <LineId Id="118" Count="3" />
       <LineId Id="225" Count="0" />
@@ -176,6 +169,16 @@ bActive:=FALSE;]]></ST>
       <LineId Id="226" Count="0" />
       <LineId Id="126" Count="0" />
       <LineId Id="38" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_InterConnection.act_Active">
+      <LineId Id="3" Count="0" />
+      <LineId Id="5" Count="2" />
+      <LineId Id="4" Count="0" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_InterConnection.act_Avalable">
+      <LineId Id="2" Count="34" />
+      <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_InterConnection.m_Connect">
       <LineId Id="5" Count="0" />
@@ -210,6 +213,7 @@ bActive:=FALSE;]]></ST>
       <LineId Id="21" Count="5" />
       <LineId Id="20" Count="0" />
       <LineId Id="12" Count="0" />
+      <LineId Id="43" Count="0" />
       <LineId Id="39" Count="0" />
       <LineId Id="7" Count="0" />
       <LineId Id="5" Count="0" />

@@ -3,7 +3,7 @@
   <POU Name="FB_Element" Id="{700358c5-37aa-4b9c-88fa-65bcc8fcf7eb}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_Element
 VAR_INPUT
-	eElementID: E_Element_List;
+	eElementID			: E_Element_List;
 
 END_VAR
 VAR_OUTPUT
@@ -17,8 +17,8 @@ END_VAR
 VAR
 	eType				: E_Element_Type;
 	eProdType			: E_Product_Type;
-	eState_Short		: E_Element_State_Short;
 	eState_Long			: E_Element_State_Long;
+	eState_Short		: E_Element_State_Short;
 	eState_Long_last	: E_Element_State_Long;
 	eReq				: E_Request_List;
 
@@ -761,6 +761,16 @@ END_CASE
         <ST><![CDATA[]]></ST>
       </Implementation>
     </Action>
+    <Method Name="m_InterConnected_State" Id="{5873be97-3110-49a4-84ea-a94cd608159b}">
+      <Declaration><![CDATA[METHOD m_InterConnected_State : BOOL
+VAR_INPUT
+	eState_Long_Set			: E_Element_State_Long;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[eState_Long:=eState_Long_Set;]]></ST>
+      </Implementation>
+    </Method>
     <LineIds Name="FB_Element">
       <LineId Id="9" Count="0" />
       <LineId Id="27" Count="0" />
@@ -829,6 +839,9 @@ END_CASE
     </LineIds>
     <LineIds Name="FB_Element.act_Tank">
       <LineId Id="1" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Element.m_InterConnected_State">
+      <LineId Id="5" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>
