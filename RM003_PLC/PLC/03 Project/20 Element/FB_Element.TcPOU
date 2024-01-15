@@ -18,6 +18,7 @@ VAR
 	eState_Short		: E_Element_State_Short;
 	eState_Long_last	: E_Element_State_Long;
 	eReq				: E_Request_List;
+	
 
 
 
@@ -29,8 +30,10 @@ VAR
 	eInterConnect		: E_InterConnection;
 	bStataUpdate_Limited: BOOL;
 
-	
+	stCIP_Request: ST_CIP_Request;
 
+	bTakePosInCIPBuffer_Partial: BOOL;
+	bTakePosInCIPBuffer_Full: BOOL;
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -54,28 +57,53 @@ CASE eElementID OF
 	E_Element_List.eTank_1:;
 				eType:=E_Element_Type.eTank;
 				eProdType:=E_Product_Type.Marinada;
+				stCIP_Request.eClient:=E_CIP_Usage.eTank_1;
 	E_Element_List.eTank_2:;
 				eType:=E_Element_Type.eTank;
 				eProdType:=E_Product_Type.Marinada;
+				stCIP_Request.eClient:=E_CIP_Usage.eTank_2;
 	E_Element_List.eTank_3:;
 				eType:=E_Element_Type.eTank;
 				eProdType:=E_Product_Type.Color;
+				stCIP_Request.eClient:=E_CIP_Usage.eTank_3;
 	E_Element_List.eTank_4:;
 				eType:=E_Element_Type.eTank;
 				eProdType:=E_Product_Type.Color;
+				stCIP_Request.eClient:=E_CIP_Usage.eTank_4;
 	E_Element_List.eTriBlender_Marinada:;
 				eType:=E_Element_Type.eTriBlender;
-				eProdType:=E_Product_Type.Marinada;				
+				eProdType:=E_Product_Type.Marinada;		
+				stCIP_Request.eClient:=E_CIP_Usage.eTriBlender_Marinada;
 	E_Element_List.eTriBlender_Color:;
 				eType:=E_Element_Type.eTriBlender;
 				eProdType:=E_Product_Type.Color;
+				stCIP_Request.eClient:=E_CIP_Usage.eTriBlender_Color;
 	E_Element_List.eLine_Marinada:;
 				eType:=E_Element_Type.eLine;
 				eProdType:=E_Product_Type.Marinada;
+				stCIP_Request.eClient:=E_CIP_Usage.eLine_Marinada;
 	E_Element_List.eLine_Color:;
 				eType:=E_Element_Type.eLine;
 				eProdType:=E_Product_Type.Color;
-END_CASE]]></ST>
+				stCIP_Request.eClient:=E_CIP_Usage.eLine_Color;
+END_CASE
+
+
+IF bTakePosInCIPBuffer_Partial THEN;
+	stCIP_Request.eCIP_Type:=E_CIP_Type.Partial;
+	prg_CIP.m_TakePosInCIPBuffer(stCIP_Request:=stCIP_Request);
+	bTakePosInCIPBuffer_Partial:=FALSE;
+END_IF
+
+IF bTakePosInCIPBuffer_Full THEN;
+	stCIP_Request.eCIP_Type:=E_CIP_Type.Full;
+	prg_CIP.m_TakePosInCIPBuffer(stCIP_Request:=stCIP_Request);
+	bTakePosInCIPBuffer_Full:=FALSE;
+END_IF
+
+
+
+]]></ST>
     </Implementation>
     <Action Name="act_Oper" Id="{264439cd-e66d-494f-8c13-56f5f3d53e1b}">
       <Implementation>
@@ -831,28 +859,48 @@ END_IF]]></ST>
       <LineId Id="107" Count="0" />
       <LineId Id="116" Count="0" />
       <LineId Id="126" Count="0" />
+      <LineId Id="244" Count="0" />
       <LineId Id="108" Count="0" />
       <LineId Id="117" Count="0" />
       <LineId Id="127" Count="0" />
+      <LineId Id="245" Count="0" />
       <LineId Id="109" Count="0" />
       <LineId Id="118" Count="0" />
       <LineId Id="128" Count="0" />
+      <LineId Id="246" Count="0" />
       <LineId Id="110" Count="0" />
       <LineId Id="119" Count="0" />
       <LineId Id="129" Count="0" />
+      <LineId Id="247" Count="0" />
       <LineId Id="111" Count="0" />
       <LineId Id="120" Count="0" />
       <LineId Id="131" Count="0" />
+      <LineId Id="248" Count="0" />
       <LineId Id="112" Count="0" />
       <LineId Id="121" Count="0" />
       <LineId Id="133" Count="0" />
+      <LineId Id="250" Count="0" />
       <LineId Id="114" Count="0" />
       <LineId Id="122" Count="0" />
       <LineId Id="132" Count="0" />
+      <LineId Id="251" Count="0" />
       <LineId Id="115" Count="0" />
       <LineId Id="123" Count="0" />
       <LineId Id="134" Count="0" />
+      <LineId Id="252" Count="0" />
       <LineId Id="106" Count="0" />
+      <LineId Id="264" Count="0" />
+      <LineId Id="259" Count="1" />
+      <LineId Id="266" Count="0" />
+      <LineId Id="265" Count="0" />
+      <LineId Id="261" Count="1" />
+      <LineId Id="254" Count="0" />
+      <LineId Id="267" Count="3" />
+      <LineId Id="256" Count="0" />
+      <LineId Id="258" Count="0" />
+      <LineId Id="257" Count="0" />
+      <LineId Id="243" Count="0" />
+      <LineId Id="242" Count="0" />
     </LineIds>
     <LineIds Name="FB_Element.act_StateChange_WatchGog">
       <LineId Id="1" Count="1" />

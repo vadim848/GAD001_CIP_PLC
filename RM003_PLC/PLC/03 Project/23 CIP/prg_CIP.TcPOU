@@ -19,6 +19,7 @@ VAR
 
 	rtPosMoveHMI_Up: R_TRIG;
 	rtPosMoveHMI_Down: R_TRIG;
+	rtPosDeleteHMI: R_TRIG;
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -11351,8 +11352,7 @@ END_IF]]></ST>
     </Action>
     <Action Name="act_ReqBuffer" Id="{1b81a7d5-6e97-4216-8c50-f77668c87ac0}">
       <Implementation>
-        <ST><![CDATA[
-rtPosMoveHMI_Up(Q=>);
+        <ST><![CDATA[rtPosMoveHMI_Up(Q=>);
 IF rtPosMoveHMI_Up.Q THEN;
 	m_PosMove_Up_HMI();
 END_IF
@@ -11360,11 +11360,29 @@ rtPosMoveHMI_Down(Q=>);
 IF rtPosMoveHMI_Down.Q THEN;
 	m_PosMove_Down_HMI();
 END_IF
+rtPosDeleteHMI(Q=>);
+IF rtPosDeleteHMI.Q THEN;
+	m_PosDelete_HMI();
+END_IF
+
 
 
 ]]></ST>
       </Implementation>
     </Action>
+    <Method Name="m_PosDelete_HMI" Id="{5ecfed30-e439-4aa1-8486-4d270c40480b}">
+      <Declaration><![CDATA[METHOD m_PosDelete_HMI : BOOL
+VAR_INPUT
+END_VAR
+VAR
+	stCIP_Request_Temp: ST_CIP_Request;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF iPosSelect_HMI>=0 AND iPosSelect_HMI<9 THEN;
+	arCIP_RequestBufer[iPosSelect_HMI]:=stCIP_Request_Temp;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="m_PosMove_Down_HMI" Id="{c114e84d-a8ed-4e16-9653-147f733c0d8b}">
       <Declaration><![CDATA[METHOD m_PosMove_Down_HMI : BOOL
 VAR_INPUT
@@ -11398,6 +11416,30 @@ END_VAR]]></Declaration>
 END_IF]]></ST>
       </Implementation>
     </Method>
+    <Method Name="m_TakePosInCIPBuffer" Id="{b2dcb157-1d24-4a20-a9df-81a455a5e4d3}">
+      <Declaration><![CDATA[METHOD m_TakePosInCIPBuffer : BOOL
+VAR_INPUT
+	stCIP_Request: ST_CIP_Request;
+END_VAR
+
+VAR
+	i: INT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF stCIP_Request.eClient<>E_CIP_Usage.eNotInUse
+AND stCIP_Request.eCIP_Type<>E_CIP_Type.NotSelected
+THEN;
+	FOR i:=0 TO 9 DO
+		IF arCIP_RequestBufer[i].eClient=E_CIP_Usage.eNotInUse THEN;
+			arCIP_RequestBufer[i]:=stCIP_Request;
+			EXIT;
+		END_IF
+	END_FOR	
+END_IF
+
+]]></ST>
+      </Implementation>
+    </Method>
     <LineIds Name="prg_CIP">
       <LineId Id="25" Count="1" />
       <LineId Id="9" Count="0" />
@@ -11416,14 +11458,13 @@ END_IF]]></ST>
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="prg_CIP.act_ReqBuffer">
-      <LineId Id="2" Count="0" />
-      <LineId Id="5" Count="0" />
-      <LineId Id="8" Count="2" />
-      <LineId Id="6" Count="0" />
-      <LineId Id="11" Count="2" />
-      <LineId Id="7" Count="0" />
-      <LineId Id="4" Count="0" />
+      <LineId Id="34" Count="14" />
       <LineId Id="1" Count="0" />
+    </LineIds>
+    <LineIds Name="prg_CIP.m_PosDelete_HMI">
+      <LineId Id="5" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="7" Count="0" />
     </LineIds>
     <LineIds Name="prg_CIP.m_PosMove_Down_HMI">
       <LineId Id="5" Count="0" />
@@ -11438,6 +11479,18 @@ END_IF]]></ST>
       <LineId Id="11" Count="0" />
       <LineId Id="14" Count="1" />
       <LineId Id="7" Count="0" />
+    </LineIds>
+    <LineIds Name="prg_CIP.m_TakePosInCIPBuffer">
+      <LineId Id="14" Count="0" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="20" Count="2" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="8" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>
