@@ -14,12 +14,19 @@ VAR
 	eCIP_Source	: E_CIP_Source;
 
 	bStepDone: BOOL;
+	
+	iPosSelect_HMI: INT;
+
+	rtPosMoveHMI_Up: R_TRIG;
+	rtPosMoveHMI_Down: R_TRIG;
 END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[
 
-act_Oper();]]></ST>
+act_Oper();
+act_ReqBuffer();
+]]></ST>
     </Implementation>
     <Action Name="_a_aWatingTo_Start_active" Id="{560e86d1-cd11-44bd-aed6-a8db9be9b76c}">
       <Implementation>
@@ -11342,9 +11349,60 @@ END_IF]]></ST>
         </XmlArchive>
       </ObjectProperties>
     </Action>
+    <Action Name="act_ReqBuffer" Id="{1b81a7d5-6e97-4216-8c50-f77668c87ac0}">
+      <Implementation>
+        <ST><![CDATA[
+rtPosMoveHMI_Up(Q=>);
+IF rtPosMoveHMI_Up.Q THEN;
+	m_PosMove_Up_HMI();
+END_IF
+rtPosMoveHMI_Down(Q=>);
+IF rtPosMoveHMI_Down.Q THEN;
+	m_PosMove_Down_HMI();
+END_IF
+
+
+]]></ST>
+      </Implementation>
+    </Action>
+    <Method Name="m_PosMove_Down_HMI" Id="{c114e84d-a8ed-4e16-9653-147f733c0d8b}">
+      <Declaration><![CDATA[METHOD m_PosMove_Down_HMI : BOOL
+VAR_INPUT
+END_VAR
+VAR
+	stCIP_Request_Temp: ST_CIP_Request;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF iPosSelect_HMI>=0 AND iPosSelect_HMI<9 THEN;
+	stCIP_Request_Temp:=arCIP_RequestBufer[iPosSelect_HMI+1];
+	arCIP_RequestBufer[iPosSelect_HMI+1]:=arCIP_RequestBufer[iPosSelect_HMI];
+	arCIP_RequestBufer[iPosSelect_HMI]:=stCIP_Request_Temp;
+	iPosSelect_HMI:=iPosSelect_HMI+1;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_PosMove_Up_HMI" Id="{882d4194-9591-429b-a6de-feb8c47cbd4c}">
+      <Declaration><![CDATA[METHOD m_PosMove_Up_HMI : BOOL
+VAR_INPUT
+END_VAR
+VAR
+	stCIP_Request_Temp: ST_CIP_Request;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF iPosSelect_HMI>0 AND iPosSelect_HMI<=9 THEN;
+	stCIP_Request_Temp:=arCIP_RequestBufer[iPosSelect_HMI-1];
+	arCIP_RequestBufer[iPosSelect_HMI-1]:=arCIP_RequestBufer[iPosSelect_HMI];
+	arCIP_RequestBufer[iPosSelect_HMI]:=stCIP_Request_Temp;
+		iPosSelect_HMI:=iPosSelect_HMI-1;
+
+END_IF]]></ST>
+      </Implementation>
+    </Method>
     <LineIds Name="prg_CIP">
       <LineId Id="25" Count="1" />
       <LineId Id="9" Count="0" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="30" Count="0" />
     </LineIds>
     <LineIds Name="prg_CIP._a_aWatingTo_Start_active">
       <LineId Id="1" Count="1" />
@@ -11356,6 +11414,30 @@ END_IF]]></ST>
     </LineIds>
     <LineIds Name="prg_CIP._ainit_exit">
       <LineId Id="1" Count="0" />
+    </LineIds>
+    <LineIds Name="prg_CIP.act_ReqBuffer">
+      <LineId Id="2" Count="0" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="8" Count="2" />
+      <LineId Id="6" Count="0" />
+      <LineId Id="11" Count="2" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="4" Count="0" />
+      <LineId Id="1" Count="0" />
+    </LineIds>
+    <LineIds Name="prg_CIP.m_PosMove_Down_HMI">
+      <LineId Id="5" Count="0" />
+      <LineId Id="12" Count="1" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="7" Count="0" />
+    </LineIds>
+    <LineIds Name="prg_CIP.m_PosMove_Up_HMI">
+      <LineId Id="5" Count="0" />
+      <LineId Id="12" Count="1" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="14" Count="1" />
+      <LineId Id="7" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>
