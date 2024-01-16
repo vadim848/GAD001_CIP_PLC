@@ -15,6 +15,7 @@ VAR
 	eCIP_Source		: E_CIP_Source;
 	eReq			: ST_CIP_Request;
 	eReqBlank		: ST_CIP_Request;
+	eReqLocal		: ST_CIP_Request;
 
 	bStepDone: BOOL;
 	
@@ -29,6 +30,7 @@ VAR
 	eState_Long_Blank			: E_Element_State_Long;
 
 	
+	rtReqLocalCIP_HMI: R_TRIG;
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -84,9 +86,33 @@ END_IF]]></ST>
         </XmlArchive>
       </ObjectProperties>
     </Action>
+    <Action Name="_aCIP1_Done_entry" Id="{5876c70f-a066-4ad6-a135-a5384197da92}">
+      <Implementation>
+        <ST><![CDATA[eRefClient_fbElement.m_InterConnected_State(eState_Long_Set:=E_Element_State_Long.eCIP_1_Rinzed);
+]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
     <Action Name="_aCIP2_Done_entry" Id="{9a18f41c-f03b-4bca-ad35-6eeccc6aba8e}">
       <Implementation>
-        <ST><![CDATA[eRefClient_fbElement.m_InterConnected_State(eState_Long_Set:=E_Element_State_Long.eCIP_2_Deterged);
+        <ST><![CDATA[IF eReq.eClient=E_CIP_Usage.eLocal THEN;
+	eRefClient_fbElement.m_InterConnected_State(eState_Long_Set:=E_Element_State_Long.eCIP_3_Deterged_Clean);
+ELSE;
+	eRefClient_fbElement.m_InterConnected_State(eState_Long_Set:=E_Element_State_Long.eCIP_2_Deterged);
+END_IF
+
 ]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -188,32 +214,7 @@ END_IF
     </Action>
     <Action Name="_aGet_Client_active" Id="{18e627b5-82b2-485b-93fe-c20af040d1ae}">
       <Implementation>
-        <ST><![CDATA[CASE eReq.eClient OF
-	E_CIP_Usage.eTank_1:;
-		eRefClient_fbElement REF= fbElement[E_Element_List.eTank_1];
-
-	E_CIP_Usage.eTank_2:;
-		eRefClient_fbElement REF= fbElement[E_Element_List.eTank_2];
-		
-	E_CIP_Usage.eTank_3:;
-		eRefClient_fbElement REF= fbElement[E_Element_List.eTank_3];
-		
-	E_CIP_Usage.eTank_4:;
-		eRefClient_fbElement REF= fbElement[E_Element_List.eTank_4];
-		
-	E_CIP_Usage.eTriBlender_Marinada:;
-		eRefClient_fbElement REF= fbElement[E_Element_List.eTriBlender_Marinada];
-		
-	E_CIP_Usage.eTriBlender_Color:;
-		eRefClient_fbElement REF= fbElement[E_Element_List.eTriBlender_Color];
-		
-	E_CIP_Usage.eLine_Marinada:;
-		eRefClient_fbElement REF= fbElement[E_Element_List.eLine_Marinada];
-		
-	E_CIP_Usage.eLine_Color:;
-		eRefClient_fbElement REF= fbElement[E_Element_List.eLine_Color];
-
-END_CASE
+        <ST><![CDATA[
 
 
 CASE eRefClient_fbElement.eState_Long OF
@@ -292,29 +293,43 @@ eRefClient_fbElement REF= fbElement_Blank;]]></ST>
         </XmlArchive>
       </ObjectProperties>
     </Action>
-    <Action Name="_aR_Water_Done_entry" Id="{5876c70f-a066-4ad6-a135-a5384197da92}">
-      <Implementation>
-        <ST><![CDATA[eRefClient_fbElement.m_InterConnected_State(eState_Long_Set:=E_Element_State_Long.eCIP_1_Rinzed);
-]]></ST>
-      </Implementation>
-      <ObjectProperties>
-        <XmlArchive>
-          <Data>
-            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
-              <v n="Embedded">true</v>
-            </o>
-          </Data>
-          <TypeList>
-            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
-            <Type n="Boolean">System.Boolean</Type>
-          </TypeList>
-        </XmlArchive>
-      </ObjectProperties>
-    </Action>
     <Action Name="_aWatingTo_Start_exit" Id="{fe06bbde-dba2-4c36-8b83-7a6e8089b6a1}">
       <Implementation>
         <ST><![CDATA[eReq:=arCIP_RequestBufer[0];
-arCIP_RequestBufer[0]:=eReqBlank;]]></ST>
+arCIP_RequestBufer[0]:=eReqBlank;
+
+CASE eReq.eClient OF
+	E_CIP_Usage.eLocal:;
+		eRefClient_fbElement REF= fbElement_Blank;
+		eRefClient_fbElement.m_InterConnected_State(eState_Long_Set:=E_Element_State_Long.eNotClean);
+		
+	E_CIP_Usage.eTank_1:;
+		eRefClient_fbElement REF= fbElement[E_Element_List.eTank_1];
+
+	E_CIP_Usage.eTank_2:;
+		eRefClient_fbElement REF= fbElement[E_Element_List.eTank_2];
+		
+	E_CIP_Usage.eTank_3:;
+		eRefClient_fbElement REF= fbElement[E_Element_List.eTank_3];
+		
+	E_CIP_Usage.eTank_4:;
+		eRefClient_fbElement REF= fbElement[E_Element_List.eTank_4];
+		
+	E_CIP_Usage.eTriBlender_Marinada:;
+		eRefClient_fbElement REF= fbElement[E_Element_List.eTriBlender_Marinada];
+		
+	E_CIP_Usage.eTriBlender_Color:;
+		eRefClient_fbElement REF= fbElement[E_Element_List.eTriBlender_Color];
+		
+	E_CIP_Usage.eLine_Marinada:;
+		eRefClient_fbElement REF= fbElement[E_Element_List.eLine_Marinada];
+		
+	E_CIP_Usage.eLine_Color:;
+		eRefClient_fbElement REF= fbElement[E_Element_List.eLine_Color];
+
+END_CASE
+
+]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -2485,7 +2500,7 @@ arCIP_RequestBufer[0]:=eReqBlank;]]></ST>
                                                         <v n="IdParent">245L</v>
                                                       </o>
                                                       <o t="SFCTransition">
-                                                        <v n="VariableName">"Disconnect_CIP1__to__R_Water_Done"</v>
+                                                        <v n="VariableName">"Disconnect_CIP1__to__CIP1_Done"</v>
                                                         <n n="EmbeddedTransition" />
                                                         <l2 n="EmbeddedTransitionProperties" />
                                                         <l2 n="Attributes" cet="SFCAttribute">
@@ -2589,7 +2604,7 @@ arCIP_RequestBufer[0]:=eReqBlank;]]></ST>
                                                   <o n="ElementList" t="SFCElementList">
                                                     <l2 n="InnerList" cet="SFCTransition">
                                                       <o>
-                                                        <v n="VariableName">"Branch0_1__Client_Check_01__to__R_Water_Done"</v>
+                                                        <v n="VariableName">"Branch0_1__Client_Check_01__to__CIP1_Done"</v>
                                                         <n n="EmbeddedTransition" />
                                                         <l2 n="EmbeddedTransitionProperties" />
                                                         <l2 n="Attributes" cet="SFCAttribute">
@@ -2746,7 +2761,7 @@ arCIP_RequestBufer[0]:=eReqBlank;]]></ST>
                                               <o>
                                                 <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                 <o n="Value" t="StringValue">
-                                                  <v n="Value">"R_Water_Done"</v>
+                                                  <v n="Value">"CIP1_Done"</v>
                                                   <v n="DefaultValue">""</v>
                                                 </o>
                                                 <v n="Id">179L</v>
@@ -2829,7 +2844,7 @@ arCIP_RequestBufer[0]:=eReqBlank;]]></ST>
                                               <o>
                                                 <v n="AttributeId">{a6b08bd8-b696-47e3-9cbf-7408b61c9ff8}</v>
                                                 <o n="Value" t="StringValue">
-                                                  <v n="Value">"_aR_Water_Done_entry"</v>
+                                                  <v n="Value">"_aCIP1_Done_entry"</v>
                                                   <v n="DefaultValue">""</v>
                                                 </o>
                                                 <v n="Id">188L</v>
@@ -2849,7 +2864,7 @@ arCIP_RequestBufer[0]:=eReqBlank;]]></ST>
                                             <v n="IdParent">67L</v>
                                           </o>
                                           <o t="SFCTransition">
-                                            <v n="VariableName">"R_Water_Done__to__End_Check"</v>
+                                            <v n="VariableName">"CIP1_Done__to__End_Check"</v>
                                             <n n="EmbeddedTransition" />
                                             <l2 n="EmbeddedTransitionProperties" />
                                             <l2 n="Attributes" cet="SFCAttribute">
@@ -3891,7 +3906,7 @@ arCIP_RequestBufer[0]:=eReqBlank;]]></ST>
                                               <o>
                                                 <v n="AttributeId">{cacf1a68-236e-47c2-b7b1-1cf9199718cb}</v>
                                                 <o n="Value" t="StringValue">
-                                                  <v n="Value">"T#5s"</v>
+                                                  <v n="Value">""</v>
                                                   <v n="DefaultValue">""</v>
                                                 </o>
                                                 <v n="Id">692L</v>
@@ -12330,6 +12345,13 @@ IF rtPosDeleteHMI.Q THEN;
 	m_PosDelete_HMI();
 END_IF
 
+rtReqLocalCIP_HMI(Q=>);
+IF rtReqLocalCIP_HMI.Q THEN;
+	eReqLocal.eClient:=E_CIP_Usage.eLocal;
+	eReqLocal.eType:=E_CIP_Type.Full;
+	m_TakePosInCIPBuffer(stCIP_Request:=eReqLocal);
+END_IF
+
 
 
 ]]></ST>
@@ -12423,7 +12445,13 @@ END_IF
       <LineId Id="2" Count="0" />
       <LineId Id="1" Count="0" />
     </LineIds>
+    <LineIds Name="prg_CIP._aCIP1_Done_entry">
+      <LineId Id="1" Count="1" />
+    </LineIds>
     <LineIds Name="prg_CIP._aCIP2_Done_entry">
+      <LineId Id="3" Count="1" />
+      <LineId Id="6" Count="1" />
+      <LineId Id="5" Count="0" />
       <LineId Id="2" Count="0" />
       <LineId Id="1" Count="0" />
     </LineIds>
@@ -12452,23 +12480,6 @@ END_IF
       <LineId Id="3" Count="0" />
     </LineIds>
     <LineIds Name="prg_CIP._aGet_Client_active">
-      <LineId Id="1" Count="1" />
-      <LineId Id="6" Count="0" />
-      <LineId Id="5" Count="0" />
-      <LineId Id="7" Count="1" />
-      <LineId Id="25" Count="0" />
-      <LineId Id="9" Count="1" />
-      <LineId Id="26" Count="0" />
-      <LineId Id="11" Count="1" />
-      <LineId Id="27" Count="0" />
-      <LineId Id="13" Count="1" />
-      <LineId Id="28" Count="0" />
-      <LineId Id="15" Count="1" />
-      <LineId Id="29" Count="0" />
-      <LineId Id="17" Count="1" />
-      <LineId Id="30" Count="0" />
-      <LineId Id="19" Count="1" />
-      <LineId Id="4" Count="0" />
       <LineId Id="3" Count="0" />
       <LineId Id="32" Count="0" />
       <LineId Id="34" Count="0" />
@@ -12502,15 +12513,25 @@ END_IF
       <LineId Id="4" Count="1" />
       <LineId Id="3" Count="0" />
     </LineIds>
-    <LineIds Name="prg_CIP._aR_Water_Done_entry">
-      <LineId Id="1" Count="1" />
-    </LineIds>
     <LineIds Name="prg_CIP._aWatingTo_Start_exit">
       <LineId Id="3" Count="0" />
       <LineId Id="2" Count="0" />
+      <LineId Id="5" Count="1" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="35" Count="1" />
+      <LineId Id="7" Count="23" />
+      <LineId Id="4" Count="0" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="31" Count="0" />
     </LineIds>
     <LineIds Name="prg_CIP.act_ReqBuffer">
-      <LineId Id="34" Count="14" />
+      <LineId Id="34" Count="11" />
+      <LineId Id="50" Count="2" />
+      <LineId Id="55" Count="1" />
+      <LineId Id="53" Count="0" />
+      <LineId Id="49" Count="0" />
+      <LineId Id="46" Count="2" />
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="prg_CIP.m_PosDelete_HMI">
