@@ -22,6 +22,10 @@ VAR
 	rtPosMoveHMI_Down	: R_TRIG;
 	rtPosDeleteHMI		: R_TRIG;
 	
+	eRefClient_State_Long			: REFERENCE TO E_Element_State_Long;
+	eState_Long_Blank			: E_Element_State_Long;
+
+	
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -58,6 +62,29 @@ END_IF]]></ST>
         </XmlArchive>
       </ObjectProperties>
     </Action>
+    <Action Name="_aGet_Client_active" Id="{18e627b5-82b2-485b-93fe-c20af040d1ae}">
+      <Implementation>
+        <ST><![CDATA[CASE eReq.eClient OF
+	E_CIP_Usage.eTank_1:;
+		eRefClient_State_Long REF= fbElement[E_Element_List.eTank_1].eState_Long;
+
+
+END_CASE]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
     <Action Name="_ainit_active" Id="{d9c96ab0-b559-49a2-afe8-ff94a774e454}">
       <Implementation>
         <ST><![CDATA[SFCReset:=FALSE;]]></ST>
@@ -79,7 +106,10 @@ END_IF]]></ST>
     <Action Name="_ainit_exit" Id="{ad983d6a-a390-4862-a949-8cf9f36606ae}">
       <Implementation>
         <ST><![CDATA[bRun:=FALSE;
-eReq:=eReqBlank;]]></ST>
+eReq:=eReqBlank;
+
+
+eRefClient_State_Long REF= eState_Long_Blank;]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -943,7 +973,7 @@ arCIP_RequestBufer[0]:=eReqBlank;]]></ST>
                           <o>
                             <v n="AttributeId">{700a583f-b4d4-43e4-8c14-629c7cd3bec8}</v>
                             <o n="Value" t="StringValue">
-                              <v n="Value">""</v>
+                              <v n="Value">"_aGet_Client_active"</v>
                               <v n="DefaultValue">""</v>
                             </o>
                             <v n="Id">77L</v>
@@ -11592,11 +11622,20 @@ END_IF
       <LineId Id="10" Count="0" />
       <LineId Id="3" Count="0" />
     </LineIds>
+    <LineIds Name="prg_CIP._aGet_Client_active">
+      <LineId Id="1" Count="1" />
+      <LineId Id="6" Count="0" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="4" Count="0" />
+      <LineId Id="3" Count="0" />
+    </LineIds>
     <LineIds Name="prg_CIP._ainit_active">
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="prg_CIP._ainit_exit">
       <LineId Id="1" Count="1" />
+      <LineId Id="4" Count="1" />
+      <LineId Id="3" Count="0" />
     </LineIds>
     <LineIds Name="prg_CIP._aWatingTo_Start_exit">
       <LineId Id="3" Count="0" />
