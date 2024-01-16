@@ -24,7 +24,8 @@ VAR
 	rtPosMoveHMI_Down	: R_TRIG;
 	rtPosDeleteHMI		: R_TRIG;
 	
-	eRefClient_State_Long			: REFERENCE TO E_Element_State_Long;
+	eRefClient_fbElement		: REFERENCE TO FB_Element; // FB_Element // E_Element_State_Long
+	fbElement_Blank				: FB_Element;
 	eState_Long_Blank			: E_Element_State_Long;
 
 	
@@ -64,9 +65,28 @@ END_IF]]></ST>
         </XmlArchive>
       </ObjectProperties>
     </Action>
+    <Action Name="_aCIP_Done_entry" Id="{65c51eeb-ff71-4a7b-932e-5755a43e7ba7}">
+      <Implementation>
+        <ST><![CDATA[eRefClient_fbElement.m_InterConnect(value:=E_InterConnection.NotConnected);
+]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
     <Action Name="_aCIP2_Done_entry" Id="{9a18f41c-f03b-4bca-ad35-6eeccc6aba8e}">
       <Implementation>
-        <ST><![CDATA[eRefClient_State_Long:=E_Element_State_Long.eCIP_2_Deterged;
+        <ST><![CDATA[eRefClient_fbElement.m_InterConnected_State(eState_Long_Set:=E_Element_State_Long.eCIP_2_Deterged);
 ]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -85,7 +105,7 @@ END_IF]]></ST>
     </Action>
     <Action Name="_aCIP3_Done_entry" Id="{ea9db615-0bf9-482c-b261-eaf0de2b9036}">
       <Implementation>
-        <ST><![CDATA[eRefClient_State_Long:=E_Element_State_Long.eCIP_4_Sanitized;
+        <ST><![CDATA[eRefClient_fbElement.m_InterConnected_State(eState_Long_Set:=E_Element_State_Long.eCIP_4_Sanitized);
 ]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -106,18 +126,18 @@ END_IF]]></ST>
       <Implementation>
         <ST><![CDATA[
 
-CASE eRefClient_State_Long OF
+CASE eRefClient_fbElement.eState_Long OF
 	E_Element_State_Long.eNotClean:;
 			//
 	E_Element_State_Long.eCIP_1_Rinzed:;
 			//
 	E_Element_State_Long.eCIP_2_Deterged:;
-			eRefClient_State_Long:=E_Element_State_Long.eCIP_3_Deterged_Clean;	
+			eRefClient_fbElement.m_InterConnected_State(eState_Long_Set:=E_Element_State_Long.eCIP_3_Deterged_Clean);	
 		
 	E_Element_State_Long.eCIP_3_Deterged_Clean:;
 			//
 	E_Element_State_Long.eCIP_4_Sanitized:;
-			eRefClient_State_Long:=E_Element_State_Long.eCIP_5_Done;			
+			eRefClient_fbElement.m_InterConnected_State(eState_Long_Set:=E_Element_State_Long.eCIP_5_Done);			
 	
 END_CASE]]></ST>
       </Implementation>
@@ -139,13 +159,13 @@ END_CASE]]></ST>
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
 IF TRUE 
-AND eRefClient_State_Long = E_Element_State_Long.eCIP_1_Rinzed
+AND eRefClient_fbElement.eState_Long = E_Element_State_Long.eCIP_1_Rinzed
 AND eReq.eType = E_CIP_Type.Partial
 THEN;
 	bStepDone:=TRUE;
 	
 ELSIF TRUE 
-AND eRefClient_State_Long = E_Element_State_Long.eCIP_5_Done
+AND eRefClient_fbElement.eState_Long = E_Element_State_Long.eCIP_5_Done
 AND TRUE
 THEN;
 	bStepDone:=TRUE;
@@ -170,33 +190,33 @@ END_IF
       <Implementation>
         <ST><![CDATA[CASE eReq.eClient OF
 	E_CIP_Usage.eTank_1:;
-		eRefClient_State_Long REF= fbElement[E_Element_List.eTank_1].eState_Long;
+		eRefClient_fbElement REF= fbElement[E_Element_List.eTank_1];
 
 	E_CIP_Usage.eTank_2:;
-		eRefClient_State_Long REF= fbElement[E_Element_List.eTank_2].eState_Long;
+		eRefClient_fbElement REF= fbElement[E_Element_List.eTank_2];
 		
 	E_CIP_Usage.eTank_3:;
-		eRefClient_State_Long REF= fbElement[E_Element_List.eTank_3].eState_Long;
+		eRefClient_fbElement REF= fbElement[E_Element_List.eTank_3];
 		
 	E_CIP_Usage.eTank_4:;
-		eRefClient_State_Long REF= fbElement[E_Element_List.eTank_4].eState_Long;
+		eRefClient_fbElement REF= fbElement[E_Element_List.eTank_4];
 		
 	E_CIP_Usage.eTriBlender_Marinada:;
-		eRefClient_State_Long REF= fbElement[E_Element_List.eTriBlender_Marinada].eState_Long;
+		eRefClient_fbElement REF= fbElement[E_Element_List.eTriBlender_Marinada];
 		
 	E_CIP_Usage.eTriBlender_Color:;
-		eRefClient_State_Long REF= fbElement[E_Element_List.eTriBlender_Color].eState_Long;
+		eRefClient_fbElement REF= fbElement[E_Element_List.eTriBlender_Color];
 		
 	E_CIP_Usage.eLine_Marinada:;
-		eRefClient_State_Long REF= fbElement[E_Element_List.eLine_Marinada].eState_Long;
+		eRefClient_fbElement REF= fbElement[E_Element_List.eLine_Marinada];
 		
 	E_CIP_Usage.eLine_Color:;
-		eRefClient_State_Long REF= fbElement[E_Element_List.eLine_Color].eState_Long;
+		eRefClient_fbElement REF= fbElement[E_Element_List.eLine_Color];
 
 END_CASE
 
 
-CASE eRefClient_State_Long OF
+CASE eRefClient_fbElement.eState_Long OF
 	E_Element_State_Long.eNotClean:;
 			eRun:=E_CIP_Source.eT93_R_Water;	
 		
@@ -214,7 +234,9 @@ CASE eRefClient_State_Long OF
 	
 END_CASE
 
-//eRefClient_State_Long.]]></ST>
+eRefClient_fbElement.m_InterConnect(value:=E_InterConnection.ConnToCIP);
+
+]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -254,7 +276,7 @@ END_CASE
 eReq:=eReqBlank;
 eRun:=E_CIP_Source.eNone;
 
-eRefClient_State_Long REF= eState_Long_Blank;]]></ST>
+eRefClient_fbElement REF= fbElement_Blank;]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -272,7 +294,7 @@ eRefClient_State_Long REF= eState_Long_Blank;]]></ST>
     </Action>
     <Action Name="_aR_Water_Done_entry" Id="{5876c70f-a066-4ad6-a135-a5384197da92}">
       <Implementation>
-        <ST><![CDATA[eRefClient_State_Long:=E_Element_State_Long.eCIP_1_Rinzed;
+        <ST><![CDATA[eRefClient_fbElement.m_InterConnected_State(eState_Long_Set:=E_Element_State_Long.eCIP_1_Rinzed);
 ]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -11756,7 +11778,7 @@ arCIP_RequestBufer[0]:=eReqBlank;]]></ST>
                           <o>
                             <v n="AttributeId">{a6b08bd8-b696-47e3-9cbf-7408b61c9ff8}</v>
                             <o n="Value" t="StringValue">
-                              <v n="Value">""</v>
+                              <v n="Value">"_aCIP_Done_entry"</v>
                               <v n="DefaultValue">""</v>
                             </o>
                             <v n="Id">54L</v>
@@ -12397,6 +12419,10 @@ END_IF
       <LineId Id="10" Count="0" />
       <LineId Id="3" Count="0" />
     </LineIds>
+    <LineIds Name="prg_CIP._aCIP_Done_entry">
+      <LineId Id="2" Count="0" />
+      <LineId Id="1" Count="0" />
+    </LineIds>
     <LineIds Name="prg_CIP._aCIP2_Done_entry">
       <LineId Id="2" Count="0" />
       <LineId Id="1" Count="0" />
@@ -12465,6 +12491,8 @@ END_IF
       <LineId Id="36" Count="0" />
       <LineId Id="53" Count="0" />
       <LineId Id="52" Count="0" />
+      <LineId Id="55" Count="0" />
+      <LineId Id="54" Count="0" />
     </LineIds>
     <LineIds Name="prg_CIP._ainit_active">
       <LineId Id="1" Count="0" />
