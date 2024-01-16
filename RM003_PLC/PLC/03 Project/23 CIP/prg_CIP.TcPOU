@@ -9,9 +9,10 @@ END_VAR
 VAR
 	bRun: BOOL;
 
-	eCIP_Return	: E_CIP_Return;
-	eCIP_Usage	: E_CIP_Usage;
-	eCIP_Source	: E_CIP_Source;
+	eCIP_Return		: E_CIP_Return;
+	eCIP_Source		: E_CIP_Source;
+	eReq			: ST_CIP_Request;
+	eReqBlank		: ST_CIP_Request;
 
 	bStepDone: BOOL;
 	
@@ -20,6 +21,7 @@ VAR
 	rtPosMoveHMI_Up: R_TRIG;
 	rtPosMoveHMI_Down: R_TRIG;
 	rtPosDeleteHMI: R_TRIG;
+	
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -32,10 +34,14 @@ act_ReqBuffer();
     <Action Name="_a_aWatingTo_Start_active" Id="{560e86d1-cd11-44bd-aed6-a8db9be9b76c}">
       <Implementation>
         <ST><![CDATA[IF TRUE 
-AND bRun THEN;
+AND bRun 
+AND arCIP_RequestBufer[0].eClient<>E_CIP_Usage.eNotInUse
+
+THEN;
 	bStepDone:=TRUE;
 ELSE;
 	bStepDone:=FALSE;
+	//bRun:=FALSE;
 END_IF]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -72,7 +78,27 @@ END_IF]]></ST>
     </Action>
     <Action Name="_ainit_exit" Id="{ad983d6a-a390-4862-a949-8cf9f36606ae}">
       <Implementation>
-        <ST><![CDATA[bRun:=FALSE;]]></ST>
+        <ST><![CDATA[bRun:=FALSE;
+eReq:=eReqBlank;]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
+    <Action Name="_aWatingTo_Start_exit" Id="{fe06bbde-dba2-4c36-8b83-7a6e8089b6a1}">
+      <Implementation>
+        <ST><![CDATA[eReq:=arCIP_RequestBufer[0];
+arCIP_RequestBufer[0]:=eReqBlank;]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -752,7 +778,7 @@ END_IF]]></ST>
                           <o>
                             <v n="AttributeId">{a2621e18-7de3-4ea6-ae6d-89e9e0b7befd}</v>
                             <o n="Value" t="StringValue">
-                              <v n="Value">""</v>
+                              <v n="Value">"_aWatingTo_Start_exit"</v>
                               <v n="DefaultValue">""</v>
                             </o>
                             <v n="Id">36L</v>
@@ -1335,7 +1361,7 @@ END_IF]]></ST>
                                                           <o>
                                                             <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                             <o n="Value" t="StringValue">
-                                                              <v n="Value">"eCIP_Usage&lt;&gt;E_CIP_Usage.eLocal"</v>
+                                                              <v n="Value">"eReq.eClient&lt;&gt;E_CIP_Usage.eLocal"</v>
                                                               <v n="DefaultValue">""</v>
                                                             </o>
                                                             <v n="Id">250L</v>
@@ -3892,7 +3918,7 @@ END_IF]]></ST>
                                                           <o>
                                                             <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                             <o n="Value" t="StringValue">
-                                                              <v n="Value">"eCIP_Usage&lt;&gt;E_CIP_Usage.eLocal"</v>
+                                                              <v n="Value">"eReq.eClient&lt;&gt;E_CIP_Usage.eLocal"</v>
                                                               <v n="DefaultValue">""</v>
                                                             </o>
                                                             <v n="Id">493L</v>
@@ -5094,7 +5120,7 @@ END_IF]]></ST>
                                                           <o>
                                                             <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                             <o n="Value" t="StringValue">
-                                                              <v n="Value">"eCIP_Usage=E_CIP_Usage.eLocal"</v>
+                                                              <v n="Value">"eReq.eClient=E_CIP_Usage.eLocal"</v>
                                                               <v n="DefaultValue">""</v>
                                                             </o>
                                                             <v n="Id">580L</v>
@@ -6330,7 +6356,35 @@ END_IF]]></ST>
                                           </o>
                                         </l2>
                                       </o>
-                                      <l2 n="Attributes" />
+                                      <l2 n="Attributes" cet="SFCAttribute">
+                                        <o>
+                                          <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
+                                          <o n="Value" t="StringValue">
+                                            <v n="Value">""</v>
+                                            <v n="DefaultValue">""</v>
+                                          </o>
+                                          <v n="Id">1769L</v>
+                                          <v n="IdParent">129L</v>
+                                        </o>
+                                        <o>
+                                          <v n="AttributeId">{7d894980-aeea-405c-a0f6-e2b26429c58f}</v>
+                                          <o n="Value" t="StringValue">
+                                            <v n="Value">""</v>
+                                            <v n="DefaultValue">""</v>
+                                          </o>
+                                          <v n="Id">1770L</v>
+                                          <v n="IdParent">129L</v>
+                                        </o>
+                                        <o>
+                                          <v n="AttributeId">{01580b27-6378-448b-8ecb-0e4b795b58d6}</v>
+                                          <o n="Value" t="BoolValue">
+                                            <v n="Value">"FALSE"</v>
+                                            <v n="DefaultValue">"FALSE"</v>
+                                          </o>
+                                          <v n="Id">1771L</v>
+                                          <v n="IdParent">129L</v>
+                                        </o>
+                                      </l2>
                                       <v n="Id">129L</v>
                                       <v n="IdParent">125L</v>
                                     </o>
@@ -7415,7 +7469,7 @@ END_IF]]></ST>
                                                           <o>
                                                             <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                             <o n="Value" t="StringValue">
-                                                              <v n="Value">"eCIP_Usage&lt;&gt;E_CIP_Usage.eLocal"</v>
+                                                              <v n="Value">"eReq.eClient&lt;&gt;E_CIP_Usage.eLocal"</v>
                                                               <v n="DefaultValue">""</v>
                                                             </o>
                                                             <v n="Id">859L</v>
@@ -8251,7 +8305,7 @@ END_IF]]></ST>
                                                           <o>
                                                             <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                             <o n="Value" t="StringValue">
-                                                              <v n="Value">"eCIP_Usage=E_CIP_Usage.eLocal"</v>
+                                                              <v n="Value">"eReq.eClient=E_CIP_Usage.eLocal"</v>
                                                               <v n="DefaultValue">""</v>
                                                             </o>
                                                             <v n="Id">965L</v>
@@ -8755,7 +8809,35 @@ END_IF]]></ST>
                                           </o>
                                         </l2>
                                       </o>
-                                      <l2 n="Attributes" />
+                                      <l2 n="Attributes" cet="SFCAttribute">
+                                        <o>
+                                          <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
+                                          <o n="Value" t="StringValue">
+                                            <v n="Value">""</v>
+                                            <v n="DefaultValue">""</v>
+                                          </o>
+                                          <v n="Id">1772L</v>
+                                          <v n="IdParent">134L</v>
+                                        </o>
+                                        <o>
+                                          <v n="AttributeId">{7d894980-aeea-405c-a0f6-e2b26429c58f}</v>
+                                          <o n="Value" t="StringValue">
+                                            <v n="Value">""</v>
+                                            <v n="DefaultValue">""</v>
+                                          </o>
+                                          <v n="Id">1773L</v>
+                                          <v n="IdParent">134L</v>
+                                        </o>
+                                        <o>
+                                          <v n="AttributeId">{01580b27-6378-448b-8ecb-0e4b795b58d6}</v>
+                                          <o n="Value" t="BoolValue">
+                                            <v n="Value">"FALSE"</v>
+                                            <v n="DefaultValue">"FALSE"</v>
+                                          </o>
+                                          <v n="Id">1774L</v>
+                                          <v n="IdParent">134L</v>
+                                        </o>
+                                      </l2>
                                       <v n="Id">134L</v>
                                       <v n="IdParent">130L</v>
                                     </o>
@@ -9108,7 +9190,7 @@ END_IF]]></ST>
                                                           <o>
                                                             <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                             <o n="Value" t="StringValue">
-                                                              <v n="Value">"eCIP_Usage&lt;&gt;E_CIP_Usage.eLocal"</v>
+                                                              <v n="Value">"eReq.eClient&lt;&gt;E_CIP_Usage.eLocal"</v>
                                                               <v n="DefaultValue">""</v>
                                                             </o>
                                                             <v n="Id">1221L</v>
@@ -10127,7 +10209,7 @@ END_IF]]></ST>
                                                           <o>
                                                             <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                             <o n="Value" t="StringValue">
-                                                              <v n="Value">"eCIP_Usage=E_CIP_Usage.eLocal"</v>
+                                                              <v n="Value">"eReq.eClient=E_CIP_Usage.eLocal"</v>
                                                               <v n="DefaultValue">""</v>
                                                             </o>
                                                             <v n="Id">1289L</v>
@@ -10631,7 +10713,35 @@ END_IF]]></ST>
                                           </o>
                                         </l2>
                                       </o>
-                                      <l2 n="Attributes" />
+                                      <l2 n="Attributes" cet="SFCAttribute">
+                                        <o>
+                                          <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
+                                          <o n="Value" t="StringValue">
+                                            <v n="Value">""</v>
+                                            <v n="DefaultValue">""</v>
+                                          </o>
+                                          <v n="Id">1775L</v>
+                                          <v n="IdParent">139L</v>
+                                        </o>
+                                        <o>
+                                          <v n="AttributeId">{7d894980-aeea-405c-a0f6-e2b26429c58f}</v>
+                                          <o n="Value" t="StringValue">
+                                            <v n="Value">""</v>
+                                            <v n="DefaultValue">""</v>
+                                          </o>
+                                          <v n="Id">1776L</v>
+                                          <v n="IdParent">139L</v>
+                                        </o>
+                                        <o>
+                                          <v n="AttributeId">{01580b27-6378-448b-8ecb-0e4b795b58d6}</v>
+                                          <o n="Value" t="BoolValue">
+                                            <v n="Value">"FALSE"</v>
+                                            <v n="DefaultValue">"FALSE"</v>
+                                          </o>
+                                          <v n="Id">1777L</v>
+                                          <v n="IdParent">139L</v>
+                                        </o>
+                                      </l2>
                                       <v n="Id">139L</v>
                                       <v n="IdParent">135L</v>
                                     </o>
@@ -10962,7 +11072,35 @@ END_IF]]></ST>
                       </o>
                     </l2>
                   </o>
-                  <l2 n="Attributes" />
+                  <l2 n="Attributes" cet="SFCAttribute">
+                    <o>
+                      <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
+                      <o n="Value" t="StringValue">
+                        <v n="Value">""</v>
+                        <v n="DefaultValue">""</v>
+                      </o>
+                      <v n="Id">1766L</v>
+                      <v n="IdParent">1L</v>
+                    </o>
+                    <o>
+                      <v n="AttributeId">{7d894980-aeea-405c-a0f6-e2b26429c58f}</v>
+                      <o n="Value" t="StringValue">
+                        <v n="Value">""</v>
+                        <v n="DefaultValue">""</v>
+                      </o>
+                      <v n="Id">1767L</v>
+                      <v n="IdParent">1L</v>
+                    </o>
+                    <o>
+                      <v n="AttributeId">{01580b27-6378-448b-8ecb-0e4b795b58d6}</v>
+                      <o n="Value" t="BoolValue">
+                        <v n="Value">"FALSE"</v>
+                        <v n="DefaultValue">"FALSE"</v>
+                      </o>
+                      <v n="Id">1768L</v>
+                      <v n="IdParent">1L</v>
+                    </o>
+                  </l2>
                   <v n="Id">1L</v>
                   <v n="IdParent">-1L</v>
                 </o>
@@ -11427,7 +11565,7 @@ VAR
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF stCIP_Request.eClient<>E_CIP_Usage.eNotInUse
-AND stCIP_Request.eCIP_Type<>E_CIP_Type.NotSelected
+AND stCIP_Request.eType<>E_CIP_Type.NotSelected
 THEN;
 	FOR i:=0 TO 9 DO
 		IF arCIP_RequestBufer[i].eClient=E_CIP_Usage.eNotInUse THEN;
@@ -11448,14 +11586,21 @@ END_IF
     </LineIds>
     <LineIds Name="prg_CIP._a_aWatingTo_Start_active">
       <LineId Id="1" Count="1" />
+      <LineId Id="8" Count="1" />
+      <LineId Id="7" Count="0" />
       <LineId Id="4" Count="2" />
+      <LineId Id="10" Count="0" />
       <LineId Id="3" Count="0" />
     </LineIds>
     <LineIds Name="prg_CIP._ainit_active">
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="prg_CIP._ainit_exit">
-      <LineId Id="1" Count="0" />
+      <LineId Id="1" Count="1" />
+    </LineIds>
+    <LineIds Name="prg_CIP._aWatingTo_Start_exit">
+      <LineId Id="3" Count="0" />
+      <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="prg_CIP.act_ReqBuffer">
       <LineId Id="34" Count="14" />
