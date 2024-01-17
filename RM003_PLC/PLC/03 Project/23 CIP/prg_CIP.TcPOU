@@ -191,7 +191,7 @@ THEN;
 ELSIF TRUE 
 AND eRefClient_fbElement.eState_Long = E_Element_State_Long.eCIP_3_Deterged_Clean
 AND eReq.eType = E_CIP_Type.Detergent
-AND eReq.eClient=E_CIP_Usage.eLocal
+//AND eReq.eClient=E_CIP_Usage.eLocal
 THEN;
 	bStepDone:=TRUE;
 	
@@ -232,8 +232,14 @@ END_IF
 	
 	E_CIP_Type.Detergent:;
 		CASE eRefClient_fbElement.eState_Long OF
+			E_Element_State_Long.eNotClean:;
+					eRun:=E_CIP_Source.eT93_R_Water;	
+				
 			E_Element_State_Long.eCIP_1_Rinzed:;
-					eRun:=E_CIP_Source.eT92_Detergent;						
+					eRun:=E_CIP_Source.eT92_Detergent;	
+					
+			E_Element_State_Long.eCIP_2_Deterged:;
+					eRun:=E_CIP_Source.eT94_Water;					
 		END_CASE
 	
 	E_CIP_Type.Full:;
@@ -12634,7 +12640,12 @@ END_IF
       <LineId Id="62" Count="0" />
       <LineId Id="117" Count="0" />
       <LineId Id="60" Count="0" />
-      <LineId Id="121" Count="2" />
+      <LineId Id="121" Count="0" />
+      <LineId Id="134" Count="1" />
+      <LineId Id="133" Count="0" />
+      <LineId Id="122" Count="1" />
+      <LineId Id="139" Count="0" />
+      <LineId Id="137" Count="1" />
       <LineId Id="67" Count="0" />
       <LineId Id="116" Count="0" />
       <LineId Id="61" Count="0" />

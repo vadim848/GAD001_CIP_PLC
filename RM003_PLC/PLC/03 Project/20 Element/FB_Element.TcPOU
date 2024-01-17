@@ -34,6 +34,7 @@ VAR
 
 	bTakePosInCIPBuffer_Partial: BOOL;
 	bTakePosInCIPBuffer_Full: BOOL;
+	bTakePosInCIPBuffer_Detergent: BOOL;
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -95,13 +96,17 @@ IF bTakePosInCIPBuffer_Partial THEN;
 	bTakePosInCIPBuffer_Partial:=FALSE;
 END_IF
 
+IF bTakePosInCIPBuffer_Detergent THEN;
+	stCIP_Request.eType:=E_CIP_Type.Detergent;
+	prg_CIP.m_TakePosInCIPBuffer(stCIP_Request:=stCIP_Request);
+	bTakePosInCIPBuffer_Detergent:=FALSE;
+END_IF
+
 IF bTakePosInCIPBuffer_Full THEN;
 	stCIP_Request.eType:=E_CIP_Type.Full;
 	prg_CIP.m_TakePosInCIPBuffer(stCIP_Request:=stCIP_Request);
 	bTakePosInCIPBuffer_Full:=FALSE;
 END_IF
-
-
 
 ]]></ST>
     </Implementation>
@@ -839,7 +844,9 @@ END_IF]]></ST>
       </Implementation>
     </Method>
     <LineIds Name="FB_Element">
-      <LineId Id="768" Count="65" />
+      <LineId Id="768" Count="63" />
+      <LineId Id="834" Count="3" />
+      <LineId Id="832" Count="1" />
       <LineId Id="242" Count="0" />
     </LineIds>
     <LineIds Name="FB_Element.act_StateChange_WatchGog">
