@@ -10,7 +10,7 @@ VAR
 	bRun: BOOL;
 	eRun: E_CIP_Source;
 
-
+	eMode			: E_CIP_Mode;
 	eCIP_Return		: E_CIP_Return;
 	eCIP_Source		: E_CIP_Source;
 	eReq			: ST_CIP_Request;
@@ -33,6 +33,10 @@ VAR
 	rtReqLocalCIP_Full_HMI: R_TRIG;
 	rtReqLocalCIP_Detergent_HMI: R_TRIG;
 	rtReqCleanEmpty_HMI: R_TRIG;
+	rtModeOff: R_TRIG;
+	rtModeManual: R_TRIG;
+	rtModeAuto: R_TRIG;
+	bTemp: BOOL;
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -40,39 +44,29 @@ END_VAR
 
 act_Oper();
 act_ReqBuffer();
+rtModeOff(CLK:=eMode=E_CIP_Mode.eOff);
+IF rtModeOff.Q THEN;
+	SFCReset:=TRUE;
+END_IF
+
+rtModeManual(CLK:=eMode=E_CIP_Mode.eManual);
+IF rtModeManual.Q THEN;
+	bTemp:=TRUE;
+END_IF
+
+rtModeAuto(CLK:=eMode=E_CIP_Mode.eAuto);
+IF rtModeAuto.Q THEN;
+	//SFCReset:=TRUE;
+END_IF
+ 
+
 ]]></ST>
     </Implementation>
-    <Action Name="_a_aWatingTo_Start_active" Id="{560e86d1-cd11-44bd-aed6-a8db9be9b76c}">
-      <Implementation>
-        <ST><![CDATA[IF TRUE 
-AND bRun 
-AND arCIP_RequestBufer[0].eClient<>E_CIP_Usage.eNotInUse
-
-THEN;
-	bStepDone:=TRUE;
-ELSE;
-	bStepDone:=FALSE;
-	//bRun:=FALSE;
-END_IF]]></ST>
-      </Implementation>
-      <ObjectProperties>
-        <XmlArchive>
-          <Data>
-            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
-              <v n="Embedded">true</v>
-            </o>
-          </Data>
-          <TypeList>
-            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
-            <Type n="Boolean">System.Boolean</Type>
-          </TypeList>
-        </XmlArchive>
-      </ObjectProperties>
-    </Action>
     <Action Name="_aCIP_Done_entry" Id="{65c51eeb-ff71-4a7b-932e-5755a43e7ba7}">
       <Implementation>
         <ST><![CDATA[eRefClient_fbElement.m_InterConnect(value:=E_InterConnection.NotConnected);
 arCIP_RequestBufer[0]:=eReqBlank;
+bRun:=FALSE;
 ]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -307,7 +301,28 @@ END_IF
     <Action Name="_ainit_exit" Id="{ad983d6a-a390-4862-a949-8cf9f36606ae}">
       <Implementation>
         <ST><![CDATA[bRun:=FALSE;
-eReq:=eReqBlank;
+IF eMode=E_CIP_Mode.eAuto THEN;
+	eMode:=E_CIP_Mode.eManual;
+END_IF
+]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
+    <Action Name="_aStop_Pump_entry" Id="{48014272-55b2-4c31-adb6-2d01f6affd95}">
+      <Implementation>
+        <ST><![CDATA[eReq:=eReqBlank;
 eRun:=E_CIP_Source.eNone;
 m_CleanEmpty_Spaces();
 eRefClient_fbElement REF= fbElement_Blank;]]></ST>
@@ -326,9 +341,36 @@ eRefClient_fbElement REF= fbElement_Blank;]]></ST>
         </XmlArchive>
       </ObjectProperties>
     </Action>
-    <Action Name="_aStop_Pump_entry" Id="{48014272-55b2-4c31-adb6-2d01f6affd95}">
+    <Action Name="_aWatingTo_Start_active" Id="{560e86d1-cd11-44bd-aed6-a8db9be9b76c}">
       <Implementation>
-        <ST><![CDATA[]]></ST>
+        <ST><![CDATA[CASE eMode OF
+	E_CIP_Mode.eOff:;
+		bRun:=FALSE;
+		bStepDone:=FALSE;
+	E_CIP_Mode.eManual:;
+		IF TRUE 
+		AND bRun 
+		AND arCIP_RequestBufer[0].eClient<>E_CIP_Usage.eNotInUse
+		
+		THEN;
+			bStepDone:=TRUE;
+		ELSE;
+			bStepDone:=FALSE;
+		END_IF	
+	E_CIP_Mode.eAuto:;
+		IF TRUE 
+		//AND bRun 
+		AND arCIP_RequestBufer[0].eClient<>E_CIP_Usage.eNotInUse
+		
+		THEN;
+			bRun:=TRUE;
+			bStepDone:=TRUE;
+		ELSE;
+			bStepDone:=FALSE;
+		END_IF		
+END_CASE
+	
+]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -1045,7 +1087,7 @@ END_CASE
                           <o>
                             <v n="AttributeId">{700a583f-b4d4-43e4-8c14-629c7cd3bec8}</v>
                             <o n="Value" t="StringValue">
-                              <v n="Value">"_a_aWatingTo_Start_active"</v>
+                              <v n="Value">"_aWatingTo_Start_active"</v>
                               <v n="DefaultValue">""</v>
                             </o>
                             <v n="Id">34L</v>
@@ -12526,18 +12568,18 @@ END_IF
       <LineId Id="25" Count="1" />
       <LineId Id="9" Count="0" />
       <LineId Id="31" Count="0" />
+      <LineId Id="127" Count="1" />
+      <LineId Id="132" Count="1" />
+      <LineId Id="135" Count="3" />
+      <LineId Id="134" Count="0" />
+      <LineId Id="141" Count="3" />
+      <LineId Id="140" Count="0" />
+      <LineId Id="131" Count="0" />
+      <LineId Id="130" Count="0" />
       <LineId Id="30" Count="0" />
     </LineIds>
-    <LineIds Name="prg_CIP._a_aWatingTo_Start_active">
-      <LineId Id="1" Count="1" />
-      <LineId Id="8" Count="1" />
-      <LineId Id="7" Count="0" />
-      <LineId Id="4" Count="2" />
-      <LineId Id="10" Count="0" />
-      <LineId Id="3" Count="0" />
-    </LineIds>
     <LineIds Name="prg_CIP._aCIP_Done_entry">
-      <LineId Id="2" Count="1" />
+      <LineId Id="2" Count="2" />
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="prg_CIP._aCIP1_Done_entry">
@@ -12615,11 +12657,28 @@ END_IF
     </LineIds>
     <LineIds Name="prg_CIP._ainit_exit">
       <LineId Id="1" Count="0" />
-      <LineId Id="6" Count="2" />
+      <LineId Id="9" Count="2" />
       <LineId Id="3" Count="0" />
     </LineIds>
     <LineIds Name="prg_CIP._aStop_Pump_entry">
+      <LineId Id="5" Count="2" />
       <LineId Id="1" Count="0" />
+    </LineIds>
+    <LineIds Name="prg_CIP._aWatingTo_Start_active">
+      <LineId Id="11" Count="0" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="39" Count="1" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="20" Count="7" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="29" Count="4" />
+      <LineId Id="38" Count="0" />
+      <LineId Id="34" Count="2" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="3" Count="0" />
     </LineIds>
     <LineIds Name="prg_CIP._aWatingTo_Start_exit">
       <LineId Id="3" Count="0" />
