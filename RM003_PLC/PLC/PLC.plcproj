@@ -16,8 +16,28 @@
     <Implicit_KindOfTask>{4fca9181-f6c2-4f54-89df-15ca14fa0bd3}</Implicit_KindOfTask>
     <Implicit_Jitter_Distribution>{697f5ef6-2c95-4d53-af61-178d1a7a7562}</Implicit_Jitter_Distribution>
     <LibraryReferences>{8f2cb5df-9dbd-466c-8ca1-89d44cf11674}</LibraryReferences>
+    <Company>Total Control</Company>
+    <Released>false</Released>
+    <Title>ReMeat003</Title>
+    <Author>Vadim Nagdimaev</Author>
+    <ProjectVersion>0.0.1</ProjectVersion>
+    <Description>SLD Line</Description>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="00 Library\03 SFC\FB_SFC_Cycle.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="00 Library\03 SFC\ST_SFC.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="00 Library\03 SFC\vis_Cycle_Control.TcVIS">
+      <SubType>Code</SubType>
+      <DependentUpon>Visualization Manager.TcVMO</DependentUpon>
+    </Compile>
+    <Compile Include="00 Library\03 SFC\vis_Cycle_Panel.TcVIS">
+      <SubType>Code</SubType>
+      <DependentUpon>Visualization Manager.TcVMO</DependentUpon>
+    </Compile>
     <Compile Include="00 Library\TimeAndDate\FUN_DeltaTime.TcPOU">
       <SubType>Code</SubType>
       <ExcludeFromBuild>true</ExcludeFromBuild>
@@ -41,6 +61,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="03 Project\20 Element\vis_FB_Element.TcVIS">
+      <SubType>Code</SubType>
+      <DependentUpon>Visualization Manager.TcVMO</DependentUpon>
+    </Compile>
+    <Compile Include="03 Project\20 Element\vis_FB_Element_CIP.TcVIS">
       <SubType>Code</SubType>
       <DependentUpon>Visualization Manager.TcVMO</DependentUpon>
     </Compile>
@@ -161,6 +185,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="00 Library" />
+    <Folder Include="00 Library\03 SFC" />
     <Folder Include="00 Library\TimeAndDate" />
     <Folder Include="01 Instance" />
     <Folder Include="03 Project" />
@@ -244,8 +269,8 @@
   <ProjectExtensions>
     <PlcProjectOptions>
       <XmlArchive>
-        <Data>
-          <o xml:space="preserve" t="OptionKey">
+  <Data>
+    <o xml:space="preserve" t="OptionKey">
       <v n="Name">"&lt;ProjectRoot&gt;"</v>
       <d n="SubKeys" t="Hashtable" ckt="String" cvt="OptionKey">
         <v>{8F99A816-E488-41E4-9FA3-846536012284}</v>
@@ -290,13 +315,23 @@
           <v n="Name">"{F66C7017-BDD8-4114-926C-81D6D687E35F}"</v>
           <d n="SubKeys" t="Hashtable" />
           <d n="Values" t="Hashtable" ckt="String" cvt="Boolean">
-            <v>FlagUseError</v>
-            <v>True</v>
             <v>FlagUseReset</v>
+            <v>True</v>
+            <v>FlagUseEnableLimit</v>
+            <v>True</v>
+            <v>FlagUseErrorPOU</v>
             <v>True</v>
             <v>FlagUseInit</v>
             <v>True</v>
+            <v>FlagUseTrans</v>
+            <v>True</v>
             <v>FlagUseErrorStep</v>
+            <v>True</v>
+            <v>FlagUsePause</v>
+            <v>True</v>
+            <v>FlagUseQuitError</v>
+            <v>True</v>
+            <v>FlagUseError</v>
             <v>True</v>
             <v>FlagUseCurrentStep</v>
             <v>True</v>
@@ -314,14 +349,14 @@
       </d>
       <d n="Values" t="Hashtable" />
     </o>
-        </Data>
-        <TypeList>
-          <Type n="Boolean">System.Boolean</Type>
-          <Type n="Hashtable">System.Collections.Hashtable</Type>
-          <Type n="OptionKey">{54dd0eac-a6d8-46f2-8c27-2f43c7e49861}</Type>
-          <Type n="String">System.String</Type>
-        </TypeList>
-      </XmlArchive>
+  </Data>
+  <TypeList>
+    <Type n="Boolean">System.Boolean</Type>
+    <Type n="Hashtable">System.Collections.Hashtable</Type>
+    <Type n="OptionKey">{54dd0eac-a6d8-46f2-8c27-2f43c7e49861}</Type>
+    <Type n="String">System.String</Type>
+  </TypeList>
+</XmlArchive>
     </PlcProjectOptions>
   </ProjectExtensions>
 </Project>
