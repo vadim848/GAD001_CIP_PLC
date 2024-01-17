@@ -32,6 +32,7 @@ VAR
 	
 	rtReqLocalCIP_Full_HMI: R_TRIG;
 	rtReqLocalCIP_Detergent_HMI: R_TRIG;
+	rtReqCleanEmpty_HMI: R_TRIG;
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -308,8 +309,26 @@ END_IF
         <ST><![CDATA[bRun:=FALSE;
 eReq:=eReqBlank;
 eRun:=E_CIP_Source.eNone;
-
+m_CleanEmpty_Spaces();
 eRefClient_fbElement REF= fbElement_Blank;]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
+    <Action Name="_aStop_Pump_entry" Id="{48014272-55b2-4c31-adb6-2d01f6affd95}">
+      <Implementation>
+        <ST><![CDATA[]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -669,7 +688,7 @@ END_CASE
                           <o>
                             <v n="AttributeId">{a6b08bd8-b696-47e3-9cbf-7408b61c9ff8}</v>
                             <o n="Value" t="StringValue">
-                              <v n="Value">""</v>
+                              <v n="Value">"_aStop_Pump_entry"</v>
                               <v n="DefaultValue">""</v>
                             </o>
                             <v n="Id">97L</v>
@@ -11848,7 +11867,7 @@ END_CASE
                         <v n="IdParent">1L</v>
                       </o>
                       <o t="SFCTransition">
-                        <v n="VariableName">"CIP_Done__to__Init"</v>
+                        <v n="VariableName">"CIP_Done__to__Stop_Pump"</v>
                         <n n="EmbeddedTransition" />
                         <l2 n="EmbeddedTransitionProperties" />
                         <l2 n="Attributes" cet="SFCAttribute">
@@ -11919,7 +11938,7 @@ END_CASE
                           <o>
                             <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                             <o n="Value" t="StringValue">
-                              <v n="Value">"Init"</v>
+                              <v n="Value">"Stop_Pump"</v>
                               <v n="DefaultValue">""</v>
                             </o>
                             <v n="Id">22L</v>
@@ -12394,20 +12413,51 @@ IF rtReqLocalCIP_Detergent_HMI.Q THEN;
 	m_TakePosInCIPBuffer(stCIP_Request:=eReqLocal);
 END_IF
 
+rtReqCleanEmpty_HMI(Q=>);
+IF rtReqCleanEmpty_HMI.Q THEN;
+	m_CleanEmpty_Spaces();
+END_IF
+
 ]]></ST>
       </Implementation>
     </Action>
+    <Method Name="m_CleanEmpty_Spaces" Id="{a02513cf-5921-4270-b511-66d8a68458f2}">
+      <Declaration><![CDATA[METHOD m_CleanEmpty_Spaces : BOOL
+VAR_INPUT
+END_VAR
+
+VAR
+	i: INT;
+	j: INT;
+	stCIP_Request_Empty: ST_CIP_Request;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[FOR i:=0 TO 9 DO
+	IF i<>0 OR NOT bRun THEN;
+		IF arCIP_RequestBufer[i].eClient=E_CIP_Usage.eNotInUse THEN;
+			FOR j:=i+1 TO 9 DO
+				IF arCIP_RequestBufer[j].eClient<>E_CIP_Usage.eNotInUse THEN;
+					arCIP_RequestBufer[i]:=arCIP_RequestBufer[j];
+					arCIP_RequestBufer[j]:=stCIP_Request_Empty;
+					EXIT;
+				END_IF
+			END_FOR
+		END_IF		
+	END_IF
+END_FOR]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="m_PosDelete_HMI" Id="{5ecfed30-e439-4aa1-8486-4d270c40480b}">
       <Declaration><![CDATA[METHOD m_PosDelete_HMI : BOOL
 VAR_INPUT
 END_VAR
 VAR
-	stCIP_Request_Temp: ST_CIP_Request;
+	stCIP_Request_Empty: ST_CIP_Request;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF iPosSelect_HMI>=0 AND iPosSelect_HMI<9 THEN;
 	IF iPosSelect_HMI<>0 OR NOT bRun THEN;
-		arCIP_RequestBufer[iPosSelect_HMI]:=stCIP_Request_Temp;
+		arCIP_RequestBufer[iPosSelect_HMI]:=stCIP_Request_Empty;
 	END_IF		
 END_IF]]></ST>
       </Implementation>
@@ -12564,9 +12614,12 @@ END_IF
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="prg_CIP._ainit_exit">
-      <LineId Id="1" Count="1" />
-      <LineId Id="4" Count="1" />
+      <LineId Id="1" Count="0" />
+      <LineId Id="6" Count="2" />
       <LineId Id="3" Count="0" />
+    </LineIds>
+    <LineIds Name="prg_CIP._aStop_Pump_entry">
+      <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="prg_CIP._aWatingTo_Start_exit">
       <LineId Id="3" Count="0" />
@@ -12590,12 +12643,22 @@ END_IF
       <LineId Id="49" Count="0" />
       <LineId Id="46" Count="0" />
       <LineId Id="57" Count="4" />
-      <LineId Id="47" Count="1" />
+      <LineId Id="47" Count="0" />
+      <LineId Id="63" Count="2" />
+      <LineId Id="69" Count="0" />
+      <LineId Id="62" Count="0" />
+      <LineId Id="48" Count="0" />
       <LineId Id="1" Count="0" />
     </LineIds>
+    <LineIds Name="prg_CIP.m_CleanEmpty_Spaces">
+      <LineId Id="28" Count="0" />
+      <LineId Id="38" Count="0" />
+      <LineId Id="41" Count="7" />
+      <LineId Id="39" Count="1" />
+      <LineId Id="7" Count="0" />
+    </LineIds>
     <LineIds Name="prg_CIP.m_PosDelete_HMI">
-      <LineId Id="5" Count="0" />
-      <LineId Id="17" Count="2" />
+      <LineId Id="25" Count="3" />
       <LineId Id="7" Count="0" />
     </LineIds>
     <LineIds Name="prg_CIP.m_PosMove_Down_HMI">
