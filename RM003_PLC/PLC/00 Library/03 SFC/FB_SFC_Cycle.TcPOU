@@ -24,19 +24,17 @@ VAR
 	
 	//fbPis_Meth: FB_Piston;
 
-	rtDone: R_TRIG;
-	
+	rtDone	: R_TRIG;
+	rtRun	: R_TRIG;
 	sLastStepBefore_Error: STRING;
+	
+	ErrorSFC: BOOL;
 
 	
 END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[
-rtDone(CLK:=bDone);
-IF rtDone.Q THEN
-	bToBe_Done:=FALSE;
-END_IF
 
 ]]></ST>
     </Implementation>
@@ -64,12 +62,54 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF refSFC.SFCTrans THEN;
+        <ST><![CDATA[refSFC.SFCEnableLimit:=TRUE;
+IF refSFC.SFCTrans THEN;
 	bStepDone:=FALSE;
 	ton_StepTime(IN:=FALSE);
 ELSE;
 	ton_StepTime(IN:=TRUE); //depend on step condition
-END_IF]]></ST>
+END_IF
+
+IF bInit THEN;
+	refSFC.SFCInit:=TRUE;
+ELSE;
+	refSFC.SFCInit:=FALSE;
+END_IF
+
+IF refSFC.SFCError THEN;
+	refSFC.SFCPause:=TRUE;
+	ErrorSFC:=TRUE;
+	m_Set_LastStepBeforeError();
+END_IF
+
+IF refSFC.SFCQuitError THEN;
+	refSFC.SFCPause:=FALSE;
+	ErrorSFC:=FALSE;
+	refSFC.SFCQuitError:=FALSE;
+END_IF
+
+IF refSFC.SFCCurrentStep='Ready' THEN;
+	bReady:=TRUE;
+ELSE;
+	bReady:=FALSE;
+END_IF
+
+rtDone(CLK:=refSFC.SFCCurrentStep='Done');
+IF rtDone.Q THEN;
+	bDone:=TRUE;
+END_IF
+rtRun(CLK:=bRun);
+IF rtRun.Q THEN;
+	bDone:=FALSE;
+END_IF
+
+
+(*
+rtDone(CLK:=bDone);
+IF rtDone.Q THEN
+	bToBe_Done:=FALSE;
+END_IF
+*)]]></ST>
       </Implementation>
     </Method>
     <Method Name="mInit" Id="{db3a03fd-4aa8-4d31-895a-70e5974a7367}">
@@ -113,9 +153,6 @@ bDone:=FALSE;]]></ST>
     </Method>
     <LineIds Name="FB_SFC_Cycle">
       <LineId Id="99" Count="0" />
-      <LineId Id="98" Count="0" />
-      <LineId Id="73" Count="0" />
-      <LineId Id="101" Count="1" />
       <LineId Id="57" Count="0" />
       <LineId Id="59" Count="0" />
     </LineIds>
@@ -126,8 +163,37 @@ bDone:=FALSE;]]></ST>
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_SFC_Cycle.m_SFC_Handle">
+      <LineId Id="32" Count="0" />
       <LineId Id="6" Count="4" />
       <LineId Id="5" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="18" Count="1" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="28" Count="1" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="25" Count="2" />
+      <LineId Id="30" Count="1" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="37" Count="1" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="45" Count="0" />
+      <LineId Id="40" Count="2" />
+      <LineId Id="39" Count="0" />
+      <LineId Id="55" Count="0" />
+      <LineId Id="54" Count="0" />
+      <LineId Id="59" Count="1" />
+      <LineId Id="53" Count="0" />
+      <LineId Id="52" Count="0" />
+      <LineId Id="47" Count="4" />
+      <LineId Id="46" Count="0" />
     </LineIds>
     <LineIds Name="FB_SFC_Cycle.mInit">
       <LineId Id="5" Count="0" />

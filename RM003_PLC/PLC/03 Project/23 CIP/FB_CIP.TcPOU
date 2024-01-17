@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="FB_CIP" Id="{14cc32b0-9432-4cf7-99d2-9b696d5c02b0}" SpecialFunc="None">
-    <Declaration><![CDATA[FUNCTION_BLOCK FB_CIP EXTENDS FB_SFC_Cycle
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_CIP EXTENDS FB_SFC_Cycle IMPLEMENTS ITF_FB_SFC_Cycle
 VAR_INPUT
 END_VAR
 VAR_OUTPUT
@@ -40,7 +40,8 @@ VAR
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[SUPER^();
+      <ST><![CDATA[m_Set_SFCFlags_Reference();
+SUPER^();
 
 act_Oper();
 act_ReqBuffer();
@@ -62,27 +63,6 @@ END_IF
 
 ]]></ST>
     </Implementation>
-    <Action Name="_aCIP_Done_entry" Id="{65c51eeb-ff71-4a7b-932e-5755a43e7ba7}">
-      <Implementation>
-        <ST><![CDATA[eRefClient_fbElement.m_InterConnect(value:=E_InterConnection.NotConnected);
-arCIP_RequestBufer[0]:=eReqBlank;
-bRun:=FALSE;
-]]></ST>
-      </Implementation>
-      <ObjectProperties>
-        <XmlArchive>
-          <Data>
-            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
-              <v n="Embedded">true</v>
-            </o>
-          </Data>
-          <TypeList>
-            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
-            <Type n="Boolean">System.Boolean</Type>
-          </TypeList>
-        </XmlArchive>
-      </ObjectProperties>
-    </Action>
     <Action Name="_aCIP1_Done_entry" Id="{5876c70f-a066-4ad6-a135-a5384197da92}">
       <Implementation>
         <ST><![CDATA[eRefClient_fbElement.m_InterConnected_State(eState_Long_Set:=E_Element_State_Long.eCIP_1_Rinzed);
@@ -163,6 +143,27 @@ CASE eRefClient_fbElement.eState_Long OF
 			eRefClient_fbElement.m_InterConnected_State(eState_Long_Set:=E_Element_State_Long.eCIP_5_Done);			
 	
 END_CASE]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
+    <Action Name="_aDone_entry" Id="{65c51eeb-ff71-4a7b-932e-5755a43e7ba7}">
+      <Implementation>
+        <ST><![CDATA[eRefClient_fbElement.m_InterConnect(value:=E_InterConnection.NotConnected);
+arCIP_RequestBufer[0]:=eReqBlank;
+bRun:=FALSE;
+]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -326,28 +327,7 @@ END_IF
         </XmlArchive>
       </ObjectProperties>
     </Action>
-    <Action Name="_aStop_Pump_entry" Id="{48014272-55b2-4c31-adb6-2d01f6affd95}">
-      <Implementation>
-        <ST><![CDATA[eReq:=eReqBlank;
-eRun:=E_CIP_Source.eNone;
-m_CleanEmpty_Spaces();
-eRefClient_fbElement REF= fbElement_Blank;]]></ST>
-      </Implementation>
-      <ObjectProperties>
-        <XmlArchive>
-          <Data>
-            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
-              <v n="Embedded">true</v>
-            </o>
-          </Data>
-          <TypeList>
-            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
-            <Type n="Boolean">System.Boolean</Type>
-          </TypeList>
-        </XmlArchive>
-      </ObjectProperties>
-    </Action>
-    <Action Name="_aWatingTo_Start_active" Id="{560e86d1-cd11-44bd-aed6-a8db9be9b76c}">
+    <Action Name="_aReady_active" Id="{560e86d1-cd11-44bd-aed6-a8db9be9b76c}">
       <Implementation>
         <ST><![CDATA[CASE eMode OF
 	E_CIP_Mode.eOff:;
@@ -392,7 +372,7 @@ END_CASE
         </XmlArchive>
       </ObjectProperties>
     </Action>
-    <Action Name="_aWatingTo_Start_exit" Id="{fe06bbde-dba2-4c36-8b83-7a6e8089b6a1}">
+    <Action Name="_aReady_exit" Id="{fe06bbde-dba2-4c36-8b83-7a6e8089b6a1}">
       <Implementation>
         <ST><![CDATA[eReq:=arCIP_RequestBufer[0];
 
@@ -432,6 +412,27 @@ CASE eReq.eClient OF
 END_CASE
 
 ]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
+    <Action Name="_aStop_Pump_entry" Id="{48014272-55b2-4c31-adb6-2d01f6affd95}">
+      <Implementation>
+        <ST><![CDATA[eReq:=eReqBlank;
+eRun:=E_CIP_Source.eNone;
+m_CleanEmpty_Spaces();
+eRefClient_fbElement REF= fbElement_Blank;]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -939,7 +940,7 @@ END_CASE
                         <v n="IdParent">1L</v>
                       </o>
                       <o t="SFCTransition">
-                        <v n="VariableName">"Set_Valves_ToDeafult__to__WatingTo_Start"</v>
+                        <v n="VariableName">"Set_Valves_ToDeafult__to__Ready"</v>
                         <n n="EmbeddedTransition" />
                         <l2 n="EmbeddedTransitionProperties" />
                         <l2 n="Attributes" cet="SFCAttribute">
@@ -1019,7 +1020,7 @@ END_CASE
                           <o>
                             <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                             <o n="Value" t="StringValue">
-                              <v n="Value">"WatingTo_Start"</v>
+                              <v n="Value">"Ready"</v>
                               <v n="DefaultValue">""</v>
                             </o>
                             <v n="Id">26L</v>
@@ -1093,7 +1094,7 @@ END_CASE
                           <o>
                             <v n="AttributeId">{700a583f-b4d4-43e4-8c14-629c7cd3bec8}</v>
                             <o n="Value" t="StringValue">
-                              <v n="Value">"_aWatingTo_Start_active"</v>
+                              <v n="Value">"_aReady_active"</v>
                               <v n="DefaultValue">""</v>
                             </o>
                             <v n="Id">34L</v>
@@ -1111,7 +1112,7 @@ END_CASE
                           <o>
                             <v n="AttributeId">{a2621e18-7de3-4ea6-ae6d-89e9e0b7befd}</v>
                             <o n="Value" t="StringValue">
-                              <v n="Value">"_aWatingTo_Start_exit"</v>
+                              <v n="Value">"_aReady_exit"</v>
                               <v n="DefaultValue">""</v>
                             </o>
                             <v n="Id">36L</v>
@@ -1122,7 +1123,7 @@ END_CASE
                         <v n="IdParent">1L</v>
                       </o>
                       <o t="SFCTransition">
-                        <v n="VariableName">"WatingTo_Start__to__Get_Client"</v>
+                        <v n="VariableName">"Ready__to__Get_Client"</v>
                         <n n="EmbeddedTransition" />
                         <l2 n="EmbeddedTransitionProperties" />
                         <l2 n="Attributes" cet="SFCAttribute">
@@ -1267,7 +1268,7 @@ END_CASE
                           <o>
                             <v n="AttributeId">{b693554c-1b01-4a8d-afde-9e3a46f7465d}</v>
                             <o n="Value" t="StringValue">
-                              <v n="Value">""</v>
+                              <v n="Value">"T#0.1s"</v>
                               <v n="DefaultValue">""</v>
                             </o>
                             <v n="Id">76L</v>
@@ -1505,7 +1506,7 @@ END_CASE
                                               <o>
                                                 <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                 <o n="Value" t="StringValue">
-                                                  <v n="Value">"bStepDone"</v>
+                                                  <v n="Value">"TRUE"</v>
                                                   <v n="DefaultValue">""</v>
                                                 </o>
                                                 <v n="Id">141L</v>
@@ -11518,7 +11519,7 @@ END_CASE
                               <o n="ElementList" t="SFCElementList">
                                 <l2 n="InnerList" cet="SFCTransition">
                                   <o>
-                                    <v n="VariableName">"Branch0__End_Check__to__CIP_Done"</v>
+                                    <v n="VariableName">"Branch0__End_Check__to__Done"</v>
                                     <n n="EmbeddedTransition" />
                                     <l2 n="EmbeddedTransitionProperties" />
                                     <l2 n="Attributes" cet="SFCAttribute">
@@ -11812,7 +11813,7 @@ END_CASE
                           <o>
                             <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                             <o n="Value" t="StringValue">
-                              <v n="Value">"CIP_Done"</v>
+                              <v n="Value">"Done"</v>
                               <v n="DefaultValue">""</v>
                             </o>
                             <v n="Id">45L</v>
@@ -11868,7 +11869,7 @@ END_CASE
                           <o>
                             <v n="AttributeId">{cacf1a68-236e-47c2-b7b1-1cf9199718cb}</v>
                             <o n="Value" t="StringValue">
-                              <v n="Value">""</v>
+                              <v n="Value">"T#0.1s"</v>
                               <v n="DefaultValue">""</v>
                             </o>
                             <v n="Id">51L</v>
@@ -11895,7 +11896,7 @@ END_CASE
                           <o>
                             <v n="AttributeId">{a6b08bd8-b696-47e3-9cbf-7408b61c9ff8}</v>
                             <o n="Value" t="StringValue">
-                              <v n="Value">"_aCIP_Done_entry"</v>
+                              <v n="Value">"_aDone_entry"</v>
                               <v n="DefaultValue">""</v>
                             </o>
                             <v n="Id">54L</v>
@@ -11915,7 +11916,7 @@ END_CASE
                         <v n="IdParent">1L</v>
                       </o>
                       <o t="SFCTransition">
-                        <v n="VariableName">"CIP_Done__to__Stop_Pump"</v>
+                        <v n="VariableName">"Done__to__Stop_Pump"</v>
                         <n n="EmbeddedTransition" />
                         <l2 n="EmbeddedTransitionProperties" />
                         <l2 n="Attributes" cet="SFCAttribute">
@@ -12546,6 +12547,30 @@ END_VAR]]></Declaration>
 END_IF]]></ST>
       </Implementation>
     </Method>
+    <Method Name="m_Set_SFCFlags_Reference" Id="{3959a842-c714-4552-9594-b319ee26bb78}">
+      <Declaration><![CDATA[{warning 'add method implementation '}
+METHOD m_Set_SFCFlags_Reference : BOOL
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[//Set reference to SFC flags
+
+refSFC.SFCInit REF= SFCInit;
+refSFC.SFCReset REF= SFCReset;
+refSFC.SFCError REF= SFCError;
+refSFC.SFCEnableLimit REF= SFCEnableLimit;
+refSFC.SFCErrorStep REF= SFCErrorStep;
+refSFC.SFCErrorPOU REF= SFCErrorPOU;
+refSFC.SFCQuitError REF= SFCQuitError;
+refSFC.SFCPause REF= SFCPause;
+refSFC.SFCTrans REF= SFCTrans;
+refSFC.SFCCurrentStep REF= SFCCurrentStep;
+//refSFC.SFCTip REF= SFCTip;
+//refSFC.SFCTipMode REF= SFCTipMode;
+
+// Cycle handle for SFC
+m_SFC_Handle();]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="m_TakePosInCIPBuffer" Id="{b2dcb157-1d24-4a20-a9df-81a455a5e4d3}">
       <Declaration><![CDATA[METHOD m_TakePosInCIPBuffer : BOOL
 VAR_INPUT
@@ -12571,6 +12596,7 @@ END_IF
       </Implementation>
     </Method>
     <LineIds Name="FB_CIP">
+      <LineId Id="184" Count="0" />
       <LineId Id="25" Count="1" />
       <LineId Id="9" Count="0" />
       <LineId Id="31" Count="0" />
@@ -12583,10 +12609,6 @@ END_IF
       <LineId Id="131" Count="0" />
       <LineId Id="130" Count="0" />
       <LineId Id="30" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_CIP._aCIP_Done_entry">
-      <LineId Id="2" Count="2" />
-      <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aCIP1_Done_entry">
       <LineId Id="1" Count="1" />
@@ -12609,6 +12631,10 @@ END_IF
       <LineId Id="15" Count="4" />
       <LineId Id="21" Count="3" />
       <LineId Id="7" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_CIP._aDone_entry">
+      <LineId Id="2" Count="2" />
+      <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aEnd_Check_active">
       <LineId Id="4" Count="0" />
@@ -12671,11 +12697,7 @@ END_IF
       <LineId Id="9" Count="2" />
       <LineId Id="3" Count="0" />
     </LineIds>
-    <LineIds Name="FB_CIP._aStop_Pump_entry">
-      <LineId Id="5" Count="2" />
-      <LineId Id="1" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_CIP._aWatingTo_Start_active">
+    <LineIds Name="FB_CIP._aReady_active">
       <LineId Id="11" Count="0" />
       <LineId Id="16" Count="0" />
       <LineId Id="39" Count="1" />
@@ -12691,7 +12713,7 @@ END_IF
       <LineId Id="12" Count="0" />
       <LineId Id="3" Count="0" />
     </LineIds>
-    <LineIds Name="FB_CIP._aWatingTo_Start_exit">
+    <LineIds Name="FB_CIP._aReady_exit">
       <LineId Id="3" Count="0" />
       <LineId Id="5" Count="1" />
       <LineId Id="34" Count="0" />
@@ -12704,6 +12726,10 @@ END_IF
       <LineId Id="4" Count="0" />
       <LineId Id="32" Count="0" />
       <LineId Id="31" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_CIP._aStop_Pump_entry">
+      <LineId Id="5" Count="2" />
+      <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP.act_ReqBuffer">
       <LineId Id="34" Count="11" />
@@ -12744,6 +12770,10 @@ END_IF
       <LineId Id="24" Count="2" />
       <LineId Id="22" Count="1" />
       <LineId Id="7" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_CIP.m_Set_SFCFlags_Reference">
+      <LineId Id="5" Count="15" />
+      <LineId Id="4" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP.m_TakePosInCIPBuffer">
       <LineId Id="14" Count="0" />
