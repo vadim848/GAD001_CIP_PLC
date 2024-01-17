@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="prg_CIP" Id="{14cc32b0-9432-4cf7-99d2-9b696d5c02b0}" SpecialFunc="None">
-    <Declaration><![CDATA[PROGRAM prg_CIP
+    <Declaration><![CDATA[FUNCTION_BLOCK prg_CIP EXTENDS FB_SFC_Cycle
 VAR_INPUT
 END_VAR
 VAR_OUTPUT
 END_VAR
 VAR
-	bRun: BOOL;
+	//bRun: BOOL;
 	eRun: E_CIP_Source;
 
 	eMode			: E_CIP_Mode;
@@ -17,7 +17,7 @@ VAR
 	eReqBlank		: ST_CIP_Request;
 	eReqLocal		: ST_CIP_Request;
 
-	bStepDone: BOOL;
+	//bStepDone: BOOL;
 	
 	iPosSelect_HMI: INT;
 
@@ -40,7 +40,7 @@ VAR
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[
+      <ST><![CDATA[SUPER^();
 
 act_Oper();
 act_ReqBuffer();

@@ -1,0 +1,148 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_SFC_Cycle" Id="{2eff1a57-7803-4790-acb1-7416be6b3b39}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_SFC_Cycle
+VAR_INPUT
+
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	refSFC: ST_SFC;
+
+	bInit: BOOL;
+	bResetCycle: BOOL;
+	bRun: BOOL;	
+	bReady: BOOL;
+	bDone: BOOL;
+	bToBe_Done: BOOL;
+
+	bStepDone: BOOL;
+	ton_StepTime: TON;
+	
+	StageDelayByRecipe: TIME;
+	
+	//fbPis_Meth: FB_Piston;
+
+	rtDone: R_TRIG;
+	
+	sLastStepBefore_Error: STRING;
+
+	
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[
+rtDone(CLK:=bDone);
+IF rtDone.Q THEN
+	bToBe_Done:=FALSE;
+END_IF
+
+]]></ST>
+    </Implementation>
+    <Method Name="m_Reset_LastStepBeforeError" Id="{08ed94ea-c672-4a0e-a98f-d600bcddb817}">
+      <Declaration><![CDATA[METHOD m_Reset_LastStepBeforeError : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[sLastStepBefore_Error:='';]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_Set_LastStepBeforeError" Id="{0aa82dbd-a40e-4fb4-91cf-69d200d152ef}">
+      <Declaration><![CDATA[METHOD m_Set_LastStepBeforeError : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[sLastStepBefore_Error:=refSFC.SFCCurrentStep;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_SFC_Handle" Id="{46532f38-5120-4137-ac00-dcc259f13a38}">
+      <Declaration><![CDATA[METHOD m_SFC_Handle : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF refSFC.SFCTrans THEN;
+	bStepDone:=FALSE;
+	ton_StepTime(IN:=FALSE);
+ELSE;
+	ton_StepTime(IN:=TRUE); //depend on step condition
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="mInit" Id="{db3a03fd-4aa8-4d31-895a-70e5974a7367}">
+      <Declaration><![CDATA[METHOD mInit : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[bInit:=TRUE;
+bToBe_Done:=FALSE;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="mResetCycle" Id="{8464e014-3756-439a-b3ea-3ecdaaeb39fa}">
+      <Declaration><![CDATA[METHOD mResetCycle : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[bResetCycle:=TRUE;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="mRun" Id="{0552b8ba-1fe7-4c0f-8dc3-c440bb8dda21}">
+      <Declaration><![CDATA[METHOD mRun : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[bRun:=TRUE;
+bDone:=FALSE;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="mToBe_Done" Id="{eb188846-1ae0-496f-bc27-e382d11bf47b}">
+      <Declaration><![CDATA[METHOD mToBe_Done : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[bToBe_Done:=TRUE;
+bDone:=FALSE;]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_SFC_Cycle">
+      <LineId Id="99" Count="0" />
+      <LineId Id="98" Count="0" />
+      <LineId Id="73" Count="0" />
+      <LineId Id="101" Count="1" />
+      <LineId Id="57" Count="0" />
+      <LineId Id="59" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_SFC_Cycle.m_Reset_LastStepBeforeError">
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_SFC_Cycle.m_Set_LastStepBeforeError">
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_SFC_Cycle.m_SFC_Handle">
+      <LineId Id="6" Count="4" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_SFC_Cycle.mInit">
+      <LineId Id="5" Count="0" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_SFC_Cycle.mResetCycle">
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_SFC_Cycle.mRun">
+      <LineId Id="5" Count="0" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_SFC_Cycle.mToBe_Done">
+      <LineId Id="13" Count="0" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>
