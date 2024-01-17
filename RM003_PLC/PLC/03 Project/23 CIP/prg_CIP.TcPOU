@@ -30,7 +30,8 @@ VAR
 	eState_Long_Blank			: E_Element_State_Long;
 
 	
-	rtReqLocalCIP_HMI: R_TRIG;
+	rtReqLocalCIP_Full_HMI: R_TRIG;
+	rtReqLocalCIP_Detergent_HMI: R_TRIG;
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -70,6 +71,7 @@ END_IF]]></ST>
     <Action Name="_aCIP_Done_entry" Id="{65c51eeb-ff71-4a7b-932e-5755a43e7ba7}">
       <Implementation>
         <ST><![CDATA[eRefClient_fbElement.m_InterConnect(value:=E_InterConnection.NotConnected);
+arCIP_RequestBufer[0]:=eReqBlank;
 ]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -186,16 +188,28 @@ END_CASE]]></ST>
         <ST><![CDATA[bStepDone:=FALSE;
 IF TRUE 
 AND eRefClient_fbElement.eState_Long = E_Element_State_Long.eCIP_1_Rinzed
-AND eReq.eType = E_CIP_Type.Partial
+AND eReq.eType = E_CIP_Type.R_Water
+AND eReq.eClient<>E_CIP_Usage.eLocal
+THEN;
+	bStepDone:=TRUE;
+	
+ELSIF TRUE 
+AND eRefClient_fbElement.eState_Long = E_Element_State_Long.eCIP_3_Deterged_Clean
+AND eReq.eType = E_CIP_Type.Detergent
+AND eReq.eClient=E_CIP_Usage.eLocal
 THEN;
 	bStepDone:=TRUE;
 	
 ELSIF TRUE 
 AND eRefClient_fbElement.eState_Long = E_Element_State_Long.eCIP_5_Done
-AND TRUE
+AND eReq.eType = E_CIP_Type.Full
+//AND eReq.eClient<>E_CIP_Usage.eLocal
 THEN;
 	bStepDone:=TRUE;
-END_IF	
+	
+END_IF
+
+
 ]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -214,28 +228,46 @@ END_IF
     </Action>
     <Action Name="_aGet_Client_active" Id="{18e627b5-82b2-485b-93fe-c20af040d1ae}">
       <Implementation>
-        <ST><![CDATA[
-
-
-CASE eRefClient_fbElement.eState_Long OF
-	E_Element_State_Long.eNotClean:;
-			eRun:=E_CIP_Source.eT93_R_Water;	
-		
-	E_Element_State_Long.eCIP_1_Rinzed:;
-			eRun:=E_CIP_Source.eT92_Detergent;	
-		
-	E_Element_State_Long.eCIP_2_Deterged:;
-			eRun:=E_CIP_Source.eT94_Water;	
-		
-	E_Element_State_Long.eCIP_3_Deterged_Clean:;
-			eRun:=E_CIP_Source.eT91_Sanitation;		
+        <ST><![CDATA[CASE eReq.eType OF
+	E_CIP_Type.R_Water:;
+		CASE eRefClient_fbElement.eState_Long OF
+			E_Element_State_Long.eNotClean:;
+					eRun:=E_CIP_Source.eT93_R_Water;	
+		END_CASE
 	
-	E_Element_State_Long.eCIP_4_Sanitized:;
-			eRun:=E_CIP_Source.eT94_Water;			
+	E_CIP_Type.Detergent:;
+		CASE eRefClient_fbElement.eState_Long OF
+			E_Element_State_Long.eCIP_1_Rinzed:;
+					eRun:=E_CIP_Source.eT92_Detergent;						
+		END_CASE
+	
+	E_CIP_Type.Full:;
+		CASE eRefClient_fbElement.eState_Long OF
+			E_Element_State_Long.eNotClean:;
+					eRun:=E_CIP_Source.eT93_R_Water;	
+				
+			E_Element_State_Long.eCIP_1_Rinzed:;
+					eRun:=E_CIP_Source.eT92_Detergent;	
+				
+			E_Element_State_Long.eCIP_2_Deterged:;
+					eRun:=E_CIP_Source.eT94_Water;	
+				
+			E_Element_State_Long.eCIP_3_Deterged_Clean:;
+					eRun:=E_CIP_Source.eT91_Sanitation;		
+			
+			E_Element_State_Long.eCIP_4_Sanitized:;
+					eRun:=E_CIP_Source.eT94_Water;					
+		END_CASE	
 	
 END_CASE
 
-eRefClient_fbElement.m_InterConnect(value:=E_InterConnection.ConnToCIP);
+
+
+
+IF eRun<>E_CIP_Source.eNone THEN;
+	eRefClient_fbElement.m_InterConnect(value:=E_InterConnection.ConnToCIP);
+END_IF
+
 
 ]]></ST>
       </Implementation>
@@ -296,12 +328,15 @@ eRefClient_fbElement REF= fbElement_Blank;]]></ST>
     <Action Name="_aWatingTo_Start_exit" Id="{fe06bbde-dba2-4c36-8b83-7a6e8089b6a1}">
       <Implementation>
         <ST><![CDATA[eReq:=arCIP_RequestBufer[0];
-arCIP_RequestBufer[0]:=eReqBlank;
 
 CASE eReq.eClient OF
 	E_CIP_Usage.eLocal:;
 		eRefClient_fbElement REF= fbElement_Blank;
-		eRefClient_fbElement.m_InterConnected_State(eState_Long_Set:=E_Element_State_Long.eNotClean);
+		IF eReq.eType=E_CIP_Type.Full THEN;
+			eRefClient_fbElement.m_InterConnected_State(eState_Long_Set:=E_Element_State_Long.eNotClean);
+		ELSE;
+			eRefClient_fbElement.m_InterConnected_State(eState_Long_Set:=E_Element_State_Long.eCIP_1_Rinzed);
+		END_IF	
 		
 	E_CIP_Usage.eTank_1:;
 		eRefClient_fbElement REF= fbElement[E_Element_List.eTank_1];
@@ -12345,14 +12380,19 @@ IF rtPosDeleteHMI.Q THEN;
 	m_PosDelete_HMI();
 END_IF
 
-rtReqLocalCIP_HMI(Q=>);
-IF rtReqLocalCIP_HMI.Q THEN;
+rtReqLocalCIP_Full_HMI(Q=>);
+IF rtReqLocalCIP_Full_HMI.Q THEN;
 	eReqLocal.eClient:=E_CIP_Usage.eLocal;
 	eReqLocal.eType:=E_CIP_Type.Full;
 	m_TakePosInCIPBuffer(stCIP_Request:=eReqLocal);
 END_IF
 
-
+rtReqLocalCIP_Detergent_HMI(Q=>);
+IF rtReqLocalCIP_Detergent_HMI.Q THEN;
+	eReqLocal.eClient:=E_CIP_Usage.eLocal;
+	eReqLocal.eType:=E_CIP_Type.Detergent;
+	m_TakePosInCIPBuffer(stCIP_Request:=eReqLocal);
+END_IF
 
 ]]></ST>
       </Implementation>
@@ -12366,7 +12406,9 @@ VAR
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF iPosSelect_HMI>=0 AND iPosSelect_HMI<9 THEN;
-	arCIP_RequestBufer[iPosSelect_HMI]:=stCIP_Request_Temp;
+	IF iPosSelect_HMI<>0 OR NOT bRun THEN;
+		arCIP_RequestBufer[iPosSelect_HMI]:=stCIP_Request_Temp;
+	END_IF		
 END_IF]]></ST>
       </Implementation>
     </Method>
@@ -12379,10 +12421,12 @@ VAR
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF iPosSelect_HMI>=0 AND iPosSelect_HMI<9 THEN;
-	stCIP_Request_Temp:=arCIP_RequestBufer[iPosSelect_HMI+1];
-	arCIP_RequestBufer[iPosSelect_HMI+1]:=arCIP_RequestBufer[iPosSelect_HMI];
-	arCIP_RequestBufer[iPosSelect_HMI]:=stCIP_Request_Temp;
-	iPosSelect_HMI:=iPosSelect_HMI+1;
+	IF iPosSelect_HMI<>0 OR NOT bRun THEN;
+		stCIP_Request_Temp:=arCIP_RequestBufer[iPosSelect_HMI+1];
+		arCIP_RequestBufer[iPosSelect_HMI+1]:=arCIP_RequestBufer[iPosSelect_HMI];
+		arCIP_RequestBufer[iPosSelect_HMI]:=stCIP_Request_Temp;
+		iPosSelect_HMI:=iPosSelect_HMI+1;		
+	END_IF
 END_IF]]></ST>
       </Implementation>
     </Method>
@@ -12395,11 +12439,12 @@ VAR
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF iPosSelect_HMI>0 AND iPosSelect_HMI<=9 THEN;
-	stCIP_Request_Temp:=arCIP_RequestBufer[iPosSelect_HMI-1];
-	arCIP_RequestBufer[iPosSelect_HMI-1]:=arCIP_RequestBufer[iPosSelect_HMI];
-	arCIP_RequestBufer[iPosSelect_HMI]:=stCIP_Request_Temp;
-		iPosSelect_HMI:=iPosSelect_HMI-1;
-
+	IF iPosSelect_HMI<>1 OR NOT bRun THEN;
+		stCIP_Request_Temp:=arCIP_RequestBufer[iPosSelect_HMI-1];
+		arCIP_RequestBufer[iPosSelect_HMI-1]:=arCIP_RequestBufer[iPosSelect_HMI];
+		arCIP_RequestBufer[iPosSelect_HMI]:=stCIP_Request_Temp;
+			iPosSelect_HMI:=iPosSelect_HMI-1;		
+	END_IF
 END_IF]]></ST>
       </Implementation>
     </Method>
@@ -12442,7 +12487,7 @@ END_IF
       <LineId Id="3" Count="0" />
     </LineIds>
     <LineIds Name="prg_CIP._aCIP_Done_entry">
-      <LineId Id="2" Count="0" />
+      <LineId Id="2" Count="1" />
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="prg_CIP._aCIP1_Done_entry">
@@ -12472,35 +12517,45 @@ END_IF
       <LineId Id="1" Count="0" />
       <LineId Id="9" Count="0" />
       <LineId Id="8" Count="0" />
+      <LineId Id="32" Count="0" />
       <LineId Id="5" Count="0" />
       <LineId Id="2" Count="0" />
       <LineId Id="17" Count="0" />
-      <LineId Id="12" Count="4" />
+      <LineId Id="12" Count="2" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="15" Count="1" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="20" Count="2" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="24" Count="0" />
       <LineId Id="11" Count="0" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="31" Count="0" />
       <LineId Id="3" Count="0" />
     </LineIds>
     <LineIds Name="prg_CIP._aGet_Client_active">
       <LineId Id="3" Count="0" />
+      <LineId Id="59" Count="0" />
+      <LineId Id="130" Count="2" />
+      <LineId Id="62" Count="0" />
+      <LineId Id="117" Count="0" />
+      <LineId Id="60" Count="0" />
+      <LineId Id="121" Count="2" />
+      <LineId Id="67" Count="0" />
+      <LineId Id="116" Count="0" />
+      <LineId Id="61" Count="0" />
+      <LineId Id="68" Count="14" />
+      <LineId Id="66" Count="0" />
+      <LineId Id="58" Count="0" />
+      <LineId Id="57" Count="0" />
       <LineId Id="32" Count="0" />
       <LineId Id="34" Count="0" />
-      <LineId Id="33" Count="0" />
-      <LineId Id="38" Count="0" />
-      <LineId Id="43" Count="0" />
-      <LineId Id="48" Count="0" />
-      <LineId Id="39" Count="0" />
-      <LineId Id="44" Count="0" />
-      <LineId Id="49" Count="0" />
-      <LineId Id="40" Count="0" />
-      <LineId Id="45" Count="0" />
-      <LineId Id="50" Count="0" />
-      <LineId Id="41" Count="0" />
-      <LineId Id="46" Count="0" />
-      <LineId Id="51" Count="0" />
-      <LineId Id="42" Count="0" />
-      <LineId Id="47" Count="0" />
-      <LineId Id="37" Count="0" />
       <LineId Id="36" Count="0" />
+      <LineId Id="65" Count="0" />
       <LineId Id="53" Count="0" />
+      <LineId Id="63" Count="1" />
       <LineId Id="52" Count="0" />
       <LineId Id="55" Count="0" />
       <LineId Id="54" Count="0" />
@@ -12515,11 +12570,13 @@ END_IF
     </LineIds>
     <LineIds Name="prg_CIP._aWatingTo_Start_exit">
       <LineId Id="3" Count="0" />
-      <LineId Id="2" Count="0" />
       <LineId Id="5" Count="1" />
       <LineId Id="34" Count="0" />
       <LineId Id="33" Count="0" />
-      <LineId Id="35" Count="1" />
+      <LineId Id="37" Count="1" />
+      <LineId Id="40" Count="1" />
+      <LineId Id="39" Count="0" />
+      <LineId Id="36" Count="0" />
       <LineId Id="7" Count="23" />
       <LineId Id="4" Count="0" />
       <LineId Id="32" Count="0" />
@@ -12531,26 +12588,28 @@ END_IF
       <LineId Id="55" Count="1" />
       <LineId Id="53" Count="0" />
       <LineId Id="49" Count="0" />
-      <LineId Id="46" Count="2" />
+      <LineId Id="46" Count="0" />
+      <LineId Id="57" Count="4" />
+      <LineId Id="47" Count="1" />
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="prg_CIP.m_PosDelete_HMI">
       <LineId Id="5" Count="0" />
-      <LineId Id="11" Count="0" />
+      <LineId Id="17" Count="2" />
       <LineId Id="7" Count="0" />
     </LineIds>
     <LineIds Name="prg_CIP.m_PosMove_Down_HMI">
       <LineId Id="5" Count="0" />
-      <LineId Id="12" Count="1" />
-      <LineId Id="11" Count="0" />
-      <LineId Id="14" Count="0" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="23" Count="2" />
+      <LineId Id="21" Count="1" />
       <LineId Id="7" Count="0" />
     </LineIds>
     <LineIds Name="prg_CIP.m_PosMove_Up_HMI">
       <LineId Id="5" Count="0" />
-      <LineId Id="12" Count="1" />
-      <LineId Id="11" Count="0" />
-      <LineId Id="14" Count="1" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="24" Count="2" />
+      <LineId Id="22" Count="1" />
       <LineId Id="7" Count="0" />
     </LineIds>
     <LineIds Name="prg_CIP.m_TakePosInCIPBuffer">
