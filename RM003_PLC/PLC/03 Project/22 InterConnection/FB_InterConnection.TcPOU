@@ -83,6 +83,9 @@ CASE fbTargetElement.eType OF
 			//AND fbElement[E_Element_List.eTriBlender_Marinada].eState_Short<>E_Element_State_Short.eNotClean	
 			//AND fbElement[E_Element_List.eTriBlender_Color].eState_Short<>E_Element_State_Short.eNotClean
 			AND fbTankElement.eInterConnect=E_InterConnection.NotConnected	
+			AND ((fbTargetElement.eProdType=E_Product_Type.Marinada AND eTriBlenderPipe=E_TriBlenderPipe.eMarinada)
+							OR
+				(fbTargetElement.eProdType=E_Product_Type.Color AND eTriBlenderPipe=E_TriBlenderPipe.eColor))		
 			THEN;
 				IF (fbTankElement.eState_Short=E_Element_State_Short.eClean 
 					//OR fbTankElement.eState_Short=E_Element_State_Short.eProduct)
@@ -368,6 +371,7 @@ END_IF
     <LineIds Name="FB_InterConnection.act_Avalable">
       <LineId Id="85" Count="9" />
       <LineId Id="159" Count="0" />
+      <LineId Id="171" Count="2" />
       <LineId Id="95" Count="15" />
       <LineId Id="162" Count="0" />
       <LineId Id="161" Count="0" />
