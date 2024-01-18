@@ -824,8 +824,14 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[eState_Long:=eState_Long_Set;
-//bInterConnected:=TRUE;
+        <ST><![CDATA[
+IF eState_Long_Set>eState_Long 
+OR eState_Long_Set=E_Element_State_Long.eNotClean
+THEN;
+	eState_Long:=eState_Long_Set;
+END_IF
+
+
 ]]></ST>
       </Implementation>
     </Method>
@@ -883,8 +889,12 @@ END_IF]]></ST>
       <LineId Id="7" Count="1" />
     </LineIds>
     <LineIds Name="FB_Element.m_InterConnected_State">
+      <LineId Id="14" Count="1" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="17" Count="1" />
+      <LineId Id="16" Count="0" />
       <LineId Id="5" Count="0" />
-      <LineId Id="9" Count="0" />
       <LineId Id="8" Count="0" />
     </LineIds>
     <LineIds Name="FB_Element.m_StateUpdate_Limit">
