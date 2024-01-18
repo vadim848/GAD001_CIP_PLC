@@ -45,6 +45,8 @@ SUPER^();
 
 act_Oper();
 act_ReqBuffer();
+
+
 rtModeOff(CLK:=eMode=E_CIP_Mode.eOff);
 IF rtModeOff.Q THEN;
 	SFCReset:=TRUE;
@@ -58,6 +60,10 @@ END_IF
 rtModeAuto(CLK:=eMode=E_CIP_Mode.eAuto);
 IF rtModeAuto.Q THEN;
 	//SFCReset:=TRUE;
+END_IF
+
+IF bRun THEN;
+	act_Run();
 END_IF
  
 
@@ -12471,6 +12477,13 @@ END_IF
 ]]></ST>
       </Implementation>
     </Action>
+    <Action Name="act_Run" Id="{1474794e-dde4-4a3c-8164-060b43f4cb22}" FolderPath="Manage\">
+      <Implementation>
+        <ST><![CDATA[IF eRefClient_fbElement.bError THEN;
+	SFCPause:=TRUE;
+END_IF]]></ST>
+      </Implementation>
+    </Action>
     <Method Name="m_CleanEmpty_Spaces" Id="{a02513cf-5921-4270-b511-66d8a68458f2}">
       <Declaration><![CDATA[METHOD m_CleanEmpty_Spaces : BOOL
 VAR_INPUT
@@ -12601,12 +12614,17 @@ END_IF
       <LineId Id="25" Count="1" />
       <LineId Id="9" Count="0" />
       <LineId Id="31" Count="0" />
+      <LineId Id="190" Count="0" />
+      <LineId Id="189" Count="0" />
       <LineId Id="127" Count="1" />
       <LineId Id="132" Count="1" />
       <LineId Id="135" Count="3" />
       <LineId Id="134" Count="0" />
       <LineId Id="141" Count="3" />
       <LineId Id="140" Count="0" />
+      <LineId Id="186" Count="0" />
+      <LineId Id="185" Count="0" />
+      <LineId Id="187" Count="1" />
       <LineId Id="131" Count="0" />
       <LineId Id="130" Count="0" />
       <LineId Id="30" Count="0" />
@@ -12746,6 +12764,9 @@ END_IF
       <LineId Id="62" Count="0" />
       <LineId Id="48" Count="0" />
       <LineId Id="1" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_CIP.act_Run">
+      <LineId Id="1" Count="2" />
     </LineIds>
     <LineIds Name="FB_CIP.m_CleanEmpty_Spaces">
       <LineId Id="28" Count="0" />
