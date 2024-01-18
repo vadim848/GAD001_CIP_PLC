@@ -80,6 +80,95 @@ CASE fbTargetElement.eType OF
 				AND fbTankElement.eProdType=E_Product_Type.Marinada)
 			OR(eTriBlenderUsage=E_TriBlenderUsage.eColor_Standby 
 				AND fbTankElement.eProdType=E_Product_Type.Color))
+			//AND fbElement[E_Element_List.eTriBlender_Marinada].eState_Short<>E_Element_State_Short.eNotClean	
+			//AND fbElement[E_Element_List.eTriBlender_Color].eState_Short<>E_Element_State_Short.eNotClean
+			AND fbTankElement.eInterConnect=E_InterConnection.NotConnected	
+			THEN;
+				IF (fbTankElement.eState_Short=E_Element_State_Short.eClean 
+					//OR fbTankElement.eState_Short=E_Element_State_Short.eProduct)
+					)
+				AND (fbTargetElement.eState_Short=E_Element_State_Short.eClean 
+					OR fbTargetElement.eState_Short=E_Element_State_Short.eProduct)
+				THEN;
+					bAvalableToConnect:=TRUE;
+				ELSE;
+					bAvalableToConnect:=FALSE;
+				END_IF	
+			ELSE;
+				bAvalableToConnect:=FALSE;
+			END_IF
+		
+			IF eTriBlenderUsage=E_TriBlenderUsage.eMarinada_Standby
+			AND fbTargetElement.eProdType=E_Product_Type.Marinada
+			AND	fbTargetElement.eState_Short=E_Element_State_Short.eClean
+			THEN;
+				eTriBlenderUsage:=E_TriBlenderUsage.eNotInUse;
+			END_IF
+
+			IF eTriBlenderUsage=E_TriBlenderUsage.eColor_Standby
+			AND fbTargetElement.eProdType=E_Product_Type.Color
+			AND	fbTargetElement.eState_Short=E_Element_State_Short.eClean
+			THEN;
+				eTriBlenderUsage:=E_TriBlenderUsage.eNotInUse;
+			END_IF
+			
+			CASE eTriBlenderUsage OF
+				E_TriBlenderUsage.eMarinada_T1:;
+			END_CASE
+	
+	E_Element_Type.eLine:;
+	
+			IF ((fbTankElement.eProdType=E_Product_Type.Marinada
+				AND ePrL_M_Usage=E_PrLine_M_LineUsage.eNotInUse) 
+			OR(fbTankElement.eProdType=E_Product_Type.Color
+				AND ePrL_C_Usage=E_PrLine_C_Usage.eNotInUse)) 
+			AND fbTankElement.eInterConnect=E_InterConnection.NotConnected
+			AND TRUE 
+			THEN;
+				IF (fbTankElement.eState_Short=E_Element_State_Short.eProduct 
+					//OR fbTankElement.eState_Short=E_Element_State_Short.eClean)
+					)
+				AND (fbTargetElement.eState_Short=E_Element_State_Short.eProduct 
+					OR fbTargetElement.eState_Short=E_Element_State_Short.eClean)
+				THEN;
+					bAvalableToConnect:=TRUE;
+				ELSE;
+					bAvalableToConnect:=FALSE;
+				END_IF			
+			ELSE;
+				bAvalableToConnect:=FALSE;
+			END_IF
+	
+END_CASE
+
+// To Disconnect
+CASE fbTargetElement.eType OF
+	E_Element_Type.eTriBlender:;
+		IF bActive AND fbTankElement.eState_Long<>E_Element_State_Long.eProduction THEN;
+			bAvalableToDisconnect:=TRUE;
+		ELSE;
+			bAvalableToDisconnect:=FALSE;
+		END_IF
+	E_Element_Type.eLine:;
+		IF bActive AND fbTankElement.eState_Long<>E_Element_State_Long.eProduction THEN;
+			bAvalableToDisconnect:=TRUE;
+		ELSE;
+			bAvalableToDisconnect:=FALSE;
+		END_IF	
+END_CASE
+]]></ST>
+      </Implementation>
+    </Action>
+    <Action Name="act_Avalable_old" Id="{e8f726df-c8bd-49e0-a7b9-a7db9b415d50}">
+      <Implementation>
+        <ST><![CDATA[// To Connect
+CASE fbTargetElement.eType OF
+	E_Element_Type.eTriBlender:;
+			IF (eTriBlenderUsage=E_TriBlenderUsage.eNotInUse 
+			OR(eTriBlenderUsage=E_TriBlenderUsage.eMarinada_Standby 
+				AND fbTankElement.eProdType=E_Product_Type.Marinada)
+			OR(eTriBlenderUsage=E_TriBlenderUsage.eColor_Standby 
+				AND fbTankElement.eProdType=E_Product_Type.Color))
 			AND fbElement[E_Element_List.eTriBlender_Marinada].eState_Short<>E_Element_State_Short.eNotClean	
 			AND fbElement[E_Element_List.eTriBlender_Color].eState_Short<>E_Element_State_Short.eNotClean
 			AND fbTankElement.eInterConnect=E_InterConnection.NotConnected	
@@ -277,6 +366,20 @@ END_IF
       <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="FB_InterConnection.act_Avalable">
+      <LineId Id="85" Count="9" />
+      <LineId Id="159" Count="0" />
+      <LineId Id="95" Count="15" />
+      <LineId Id="162" Count="0" />
+      <LineId Id="161" Count="0" />
+      <LineId Id="160" Count="0" />
+      <LineId Id="111" Count="1" />
+      <LineId Id="163" Count="5" />
+      <LineId Id="113" Count="0" />
+      <LineId Id="169" Count="0" />
+      <LineId Id="114" Count="43" />
+      <LineId Id="37" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_InterConnection.act_Avalable_old">
       <LineId Id="85" Count="9" />
       <LineId Id="159" Count="0" />
       <LineId Id="95" Count="62" />
