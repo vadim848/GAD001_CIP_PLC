@@ -717,7 +717,7 @@ eRefClient_fbElement REF= fbElement_Blank;]]></ST>
                           <o>
                             <v n="AttributeId">{cacf1a68-236e-47c2-b7b1-1cf9199718cb}</v>
                             <o n="Value" t="StringValue">
-                              <v n="Value">""</v>
+                              <v n="Value">"T#0.3s"</v>
                               <v n="DefaultValue">""</v>
                             </o>
                             <v n="Id">94L</v>
@@ -900,7 +900,7 @@ eRefClient_fbElement REF= fbElement_Blank;]]></ST>
                           <o>
                             <v n="AttributeId">{cacf1a68-236e-47c2-b7b1-1cf9199718cb}</v>
                             <o n="Value" t="StringValue">
-                              <v n="Value">""</v>
+                              <v n="Value">"T#0.3s"</v>
                               <v n="DefaultValue">""</v>
                             </o>
                             <v n="Id">113L</v>
@@ -12480,7 +12480,9 @@ END_IF
     <Action Name="act_Run" Id="{1474794e-dde4-4a3c-8164-060b43f4cb22}" FolderPath="Manage\">
       <Implementation>
         <ST><![CDATA[IF eRefClient_fbElement.bError THEN;
-	SFCPause:=TRUE;
+	m_Set_LastStepBeforeError();
+	sError_Message:='Client Error';
+	mResetCycle();
 END_IF]]></ST>
       </Implementation>
     </Action>
@@ -12766,7 +12768,9 @@ END_IF
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP.act_Run">
-      <LineId Id="1" Count="2" />
+      <LineId Id="1" Count="0" />
+      <LineId Id="4" Count="1" />
+      <LineId Id="2" Count="1" />
     </LineIds>
     <LineIds Name="FB_CIP.m_CleanEmpty_Spaces">
       <LineId Id="28" Count="0" />

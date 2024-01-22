@@ -26,7 +26,8 @@ VAR
 
 	rtDone	: R_TRIG;
 	rtRun	: R_TRIG;
-	sLastStepBefore_Error: STRING;
+	sLastStepBefore_Error	: STRING;
+	sError_Message			: STRING;
 	
 	ErrorSFC: BOOL;
 
@@ -86,6 +87,8 @@ IF refSFC.SFCQuitError THEN;
 	refSFC.SFCPause:=FALSE;
 	ErrorSFC:=FALSE;
 	refSFC.SFCQuitError:=FALSE;
+	m_Reset_LastStepBeforeError();
+	sError_Message:='';
 END_IF
 
 IF refSFC.SFCCurrentStep='Ready' THEN;
@@ -128,7 +131,9 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[bResetCycle:=TRUE;]]></ST>
+        <ST><![CDATA[bResetCycle:=TRUE;
+bRun:=FALSE;
+refSFC.SFCReset:=TRUE;]]></ST>
       </Implementation>
     </Method>
     <Method Name="mRun" Id="{0552b8ba-1fe7-4c0f-8dc3-c440bb8dda21}">
@@ -178,6 +183,7 @@ bDone:=FALSE;]]></ST>
       <LineId Id="23" Count="0" />
       <LineId Id="25" Count="2" />
       <LineId Id="30" Count="1" />
+      <LineId Id="64" Count="1" />
       <LineId Id="24" Count="0" />
       <LineId Id="34" Count="0" />
       <LineId Id="33" Count="0" />
@@ -201,6 +207,7 @@ bDone:=FALSE;]]></ST>
     </LineIds>
     <LineIds Name="FB_SFC_Cycle.mResetCycle">
       <LineId Id="5" Count="0" />
+      <LineId Id="9" Count="1" />
     </LineIds>
     <LineIds Name="FB_SFC_Cycle.mRun">
       <LineId Id="5" Count="0" />
