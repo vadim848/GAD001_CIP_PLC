@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="ST_Piston" Id="{389db45f-0ecc-4a17-87ce-73a88efa24d5}">
+    <Declaration><![CDATA[TYPE ST_Piston :
+STRUCT
+	req_Open		:BOOL;		(* Auto cycle command, will operate the piston to open, not for HMI usage	*)
+	req_Close		:BOOL;		(* Auto cycle command, will operate the piston to close, not for HMI usage	*)
+
+	req_OpenMan		:BOOL;		(* Manual command, for HMI, will operate the piston to open	*)
+	req_CloseMan	:BOOL;		(* Manual command, for HMI, will operate the piston to close	*)
+	req_DefaultPos	:BOOL;		(* Manual command, for HMI, will operate the piston to its default position*)
+
+	b_Enable		: BOOL;		(* Piston operation enable,  *)
+	b_Reset			: BOOL;		(* The command will reset all commands and cycle state*)
+	b_Resume		: BOOL;		(* In case of malfunction the function getting pause state, the command will resume the cycle flow *)
+	b_Error			: BOOL;
+	b_Exist			: BOOL;		(*FB_Piston executed - avalable for visu*)
+	b_InterLock		: BOOL 	:=TRUE;
+	b_InterLock_Open		: BOOL 	:=TRUE;
+	b_InterLock_Close		: BOOL 	:=TRUE;
+	b_DeactivateMan	: BOOL;
+
+
+	// Status
+	st_Open			: BOOL	:=FALSE;	(* Piston state open	*)
+	st_Close		: BOOL	:=FALSE;	(* Piston state close	*)
+	st_Deafult		: BOOL;
+
+
+	// Each piston has its ID number
+	iPisNum			:INT;
+	
+	DefaultCmd		:REFERENCE TO E_PistonDefault_CMD;
+
+	// Timing 
+	t_minOpen		:REFERENCE TO REAL;	(*Second*)	(* minimum time to open piston*)
+	t_minClose		:REFERENCE TO REAL;	(*Second*)	(* minimum time to close piston*)
+	t_maxOpen		:REFERENCE TO REAL;	(*Second*)	(* Maximum time to open piston, will initiate an error*)
+	t_maxClose		:REFERENCE TO REAL;	(*Second*)	(* Maximum time to open piston, will initiate an error*)
+	t_DelayOpen		:REFERENCE TO REAL;	(*Second*)	(* Delay time to getting "st_Open", will count after minimum time and sensors detection done*)
+	t_DelayClose	:REFERENCE TO REAL;	(*Second*)	(* Delay time to getting "st_Close", will count after minimum time and sensors detection done*)	
+
+	t_LastOpen		:TIME;			(* The last piston opening operation time*)
+	t_LastClose		:TIME;			(* The last piston closing operation time*)
+	
+	//
+	eErrNum			:E_ErrorPiton;		(* Error number*)
+	description		:STRING;		(* Piston description*)	
+	
+	//FB_Piston reference
+	sen_Open: 		REFERENCE TO BOOL;
+	sen_Close: 		REFERENCE TO BOOL;
+	sen_Open_Exist: REFERENCE TO BOOL;
+	sen_Close_Exist:REFERENCE TO BOOL;		
+	
+	valve_Open:		REFERENCE TO BOOL;
+	valve_Close:	REFERENCE TO BOOL;	
+	
+	
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

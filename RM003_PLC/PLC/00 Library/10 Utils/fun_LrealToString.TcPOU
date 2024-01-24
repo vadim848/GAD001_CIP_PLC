@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="fun_LrealToString" Id="{7566430a-b270-46a7-aa63-4244670fe50f}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION fun_LrealToString : STRING
+VAR_INPUT
+	iDigits	: INT:=2;
+	fVar	: LREAL;
+END_VAR
+VAR
+	iDigitsLocal: INT;
+
+	fTemp: LREAL;
+	fMult: LREAL;
+	
+	fbFormat: FB_FormatString;	
+
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IF iDigits<0 THEN;
+	iDigitsLocal:=0;
+ELSIF iDigits>6 THEN;
+	iDigitsLocal:=6; 
+ELSE
+	iDigitsLocal:=iDigits;	
+END_IF
+
+// this vertion solve the case then the result is 2.0-e2 instade of 0.02
+CASE iDigitsLocal OF
+	0:;fbFormat(sFormat:='%.0f' ,arg1:=F_LREAL(fVar),sOut=>fun_LrealToString);
+	1:;fbFormat(sFormat:='%.1f' ,arg1:=F_LREAL(fVar),sOut=>fun_LrealToString);
+	2:;fbFormat(sFormat:='%.2f' ,arg1:=F_LREAL(fVar),sOut=>fun_LrealToString);
+	3:;fbFormat(sFormat:='%.3f' ,arg1:=F_LREAL(fVar),sOut=>fun_LrealToString);
+	4:;fbFormat(sFormat:='%.4f' ,arg1:=F_LREAL(fVar),sOut=>fun_LrealToString);
+	5:;fbFormat(sFormat:='%.5f' ,arg1:=F_LREAL(fVar),sOut=>fun_LrealToString);
+	6:;fbFormat(sFormat:='%.6f' ,arg1:=F_LREAL(fVar),sOut=>fun_LrealToString);
+END_CASE
+
+(* OLD Version
+CASE iDigitsLocal OF
+	0:;fMult:=1;
+	1:;fMult:=10;
+	2:;fMult:=100;
+	3:;fMult:=1000;
+	4:;fMult:=10000;
+	5:;fMult:=100000;
+	6:;fMult:=1000000;
+END_CASE
+
+fTemp:=TRUNC(fVar*fMult);
+IF iDigitsLocal=0 THEN;
+	fun_LrealToString:=DINT_TO_STRING(TRUNC(fVar));
+ELSE;
+	fun_LrealToString:=LREAL_TO_STRING(fTemp/fMult);	
+END_IF
+*)
+]]></ST>
+    </Implementation>
+    <LineIds Name="fun_LrealToString">
+      <LineId Id="52" Count="5" />
+      <LineId Id="59" Count="0" />
+      <LineId Id="134" Count="0" />
+      <LineId Id="125" Count="8" />
+      <LineId Id="122" Count="1" />
+      <LineId Id="60" Count="11" />
+      <LineId Id="84" Count="1" />
+      <LineId Id="87" Count="0" />
+      <LineId Id="101" Count="0" />
+      <LineId Id="86" Count="0" />
+      <LineId Id="124" Count="0" />
+      <LineId Id="39" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_Hysteresis_REAL" Id="{db4e44f4-3d76-460f-ab24-9469a97bf7d8}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Hysteresis_REAL
+VAR_INPUT
+	fIn		: REAL;
+	fHigh	: REAL;
+	fLow	: REAL;
+	iDigitsAfterDot: INT:=2; //min 0 , max 3
+
+END_VAR
+VAR_OUTPUT
+	bOut	: BOOL;
+END_VAR
+VAR
+	fbHys: HYSTERESIS;
+	mult: INT;
+	iDigitsAfterDot_Local: INT:=2; //min 0 , max 3
+
+
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IF iDigitsAfterDot < 0 THEN;
+	iDigitsAfterDot_Local:=0;
+ELSIF iDigitsAfterDot > 3 THEN;
+	iDigitsAfterDot_Local:=3;
+ELSE;
+	iDigitsAfterDot_Local:=iDigitsAfterDot;
+END_IF
+ 
+
+CASE iDigitsAfterDot_Local OF
+	0:mult:=1;
+	1:mult:=10;
+	2:mult:=100;
+	3:mult:=1000;
+END_CASE
+
+fbHys.HIGH:=REAL_TO_INT(fHigh*mult);
+fbHys.LOW:=REAL_TO_INT(fLow*mult);
+fbHys.IN:=REAL_TO_INT(fIn*mult);
+
+fbHys(OUT=>bOut);
+]]></ST>
+    </Implementation>
+    <LineIds Name="FB_Hysteresis_REAL">
+      <LineId Id="32" Count="0" />
+      <LineId Id="37" Count="0" />
+      <LineId Id="40" Count="1" />
+      <LineId Id="39" Count="0" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="38" Count="0" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="47" Count="3" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="18" Count="1" />
+      <LineId Id="52" Count="1" />
+      <LineId Id="56" Count="0" />
+      <LineId Id="51" Count="0" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

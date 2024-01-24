@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="F_TimeRatio" Id="{9e63d04d-22ba-44b7-a7dd-32366321d33f}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION F_TimeRatio : INT
+VAR_INPUT
+	t1: TIME;
+	t2: TIME;
+
+END_VAR
+VAR
+	udi_t1: UDINT;
+	udi_t2: UDINT;
+
+	ratio: REAL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[
+udi_t1:=TIME_TO_UDINT(t1);
+udi_t2:=TIME_TO_UDINT(t2);
+
+IF udi_t2>0 THEN;
+	ratio:=udi_t1/udi_t2;
+END_IF
+
+]]></ST>
+    </Implementation>
+    <LineIds Name="F_TimeRatio">
+      <LineId Id="12" Count="0" />
+      <LineId Id="18" Count="1" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="24" Count="1" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="17" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_Error_Handle" Id="{b9c0feb5-6ac8-4d06-98ea-e57922381035}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Error_Handle
+VAR_INPUT
+	bError: BOOL;
+	sErrID: STRING;
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	fbFormat: FB_FormatString;
+END_VAR
+VAR_IN_OUT
+	error_code: STRING;
+
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[
+
+IF bError 
+AND error_code=''
+THEN;
+	error_code:=sErrID;
+END_IF
+
+IF NOT bError 
+AND error_code=sErrID
+THEN;
+	error_code:='';
+END_IF]]></ST>
+    </Implementation>
+    <Method Name="m_GetAxisErr" Id="{fdcaa3bf-1b97-4a77-92a2-67637e90edf8}">
+      <Declaration><![CDATA[METHOD m_GetAxisErr : STRING(4)
+VAR_INPUT
+	stDevErr_H				: ST_DeviceErrorHandeling;
+END_VAR
+VAR_OUTPUT
+	sMessage: STRING;
+END_VAR
+
+VAR
+	ErrID_xx: STRING(2);
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF bError 
+AND error_code=''
+THEN;
+	fbFormat(sFormat:='%0.2d' ,arg1:=F_INT(stDevErr_H.iObjectID),sOut=>ErrID_xx);
+	m_GetAxisErr:=CONCAT('23',ErrID_xx);
+	sMessage:=stDevErr_H.sObjectName;
+ELSE;
+	m_GetAxisErr:='';
+END_IF
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_GetPistonErr" Id="{b3c5c7fd-4af7-4524-a42c-4563611997f1}">
+      <Declaration><![CDATA[METHOD m_GetPistonErr : STRING(4)
+VAR_INPUT
+	stDevErr_H				: ST_DeviceErrorHandeling;
+END_VAR
+VAR_OUTPUT
+	sMessage: STRING;
+END_VAR
+
+VAR
+	ErrID_xx: STRING(2);
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF bError 
+AND error_code=''
+THEN;
+	fbFormat(sFormat:='%0.2d' ,arg1:=F_INT(stDevErr_H.iObjectID),sOut=>ErrID_xx);
+	m_GetPistonErr:=CONCAT('22',ErrID_xx);
+	sMessage:=stDevErr_H.sObjectName;
+ELSE;
+	m_GetPistonErr:='';
+END_IF
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_Error_Handle">
+      <LineId Id="12" Count="11" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Error_Handle.m_GetAxisErr">
+      <LineId Id="16" Count="2" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="21" Count="1" />
+      <LineId Id="10" Count="2" />
+    </LineIds>
+    <LineIds Name="FB_Error_Handle.m_GetPistonErr">
+      <LineId Id="16" Count="2" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="21" Count="1" />
+      <LineId Id="10" Count="2" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

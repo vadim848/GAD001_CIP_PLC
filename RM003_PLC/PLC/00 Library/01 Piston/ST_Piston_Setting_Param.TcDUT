@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="ST_Piston_Setting_Param" Id="{49fb26ef-50ea-4eab-8f10-07039eece039}">
+    <Declaration><![CDATA[TYPE ST_Piston_Setting_Param :
+STRUCT
+
+	// Timing 
+	t_minOpen		:REAL 	:=0.3;	(*Second*)	(* minimum time to open piston*)
+	t_minClose		:REAL	:=0.3;	(*Second*)	(* minimum time to close piston*)
+	t_maxOpen		:REAL 	:=3.0;	(*Second*)	(* Maximum time to open piston, will initiate an error*)
+	t_maxClose		:REAL	:=3.0;	(*Second*)	(* Maximum time to open piston, will initiate an error*)
+	t_DelayOpen		:REAL 	:=0.0;	(*Second*)	(* Delay time to getting "st_Open", will count after minimum time and sensors detection done*)
+	t_DelayClose	:REAL	:=0.0;	(*Second*)	(* Delay time to getting "st_Close", will count after minimum time and sensors detection done*)	
+
+	sen_Open_Exist	: BOOL;
+	sen_Close_Exist	: BOOL;		
+
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

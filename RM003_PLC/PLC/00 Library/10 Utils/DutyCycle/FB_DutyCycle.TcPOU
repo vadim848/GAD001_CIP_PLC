@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_DutyCycle" Id="{41274de3-ab3e-444e-8b5e-8fcc6e91c102}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_DutyCycle
+VAR_INPUT
+	bEnable		: BOOL;
+	fBaseTime	: REAL:=5.0; // [sec] min>0
+	fOn_Duty	: REAL:=10.0; //min =0, max=100
+END_VAR
+VAR_OUTPUT
+	bOut: BOOL;
+END_VAR
+VAR
+	tBaseTime: TIME;
+	ton_OnDuty: TON;
+	fOnTime: REAL;
+	tOnTime: TIME;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[
+tBaseTime:=REAL_TO_TIME(fBaseTime*1000);
+ton_OnDuty(PT:=tBaseTime,IN:=NOT ton_OnDuty.Q AND bEnable);
+
+IF fOn_Duty<0 THEN;
+	fOn_Duty:=0;
+ELSIF fOn_Duty>100 THEN;
+	fOn_Duty:=1000;
+END_IF
+	
+fOnTime:=fBaseTime*fOn_Duty/100.0;
+tOnTime:=REAL_TO_TIME(fOnTime*1000);
+
+IF bEnable THEN;
+	IF fOn_Duty<=0 THEN;
+		bOut:=FALSE;
+	ELSIF fOn_Duty>=100 THEN;
+		bOut:=TRUE;
+	ELSE;
+		IF ton_OnDuty.ET<tOnTime THEN;
+			bOut:=TRUE;
+		ELSE
+			bOut:=FALSE;
+		END_IF		
+	END_IF	
+ELSE;
+	bOut:=FALSE;
+END_IF
+]]></ST>
+    </Implementation>
+    <LineIds Name="FB_DutyCycle">
+      <LineId Id="14" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="49" Count="3" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="53" Count="0" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="60" Count="0" />
+      <LineId Id="38" Count="0" />
+      <LineId Id="42" Count="3" />
+      <LineId Id="54" Count="0" />
+      <LineId Id="56" Count="3" />
+      <LineId Id="55" Count="0" />
+      <LineId Id="40" Count="0" />
+      <LineId Id="46" Count="1" />
+      <LineId Id="41" Count="0" />
+      <LineId Id="15" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

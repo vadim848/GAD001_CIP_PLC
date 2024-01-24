@@ -1,0 +1,826 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_Piston" Id="{ec561158-aba5-4c24-99fa-59f7aabd22e8}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Piston
+VAR_INPUT
+	description		: STRING;		(* Piston description*)	
+	sen_Open		: BOOL;
+	sen_Close		: BOOL;
+	
+	DefaultCmd		: E_PistonDefault_CMD:=E_PistonDefault_CMD.Close;
+
+	iFB_Num			: E_Pis_Name;
+
+END_VAR
+VAR_OUTPUT
+	valve_Open		:BOOL;
+	valve_Close		:BOOL;	
+END_VAR
+VAR_IN_OUT
+	stDevErr_H		: ST_DeviceErrorHandeling;	
+END_VAR
+VAR
+	stPis			:	REFERENCE TO ST_Piston;
+	state: E_Piston_State;
+	state_Close,state_Open: (Ready, CheckState, ValveUpdate, Busy, Delay, Done, Error);
+
+	//sen_Open_Exist	: REFERENCE TO BOOL :=FALSE;
+	//sen_Close_Exist	: REFERENCE TO BOOL :=FALSE;
+	
+	ton_SensorCheck	: TON;
+	ton_MinTime		: TON;
+	ton_MaxTime		: TON;
+	ton_SensorDelay	: TON;
+
+	// Timing 
+	t_minOpen		: TIME 	:=T#300MS;	(* minimum time to open piston*)
+	t_minClose		: TIME	:=T#300MS;	(* minimum time to close piston*)
+	t_maxOpen		: TIME 	:=T#3S;		(* Maximum time to open piston, will initiate an error*)
+	t_maxClose		: TIME	:=T#3S;		(* Maximum time to open piston, will initiate an error*)
+	t_DelayOpen		: TIME 	:=T#0S;		(* Delay time to getting "st_Open", will count after minimum time and sensors detection done*)
+	t_DelayClose	: TIME	:=T#0S;		(* Delay time to getting "st_Close", will count after minimum time and sensors detection done*)	
+	
+	rt_Close		: R_TRIG;
+	rt_Open			: R_TRIG;
+	rt_OpenMan		: R_TRIG;
+	rt_CloseMan		: R_TRIG;
+	rt_DefaultPos	: R_TRIG;
+	rt_ResumeMaster: R_TRIG;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[act_Get_Reference();
+act_State_Machine();
+act_StateDeafult();
+
+IF iFB_Num = E_Pis_Name.e0_not_in_use THEN;
+	stPis.st_Deafult:=TRUE;
+END_IF
+]]></ST>
+    </Implementation>
+    <Action Name="act_Close" Id="{1d06fffa-a52d-4208-941d-d3aedaa130ae}">
+      <Implementation>
+        <ST><![CDATA[
+
+
+CASE state_Close OF
+	Ready:;
+		IF stPis.req_CloseMan THEN;
+			stPis.req_CloseMan:=FALSE;
+			// Do manual case code
+			stPis.req_Close:=TRUE;
+		END_IF		
+		IF stPis.req_Close THEN;
+			stPis.req_Open:=FALSE;
+			stPis.req_OpenMan:=FALSE;	
+			stPis.req_DefaultPos:=FALSE;			
+			state_Close:=CheckState;
+		END_IF
+		
+	CheckState:;
+		IF stPis.st_Close THEN;
+			stPis.st_Open:=FALSE;
+			state_Close:=Done;
+		ELSE;
+			stPis.st_Close:=FALSE;
+			stPis.st_Open:=FALSE;
+			state_Close:=ValveUpdate;
+		END_IF
+		
+	ValveUpdate:;
+		valve_Open:=FALSE;
+		valve_Close:=TRUE;
+		ton_SensorCheck(IN:=FALSE);
+		ton_MinTime(IN:=FALSE);
+		ton_MinTime(IN:=TRUE);
+		ton_MaxTime(IN:=FALSE);
+		ton_MaxTime(IN:=TRUE);
+		ton_SensorDelay(IN:=FALSE);
+		
+		stPis.t_LastClose:=T#0S;
+		state_Close:=Busy;
+		
+	Busy:;
+		ton_MinTime(PT:=t_minClose);
+		ton_MaxTime(PT:=t_maxClose, IN:=TRUE);
+		ton_SensorDelay(PT:=t_DelayClose,IN:=m_PistonSensorCheck());	
+		IF 	ton_MinTime.Q 		
+		AND ton_SensorDelay.IN THEN;
+			ton_MaxTime(IN:=FALSE);
+			IF ton_SensorDelay.Q THEN;
+				stPis.t_LastClose:=ton_MaxTime.ET;			
+				state_Close:=Done;				
+			END_IF
+		ELSE;
+			IF ton_MaxTime.Q THEN;
+				//Error to print
+				state_Close:=Error;
+			END_IF			
+		END_IF
+	
+	Done:;
+		stPis.st_Close:=TRUE;
+		IF stPis.st_Close THEN;
+			state_Close:=Ready;
+			stPis.req_Close:=FALSE;
+		END_IF	
+		
+	Error:;
+		//Wating to operator reset & resume 
+		stPis.b_Error:=TRUE;	
+		IF stPis.b_Resume THEN;
+			state_Close:=ValveUpdate;
+			stPis.b_Resume:=FALSE;	
+			stPis.b_Error:=FALSE;
+		END_IF
+		
+END_CASE]]></ST>
+      </Implementation>
+    </Action>
+    <Action Name="act_Get_Reference" Id="{5587b6ef-4983-4751-a3fb-a1c5a80691d6}">
+      <Implementation>
+        <ST><![CDATA[stPis REF= g_Piston.stPis[iFB_Num];
+//stPis.description:=description;
+stPis.b_Exist:=TRUE;
+stPis.description:=TO_STRING(iFB_Num);
+stPis.iPisNum:=iFB_Num;
+arPisName[iFB_Num].Num:=iFB_Num;
+arPisName[iFB_Num].Description:=stPis.description;
+
+stPis.sen_Close REF= sen_Close;
+stPis.sen_Close_Exist REF= stPisSetting[iFB_Num].sen_Close_Exist;
+//stPis.sen_Close_Exist REF= sen_Close_Exist;
+stPis.sen_Open REF= sen_Open;
+stPis.sen_Open_Exist REF= stPisSetting[iFB_Num].sen_Open_Exist;
+//stPis.sen_Open_Exist REF= sen_Open_Exist;
+
+stPis.valve_Close REF= valve_Close;
+stPis.valve_Open REF= valve_Open;
+
+stPis.t_maxClose REF= stPisSetting[iFB_Num].t_maxClose;
+stPis.t_maxOpen REF= stPisSetting[iFB_Num].t_maxOpen;
+stPis.t_minClose REF= stPisSetting[iFB_Num].t_minClose;
+stPis.t_minOpen REF= stPisSetting[iFB_Num].t_minOpen;
+stPis.t_DelayClose REF= stPisSetting[iFB_Num].t_DelayClose;
+stPis.t_DelayOpen REF= stPisSetting[iFB_Num].t_DelayOpen;
+t_maxClose:=fun_Real_SecondsToTime(in_Time:=stPis.t_maxClose);
+t_maxOpen:=fun_Real_SecondsToTime(in_Time:=stPis.t_maxOpen);
+t_minClose:=fun_Real_SecondsToTime(in_Time:=stPis.t_minClose);
+t_minOpen:=fun_Real_SecondsToTime(in_Time:=stPis.t_minOpen);
+t_DelayClose:=fun_Real_SecondsToTime(in_Time:=stPis.t_DelayClose);
+t_DelayOpen:=fun_Real_SecondsToTime(in_Time:=stPis.t_DelayOpen);
+
+stPis.DefaultCmd REF= DefaultCmd;
+
+IF stPis.b_Error 
+AND stDevErr_H.eErrorActive=E_Error_Active_Module.noError 
+THEN;
+	stDevErr_H.sObjectName:=CONCAT('pis.No:',INT_TO_STRING(stPis.iPisNum));
+	stDevErr_H.sObjectName:=CONCAT(stDevErr_H.sObjectName,'- ');
+	stDevErr_H.sObjectName:=CONCAT(stDevErr_H.sObjectName,TO_STRING(iFB_Num));
+	stDevErr_H.eErrorActive:=E_Error_Active_Module.Piston;
+	stDevErr_H.iObjectID:=iFB_Num;
+END_IF
+rt_ResumeMaster(CLK:=stDevErr_H.bMasterResume);
+IF rt_ResumeMaster.Q THEN;
+	stPis.b_Resume:=TRUE;
+END_IF
+]]></ST>
+      </Implementation>
+    </Action>
+    <Action Name="act_New_CMD" Id="{41187a43-fa92-4bd7-bb88-cf8db79fe6ff}">
+      <Implementation>
+        <ST><![CDATA[IF stPis.b_Enable AND stPis.b_InterLock THEN;
+	
+	rt_Close(CLK:=stPis.req_Close);
+	rt_Open(CLK:=stPis.req_Open);
+	rt_CloseMan(CLK:=stPis.req_CloseMan);
+	rt_OpenMan(CLK:=stPis.req_OpenMan);
+	rt_DefaultPos(CLK:=stPis.req_DefaultPos);
+
+
+	IF rt_Close.Q THEN; state:=E_Piston_State.Busy_Close; END_IF
+	IF rt_Open.Q THEN; state:=E_Piston_State.Busy_Open; END_IF
+	IF rt_CloseMan.Q THEN; state:=E_Piston_State.Busy_Close; END_IF
+	IF rt_OpenMan.Q THEN; state:=E_Piston_State.Busy_Open; END_IF
+	IF rt_DefaultPos.Q THEN; state:=E_Piston_State.Init; END_IF
+	
+	IF rt_Close.Q 
+	OR rt_Open.Q
+	OR rt_CloseMan.Q
+	OR rt_OpenMan.Q
+	OR rt_DefaultPos.Q
+	THEN;
+		stPis.b_Error:=FALSE;
+	END_IF
+	
+	stPis.b_DeactivateMan:=FALSE;
+ELSE;
+	stPis.b_DeactivateMan:=TRUE;
+END_IF]]></ST>
+      </Implementation>
+    </Action>
+    <Action Name="act_Open" Id="{44296d41-1ac9-468f-bdd3-09d882e1e24e}">
+      <Implementation>
+        <ST><![CDATA[
+
+
+CASE state_Open OF
+	Ready:;
+		IF stPis.req_OpenMan THEN;
+			stPis.req_OpenMan:=FALSE;
+			// Do manual case code
+			stPis.req_Open:=TRUE;
+		END_IF		
+		IF stPis.req_Open THEN;
+			stPis.req_Close:=FALSE;
+			stPis.req_CloseMan:=FALSE;
+			stPis.req_DefaultPos:=FALSE;		
+			state_Open:=CheckState;
+		END_IF
+		
+	CheckState:;
+		IF stPis.st_Open THEN;
+			stPis.st_Close:=FALSE;
+			state_Open:=Done;
+		ELSE;
+			stPis.st_Close:=FALSE;
+			stPis.st_Open:=FALSE;
+			state_Open:=ValveUpdate;
+		END_IF
+		
+	ValveUpdate:;
+		valve_Open:=TRUE;
+		valve_Close:=FALSE;
+		ton_SensorCheck(IN:=FALSE);
+		ton_MinTime(IN:=FALSE);
+		ton_MinTime(IN:=TRUE);
+		ton_MaxTime(IN:=FALSE);
+		ton_MaxTime(IN:=TRUE);	
+		ton_SensorDelay(IN:=FALSE);
+		
+		stPis.t_LastOpen:=T#0S;	
+		state_Open:=Busy;
+		
+	Busy:;
+		ton_MinTime(PT:=t_minOpen);
+		ton_MaxTime(PT:=t_maxOpen);
+		ton_SensorDelay(PT:=t_DelayOpen,IN:=m_PistonSensorCheck());	
+		IF 	ton_MinTime.Q 
+		AND m_PistonSensorCheck()	THEN;
+			ton_MaxTime(IN:=FALSE);
+			IF ton_SensorDelay.Q THEN;
+				stPis.t_LastOpen:=ton_MaxTime.ET;			
+				state_Open:=Done;				
+			END_IF
+		ELSE;
+			IF ton_MaxTime.Q THEN;
+				//Error to print
+				state_Open:=Error;
+			END_IF				
+		END_IF
+	
+	Done:;
+		stPis.st_Open:=TRUE;	
+		IF stPis.st_Open THEN;
+			state_Open:=Ready;
+			stPis.req_Open:=FALSE;
+		END_IF	
+		
+	Error:;
+		//Wating to operator reset & resume 
+		stPis.b_Error:=TRUE;
+		IF stPis.b_Resume THEN;
+			state_Open:=ValveUpdate;
+			stPis.b_Resume:=FALSE;
+			stPis.b_Error:=FALSE;
+		END_IF
+		
+END_CASE]]></ST>
+      </Implementation>
+    </Action>
+    <Action Name="act_State_Machine" Id="{0a032fc1-47d5-4a06-9768-752edcf06d0a}">
+      <Implementation>
+        <ST><![CDATA[IF stPis.b_Resume THEN;
+	stPis.b_Error:=FALSE;		
+END_IF
+
+act_New_CMD();
+CASE state OF
+	E_Piston_State.Init:;
+			ton_SensorCheck(IN:=FALSE);
+			
+	
+			stPis.st_Close:=FALSE;
+			stPis.st_Open:=FALSE;
+			
+			stPis.b_Error:=FALSE;
+			stPis.b_Reset:=FALSE;
+			stPis.b_Resume:=FALSE;
+			
+			stPis.req_Close:=FALSE;
+			stPis.req_CloseMan:=FALSE;	
+			stPis.req_Open:=FALSE;
+			stPis.req_OpenMan:=FALSE;
+			stPis.req_DefaultPos:=FALSE;
+			
+			state_Close:=Ready;
+			state_Open:=Ready;
+			
+			//check default configuration
+			IF stPis.b_Enable AND stPis.b_InterLock THEN;				
+				CASE DefaultCmd OF
+					E_PistonDefault_CMD.Close:;
+						state:=E_Piston_State.Busy_Close;
+						stPis.req_Close:=TRUE;
+					E_PistonDefault_CMD.Open:;
+						state:=E_Piston_State.Busy_Open;
+						stPis.req_Open:=TRUE;
+					E_PistonDefault_CMD.Sensors:;
+					E_PistonDefault_CMD.SensorsClose:;
+					E_PistonDefault_CMD.SensorsOpen:;
+					
+				END_CASE
+			END_IF
+	
+	E_Piston_State.Close:;
+		IF m_PistonSensorCheck() AND NOT stPis.b_Error THEN;
+			stPis.st_Close:=TRUE;
+			stPis.st_Open:=FALSE;
+			ton_SensorCheck(IN:=FALSE);
+		ELSE;
+			ton_SensorCheck(IN:=TRUE);
+			IF ton_SensorCheck.Q THEN;
+				stPis.st_Close:=FALSE;
+				stPis.st_Open:=FALSE;				
+				stPis.b_Error:=TRUE;		
+			END_IF			
+		END_IF
+				
+	E_Piston_State.Open:;
+		IF m_PistonSensorCheck() AND NOT stPis.b_Error THEN;
+			stPis.st_Close:=FALSE;
+			stPis.st_Open:=TRUE;
+			ton_SensorCheck(IN:=FALSE);
+		ELSE;			
+			ton_SensorCheck(IN:=TRUE);
+			IF ton_SensorCheck.Q THEN;
+				stPis.st_Close:=FALSE;
+				stPis.st_Open:=FALSE;				
+				stPis.b_Error:=TRUE;		
+			END_IF
+		END_IF
+	
+	E_Piston_State.Busy_Close:;
+		ton_SensorCheck(IN:=FALSE);
+		act_Close();		
+		state_Open:=Ready;		
+		IF stPis.st_Close AND NOT stPis.req_Close THEN;
+			state:=E_Piston_State.Close;
+		END_IF
+
+	E_Piston_State.Busy_Open:;
+		ton_SensorCheck(IN:=FALSE);
+		act_Open();
+		state_Close:=Ready;
+		IF stPis.st_Open AND NOT stPis.req_Open THEN;
+			state:=E_Piston_State.Open;
+		END_IF
+END_CASE			
+
+ton_SensorCheck(PT:=T#0.5S);
+
+IF ton_SensorCheck.Q THEN;
+	stPis.b_Error:=TRUE;		
+END_IF
+stPis.b_Resume:=FALSE;
+
+]]></ST>
+      </Implementation>
+    </Action>
+    <Action Name="act_StateDeafult" Id="{b0074a99-883b-4291-9224-694e1dc99e79}">
+      <Implementation>
+        <ST><![CDATA[CASE DefaultCmd	OF
+	E_PistonDefault_CMD.Close:;
+		stPis.st_Deafult:=stPis.st_Close;
+	E_PistonDefault_CMD.Open:;
+		stPis.st_Deafult:=stPis.st_Open;
+END_CASE]]></ST>
+      </Implementation>
+    </Action>
+    <Method Name="m_CheckByRecipe" Id="{cee17294-eb51-431c-81b6-223f1165d04f}">
+      <Declaration><![CDATA[METHOD PUBLIC m_CheckByRecipe : BOOL
+VAR_INPUT
+	stPis: ST_Piston;
+	req: E_Piston_Recipe_State;	
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[m_CheckByRecipe:=FALSE;
+CASE req OF
+	E_Piston_Recipe_State.NoChanges:;
+		m_CheckByRecipe:=TRUE;
+	E_Piston_Recipe_State.Act:;
+		IF (stPis.DefaultCmd=E_PistonDefault_CMD.Close AND stPis.st_Open) 
+		OR (stPis.DefaultCmd=E_PistonDefault_CMD.Open AND stPis.st_Close)
+		THEN;
+			m_CheckByRecipe:=TRUE;
+		END_IF
+	E_Piston_Recipe_State.Release:;
+		IF (stPis.DefaultCmd=E_PistonDefault_CMD.Close AND stPis.st_Close) 
+		OR (stPis.DefaultCmd=E_PistonDefault_CMD.Open AND stPis.st_Open)
+		THEN;
+			m_CheckByRecipe:=TRUE;
+		END_IF	
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_PistonSensorCheck" Id="{c8a92531-63c9-446a-a8cf-58db140f8780}">
+      <Declaration><![CDATA[METHOD m_PistonSensorCheck : BOOL
+(*VAR_INPUT
+	exist: BOOL;
+	SensorState: BOOL;
+	ValveState: BOOL;
+
+END_VAR*)
+VAR
+	OK_Open: BOOL;
+	OK_Close: BOOL;
+
+
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF stPis.sen_Close_Exist THEN;
+	IF valve_Close = sen_Close THEN;
+		OK_Close:=TRUE;
+	//ELSIF NOT valve_Close AND NOT sen_Close THEN;
+	//	OK_Close:=TRUE;
+	ELSE;
+		OK_Close:=FALSE;
+	END_IF
+ELSE
+	OK_Close:=TRUE;
+END_IF
+
+IF stPis.sen_Open_Exist THEN;
+	IF valve_Open = sen_Open THEN;
+		OK_Open:=TRUE;	
+	//ELSIF NOT valve_Open AND sen_Open THEN;
+	//	OK_Open:=TRUE;
+	ELSE;
+		OK_Open:=FALSE;
+	END_IF
+ELSE
+	OK_Open:=TRUE;
+END_IF
+
+IF OK_Close AND OK_Open THEN;
+	m_PistonSensorCheck:=TRUE;
+ELSE;
+	m_PistonSensorCheck:=FALSE;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_SetByRecipe" Id="{efe06830-a32d-4e0b-8632-3f1d05861d09}">
+      <Declaration><![CDATA[METHOD PUBLIC m_SetByRecipe : BOOL
+VAR_INPUT
+END_VAR
+VAR_IN_OUT
+	stPis: ST_Piston;
+	req: E_Piston_Recipe_State;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE req OF
+	E_Piston_Recipe_State.NoChanges:;
+		//Done
+	E_Piston_Recipe_State.Act:;
+		IF stPis.DefaultCmd=E_PistonDefault_CMD.Close THEN;
+			IF NOT stPis.st_Open THEN;
+				stPis.req_Open:=TRUE;
+			END_IF		
+		ELSIF stPis.DefaultCmd=E_PistonDefault_CMD.Open THEN;
+			IF NOT stPis.st_Close THEN;
+				stPis.req_Close:=TRUE;
+			END_IF				
+		END_IF
+
+	E_Piston_Recipe_State.Release:;
+		IF stPis.DefaultCmd=E_PistonDefault_CMD.Close THEN;
+			IF NOT stPis.st_Close THEN;
+				stPis.req_Close:=TRUE;
+			END_IF			
+		ELSIF stPis.DefaultCmd=E_PistonDefault_CMD.Open THEN;
+			IF NOT stPis.st_Open THEN;
+				stPis.req_Open:=TRUE;
+			END_IF			
+		END_IF	
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_Piston">
+      <LineId Id="31" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="154" Count="0" />
+      <LineId Id="110" Count="0" />
+      <LineId Id="65" Count="0" />
+      <LineId Id="201" Count="1" />
+      <LineId Id="66" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Piston.act_Close">
+      <LineId Id="56" Count="0" />
+      <LineId Id="58" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="2" Count="4" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="91" Count="0" />
+      <LineId Id="90" Count="0" />
+      <LineId Id="104" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="85" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="83" Count="1" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="29" Count="1" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="43" Count="1" />
+      <LineId Id="55" Count="0" />
+      <LineId Id="54" Count="0" />
+      <LineId Id="102" Count="0" />
+      <LineId Id="101" Count="0" />
+      <LineId Id="87" Count="0" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="37" Count="0" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="69" Count="0" />
+      <LineId Id="94" Count="1" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="89" Count="0" />
+      <LineId Id="100" Count="0" />
+      <LineId Id="96" Count="0" />
+      <LineId Id="99" Count="0" />
+      <LineId Id="97" Count="1" />
+      <LineId Id="73" Count="0" />
+      <LineId Id="75" Count="2" />
+      <LineId Id="74" Count="0" />
+      <LineId Id="48" Count="0" />
+      <LineId Id="45" Count="0" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="81" Count="0" />
+      <LineId Id="25" Count="2" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="62" Count="2" />
+      <LineId Id="92" Count="0" />
+      <LineId Id="66" Count="1" />
+      <LineId Id="79" Count="0" />
+      <LineId Id="103" Count="0" />
+      <LineId Id="68" Count="0" />
+      <LineId Id="65" Count="0" />
+      <LineId Id="1" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Piston.act_Get_Reference">
+      <LineId Id="100" Count="34" />
+      <LineId Id="136" Count="6" />
+      <LineId Id="144" Count="0" />
+      <LineId Id="143" Count="0" />
+      <LineId Id="145" Count="1" />
+      <LineId Id="15" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Piston.act_New_CMD">
+      <LineId Id="25" Count="1" />
+      <LineId Id="3" Count="4" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="9" Count="5" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="21" Count="2" />
+      <LineId Id="19" Count="1" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="27" Count="2" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Piston.act_Open">
+      <LineId Id="56" Count="0" />
+      <LineId Id="58" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="2" Count="4" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="91" Count="1" />
+      <LineId Id="102" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="85" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="81" Count="0" />
+      <LineId Id="84" Count="0" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="29" Count="1" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="43" Count="1" />
+      <LineId Id="55" Count="0" />
+      <LineId Id="54" Count="0" />
+      <LineId Id="96" Count="0" />
+      <LineId Id="95" Count="0" />
+      <LineId Id="86" Count="0" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="37" Count="0" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="69" Count="0" />
+      <LineId Id="71" Count="0" />
+      <LineId Id="97" Count="0" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="51" Count="0" />
+      <LineId Id="98" Count="3" />
+      <LineId Id="53" Count="0" />
+      <LineId Id="74" Count="3" />
+      <LineId Id="73" Count="0" />
+      <LineId Id="48" Count="0" />
+      <LineId Id="45" Count="0" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="80" Count="0" />
+      <LineId Id="25" Count="2" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="62" Count="2" />
+      <LineId Id="93" Count="0" />
+      <LineId Id="66" Count="1" />
+      <LineId Id="78" Count="0" />
+      <LineId Id="94" Count="0" />
+      <LineId Id="68" Count="0" />
+      <LineId Id="65" Count="0" />
+      <LineId Id="1" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Piston.act_State_Machine">
+      <LineId Id="91" Count="1" />
+      <LineId Id="90" Count="0" />
+      <LineId Id="97" Count="0" />
+      <LineId Id="93" Count="0" />
+      <LineId Id="1" Count="1" />
+      <LineId Id="99" Count="1" />
+      <LineId Id="43" Count="0" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="44" Count="0" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="38" Count="0" />
+      <LineId Id="40" Count="1" />
+      <LineId Id="39" Count="0" />
+      <LineId Id="33" Count="1" />
+      <LineId Id="45" Count="0" />
+      <LineId Id="4" Count="0" />
+      <LineId Id="103" Count="0" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="46" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="47" Count="0" />
+      <LineId Id="13" Count="2" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="106" Count="0" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="68" Count="0" />
+      <LineId Id="70" Count="0" />
+      <LineId Id="75" Count="0" />
+      <LineId Id="69" Count="0" />
+      <LineId Id="74" Count="0" />
+      <LineId Id="80" Count="0" />
+      <LineId Id="83" Count="0" />
+      <LineId Id="82" Count="0" />
+      <LineId Id="81" Count="0" />
+      <LineId Id="54" Count="1" />
+      <LineId Id="62" Count="0" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="56" Count="0" />
+      <LineId Id="72" Count="0" />
+      <LineId Id="71" Count="0" />
+      <LineId Id="89" Count="0" />
+      <LineId Id="73" Count="0" />
+      <LineId Id="84" Count="4" />
+      <LineId Id="57" Count="1" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="101" Count="0" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="94" Count="0" />
+      <LineId Id="48" Count="2" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="102" Count="0" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="96" Count="0" />
+      <LineId Id="51" Count="2" />
+      <LineId Id="64" Count="0" />
+      <LineId Id="77" Count="0" />
+      <LineId Id="76" Count="0" />
+      <LineId Id="67" Count="0" />
+      <LineId Id="66" Count="0" />
+      <LineId Id="65" Count="0" />
+      <LineId Id="3" Count="0" />
+      <LineId Id="98" Count="0" />
+      <LineId Id="79" Count="0" />
+      <LineId Id="78" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Piston.act_StateDeafult">
+      <LineId Id="1" Count="0" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="6" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="3" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Piston.m_CheckByRecipe">
+      <LineId Id="25" Count="0" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="19" Count="1" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="12" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Piston.m_PistonSensorCheck">
+      <LineId Id="5" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="41" Count="0" />
+      <LineId Id="40" Count="0" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="16" Count="1" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="12" Count="1" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="25" Count="1" />
+      <LineId Id="43" Count="0" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="45" Count="0" />
+      <LineId Id="44" Count="0" />
+      <LineId Id="29" Count="4" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="38" Count="1" />
+      <LineId Id="37" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Piston.m_SetByRecipe">
+      <LineId Id="5" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="39" Count="1" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="37" Count="1" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="41" Count="0" />
+      <LineId Id="52" Count="1" />
+      <LineId Id="44" Count="1" />
+      <LineId Id="50" Count="1" />
+      <LineId Id="49" Count="0" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="12" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

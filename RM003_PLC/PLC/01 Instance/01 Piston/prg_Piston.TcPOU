@@ -1,0 +1,502 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="prg_Piston" Id="{eba97b3f-d16b-45b8-9de2-1b2adf72b256}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM prg_Piston
+VAR
+	fbPiston: FB_Piston;
+	stPiston: ST_Piston;
+
+	bPis_Next_P: BOOL;
+	bPis_Next_N: BOOL;
+
+	
+
+	
+	TON_0: TON;
+	TON_1: TON;
+	TON_2: TON;
+	TON_3: TON;
+	TON_4: TON;
+	TON_5: TON;	
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[act_InterLock();
+act_Call_list_1_Manif1();
+
+IF bPis_Next_P THEN;
+	m_Get_Next_P(iSel:=iPis_sel);
+	bPis_Next_P:=FALSE;
+END_IF
+
+IF bPis_Next_N THEN;
+	m_Get_Next_N(iSel:=iPis_sel);
+	bPis_Next_N:=FALSE;
+END_IF]]></ST>
+    </Implementation>
+    <Action Name="act_Call_list_1_Manif1" Id="{83559ed6-55a3-4493-87ff-019e7d7f6085}">
+      <Implementation>
+        <NWL>
+          <XmlArchive>
+            <Data>
+              <o xml:space="preserve" t="NWLImplementationObject">
+                <v n="NetworkListComment">""</v>
+                <v n="DefaultViewMode">"Fbd"</v>
+                <l2 n="NetworkList" cet="Network">
+                  <o>
+                    <v n="ILActive">false</v>
+                    <v n="FBDValid">false</v>
+                    <v n="ILValid">false</v>
+                    <l2 n="ILLines" />
+                    <v n="Comment">""</v>
+                    <v n="Title">""</v>
+                    <v n="Label">"Label:Tank 1 Valves"</v>
+                    <v n="OutCommented">true</v>
+                    <l2 n="NetworkItems" />
+                    <l2 n="Connectors" />
+                    <v n="Id">250L</v>
+                  </o>
+                  <o>
+                    <v n="ILActive">false</v>
+                    <v n="FBDValid">false</v>
+                    <v n="ILValid">false</v>
+                    <l2 n="ILLines" />
+                    <v n="Comment">""</v>
+                    <v n="Title">""</v>
+                    <v n="Label">""</v>
+                    <v n="OutCommented">false</v>
+                    <l2 n="NetworkItems" cet="BoxTreeBox">
+                      <o>
+                        <v n="BoxType">"FB_Piston"</v>
+                        <o n="Instance" t="Operand">
+                          <v n="Operand">"fbPis[E_Pis_Name.V3016]"</v>
+                          <v n="Type">"FB_Piston"</v>
+                          <v n="Comment">""</v>
+                          <v n="SymbolComment">""</v>
+                          <v n="Address">""</v>
+                          <o n="Flags" t="Flags">
+                            <v n="Flags">0</v>
+                            <v n="Fixed">false</v>
+                            <v n="Extensible">false</v>
+                          </o>
+                          <v n="LValue">false</v>
+                          <v n="Boolean">false</v>
+                          <v n="IsInstance">true</v>
+                          <v n="Id">1561L</v>
+                        </o>
+                        <o n="OutputItems" t="OutputItemList">
+                          <l2 n="OutputItems" cet="Operand">
+                            <n />
+                            <o>
+                              <v n="Operand">""</v>
+                              <n n="Type" />
+                              <v n="Comment">""</v>
+                              <v n="SymbolComment">""</v>
+                              <v n="Address">""</v>
+                              <o n="Flags" t="Flags">
+                                <v n="Flags">0</v>
+                                <v n="Fixed">false</v>
+                                <v n="Extensible">false</v>
+                              </o>
+                              <v n="LValue">true</v>
+                              <v n="Boolean">false</v>
+                              <v n="IsInstance">false</v>
+                              <v n="Id">1182L</v>
+                            </o>
+                            <o>
+                              <v n="Operand">""</v>
+                              <n n="Type" />
+                              <v n="Comment">""</v>
+                              <v n="SymbolComment">""</v>
+                              <v n="Address">""</v>
+                              <o n="Flags" t="Flags">
+                                <v n="Flags">0</v>
+                                <v n="Fixed">false</v>
+                                <v n="Extensible">false</v>
+                              </o>
+                              <v n="LValue">true</v>
+                              <v n="Boolean">false</v>
+                              <v n="IsInstance">false</v>
+                              <v n="Id">1183L</v>
+                            </o>
+                          </l2>
+                        </o>
+                        <o n="Flags" t="Flags">
+                          <v n="Flags">0</v>
+                          <v n="Fixed">true</v>
+                          <v n="Extensible">false</v>
+                        </o>
+                        <n n="InputFlags" />
+                        <l2 n="InputItems" cet="BoxTreeOperand">
+                          <o>
+                            <o n="Operand" t="Operand">
+                              <v n="Operand">"TRUE"</v>
+                              <v n="Type">"BOOL"</v>
+                              <v n="Comment">""</v>
+                              <v n="SymbolComment">""</v>
+                              <v n="Address">""</v>
+                              <o n="Flags" t="Flags">
+                                <v n="Flags">0</v>
+                                <v n="Fixed">false</v>
+                                <v n="Extensible">false</v>
+                              </o>
+                              <v n="LValue">false</v>
+                              <v n="Boolean">false</v>
+                              <v n="IsInstance">false</v>
+                              <v n="Id">1185L</v>
+                            </o>
+                            <v n="Id">1184L</v>
+                          </o>
+                          <o>
+                            <o n="Operand" t="Operand">
+                              <v n="Operand">""</v>
+                              <n n="Type" />
+                              <v n="Comment">""</v>
+                              <v n="SymbolComment">""</v>
+                              <v n="Address">""</v>
+                              <o n="Flags" t="Flags">
+                                <v n="Flags">0</v>
+                                <v n="Fixed">false</v>
+                                <v n="Extensible">false</v>
+                              </o>
+                              <v n="LValue">false</v>
+                              <v n="Boolean">false</v>
+                              <v n="IsInstance">false</v>
+                              <v n="Id">1187L</v>
+                            </o>
+                            <v n="Id">1186L</v>
+                          </o>
+                          <o>
+                            <o n="Operand" t="Operand">
+                              <v n="Operand">""</v>
+                              <n n="Type" />
+                              <v n="Comment">""</v>
+                              <v n="SymbolComment">""</v>
+                              <v n="Address">""</v>
+                              <o n="Flags" t="Flags">
+                                <v n="Flags">0</v>
+                                <v n="Fixed">false</v>
+                                <v n="Extensible">false</v>
+                              </o>
+                              <v n="LValue">false</v>
+                              <v n="Boolean">false</v>
+                              <v n="IsInstance">false</v>
+                              <v n="Id">1189L</v>
+                            </o>
+                            <v n="Id">1188L</v>
+                          </o>
+                          <o>
+                            <o n="Operand" t="Operand">
+                              <v n="Operand">""</v>
+                              <n n="Type" />
+                              <v n="Comment">""</v>
+                              <v n="SymbolComment">""</v>
+                              <v n="Address">""</v>
+                              <o n="Flags" t="Flags">
+                                <v n="Flags">0</v>
+                                <v n="Fixed">false</v>
+                                <v n="Extensible">false</v>
+                              </o>
+                              <v n="LValue">false</v>
+                              <v n="Boolean">false</v>
+                              <v n="IsInstance">false</v>
+                              <v n="Id">1191L</v>
+                            </o>
+                            <v n="Id">1190L</v>
+                          </o>
+                          <o>
+                            <o n="Operand" t="Operand">
+                              <v n="Operand">"E_PistonDefault_CMD.Close"</v>
+                              <v n="Type">"E_PISTONDEFAULT_CMD"</v>
+                              <v n="Comment">""</v>
+                              <v n="SymbolComment">""</v>
+                              <v n="Address">""</v>
+                              <o n="Flags" t="Flags">
+                                <v n="Flags">0</v>
+                                <v n="Fixed">false</v>
+                                <v n="Extensible">false</v>
+                              </o>
+                              <v n="LValue">false</v>
+                              <v n="Boolean">false</v>
+                              <v n="IsInstance">false</v>
+                              <v n="Id">1197L</v>
+                            </o>
+                            <v n="Id">1196L</v>
+                          </o>
+                          <o>
+                            <o n="Operand" t="Operand">
+                              <v n="Operand">"E_Pis_Name.V3016"</v>
+                              <v n="Type">"E_PIS_NAME"</v>
+                              <v n="Comment">""</v>
+                              <v n="SymbolComment">""</v>
+                              <v n="Address">""</v>
+                              <o n="Flags" t="Flags">
+                                <v n="Flags">0</v>
+                                <v n="Fixed">false</v>
+                                <v n="Extensible">false</v>
+                              </o>
+                              <v n="LValue">false</v>
+                              <v n="Boolean">false</v>
+                              <v n="IsInstance">false</v>
+                              <v n="Id">1199L</v>
+                            </o>
+                            <v n="Id">1198L</v>
+                          </o>
+                          <o>
+                            <o n="Operand" t="Operand">
+                              <v n="Operand">"stDev[E_OwnerDevice.Tank1]"</v>
+                              <v n="Type">"ST_DeviceErrorHandeling"</v>
+                              <v n="Comment">""</v>
+                              <v n="SymbolComment">""</v>
+                              <v n="Address">""</v>
+                              <o n="Flags" t="Flags">
+                                <v n="Flags">0</v>
+                                <v n="Fixed">false</v>
+                                <v n="Extensible">false</v>
+                              </o>
+                              <v n="LValue">false</v>
+                              <v n="Boolean">false</v>
+                              <v n="IsInstance">false</v>
+                              <v n="Id">1564L</v>
+                            </o>
+                            <v n="Id">1563L</v>
+                          </o>
+                        </l2>
+                        <o n="InputParam" t="ParamList">
+                          <l2 n="Names" cet="String">
+                            <v>EN</v>
+                            <v>description</v>
+                            <v>sen_Open</v>
+                            <v>sen_Close</v>
+                            <v>DefaultCmd</v>
+                            <v>iFB_Num</v>
+                            <v>stDevErr_H</v>
+                          </l2>
+                          <l2 n="Types" cet="String">
+                            <v>BOOL</v>
+                            <v>STRING</v>
+                            <v>BOOL</v>
+                            <v>BOOL</v>
+                            <v>E_PistonDefault_CMD</v>
+                            <v>E_Pis_Name</v>
+                            <v>ST_DeviceErrorHandeling[REF]</v>
+                          </l2>
+                        </o>
+                        <o n="OutputParam" t="ParamList">
+                          <l2 n="Names" cet="String">
+                            <v>ENO</v>
+                            <v>valve_Open</v>
+                            <v>valve_Close</v>
+                          </l2>
+                          <l2 n="Types" cet="String">
+                            <v>BOOL</v>
+                            <v>BOOL</v>
+                            <v>BOOL</v>
+                          </l2>
+                        </o>
+                        <v n="CallType" t="Operator">FunctionBlock</v>
+                        <v n="EN">true</v>
+                        <v n="ENO">true</v>
+                        <n n="STSnippet" />
+                        <v n="ContainsExtensibleInputs">false</v>
+                        <v n="ProvidesSTSnippet">false</v>
+                        <v n="Id">1562L</v>
+                      </o>
+                    </l2>
+                    <l2 n="Connectors" />
+                    <v n="Id">1179L</v>
+                  </o>
+                  <o>
+                    <v n="ILActive">false</v>
+                    <v n="FBDValid">false</v>
+                    <v n="ILValid">false</v>
+                    <l2 n="ILLines" />
+                    <v n="Comment">""</v>
+                    <v n="Title">""</v>
+                    <v n="Label">""</v>
+                    <v n="OutCommented">false</v>
+                    <l2 n="NetworkItems" />
+                    <l2 n="Connectors" />
+                    <v n="Id">344L</v>
+                  </o>
+                </l2>
+                <v n="BranchCounter">0</v>
+                <v n="ValidIds">true</v>
+              </o>
+            </Data>
+            <TypeList>
+              <Type n="Boolean">System.Boolean</Type>
+              <Type n="BoxTreeBox">{acfc6f68-8e3a-4af5-bf81-3dd512095a46}</Type>
+              <Type n="BoxTreeOperand">{9de7f100-1b87-424c-a62e-45b0cfc85ed2}</Type>
+              <Type n="Flags">{668066f2-6069-46b3-8962-8db8d13d7db2}</Type>
+              <Type n="Int32">System.Int32</Type>
+              <Type n="Int64">System.Int64</Type>
+              <Type n="Network">{d9a99d73-b633-47db-b876-a752acb25871}</Type>
+              <Type n="NWLImplementationObject">{25e509de-33d4-4447-93f8-c9e4ea381c8b}</Type>
+              <Type n="Operand">{c9b2f165-48a2-4a45-8326-3952d8a3d708}</Type>
+              <Type n="Operator">{bffb3c53-f105-4e85-aba2-e30df579d75f}</Type>
+              <Type n="OutputItemList">{f40d3e09-c02c-4522-a88c-dac23558cfc4}</Type>
+              <Type n="ParamList">{71496971-9e0c-4677-a832-b9583b571130}</Type>
+              <Type n="String">System.String</Type>
+            </TypeList>
+          </XmlArchive>
+        </NWL>
+      </Implementation>
+    </Action>
+    <Action Name="act_InterLock" Id="{e49c5f92-de4c-4721-a52c-28fa14f1aa2b}">
+      <Implementation>
+        <ST><![CDATA[(*
+IF TRUE 
+AND stPis[E_Pis_Name.cheesy_cut].st_Deafult
+AND stPis[E_Pis_Name.cheesy_down].st_Deafult
+AND stPis[E_Pis_Name.cheesy_gripper].st_Deafult
+AND stPis[E_Pis_Name.cheesy_turn].st_Deafult
+
+AND stPis[E_Pis_Name.crown_down].st_Deafult
+AND stPis[E_Pis_Name.crown_gripper].st_Deafult
+AND stPis[E_Pis_Name.crown_press].st_Deafult
+AND stPis[E_Pis_Name.crown_push].st_Deafult
+
+AND stPis[E_Pis_Name.crust_down].st_Deafult
+AND stPis[E_Pis_Name.crust_hold].st_Deafult
+AND stPis[E_Pis_Name.crust_push].st_Deafult
+AND stPis[E_Pis_Name.crust_roll].st_Deafult
+
+AND stPis[E_Pis_Name.spikes_rotate_4].st_Deafult
+AND stPis[E_Pis_Name.spikes_updown_4].st_Deafult
+
+AND stPis[E_Pis_Name.door_4_2].st_Deafult
+
+AND stPis[E_Pis_Name.trolley_down].st_Deafult
+
+THEN;
+	stPis[E_Pis_Name.trolley_move].b_InterLock:=TRUE;
+ELSE;
+	stPis[E_Pis_Name.trolley_move].b_InterLock:=FALSE;
+END_IF
+*)]]></ST>
+      </Implementation>
+    </Action>
+    <Method Name="m_Disable_All" Id="{b665308b-b8be-4e05-8254-345cdabd2498}">
+      <Declaration><![CDATA[METHOD m_Disable_All : BOOL
+VAR_INPUT
+END_VAR
+
+VAR
+	i: INT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[FOR i:=1 TO E_Pis_Name.last DO;
+	stPis[i].b_Enable:=FALSE;
+END_FOR]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_Enable_All" Id="{f3691701-a6da-42f9-99dd-4e95c02dcac5}">
+      <Declaration><![CDATA[METHOD m_Enable_All : BOOL
+VAR_INPUT
+END_VAR
+
+VAR
+	i: INT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[FOR i:=1 TO E_Pis_Name.last DO;
+	stPis[i].b_Enable:=TRUE;
+END_FOR]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_Get_Next_N" Id="{623cdac2-4a00-4f90-b1f2-1ef4145484fb}">
+      <Declaration><![CDATA[METHOD m_Get_Next_N : BOOL
+VAR_IN_OUT
+	iSel: INT;
+END_VAR
+
+VAR
+	i: INT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[
+IF iSel> 1 THEN;
+	FOR i:=iSel-1 TO 1 BY -1 DO
+		IF stPis[i].b_Exist THEN;
+			iSel:=i;
+			RETURN;
+		END_IF		
+	END_FOR
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_Get_Next_P" Id="{9e1d4616-fcd8-437d-b6cf-6c896454aed6}">
+      <Declaration><![CDATA[METHOD m_Get_Next_P : BOOL
+VAR_IN_OUT
+	iSel: INT;
+END_VAR
+
+VAR
+	i: INT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[//IF iSel< C_MAX_Pistons THEN;
+//IF iSel< C_MAX_Pistons_Exist THEN;
+IF iSel< E_Pis_Name.last THEN;
+	FOR i:=iSel+1 TO E_Pis_Name.last BY 1 DO
+		IF stPis[i].b_Exist THEN;
+			iSel:=i;
+			RETURN;
+		END_IF		
+	END_FOR
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="prg_Piston">
+      <LineId Id="94" Count="1" />
+      <LineId Id="98" Count="8" />
+      <LineId Id="29" Count="0" />
+    </LineIds>
+    <LineIds Name="prg_Piston.act_InterLock">
+      <LineId Id="1" Count="0" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="9" Count="3" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="15" Count="2" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="22" Count="2" />
+      <LineId Id="32" Count="2" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="6" Count="0" />
+      <LineId Id="2" Count="0" />
+      <LineId Id="4" Count="1" />
+      <LineId Id="3" Count="0" />
+      <LineId Id="35" Count="0" />
+    </LineIds>
+    <LineIds Name="prg_Piston.m_Disable_All">
+      <LineId Id="5" Count="2" />
+    </LineIds>
+    <LineIds Name="prg_Piston.m_Enable_All">
+      <LineId Id="5" Count="2" />
+    </LineIds>
+    <LineIds Name="prg_Piston.m_Get_Next_N">
+      <LineId Id="8" Count="1" />
+      <LineId Id="18" Count="1" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="16" Count="1" />
+      <LineId Id="11" Count="0" />
+    </LineIds>
+    <LineIds Name="prg_Piston.m_Get_Next_P">
+      <LineId Id="19" Count="0" />
+      <LineId Id="29" Count="1" />
+      <LineId Id="5" Count="6" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>
