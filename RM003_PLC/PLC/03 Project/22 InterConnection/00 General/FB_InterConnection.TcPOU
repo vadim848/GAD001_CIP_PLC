@@ -1,0 +1,452 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_InterConnection" Id="{cf5703e1-1088-4c69-a86c-87d02097d444}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_InterConnection
+VAR_INPUT
+	//eState_Tank		: E_Element_State_Short;
+	//eState_Target	: E_Element_State_Short;
+	//eProdType		: E_Product_Type;
+	//eTargetTape		: E_Element_Type:=E_Element_Type.eNotSelected;
+
+
+END_VAR
+VAR_OUTPUT
+	bAvalableToConnect: BOOL;
+	bAvalableToDisconnect: BOOL;
+	bActive: BOOL;	
+END_VAR
+VAR
+
+
+	reqConnect: BOOL;
+	reqDisconnect: BOOL;
+END_VAR
+
+VAR_IN_OUT
+	fbTankElement: FB_Element;
+	fbTargetElement: FB_Element;	
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[act_Avalable();
+act_Active();
+
+
+
+
+IF reqConnect THEN;
+	m_Connect();
+	reqConnect:=FALSE;
+END_IF
+
+IF reqDisconnect THEN;
+	m_Disconnect();
+	reqDisconnect:=FALSE;
+END_IF
+]]></ST>
+    </Implementation>
+    <Action Name="act_Active" Id="{053f14d0-d76f-455b-b23b-50bcb11975ff}">
+      <Implementation>
+        <ST><![CDATA[//fbTargetElement.eState_Long:=fbTankElement.eState_Long;
+IF bActive THEN;
+	fbTargetElement.m_InterConnected_State(eState_Long_Set:=fbTankElement.eState_Long);
+	
+	CASE fbTargetElement.eType OF		
+		E_Element_Type.eLine:;
+			//fbTankElement.m_InterConnect(value:=E_InterConnection.ConnToLine);
+		E_Element_Type.eTriBlender:;
+			//fbTankElement.m_InterConnect(value:=E_InterConnection.ConnToTriBlender);		
+	END_CASE
+	//fbTargetElement.m_InterConnect(value:=E_InterConnection.ConnToTank);
+	
+
+ELSE;
+	//fbTankElement.m_Disconnect();
+	//fbTargetElement.m_Disconnect();
+END_IF
+
+
+
+]]></ST>
+      </Implementation>
+    </Action>
+    <Action Name="act_Avalable" Id="{bbb91644-6566-4503-82ff-100a461e35c3}">
+      <Implementation>
+        <ST><![CDATA[// To Connect
+CASE fbTargetElement.eType OF
+	E_Element_Type.eTriBlender:;
+			IF (eTriBlenderUsage=E_TriBlenderUsage.eNotInUse 
+			OR(eTriBlenderUsage=E_TriBlenderUsage.eMarinada_Standby 
+				AND fbTankElement.eProdType=E_Product_Type.Marinada)
+			OR(eTriBlenderUsage=E_TriBlenderUsage.eColor_Standby 
+				AND fbTankElement.eProdType=E_Product_Type.Color))
+			//AND fbElement[E_Element_List.eTriBlender_Marinada].eState_Short<>E_Element_State_Short.eNotClean	
+			//AND fbElement[E_Element_List.eTriBlender_Color].eState_Short<>E_Element_State_Short.eNotClean
+			AND fbTankElement.eInterConnect=E_InterConnection.NotConnected	
+			AND ((fbTargetElement.eProdType=E_Product_Type.Marinada AND eTriBlenderPipe=E_TriBlenderPipe.eMarinada)
+							OR
+				(fbTargetElement.eProdType=E_Product_Type.Color AND eTriBlenderPipe=E_TriBlenderPipe.eColor))		
+			THEN;
+				IF (fbTankElement.eState_Short=E_Element_State_Short.eClean 
+					//OR fbTankElement.eState_Short=E_Element_State_Short.eProduct)
+					)
+				AND (fbTargetElement.eState_Short=E_Element_State_Short.eClean 
+					OR fbTargetElement.eState_Short=E_Element_State_Short.eProduct)
+				THEN;
+					bAvalableToConnect:=TRUE;
+				ELSE;
+					bAvalableToConnect:=FALSE;
+				END_IF	
+			ELSE;
+				bAvalableToConnect:=FALSE;
+			END_IF
+		
+			IF eTriBlenderUsage=E_TriBlenderUsage.eMarinada_Standby
+			AND fbTargetElement.eProdType=E_Product_Type.Marinada
+			AND	fbTargetElement.eState_Short=E_Element_State_Short.eClean
+			THEN;
+				eTriBlenderUsage:=E_TriBlenderUsage.eNotInUse;
+			END_IF
+
+			IF eTriBlenderUsage=E_TriBlenderUsage.eColor_Standby
+			AND fbTargetElement.eProdType=E_Product_Type.Color
+			AND	fbTargetElement.eState_Short=E_Element_State_Short.eClean
+			THEN;
+				eTriBlenderUsage:=E_TriBlenderUsage.eNotInUse;
+			END_IF
+			
+			CASE eTriBlenderUsage OF
+				E_TriBlenderUsage.eMarinada_T1:;
+			END_CASE
+	
+	E_Element_Type.eLine:;
+	
+			IF ((fbTankElement.eProdType=E_Product_Type.Marinada
+				AND ePrL_M_Usage=E_PrLine_M_LineUsage.eNotInUse) 
+			OR(fbTankElement.eProdType=E_Product_Type.Color
+				AND ePrL_C_Usage=E_PrLine_C_Usage.eNotInUse)) 
+			AND fbTankElement.eInterConnect=E_InterConnection.NotConnected
+			AND TRUE 
+			THEN;
+				IF (fbTankElement.eState_Short=E_Element_State_Short.eProduct 
+					//OR fbTankElement.eState_Short=E_Element_State_Short.eClean)
+					)
+				AND (fbTargetElement.eState_Short=E_Element_State_Short.eProduct 
+					OR fbTargetElement.eState_Short=E_Element_State_Short.eClean)
+				THEN;
+					bAvalableToConnect:=TRUE;
+				ELSE;
+					bAvalableToConnect:=FALSE;
+				END_IF			
+			ELSE;
+				bAvalableToConnect:=FALSE;
+			END_IF
+	
+END_CASE
+
+// To Disconnect
+CASE fbTargetElement.eType OF
+	E_Element_Type.eTriBlender:;
+		IF bActive AND fbTankElement.eState_Long<>E_Element_State_Long.eProduction THEN;
+			bAvalableToDisconnect:=TRUE;
+		ELSE;
+			bAvalableToDisconnect:=FALSE;
+		END_IF
+	E_Element_Type.eLine:;
+		IF bActive AND fbTankElement.eState_Long<>E_Element_State_Long.eProduction THEN;
+			bAvalableToDisconnect:=TRUE;
+		ELSE;
+			bAvalableToDisconnect:=FALSE;
+		END_IF	
+END_CASE
+]]></ST>
+      </Implementation>
+    </Action>
+    <Action Name="act_Avalable_old" Id="{e8f726df-c8bd-49e0-a7b9-a7db9b415d50}">
+      <Implementation>
+        <ST><![CDATA[// To Connect
+CASE fbTargetElement.eType OF
+	E_Element_Type.eTriBlender:;
+			IF (eTriBlenderUsage=E_TriBlenderUsage.eNotInUse 
+			OR(eTriBlenderUsage=E_TriBlenderUsage.eMarinada_Standby 
+				AND fbTankElement.eProdType=E_Product_Type.Marinada)
+			OR(eTriBlenderUsage=E_TriBlenderUsage.eColor_Standby 
+				AND fbTankElement.eProdType=E_Product_Type.Color))
+			AND fbElement[E_Element_List.eTriBlender_Marinada].eState_Short<>E_Element_State_Short.eNotClean	
+			AND fbElement[E_Element_List.eTriBlender_Color].eState_Short<>E_Element_State_Short.eNotClean
+			AND fbTankElement.eInterConnect=E_InterConnection.NotConnected	
+			THEN;
+				IF (fbTankElement.eState_Short=E_Element_State_Short.eClean 
+					//OR fbTankElement.eState_Short=E_Element_State_Short.eProduct)
+					)
+				AND (fbTargetElement.eState_Short=E_Element_State_Short.eClean 
+					OR fbTargetElement.eState_Short=E_Element_State_Short.eProduct)
+				THEN;
+					bAvalableToConnect:=TRUE;
+				ELSE;
+					bAvalableToConnect:=FALSE;
+				END_IF	
+			ELSE;
+				bAvalableToConnect:=FALSE;
+			END_IF
+		
+			IF fbTargetElement.eState_Short=E_Element_State_Short.eNotClean THEN;
+				eTriBlenderUsage:=E_TriBlenderUsage.eNotInUse;
+			END_IF
+			
+			CASE eTriBlenderUsage OF
+				E_TriBlenderUsage.eMarinada_T1:;
+			END_CASE
+	
+	E_Element_Type.eLine:;
+	
+			IF ((fbTankElement.eProdType=E_Product_Type.Marinada
+				AND ePrL_M_Usage=E_PrLine_M_LineUsage.eNotInUse) 
+			OR(fbTankElement.eProdType=E_Product_Type.Color
+				AND ePrL_C_Usage=E_PrLine_C_Usage.eNotInUse)) 
+			AND fbTankElement.eInterConnect=E_InterConnection.NotConnected
+			AND TRUE 
+			THEN;
+				IF (fbTankElement.eState_Short=E_Element_State_Short.eProduct 
+					//OR fbTankElement.eState_Short=E_Element_State_Short.eClean)
+					)
+				AND (fbTargetElement.eState_Short=E_Element_State_Short.eProduct 
+					OR fbTargetElement.eState_Short=E_Element_State_Short.eClean)
+				THEN;
+					bAvalableToConnect:=TRUE;
+				ELSE;
+					bAvalableToConnect:=FALSE;
+				END_IF			
+			ELSE;
+				bAvalableToConnect:=FALSE;
+			END_IF
+	
+END_CASE
+
+// To Disconnect
+CASE fbTargetElement.eType OF
+	E_Element_Type.eTriBlender:;
+		IF bActive AND fbTankElement.eState_Long<>E_Element_State_Long.eProduction THEN;
+			bAvalableToDisconnect:=TRUE;
+		ELSE;
+			bAvalableToDisconnect:=FALSE;
+		END_IF
+	E_Element_Type.eLine:;
+		IF bActive AND fbTankElement.eState_Long<>E_Element_State_Long.eProduction THEN;
+			bAvalableToDisconnect:=TRUE;
+		ELSE;
+			bAvalableToDisconnect:=FALSE;
+		END_IF	
+END_CASE
+]]></ST>
+      </Implementation>
+    </Action>
+    <Method Name="m_Connect" Id="{e7e6d898-ed15-47b5-b661-2b6aa3ec33b3}">
+      <Declaration><![CDATA[METHOD m_Connect : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF bAvalableToConnect THEN;
+	
+	CASE fbTankElement.eElementID OF
+		E_Element_List.eTank_1:;
+				CASE fbTargetElement.eElementID OF
+					E_Element_List.eTriBlender_Marinada:;
+						eTriBlenderUsage:=E_TriBlenderUsage.eMarinada_T1;
+						fbTankElement.m_InterConnect(value:=E_InterConnection.ConnToTriBlender);
+					E_Element_List.eLine_Marinada:;
+						ePrL_M_Usage:=E_PrLine_M_LineUsage.eMarinada_T1;
+						fbTankElement.m_InterConnect(value:=E_InterConnection.ConnToLine);
+				END_CASE								
+				
+		E_Element_List.eTank_2:;		
+				CASE fbTargetElement.eElementID OF
+					E_Element_List.eTriBlender_Marinada:;
+						eTriBlenderUsage:=E_TriBlenderUsage.eMarinada_T2;
+						fbTankElement.m_InterConnect(value:=E_InterConnection.ConnToTriBlender);
+					E_Element_List.eLine_Marinada:;
+						ePrL_M_Usage:=E_PrLine_M_LineUsage.eMarinada_T2;
+						fbTankElement.m_InterConnect(value:=E_InterConnection.ConnToLine);
+				END_CASE		
+		
+				
+		E_Element_List.eTank_3:;
+				CASE fbTargetElement.eElementID OF
+					E_Element_List.eTriBlender_Color:;
+						eTriBlenderUsage:=E_TriBlenderUsage.eColor_T3;
+						fbTankElement.m_InterConnect(value:=E_InterConnection.ConnToTriBlender);
+					E_Element_List.eLine_Color:;
+						ePrL_C_Usage:=E_PrLine_C_Usage.eColor_T3;
+						fbTankElement.m_InterConnect(value:=E_InterConnection.ConnToLine);
+				END_CASE
+						
+		E_Element_List.eTank_4:;
+				CASE fbTargetElement.eElementID OF
+					E_Element_List.eTriBlender_Color:;
+						eTriBlenderUsage:=E_TriBlenderUsage.eColor_T4;
+						fbTankElement.m_InterConnect(value:=E_InterConnection.ConnToTriBlender);
+					E_Element_List.eLine_Color:;
+						ePrL_C_Usage:=E_PrLine_C_Usage.eColor_T4;
+						fbTankElement.m_InterConnect(value:=E_InterConnection.ConnToLine);
+				END_CASE		
+						
+	END_CASE
+	fbTargetElement.m_InterConnect(value:=E_InterConnection.ConnToTank);
+	bActive:=TRUE;
+ELSE;
+
+END_IF
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_Disconnect" Id="{8e7cefc8-01ec-43b9-a1a9-02ea327c2eac}">
+      <Declaration><![CDATA[METHOD m_Disconnect : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF bActive AND fbTankElement.eState_Long<>E_Element_State_Long.eProduction THEN;
+	IF fbTargetElement.eType=E_Element_Type.eTriBlender THEN;
+		IF fbTargetElement.eState_Short=E_Element_State_Short.eProduct THEN;
+			IF fbTankElement.eProdType=E_Product_Type.Marinada THEN;
+				eTriBlenderUsage:=E_TriBlenderUsage.eMarinada_Standby;
+			END_IF
+			IF fbTankElement.eProdType=E_Product_Type.Color THEN;
+				eTriBlenderUsage:=E_TriBlenderUsage.eColor_Standby;
+			END_IF
+		ELSE;
+			eTriBlenderUsage:=E_TriBlenderUsage.eNotInUse;
+		END_IF
+		
+		
+	ELSIF fbTargetElement.eType=E_Element_Type.eLine THEN;
+		IF fbTankElement.eProdType=E_Product_Type.Marinada THEN;
+			ePrL_M_Usage:=E_PrLine_M_LineUsage.eNotInUse;
+		END_IF
+		IF fbTankElement.eProdType=E_Product_Type.Color THEN;
+			ePrL_C_Usage:=E_PrLine_C_Usage.eNotInUse;
+		END_IF		
+	END_IF
+	fbTankElement.m_InterConnect(value:=E_InterConnection.NotConnected);
+	fbTargetElement.m_InterConnect(value:=E_InterConnection.NotConnected);
+	bActive:=FALSE;
+END_IF
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_InterConnection">
+      <LineId Id="236" Count="1" />
+      <LineId Id="186" Count="0" />
+      <LineId Id="184" Count="0" />
+      <LineId Id="118" Count="3" />
+      <LineId Id="225" Count="0" />
+      <LineId Id="122" Count="3" />
+      <LineId Id="226" Count="0" />
+      <LineId Id="126" Count="0" />
+      <LineId Id="38" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_InterConnection.act_Active">
+      <LineId Id="3" Count="0" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="37" Count="0" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="32" Count="1" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="35" Count="1" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="13" Count="1" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="4" Count="0" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_InterConnection.act_Avalable">
+      <LineId Id="85" Count="9" />
+      <LineId Id="159" Count="0" />
+      <LineId Id="171" Count="2" />
+      <LineId Id="95" Count="15" />
+      <LineId Id="162" Count="0" />
+      <LineId Id="161" Count="0" />
+      <LineId Id="160" Count="0" />
+      <LineId Id="111" Count="1" />
+      <LineId Id="163" Count="5" />
+      <LineId Id="113" Count="0" />
+      <LineId Id="169" Count="0" />
+      <LineId Id="114" Count="43" />
+      <LineId Id="37" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_InterConnection.act_Avalable_old">
+      <LineId Id="85" Count="9" />
+      <LineId Id="159" Count="0" />
+      <LineId Id="95" Count="62" />
+      <LineId Id="37" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_InterConnection.m_Connect">
+      <LineId Id="5" Count="0" />
+      <LineId Id="27" Count="2" />
+      <LineId Id="54" Count="0" />
+      <LineId Id="56" Count="0" />
+      <LineId Id="58" Count="0" />
+      <LineId Id="81" Count="0" />
+      <LineId Id="57" Count="0" />
+      <LineId Id="59" Count="0" />
+      <LineId Id="82" Count="0" />
+      <LineId Id="53" Count="0" />
+      <LineId Id="37" Count="0" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="63" Count="2" />
+      <LineId Id="83" Count="0" />
+      <LineId Id="66" Count="1" />
+      <LineId Id="84" Count="0" />
+      <LineId Id="61" Count="1" />
+      <LineId Id="38" Count="0" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="69" Count="2" />
+      <LineId Id="85" Count="0" />
+      <LineId Id="72" Count="1" />
+      <LineId Id="86" Count="0" />
+      <LineId Id="68" Count="0" />
+      <LineId Id="74" Count="0" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="76" Count="2" />
+      <LineId Id="87" Count="0" />
+      <LineId Id="79" Count="1" />
+      <LineId Id="88" Count="0" />
+      <LineId Id="75" Count="0" />
+      <LineId Id="45" Count="0" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="46" Count="0" />
+      <LineId Id="8" Count="2" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="11" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_InterConnection.m_Disconnect">
+      <LineId Id="18" Count="0" />
+      <LineId Id="6" Count="0" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="30" Count="4" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="35" Count="1" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="21" Count="5" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="45" Count="1" />
+      <LineId Id="43" Count="0" />
+      <LineId Id="39" Count="0" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>
