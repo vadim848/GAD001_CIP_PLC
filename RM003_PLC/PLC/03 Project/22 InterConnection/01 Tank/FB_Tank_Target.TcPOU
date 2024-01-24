@@ -28,8 +28,13 @@ END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[act_GetReference();
-act_Status();
-act_Oper();]]></ST>
+
+act_Oper();
+IF NOT Init.x THEN;
+	act_Status();
+END_IF
+
+]]></ST>
     </Implementation>
     <Folder Name="Manage" Id="{e461fcff-545d-4d57-a27d-4174ff6e3a51}" />
     <Action Name="_aCIP_active" Id="{e16ca9a6-461a-481e-961d-0ed26f76e308}">
@@ -237,7 +242,7 @@ fbPis.m_SetByRecipe(stPis:=valCIP, 			req:=E_Piston_Recipe_State.Release);]]></S
         </XmlArchive>
       </ObjectProperties>
     </Action>
-    <Action Name="_aInit_Tank_active" Id="{cef529ac-1147-479f-874c-293fab5d64a2}">
+    <Action Name="_aInit_active" Id="{cef529ac-1147-479f-874c-293fab5d64a2}">
       <Implementation>
         <ST><![CDATA[SFCReset:=FALSE;]]></ST>
       </Implementation>
@@ -255,7 +260,7 @@ fbPis.m_SetByRecipe(stPis:=valCIP, 			req:=E_Piston_Recipe_State.Release);]]></S
         </XmlArchive>
       </ObjectProperties>
     </Action>
-    <Action Name="_aInit_Tank_exit" Id="{883cd8f7-e2c9-4fd3-a843-28ad6c843fc3}">
+    <Action Name="_aInit_exit" Id="{883cd8f7-e2c9-4fd3-a843-28ad6c843fc3}">
       <Implementation>
         <ST><![CDATA[eProcess:=E_Tank_Target.eNone;
 eReq:=E_Tank_Target.eNone;
@@ -306,7 +311,7 @@ END_IF
 //fbPis.m_SetByRecipe(stPis:=valLine, req:=E_Piston_Recipe_State.Release);
 //fbPis.m_SetByRecipe(stPis:=valTriBlender, req:=E_Piston_Recipe_State.Release);
 fbPis.m_SetByRecipe(stPis:=valDrain, req:=E_Piston_Recipe_State.Act);
-//fbPis.m_SetByRecipe(stPis:=valCIP, req:=E_Piston_Recipe_State.Release);]]></ST>
+fbPis.m_SetByRecipe(stPis:=valCIP, req:=E_Piston_Recipe_State.Release);]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -489,7 +494,7 @@ END_CASE
                           <o>
                             <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                             <o n="Value" t="StringValue">
-                              <v n="Value">"Init_Tank"</v>
+                              <v n="Value">"Init"</v>
                               <v n="DefaultValue">""</v>
                             </o>
                             <v n="Id">3L</v>
@@ -545,7 +550,7 @@ END_CASE
                           <o>
                             <v n="AttributeId">{cacf1a68-236e-47c2-b7b1-1cf9199718cb}</v>
                             <o n="Value" t="StringValue">
-                              <v n="Value">""</v>
+                              <v n="Value">"T#0.5s"</v>
                               <v n="DefaultValue">""</v>
                             </o>
                             <v n="Id">9L</v>
@@ -563,7 +568,7 @@ END_CASE
                           <o>
                             <v n="AttributeId">{700a583f-b4d4-43e4-8c14-629c7cd3bec8}</v>
                             <o n="Value" t="StringValue">
-                              <v n="Value">"_aInit_Tank_active"</v>
+                              <v n="Value">"_aInit_active"</v>
                               <v n="DefaultValue">""</v>
                             </o>
                             <v n="Id">11L</v>
@@ -581,7 +586,7 @@ END_CASE
                           <o>
                             <v n="AttributeId">{a2621e18-7de3-4ea6-ae6d-89e9e0b7befd}</v>
                             <o n="Value" t="StringValue">
-                              <v n="Value">"_aInit_Tank_exit"</v>
+                              <v n="Value">"_aInit_exit"</v>
                               <v n="DefaultValue">""</v>
                             </o>
                             <v n="Id">13L</v>
@@ -592,7 +597,7 @@ END_CASE
                         <v n="IdParent">1L</v>
                       </o>
                       <o t="SFCTransition">
-                        <v n="VariableName">"Init_Tank__to__Valves_to_Deafult"</v>
+                        <v n="VariableName">"Init__to__Valves_to_Deafult"</v>
                         <n n="EmbeddedTransition" />
                         <l2 n="EmbeddedTransitionProperties" />
                         <l2 n="Attributes" cet="SFCAttribute">
@@ -1100,7 +1105,7 @@ END_CASE
                                       <o>
                                         <v n="AttributeId">{cacf1a68-236e-47c2-b7b1-1cf9199718cb}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"T#2s"</v>
+                                          <v n="Value">""</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">97L</v>
@@ -1753,7 +1758,7 @@ END_CASE
                                       <o>
                                         <v n="AttributeId">{cacf1a68-236e-47c2-b7b1-1cf9199718cb}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">""</v>
+                                          <v n="Value">"T#3s"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">359L</v>
@@ -3319,7 +3324,7 @@ END_CASE
                           <o>
                             <v n="AttributeId">{cacf1a68-236e-47c2-b7b1-1cf9199718cb}</v>
                             <o n="Value" t="StringValue">
-                              <v n="Value">"T#2s"</v>
+                              <v n="Value">"T#0.2s"</v>
                               <v n="DefaultValue">""</v>
                             </o>
                             <v n="Id">54L</v>
@@ -3366,7 +3371,7 @@ END_CASE
                         <v n="IdParent">1L</v>
                       </o>
                       <o t="SFCTransition">
-                        <v n="VariableName">"Done__to__Init_Tank"</v>
+                        <v n="VariableName">"Done__to__Init"</v>
                         <n n="EmbeddedTransition" />
                         <l2 n="EmbeddedTransitionProperties" />
                         <l2 n="Attributes" cet="SFCAttribute">
@@ -3437,7 +3442,7 @@ END_CASE
                           <o>
                             <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                             <o n="Value" t="StringValue">
-                              <v n="Value">"Init_Tank"</v>
+                              <v n="Value">"Init"</v>
                               <v n="DefaultValue">""</v>
                             </o>
                             <v n="Id">22L</v>
@@ -3896,7 +3901,7 @@ THEN;
 	eStatus:=E_Tank_Target.eClose;
 	
 ELSIF TRUE 
-AND fbPis.m_CheckByRecipe(stPis:=valOutlet, 	req:=E_Piston_Recipe_State.Release)
+AND fbPis.m_CheckByRecipe(stPis:=valOutlet, 	req:=E_Piston_Recipe_State.Act)
 //AND fbPis.m_CheckByRecipe(stPis:=valLine, 		req:=E_Piston_Recipe_State.Release)
 //AND fbPis.m_CheckByRecipe(stPis:=valTriBlender, req:=E_Piston_Recipe_State.Release)
 AND fbPis.m_CheckByRecipe(stPis:=valDrain, 		req:=E_Piston_Recipe_State.Release)
@@ -3952,9 +3957,10 @@ m_SFC_Handle();]]></ST>
       </Implementation>
     </Method>
     <LineIds Name="FB_Tank_Target">
-      <LineId Id="9" Count="0" />
-      <LineId Id="27" Count="0" />
-      <LineId Id="10" Count="0" />
+      <LineId Id="89" Count="2" />
+      <LineId Id="93" Count="2" />
+      <LineId Id="97" Count="0" />
+      <LineId Id="55" Count="0" />
     </LineIds>
     <LineIds Name="FB_Tank_Target._aCIP_active">
       <LineId Id="2" Count="6" />
@@ -3999,10 +4005,10 @@ m_SFC_Handle();]]></ST>
       <LineId Id="2" Count="3" />
       <LineId Id="1" Count="0" />
     </LineIds>
-    <LineIds Name="FB_Tank_Target._aInit_Tank_active">
+    <LineIds Name="FB_Tank_Target._aInit_active">
       <LineId Id="1" Count="0" />
     </LineIds>
-    <LineIds Name="FB_Tank_Target._aInit_Tank_exit">
+    <LineIds Name="FB_Tank_Target._aInit_exit">
       <LineId Id="1" Count="0" />
       <LineId Id="3" Count="0" />
       <LineId Id="2" Count="0" />
