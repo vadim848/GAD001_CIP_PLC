@@ -9,7 +9,7 @@ VAR_OUTPUT
 END_VAR
 VAR
 	refElement			: REFERENCE TO FB_Element;
-
+	refState_Long		: REFERENCE TO E_Element_State_Long;
 	eReq				: E_Request_List;
 	eProcess			: E_Element_Process;	
 END_VAR
@@ -21,7 +21,9 @@ act_Oper();]]></ST>
     <Folder Name="Manage" Id="{4859bb81-2525-4c2b-a781-1bdd74a1527c}" />
     <Action Name="_aDone_entry" Id="{22274b2d-d139-431d-9120-18b216750139}">
       <Implementation>
-        <ST><![CDATA[eProcess:=E_Element_Process.eNone;]]></ST>
+        <ST><![CDATA[eProcess:=E_Element_Process.eNone;
+eReq:=E_Request_List.eNone;
+]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -58,6 +60,7 @@ act_Oper();]]></ST>
     <Action Name="_aInit_Tank_exit" Id="{33d510e9-50b3-4604-a23f-bad2ee4813a9}">
       <Implementation>
         <ST><![CDATA[eProcess:=E_Element_Process.eNone;
+eReq:=E_Request_List.eNone;
 ]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -78,7 +81,7 @@ act_Oper();]]></ST>
       <Implementation>
         <ST><![CDATA[
 
-CASE eState_Long OF
+CASE refElement.eState_Long OF
 	E_Element_State_Long.eOff,E_Element_State_Long.eStandby:;
 			IF eReq=E_Request_List.eDrain THEN;
 				eProcess:=E_Element_Process.eDrain;
@@ -122,9 +125,27 @@ END_CASE
         </XmlArchive>
       </ObjectProperties>
     </Action>
+    <Action Name="_aReady_entry" Id="{0368d597-eca6-412d-b71d-17e922d93370}">
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
     <Action Name="_aState_Update_01_entry" Id="{b174de60-7e5f-4942-be67-389d229edc22}">
       <Implementation>
-        <ST><![CDATA[eState_Long:=E_Element_State_Long.eNotClean;
+        <ST><![CDATA[refState_Long:=E_Element_State_Long.eNotClean;
 ]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -143,7 +164,7 @@ END_CASE
     </Action>
     <Action Name="_aState_Update_02_entry" Id="{d468a8a8-6dc7-4b43-90b3-33def5e0d312}">
       <Implementation>
-        <ST><![CDATA[eState_Long:=E_Element_State_Long.eWaterReady;
+        <ST><![CDATA[refState_Long:=E_Element_State_Long.eWaterReady;
 ]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -162,7 +183,7 @@ END_CASE
     </Action>
     <Action Name="_aState_Update_03_entry" Id="{4b8db616-d5f3-4549-b3e4-6ee4f44d6db0}">
       <Implementation>
-        <ST><![CDATA[eState_Long:=E_Element_State_Long.eReady;
+        <ST><![CDATA[refState_Long:=E_Element_State_Long.eReady;
 ]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -181,7 +202,7 @@ END_CASE
     </Action>
     <Action Name="_aState_Update_04_entry" Id="{2ab0e0ff-ffd1-4ad8-87f5-e07b9ab3ae5d}">
       <Implementation>
-        <ST><![CDATA[eState_Long:=E_Element_State_Long.eProduction;
+        <ST><![CDATA[refState_Long:=E_Element_State_Long.eProduction;
 ]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -200,7 +221,7 @@ END_CASE
     </Action>
     <Action Name="_aState_Update_05_entry" Id="{28f5b2ef-e541-4f70-a6c4-0fb099d990d5}">
       <Implementation>
-        <ST><![CDATA[eState_Long:=E_Element_State_Long.eReady;
+        <ST><![CDATA[refState_Long:=E_Element_State_Long.eReady;
 ]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -221,7 +242,7 @@ END_CASE
       <Implementation>
         <ST><![CDATA[m_Set_SFCFlags_Reference();
 refElement REF= fbElement[eElementID];
-]]></ST>
+refState_Long REF= fbElement[eElementID].eState_Long;]]></ST>
       </Implementation>
     </Action>
     <Action Name="act_Oper" Id="{0fa1f0eb-f194-455d-88e3-45c20b66e264}" FolderPath="Manage\">
@@ -303,7 +324,7 @@ refElement REF= fbElement[eElementID];
                           <o>
                             <v n="AttributeId">{cacf1a68-236e-47c2-b7b1-1cf9199718cb}</v>
                             <o n="Value" t="StringValue">
-                              <v n="Value">"T#2s"</v>
+                              <v n="Value">""</v>
                               <v n="DefaultValue">""</v>
                             </o>
                             <v n="Id">9L</v>
@@ -669,7 +690,7 @@ refElement REF= fbElement[eElementID];
                           <o>
                             <v n="AttributeId">{cacf1a68-236e-47c2-b7b1-1cf9199718cb}</v>
                             <o n="Value" t="StringValue">
-                              <v n="Value">"T#2s"</v>
+                              <v n="Value">""</v>
                               <v n="DefaultValue">""</v>
                             </o>
                             <v n="Id">35L</v>
@@ -696,7 +717,7 @@ refElement REF= fbElement[eElementID];
                           <o>
                             <v n="AttributeId">{a6b08bd8-b696-47e3-9cbf-7408b61c9ff8}</v>
                             <o n="Value" t="StringValue">
-                              <v n="Value">""</v>
+                              <v n="Value">"_aReady_entry"</v>
                               <v n="DefaultValue">""</v>
                             </o>
                             <v n="Id">38L</v>
@@ -858,7 +879,7 @@ refElement REF= fbElement[eElementID];
                                       <o>
                                         <v n="AttributeId">{cacf1a68-236e-47c2-b7b1-1cf9199718cb}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">""</v>
+                                          <v n="Value">"T#2s"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">97L</v>
@@ -3773,12 +3794,16 @@ m_SFC_Handle();]]></ST>
     </LineIds>
     <LineIds Name="FB_ProductionTank._aDone_entry">
       <LineId Id="1" Count="0" />
+      <LineId Id="3" Count="0" />
+      <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank._aInit_Tank_active">
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank._aInit_Tank_exit">
-      <LineId Id="1" Count="1" />
+      <LineId Id="1" Count="0" />
+      <LineId Id="3" Count="0" />
+      <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank._aReady_active">
       <LineId Id="2" Count="1" />
@@ -3798,6 +3823,9 @@ m_SFC_Handle();]]></ST>
       <LineId Id="7" Count="0" />
       <LineId Id="5" Count="0" />
       <LineId Id="4" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ProductionTank._aReady_entry">
+      <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank._aState_Update_01_entry">
       <LineId Id="1" Count="1" />
