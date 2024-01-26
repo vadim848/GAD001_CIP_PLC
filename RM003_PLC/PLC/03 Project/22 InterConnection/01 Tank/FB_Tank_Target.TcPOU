@@ -138,6 +138,8 @@ fbPis.m_SetByRecipe(stPis:=valCIP, 			req:=E_Piston_Recipe_State.Release);
       <Implementation>
         <ST><![CDATA[eProcess:=E_Tank_Target.eNone;
 eReq:=E_Tank_Target.eNone;
+bRun:=FALSE;
+bDone:=TRUE;
 ]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -373,6 +375,25 @@ END_CASE
     <Action Name="_aReady_entry" Id="{e2fd146d-3d57-4fcf-a91d-639e0839d25b}">
       <Implementation>
         <ST><![CDATA[]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
+    <Action Name="_aReady_exit" Id="{10d9b54d-9a6f-4993-86ba-c8a5bc0d174a}">
+      <Implementation>
+        <ST><![CDATA[bRun:=TRUE;
+bDone:=FALSE;]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -952,7 +973,7 @@ END_CASE
                           <o>
                             <v n="AttributeId">{a2621e18-7de3-4ea6-ae6d-89e9e0b7befd}</v>
                             <o n="Value" t="StringValue">
-                              <v n="Value">""</v>
+                              <v n="Value">"_aReady_exit"</v>
                               <v n="DefaultValue">""</v>
                             </o>
                             <v n="Id">39L</v>
@@ -3932,6 +3953,37 @@ ELSE;
 END_IF]]></ST>
       </Implementation>
     </Action>
+    <Method Name="m_CheckStatus" Id="{730e0eab-fcbe-441f-8132-795becd278a2}">
+      <Declaration><![CDATA[METHOD m_CheckStatus : BOOL
+VAR_INPUT
+	eReqStatus		: E_Tank_Target;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF eStatus=eReqStatus 
+AND eProcess=E_Tank_Target.eNone
+AND eReq=E_Tank_Target.eNone
+AND bDone
+AND NOT bRun
+THEN;
+	m_CheckStatus:=TRUE;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_Run" Id="{7ffc4675-e14a-4e0d-a035-300d182aa227}">
+      <Declaration><![CDATA[METHOD m_Run : BOOL
+VAR_INPUT
+	eReqProc			: E_Tank_Target;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF eProcess=E_Tank_Target.eNone THEN;
+	eProcess:=eReq:=eReqProc;
+	bDone:=FALSE;
+	m_Run:=TRUE;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="m_Set_SFCFlags_Reference" Id="{f4d4034f-fbcd-4ba0-9568-d6c2136b33ee}">
       <Declaration><![CDATA[{warning 'add method implementation '}
 METHOD m_Set_SFCFlags_Reference : BOOL
@@ -3988,6 +4040,7 @@ m_SFC_Handle();]]></ST>
     <LineIds Name="FB_Tank_Target._aDone_entry">
       <LineId Id="1" Count="0" />
       <LineId Id="3" Count="0" />
+      <LineId Id="6" Count="1" />
       <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="FB_Tank_Target._aDrain_active">
@@ -4041,6 +4094,10 @@ m_SFC_Handle();]]></ST>
     <LineIds Name="FB_Tank_Target._aReady_entry">
       <LineId Id="2" Count="0" />
     </LineIds>
+    <LineIds Name="FB_Tank_Target._aReady_exit">
+      <LineId Id="2" Count="0" />
+      <LineId Id="1" Count="0" />
+    </LineIds>
     <LineIds Name="FB_Tank_Target._aState_Update_01_entry">
       <LineId Id="1" Count="1" />
     </LineIds>
@@ -4084,6 +4141,19 @@ m_SFC_Handle();]]></ST>
       <LineId Id="15" Count="0" />
       <LineId Id="17" Count="0" />
       <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Tank_Target.m_CheckStatus">
+      <LineId Id="5" Count="0" />
+      <LineId Id="13" Count="1" />
+      <LineId Id="10" Count="1" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="7" Count="1" />
+    </LineIds>
+    <LineIds Name="FB_Tank_Target.m_Run">
+      <LineId Id="5" Count="0" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="9" Count="1" />
+      <LineId Id="8" Count="0" />
     </LineIds>
     <LineIds Name="FB_Tank_Target.m_Set_SFCFlags_Reference">
       <LineId Id="5" Count="15" />
