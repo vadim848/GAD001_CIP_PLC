@@ -197,7 +197,7 @@ END_VAR
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="m_InterConnected_State" Id="{5873be97-3110-49a4-84ea-a94cd608159b}">
+    <Method Name="m_InterConnected_State" Id="{c4bb22d1-79f1-477b-b979-1591791ba3b1}">
       <Declaration><![CDATA[METHOD m_InterConnected_State : BOOL
 VAR_INPUT
 	eState_Long_Set			: E_Element_State_Long;
@@ -237,6 +237,25 @@ refSFC.SFCCurrentStep REF= SFCCurrentStep;
 
 // Cycle handle for SFC
 m_SFC_Handle();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_Set_State" Id="{5873be97-3110-49a4-84ea-a94cd608159b}">
+      <Declaration><![CDATA[METHOD m_Set_State : BOOL
+VAR_INPUT
+	eState_Long_Set			: E_Element_State_Long;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[(*
+IF eState_Long_Set>eState_Long 
+OR eState_Long_Set=E_Element_State_Long.eNotClean
+THEN;
+	eState_Long:=eState_Long_Set;
+END_IF
+*)
+eState_Long:=eState_Long_Set;
+
+]]></ST>
       </Implementation>
     </Method>
     <Method Name="m_StateUpdate_Limit" Id="{fb1d1185-6118-48f5-8cfa-978fe0325d17}">
@@ -319,6 +338,16 @@ END_IF]]></ST>
     <LineIds Name="FB_Element.m_Set_SFCFlags_Reference">
       <LineId Id="5" Count="15" />
       <LineId Id="4" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Element.m_Set_State">
+      <LineId Id="14" Count="1" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="17" Count="1" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="8" Count="0" />
     </LineIds>
     <LineIds Name="FB_Element.m_StateUpdate_Limit">
       <LineId Id="6" Count="3" />
