@@ -18,6 +18,7 @@ VAR
 	TON_3: TON;
 	TON_4: TON;
 	TON_5: TON;	
+	i: INT;
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -32,7 +33,12 @@ END_IF
 IF bPis_Next_N THEN;
 	m_Get_Next_N(iSel:=iPis_sel);
 	bPis_Next_N:=FALSE;
-END_IF]]></ST>
+END_IF
+
+FOR i:=0 TO E_Pis_Name.last DO
+	ePisNameList:=i;
+	arPisNameList[i]:=TO_STRING(ePisNameList);
+END_FOR]]></ST>
     </Implementation>
     <Action Name="act_Call_list_1_Manif1" Id="{83559ed6-55a3-4493-87ff-019e7d7f6085}">
       <Implementation>
@@ -2704,6 +2710,11 @@ END_IF
       <LineId Id="94" Count="1" />
       <LineId Id="98" Count="8" />
       <LineId Id="29" Count="0" />
+      <LineId Id="126" Count="0" />
+      <LineId Id="125" Count="0" />
+      <LineId Id="127" Count="0" />
+      <LineId Id="130" Count="0" />
+      <LineId Id="128" Count="0" />
     </LineIds>
     <LineIds Name="prg_Piston.act_InterLock">
       <LineId Id="1" Count="0" />
