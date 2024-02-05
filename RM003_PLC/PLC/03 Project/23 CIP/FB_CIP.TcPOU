@@ -12538,11 +12538,12 @@ END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF iPosSelect_HMI>=0 AND iPosSelect_HMI<9 THEN;
 	IF iPosSelect_HMI<>0 OR NOT bRun THEN;		
-			IF (arCIP_RequestBufer[iPosSelect_HMI].eType=E_CIP_Type.R_Water 
+			IF ((arCIP_RequestBufer[iPosSelect_HMI].eType=E_CIP_Type.R_Water 
 				AND (arCIP_RequestBufer[iPosSelect_HMI+1].eType=E_CIP_Type.Detergent 
 				OR arCIP_RequestBufer[iPosSelect_HMI+1].eType=E_CIP_Type.Full)) 
-			OR (arCIP_RequestBufer[iPosSelect_HMI].eType=E_CIP_Type.Detergent 
-				AND arCIP_RequestBufer[iPosSelect_HMI+1].eType=E_CIP_Type.Full) 
+			OR (arCIP_RequestBufer[iPosSelect_HMI].eType=E_CIP_Type.Detergent 				
+				AND arCIP_RequestBufer[iPosSelect_HMI+1].eType=E_CIP_Type.Full))
+			AND (arCIP_RequestBufer[iPosSelect_HMI+1].eClient=arCIP_RequestBufer[iPosSelect_HMI].eClient) 
 			THEN
 				;
 			ELSE
@@ -12567,7 +12568,13 @@ END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF iPosSelect_HMI>0 AND iPosSelect_HMI<=9 THEN;
 	IF iPosSelect_HMI<>1 OR NOT bRun THEN;			
-			IF (arCIP_RequestBufer[iPosSelect_HMI].eType=e_cip_type.Full AND (arCIP_RequestBufer[iPosSelect_HMI-1].eType=E_CIP_Type.Detergent OR arCIP_RequestBufer[iPosSelect_HMI-1].eType=E_CIP_Type.R_Water)) OR (arCIP_RequestBufer[iPosSelect_HMI].eType=E_CIP_Type.Detergent AND arCIP_RequestBufer[iPosSelect_HMI-1].eType=E_CIP_Type.R_Water) THEN
+			IF ((arCIP_RequestBufer[iPosSelect_HMI].eType=e_cip_type.Full 
+				AND (arCIP_RequestBufer[iPosSelect_HMI-1].eType=E_CIP_Type.Detergent 
+				OR arCIP_RequestBufer[iPosSelect_HMI-1].eType=E_CIP_Type.R_Water)) 
+			OR (arCIP_RequestBufer[iPosSelect_HMI].eType=E_CIP_Type.Detergent 
+				AND arCIP_RequestBufer[iPosSelect_HMI-1].eType=E_CIP_Type.R_Water))
+			AND (arCIP_RequestBufer[iPosSelect_HMI-1].eClient=arCIP_RequestBufer[iPosSelect_HMI].eClient) 
+			THEN
 				;
 			ELSE
 				stCIP_Request_Temp:=arCIP_RequestBufer[iPosSelect_HMI-1];
@@ -12616,10 +12623,10 @@ END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF stCIP_Request.eClient<>E_CIP_Usage.eNotInUse
 AND stCIP_Request.eType<>E_CIP_Type.NotSelected
-AND g_data.fbElement[stCIP_Request.eClient].eState_Long>1 
-AND ((stCIP_Request.eType=1 AND g_data.fbElement[stCIP_Request.eClient].eState_Long<3)
-	OR (stCIP_Request.eType=2 AND g_data.fbElement[stCIP_Request.eClient].eState_Long<5)
-	OR (stCIP_Request.eType=3 AND g_data.fbElement[stCIP_Request.eClient].eState_Long<7))
+AND g_data.fbElement[stCIP_Request.eClient].eState_Long>E_Element_State_Long.eStandby 
+AND ((stCIP_Request.eType=E_CIP_Type.R_Water AND g_data.fbElement[stCIP_Request.eClient].eState_Long<E_Element_State_Long.eCIP_1_Rinzed)
+	OR (stCIP_Request.eType=E_CIP_Type.Detergent AND g_data.fbElement[stCIP_Request.eClient].eState_Long<E_Element_State_Long.eCIP_3_Deterged_Clean)
+	OR (stCIP_Request.eType=E_CIP_Type.Full AND g_data.fbElement[stCIP_Request.eClient].eState_Long<E_Element_State_Long.eCIP_5_Done))
 
 THEN
 	FOR i:=0 TO 9 DO
@@ -12823,7 +12830,10 @@ END_IF
       <LineId Id="5" Count="0" />
       <LineId Id="20" Count="0" />
       <LineId Id="49" Count="0" />
-      <LineId Id="61" Count="4" />
+      <LineId Id="73" Count="0" />
+      <LineId Id="62" Count="2" />
+      <LineId Id="75" Count="0" />
+      <LineId Id="65" Count="0" />
       <LineId Id="38" Count="0" />
       <LineId Id="40" Count="0" />
       <LineId Id="58" Count="2" />
@@ -12835,7 +12845,12 @@ END_IF
     <LineIds Name="FB_CIP.m_PosMove_Up_HMI">
       <LineId Id="5" Count="0" />
       <LineId Id="21" Count="0" />
-      <LineId Id="38" Count="1" />
+      <LineId Id="38" Count="0" />
+      <LineId Id="78" Count="0" />
+      <LineId Id="74" Count="2" />
+      <LineId Id="81" Count="0" />
+      <LineId Id="79" Count="0" />
+      <LineId Id="39" Count="0" />
       <LineId Id="41" Count="0" />
       <LineId Id="63" Count="2" />
       <LineId Id="62" Count="0" />
