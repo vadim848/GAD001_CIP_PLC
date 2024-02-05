@@ -12533,14 +12533,24 @@ VAR_INPUT
 END_VAR
 VAR
 	stCIP_Request_Temp: ST_CIP_Request;
+	i: INT;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF iPosSelect_HMI>=0 AND iPosSelect_HMI<9 THEN;
-	IF iPosSelect_HMI<>0 OR NOT bRun THEN;
-		stCIP_Request_Temp:=arCIP_RequestBufer[iPosSelect_HMI+1];
-		arCIP_RequestBufer[iPosSelect_HMI+1]:=arCIP_RequestBufer[iPosSelect_HMI];
-		arCIP_RequestBufer[iPosSelect_HMI]:=stCIP_Request_Temp;
-		iPosSelect_HMI:=iPosSelect_HMI+1;		
+	IF iPosSelect_HMI<>0 OR NOT bRun THEN;		
+			IF (arCIP_RequestBufer[iPosSelect_HMI].eType=E_CIP_Type.R_Water 
+				AND (arCIP_RequestBufer[iPosSelect_HMI+1].eType=E_CIP_Type.Detergent 
+				OR arCIP_RequestBufer[iPosSelect_HMI+1].eType=E_CIP_Type.Full)) 
+			OR (arCIP_RequestBufer[iPosSelect_HMI].eType=E_CIP_Type.Detergent 
+				AND arCIP_RequestBufer[iPosSelect_HMI+1].eType=E_CIP_Type.Full) 
+			THEN
+				;
+			ELSE
+				stCIP_Request_Temp:=arCIP_RequestBufer[iPosSelect_HMI+1];
+				arCIP_RequestBufer[iPosSelect_HMI+1]:=arCIP_RequestBufer[iPosSelect_HMI];
+				arCIP_RequestBufer[iPosSelect_HMI]:=stCIP_Request_Temp;
+				iPosSelect_HMI:=iPosSelect_HMI+1;	
+			END_IF	
 	END_IF
 END_IF]]></ST>
       </Implementation>
@@ -12551,14 +12561,20 @@ VAR_INPUT
 END_VAR
 VAR
 	stCIP_Request_Temp: ST_CIP_Request;
+	i: INT;
+	m: bool;
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF iPosSelect_HMI>0 AND iPosSelect_HMI<=9 THEN;
-	IF iPosSelect_HMI<>1 OR NOT bRun THEN;
-		stCIP_Request_Temp:=arCIP_RequestBufer[iPosSelect_HMI-1];
-		arCIP_RequestBufer[iPosSelect_HMI-1]:=arCIP_RequestBufer[iPosSelect_HMI];
-		arCIP_RequestBufer[iPosSelect_HMI]:=stCIP_Request_Temp;
-			iPosSelect_HMI:=iPosSelect_HMI-1;		
+	IF iPosSelect_HMI<>1 OR NOT bRun THEN;			
+			IF (arCIP_RequestBufer[iPosSelect_HMI].eType=e_cip_type.Full AND (arCIP_RequestBufer[iPosSelect_HMI-1].eType=E_CIP_Type.Detergent OR arCIP_RequestBufer[iPosSelect_HMI-1].eType=E_CIP_Type.R_Water)) OR (arCIP_RequestBufer[iPosSelect_HMI].eType=E_CIP_Type.Detergent AND arCIP_RequestBufer[iPosSelect_HMI-1].eType=E_CIP_Type.R_Water) THEN
+				;
+			ELSE
+				stCIP_Request_Temp:=arCIP_RequestBufer[iPosSelect_HMI-1];
+				arCIP_RequestBufer[iPosSelect_HMI-1]:=arCIP_RequestBufer[iPosSelect_HMI];
+				arCIP_RequestBufer[iPosSelect_HMI]:=stCIP_Request_Temp;
+				iPosSelect_HMI:=iPosSelect_HMI-1;
+			END_IF	
 	END_IF
 END_IF]]></ST>
       </Implementation>
@@ -12595,17 +12611,37 @@ END_VAR
 
 VAR
 	i: INT;
+	m: bool;	
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF stCIP_Request.eClient<>E_CIP_Usage.eNotInUse
 AND stCIP_Request.eType<>E_CIP_Type.NotSelected
-THEN;
+AND g_data.fbElement[stCIP_Request.eClient].eState_Long>1 
+AND ((stCIP_Request.eType=1 AND g_data.fbElement[stCIP_Request.eClient].eState_Long<3)
+	OR (stCIP_Request.eType=2 AND g_data.fbElement[stCIP_Request.eClient].eState_Long<5)
+	OR (stCIP_Request.eType=3 AND g_data.fbElement[stCIP_Request.eClient].eState_Long<7))
+
+THEN
 	FOR i:=0 TO 9 DO
-		IF arCIP_RequestBufer[i].eClient=E_CIP_Usage.eNotInUse THEN;
-			arCIP_RequestBufer[i]:=stCIP_Request;
-			EXIT;
+		IF arCIP_RequestBufer[i].eClient=stCIP_Request.eClient 
+			AND arCIP_RequestBufer[i].eType>=stCIP_Request.eType 
+		THEN 	
+				m:=FALSE;
+				EXIT;
+			ELSE
+				m:=TRUE;
 		END_IF
 	END_FOR	
+	IF m=TRUE THEN
+		FOR i:=0 TO 9 DO
+			IF arCIP_RequestBufer[i].eClient=E_CIP_Usage.eNotInUse 
+			THEN;
+				arCIP_RequestBufer[i]:=stCIP_Request;
+				m:=FALSE;
+				EXIT;
+			END_IF
+		END_FOR	
+	END_IF
 END_IF
 
 ]]></ST>
@@ -12786,15 +12822,25 @@ END_IF
     <LineIds Name="FB_CIP.m_PosMove_Down_HMI">
       <LineId Id="5" Count="0" />
       <LineId Id="20" Count="0" />
-      <LineId Id="23" Count="2" />
-      <LineId Id="21" Count="1" />
+      <LineId Id="49" Count="0" />
+      <LineId Id="61" Count="4" />
+      <LineId Id="38" Count="0" />
+      <LineId Id="40" Count="0" />
+      <LineId Id="58" Count="2" />
+      <LineId Id="57" Count="0" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="22" Count="0" />
       <LineId Id="7" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP.m_PosMove_Up_HMI">
       <LineId Id="5" Count="0" />
       <LineId Id="21" Count="0" />
-      <LineId Id="24" Count="2" />
-      <LineId Id="22" Count="1" />
+      <LineId Id="38" Count="1" />
+      <LineId Id="41" Count="0" />
+      <LineId Id="63" Count="2" />
+      <LineId Id="62" Count="0" />
+      <LineId Id="43" Count="0" />
+      <LineId Id="23" Count="0" />
       <LineId Id="7" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP.m_Set_SFCFlags_Reference">
@@ -12803,12 +12849,23 @@ END_IF
     </LineIds>
     <LineIds Name="FB_CIP.m_TakePosInCIPBuffer">
       <LineId Id="14" Count="0" />
-      <LineId Id="16" Count="0" />
+      <LineId Id="96" Count="0" />
+      <LineId Id="95" Count="0" />
+      <LineId Id="97" Count="0" />
+      <LineId Id="102" Count="0" />
+      <LineId Id="99" Count="0" />
+      <LineId Id="66" Count="0" />
       <LineId Id="18" Count="0" />
-      <LineId Id="20" Count="2" />
-      <LineId Id="24" Count="0" />
-      <LineId Id="23" Count="0" />
-      <LineId Id="19" Count="0" />
+      <LineId Id="33" Count="1" />
+      <LineId Id="57" Count="0" />
+      <LineId Id="59" Count="0" />
+      <LineId Id="61" Count="0" />
+      <LineId Id="94" Count="0" />
+      <LineId Id="89" Count="2" />
+      <LineId Id="78" Count="1" />
+      <LineId Id="81" Count="6" />
+      <LineId Id="80" Count="0" />
+      <LineId Id="38" Count="0" />
       <LineId Id="17" Count="0" />
       <LineId Id="15" Count="0" />
       <LineId Id="8" Count="0" />
