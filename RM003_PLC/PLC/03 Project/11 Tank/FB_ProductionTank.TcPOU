@@ -4,6 +4,13 @@
     <Declaration><![CDATA[FUNCTION_BLOCK FB_ProductionTank EXTENDS FB_SFC_Cycle IMPLEMENTS ITF_FB_SFC_Cycle
 VAR_INPUT
 	eElementID			: E_Element_List;
+	
+	valOutlet		: E_Pis_Name;
+	valLine			: E_Pis_Name;
+	valTriBlender	: E_Pis_Name;
+	valDrain		: E_Pis_Name;
+	valCIP			: E_Pis_Name;	
+	
 END_VAR
 VAR_OUTPUT
 END_VAR
@@ -17,12 +24,13 @@ VAR
 
 END_VAR
 VAR_IN_OUT
+	(*
 	valOutlet		: ST_Piston;
 	valLine			: ST_Piston;
 	valTriBlender	: ST_Piston;
 	valDrain		: ST_Piston;
 	valCIP			: ST_Piston;
-
+	*)
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[act_GetReference();
@@ -384,7 +392,7 @@ bDone:=FALSE;]]></ST>
                           <v n="LValue">false</v>
                           <v n="Boolean">false</v>
                           <v n="IsInstance">true</v>
-                          <v n="Id">17L</v>
+                          <v n="Id">33L</v>
                         </o>
                         <o n="OutputItems" t="OutputItemList">
                           <l2 n="OutputItems">
@@ -420,7 +428,7 @@ bDone:=FALSE;]]></ST>
                           <o>
                             <o n="Operand" t="Operand">
                               <v n="Operand">"valOutlet"</v>
-                              <v n="Type">"ST_Piston"</v>
+                              <v n="Type">"E_Pis_Name"</v>
                               <v n="Comment">""</v>
                               <v n="SymbolComment">""</v>
                               <v n="Address">""</v>
@@ -432,14 +440,14 @@ bDone:=FALSE;]]></ST>
                               <v n="LValue">false</v>
                               <v n="Boolean">false</v>
                               <v n="IsInstance">false</v>
-                              <v n="Id">8L</v>
+                              <v n="Id">24L</v>
                             </o>
-                            <v n="Id">7L</v>
+                            <v n="Id">23L</v>
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
                               <v n="Operand">"valLine"</v>
-                              <v n="Type">"ST_Piston"</v>
+                              <v n="Type">"E_Pis_Name"</v>
                               <v n="Comment">""</v>
                               <v n="SymbolComment">""</v>
                               <v n="Address">""</v>
@@ -451,14 +459,14 @@ bDone:=FALSE;]]></ST>
                               <v n="LValue">false</v>
                               <v n="Boolean">false</v>
                               <v n="IsInstance">false</v>
-                              <v n="Id">10L</v>
+                              <v n="Id">26L</v>
                             </o>
-                            <v n="Id">9L</v>
+                            <v n="Id">25L</v>
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
                               <v n="Operand">"valTriBlender"</v>
-                              <v n="Type">"ST_Piston"</v>
+                              <v n="Type">"E_Pis_Name"</v>
                               <v n="Comment">""</v>
                               <v n="SymbolComment">""</v>
                               <v n="Address">""</v>
@@ -470,14 +478,14 @@ bDone:=FALSE;]]></ST>
                               <v n="LValue">false</v>
                               <v n="Boolean">false</v>
                               <v n="IsInstance">false</v>
-                              <v n="Id">14L</v>
+                              <v n="Id">28L</v>
                             </o>
-                            <v n="Id">13L</v>
+                            <v n="Id">27L</v>
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
                               <v n="Operand">"valDrain"</v>
-                              <v n="Type">"ST_Piston"</v>
+                              <v n="Type">"E_Pis_Name"</v>
                               <v n="Comment">""</v>
                               <v n="SymbolComment">""</v>
                               <v n="Address">""</v>
@@ -489,14 +497,14 @@ bDone:=FALSE;]]></ST>
                               <v n="LValue">false</v>
                               <v n="Boolean">false</v>
                               <v n="IsInstance">false</v>
-                              <v n="Id">16L</v>
+                              <v n="Id">30L</v>
                             </o>
-                            <v n="Id">15L</v>
+                            <v n="Id">29L</v>
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
                               <v n="Operand">"valCIP"</v>
-                              <v n="Type">"ST_Piston"</v>
+                              <v n="Type">"E_Pis_Name"</v>
                               <v n="Comment">""</v>
                               <v n="SymbolComment">""</v>
                               <v n="Address">""</v>
@@ -508,27 +516,27 @@ bDone:=FALSE;]]></ST>
                               <v n="LValue">false</v>
                               <v n="Boolean">false</v>
                               <v n="IsInstance">false</v>
-                              <v n="Id">20L</v>
+                              <v n="Id">32L</v>
                             </o>
-                            <v n="Id">19L</v>
+                            <v n="Id">31L</v>
                           </o>
                         </l2>
                         <o n="InputParam" t="ParamList">
                           <l2 n="Names" cet="String">
                             <v>EN</v>
-                            <v>stPis_Outlet</v>
-                            <v>stPis_Line</v>
-                            <v>stPis_TriBlender</v>
-                            <v>stPis_Drain</v>
-                            <v>stPis_CIP</v>
+                            <v>valOutlet</v>
+                            <v>valLine</v>
+                            <v>valTriBlender</v>
+                            <v>valDrain</v>
+                            <v>valCIP</v>
                           </l2>
                           <l2 n="Types" cet="String">
                             <v>BOOL</v>
-                            <v>ST_Piston[REF]</v>
-                            <v>ST_Piston[REF]</v>
-                            <v>ST_Piston[REF]</v>
-                            <v>ST_Piston[REF]</v>
-                            <v>ST_Piston[REF]</v>
+                            <v>E_Pis_Name</v>
+                            <v>E_Pis_Name</v>
+                            <v>E_Pis_Name</v>
+                            <v>E_Pis_Name</v>
+                            <v>E_Pis_Name</v>
                           </l2>
                         </o>
                         <o n="OutputParam" t="ParamList">
@@ -545,7 +553,7 @@ bDone:=FALSE;]]></ST>
                         <n n="STSnippet" />
                         <v n="ContainsExtensibleInputs">false</v>
                         <v n="ProvidesSTSnippet">false</v>
-                        <v n="Id">18L</v>
+                        <v n="Id">34L</v>
                       </o>
                     </l2>
                     <l2 n="Connectors" />
@@ -579,7 +587,14 @@ bDone:=FALSE;]]></ST>
       <Implementation>
         <ST><![CDATA[m_Set_SFCFlags_Reference();
 refElement REF= fbElement[eElementID];
-refState_Long REF= fbElement[eElementID].eState_Long;]]></ST>
+refState_Long REF= fbElement[eElementID].eState_Long;
+(*
+stPis_Outlet		REF= g_Piston.stPis[valOutlet];
+stPis_Line			REF= g_Piston.stPis[valOutlet];
+stPis_TriBlender	REF= g_Piston.stPis[valOutlet];
+stPis_Drain			REF= g_Piston.stPis[valOutlet];
+stPis_CIP			REF= g_Piston.stPis[valOutlet];
+*)]]></ST>
       </Implementation>
     </Action>
     <Action Name="act_Oper" Id="{0fa1f0eb-f194-455d-88e3-45c20b66e264}" FolderPath="Manage\">
@@ -4564,6 +4579,9 @@ m_SFC_Handle();]]></ST>
     </LineIds>
     <LineIds Name="FB_ProductionTank.act_GetReference">
       <LineId Id="1" Count="2" />
+      <LineId Id="5" Count="4" />
+      <LineId Id="4" Count="0" />
+      <LineId Id="10" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank.m_Set_SFCFlags_Reference">
       <LineId Id="5" Count="15" />

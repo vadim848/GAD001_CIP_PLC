@@ -20,15 +20,15 @@ VAR
 	eStatus				: E_Tank_Target;
 	
 	fbPis				: FB_Piston;
-
+	stPis_Outlet		: REFERENCE TO ST_Piston;
+	stPis_Line			: REFERENCE TO ST_Piston;
+	stPis_TriBlender	: REFERENCE TO ST_Piston;
+	stPis_Drain			: REFERENCE TO ST_Piston;
+	stPis_CIP			: REFERENCE TO ST_Piston;
 
 END_VAR
 VAR_IN_OUT
-	stPis_Outlet		: ST_Piston;
-	stPis_Line			: ST_Piston;
-	stPis_TriBlender	: ST_Piston;
-	stPis_Drain			: ST_Piston;
-	stPis_CIP			: ST_Piston;
+
 
 END_VAR
 ]]></Declaration>
@@ -495,7 +495,14 @@ bDone:=FALSE;]]></ST>
       <Implementation>
         <ST><![CDATA[m_Set_SFCFlags_Reference();
 //refElement REF= fbElement[eElementID];
-//refState_Long REF= fbElement[eElementID].eState_Long;]]></ST>
+//refState_Long REF= fbElement[eElementID].eState_Long;
+
+stPis_Outlet		REF= g_Piston.stPis[valOutlet];
+stPis_Line			REF= g_Piston.stPis[valLine];
+stPis_TriBlender	REF= g_Piston.stPis[valTriBlender];
+stPis_Drain			REF= g_Piston.stPis[valDrain];
+stPis_CIP			REF= g_Piston.stPis[valCIP];
+]]></ST>
       </Implementation>
     </Action>
     <Action Name="act_Oper" Id="{62af6f6a-742c-430d-9588-934f1d656471}" FolderPath="Manage\">
@@ -4118,6 +4125,9 @@ m_SFC_Handle();]]></ST>
     </LineIds>
     <LineIds Name="FB_Tank_Target.act_GetReference">
       <LineId Id="1" Count="2" />
+      <LineId Id="5" Count="4" />
+      <LineId Id="4" Count="0" />
+      <LineId Id="10" Count="0" />
     </LineIds>
     <LineIds Name="FB_Tank_Target.act_Status">
       <LineId Id="2" Count="1" />
