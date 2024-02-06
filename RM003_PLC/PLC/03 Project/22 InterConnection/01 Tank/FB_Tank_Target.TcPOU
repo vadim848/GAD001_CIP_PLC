@@ -4,6 +4,11 @@
     <Declaration><![CDATA[FUNCTION_BLOCK FB_Tank_Target EXTENDS FB_SFC_Cycle IMPLEMENTS ITF_FB_SFC_Cycle
 VAR_INPUT
 	//eElementID			: E_Element_List;
+	valOutlet		: E_Pis_Name;
+	valLine			: E_Pis_Name;
+	valTriBlender	: E_Pis_Name;
+	valDrain		: E_Pis_Name;	
+	valCIP			: E_Pis_Name;	
 END_VAR
 VAR_OUTPUT
 END_VAR
@@ -16,13 +21,14 @@ VAR
 	
 	fbPis				: FB_Piston;
 
+
 END_VAR
 VAR_IN_OUT
-	valOutlet		: ST_Piston;
-	valLine			: ST_Piston;
-	valTriBlender	: ST_Piston;
-	valDrain		: ST_Piston;
-	valCIP			: ST_Piston;
+	stPis_Outlet		: ST_Piston;
+	stPis_Line			: ST_Piston;
+	stPis_TriBlender	: ST_Piston;
+	stPis_Drain			: ST_Piston;
+	stPis_CIP			: ST_Piston;
 
 END_VAR
 ]]></Declaration>
@@ -64,11 +70,11 @@ END_IF
     </Action>
     <Action Name="_aCIP_entry" Id="{a141e873-c7fc-4307-9c91-bb51c75dad2b}">
       <Implementation>
-        <ST><![CDATA[fbPis.m_SetByRecipe(stPis:=valOutlet, 		req:=E_Piston_Recipe_State.Act);
-fbPis.m_SetByRecipe(stPis:=valLine, 		req:=E_Piston_Recipe_State.Release);
-fbPis.m_SetByRecipe(stPis:=valTriBlender, 	req:=E_Piston_Recipe_State.Release);
-fbPis.m_SetByRecipe(stPis:=valDrain, 		req:=E_Piston_Recipe_State.Act);
-fbPis.m_SetByRecipe(stPis:=valCIP, 			req:=E_Piston_Recipe_State.Act);]]></ST>
+        <ST><![CDATA[fbPis.m_SetByRecipe(stPis:=stPis_Outlet, 		req:=E_Piston_Recipe_State.Act);
+fbPis.m_SetByRecipe(stPis:=stPis_Line, 		req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_TriBlender, 	req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_Drain, 		req:=E_Piston_Recipe_State.Act);
+fbPis.m_SetByRecipe(stPis:=stPis_CIP, 			req:=E_Piston_Recipe_State.Act);]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -113,11 +119,11 @@ END_IF
     </Action>
     <Action Name="_aClose_entry" Id="{db19abbe-579c-4574-a1a2-48f247faffd5}">
       <Implementation>
-        <ST><![CDATA[fbPis.m_SetByRecipe(stPis:=valOutlet, 		req:=E_Piston_Recipe_State.Release);
-fbPis.m_SetByRecipe(stPis:=valLine, 		req:=E_Piston_Recipe_State.Release);
-fbPis.m_SetByRecipe(stPis:=valTriBlender, 	req:=E_Piston_Recipe_State.Release);
-fbPis.m_SetByRecipe(stPis:=valDrain, 		req:=E_Piston_Recipe_State.Act);
-fbPis.m_SetByRecipe(stPis:=valCIP, 			req:=E_Piston_Recipe_State.Release);
+        <ST><![CDATA[fbPis.m_SetByRecipe(stPis:=stPis_Outlet, 		req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_Line, 		req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_TriBlender, 	req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_Drain, 		req:=E_Piston_Recipe_State.Act);
+fbPis.m_SetByRecipe(stPis:=stPis_CIP, 			req:=E_Piston_Recipe_State.Release);
 ]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -206,7 +212,7 @@ END_IF]]></ST>
     </Action>
     <Action Name="_aDrain_Close_entry" Id="{df558350-f000-4cc5-93a8-4a844c46c71e}">
       <Implementation>
-        <ST><![CDATA[fbPis.m_SetByRecipe(stPis:=valDrain, req:=E_Piston_Recipe_State.Release);]]></ST>
+        <ST><![CDATA[fbPis.m_SetByRecipe(stPis:=stPis_Drain, req:=E_Piston_Recipe_State.Release);]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -224,11 +230,11 @@ END_IF]]></ST>
     </Action>
     <Action Name="_aDrain_entry" Id="{59a8b0e3-9d73-4126-9788-a378683e6b96}">
       <Implementation>
-        <ST><![CDATA[fbPis.m_SetByRecipe(stPis:=valOutlet, 		req:=E_Piston_Recipe_State.Act);
-fbPis.m_SetByRecipe(stPis:=valLine, 		req:=E_Piston_Recipe_State.Release);
-fbPis.m_SetByRecipe(stPis:=valTriBlender, 	req:=E_Piston_Recipe_State.Release);
-fbPis.m_SetByRecipe(stPis:=valDrain, 		req:=E_Piston_Recipe_State.Act);
-fbPis.m_SetByRecipe(stPis:=valCIP, 			req:=E_Piston_Recipe_State.Release);]]></ST>
+        <ST><![CDATA[fbPis.m_SetByRecipe(stPis:=stPis_Outlet, 		req:=E_Piston_Recipe_State.Act);
+fbPis.m_SetByRecipe(stPis:=stPis_Line, 		req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_TriBlender, 	req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_Drain, 		req:=E_Piston_Recipe_State.Act);
+fbPis.m_SetByRecipe(stPis:=stPis_CIP, 			req:=E_Piston_Recipe_State.Release);]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -286,7 +292,7 @@ eReq:=E_Tank_Target.eNone;
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
 IF TRUE 
-AND fbPis.m_CheckByRecipe(stPis:=valDrain, 		req:=E_Piston_Recipe_State.Act)
+AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 		req:=E_Piston_Recipe_State.Act)
 THEN;
 	bStepDone:=TRUE;
 END_IF
@@ -309,11 +315,11 @@ END_IF
     </Action>
     <Action Name="_aOpen_entry" Id="{40cbadc0-1a08-4490-ae58-09b056231ca7}">
       <Implementation>
-        <ST><![CDATA[fbPis.m_SetByRecipe(stPis:=valOutlet, req:=E_Piston_Recipe_State.Act);
+        <ST><![CDATA[fbPis.m_SetByRecipe(stPis:=stPis_Outlet, req:=E_Piston_Recipe_State.Act);
 //fbPis.m_SetByRecipe(stPis:=valLine, req:=E_Piston_Recipe_State.Release);
 //fbPis.m_SetByRecipe(stPis:=valTriBlender, req:=E_Piston_Recipe_State.Release);
-fbPis.m_SetByRecipe(stPis:=valDrain, req:=E_Piston_Recipe_State.Act);
-fbPis.m_SetByRecipe(stPis:=valCIP, req:=E_Piston_Recipe_State.Release);]]></ST>
+fbPis.m_SetByRecipe(stPis:=stPis_Drain, req:=E_Piston_Recipe_State.Act);
+fbPis.m_SetByRecipe(stPis:=stPis_CIP, req:=E_Piston_Recipe_State.Release);]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -3913,38 +3919,38 @@ bDone:=FALSE;]]></ST>
         <ST><![CDATA[
 
 IF TRUE 
-AND fbPis.m_CheckByRecipe(stPis:=valOutlet, 	req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=valLine, 		req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=valTriBlender, req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=valDrain, 		req:=E_Piston_Recipe_State.Act)
-AND fbPis.m_CheckByRecipe(stPis:=valCIP, 		req:=E_Piston_Recipe_State.Release)
+AND fbPis.m_CheckByRecipe(stPis:=stPis_Outlet, 	req:=E_Piston_Recipe_State.Release)
+AND fbPis.m_CheckByRecipe(stPis:=stPis_Line, 		req:=E_Piston_Recipe_State.Release)
+AND fbPis.m_CheckByRecipe(stPis:=stPis_TriBlender, req:=E_Piston_Recipe_State.Release)
+AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 		req:=E_Piston_Recipe_State.Act)
+AND fbPis.m_CheckByRecipe(stPis:=stPis_CIP, 		req:=E_Piston_Recipe_State.Release)
 THEN;
 	eStatus:=E_Tank_Target.eClose;
 	
 ELSIF TRUE 
-AND fbPis.m_CheckByRecipe(stPis:=valOutlet, 	req:=E_Piston_Recipe_State.Act)
+AND fbPis.m_CheckByRecipe(stPis:=stPis_Outlet, 	req:=E_Piston_Recipe_State.Act)
 //AND fbPis.m_CheckByRecipe(stPis:=valLine, 		req:=E_Piston_Recipe_State.Release)
 //AND fbPis.m_CheckByRecipe(stPis:=valTriBlender, req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=valDrain, 		req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=valCIP, 		req:=E_Piston_Recipe_State.Release)
+AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 		req:=E_Piston_Recipe_State.Release)
+AND fbPis.m_CheckByRecipe(stPis:=stPis_CIP, 		req:=E_Piston_Recipe_State.Release)
 THEN;
 	eStatus:=E_Tank_Target.eOpen;
 	
 ELSIF TRUE 
-AND fbPis.m_CheckByRecipe(stPis:=valOutlet, 	req:=E_Piston_Recipe_State.Act)
-AND fbPis.m_CheckByRecipe(stPis:=valLine, 		req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=valTriBlender, req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=valDrain, 		req:=E_Piston_Recipe_State.Act)
-AND fbPis.m_CheckByRecipe(stPis:=valCIP, 		req:=E_Piston_Recipe_State.Release)
+AND fbPis.m_CheckByRecipe(stPis:=stPis_Outlet, 	req:=E_Piston_Recipe_State.Act)
+AND fbPis.m_CheckByRecipe(stPis:=stPis_Line, 		req:=E_Piston_Recipe_State.Release)
+AND fbPis.m_CheckByRecipe(stPis:=stPis_TriBlender, req:=E_Piston_Recipe_State.Release)
+AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 		req:=E_Piston_Recipe_State.Act)
+AND fbPis.m_CheckByRecipe(stPis:=stPis_CIP, 		req:=E_Piston_Recipe_State.Release)
 THEN;
 	eStatus:=E_Tank_Target.eDrain;
 	
 ELSIF TRUE 
-AND fbPis.m_CheckByRecipe(stPis:=valOutlet, 	req:=E_Piston_Recipe_State.Act)
-AND fbPis.m_CheckByRecipe(stPis:=valLine, 		req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=valTriBlender, req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=valDrain, 		req:=E_Piston_Recipe_State.Act)
-AND fbPis.m_CheckByRecipe(stPis:=valCIP, 		req:=E_Piston_Recipe_State.Act)
+AND fbPis.m_CheckByRecipe(stPis:=stPis_Outlet, 	req:=E_Piston_Recipe_State.Act)
+AND fbPis.m_CheckByRecipe(stPis:=stPis_Line, 		req:=E_Piston_Recipe_State.Release)
+AND fbPis.m_CheckByRecipe(stPis:=stPis_TriBlender, req:=E_Piston_Recipe_State.Release)
+AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 		req:=E_Piston_Recipe_State.Act)
+AND fbPis.m_CheckByRecipe(stPis:=stPis_CIP, 		req:=E_Piston_Recipe_State.Act)
 THEN;
 	eStatus:=E_Tank_Target.eCIP;
 	
