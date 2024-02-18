@@ -12649,6 +12649,17 @@ THEN
 			END_IF
 		END_FOR	
 	END_IF
+ELSIF stCIP_Request.eClient=E_CIP_Usage.eLocal
+AND stCIP_Request.eType<>E_CIP_Type.NotSelected
+THEN;
+		FOR i:=0 TO 9 DO
+			IF arCIP_RequestBufer[i].eClient=E_CIP_Usage.eNotInUse 
+			THEN;
+				arCIP_RequestBufer[i]:=stCIP_Request;
+				m:=FALSE;
+				EXIT;
+			END_IF
+		END_FOR		
 END_IF
 
 ]]></ST>
@@ -12881,6 +12892,9 @@ END_IF
       <LineId Id="81" Count="6" />
       <LineId Id="80" Count="0" />
       <LineId Id="38" Count="0" />
+      <LineId Id="112" Count="2" />
+      <LineId Id="116" Count="6" />
+      <LineId Id="115" Count="0" />
       <LineId Id="17" Count="0" />
       <LineId Id="15" Count="0" />
       <LineId Id="8" Count="0" />
