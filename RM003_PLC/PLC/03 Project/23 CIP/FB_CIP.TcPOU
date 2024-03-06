@@ -24,6 +24,7 @@ VAR
 	rtPosMoveHMI_Up		: R_TRIG;
 	rtPosMoveHMI_Down	: R_TRIG;
 	rtPosDeleteHMI		: R_TRIG;
+	rtPosDeleteAllHMI	: R_TRIG;
 	
 	eRefClient_fbElement		: REFERENCE TO FB_Element; // FB_Element // E_Element_State_Long
 	fbElement_Blank				: FB_Element;
@@ -12454,6 +12455,10 @@ rtPosDeleteHMI(Q=>);
 IF rtPosDeleteHMI.Q THEN;
 	m_PosDelete_HMI();
 END_IF
+rtPosDeleteAllHMI(Q=>);
+IF rtPosDeleteAllHMI.Q THEN;
+	m_PosDeleteAll_HMI();
+END_IF
 
 rtReqLocalCIP_Full_HMI(Q=>);
 IF rtReqLocalCIP_Full_HMI.Q THEN;
@@ -12525,6 +12530,23 @@ END_VAR]]></Declaration>
 		arCIP_RequestBufer[iPosSelect_HMI]:=stCIP_Request_Empty;
 	END_IF		
 END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_PosDeleteAll_HMI" Id="{0565b103-e72e-4e42-86f5-de0bd5b6f5d7}">
+      <Declaration><![CDATA[METHOD m_PosDeleteAll_HMI : BOOL
+VAR_INPUT
+END_VAR
+VAR
+	stCIP_Request_Empty: ST_CIP_Request;
+	i: INT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[
+FOR i:=0 TO 9 DO
+	IF i<>0 OR NOT bRun THEN;
+		arCIP_RequestBufer[i]:=stCIP_Request_Empty;
+	END_IF	
+END_FOR]]></ST>
       </Implementation>
     </Method>
     <Method Name="m_PosMove_Down_HMI" Id="{c114e84d-a8ed-4e16-9653-147f733c0d8b}">
@@ -12808,7 +12830,10 @@ END_IF
     </LineIds>
     <LineIds Name="FB_CIP.act_ReqBuffer">
       <LineId Id="34" Count="11" />
-      <LineId Id="50" Count="2" />
+      <LineId Id="70" Count="2" />
+      <LineId Id="50" Count="0" />
+      <LineId Id="73" Count="0" />
+      <LineId Id="51" Count="1" />
       <LineId Id="55" Count="1" />
       <LineId Id="53" Count="0" />
       <LineId Id="49" Count="0" />
@@ -12836,6 +12861,12 @@ END_IF
     <LineIds Name="FB_CIP.m_PosDelete_HMI">
       <LineId Id="25" Count="3" />
       <LineId Id="7" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_CIP.m_PosDeleteAll_HMI">
+      <LineId Id="45" Count="0" />
+      <LineId Id="39" Count="0" />
+      <LineId Id="43" Count="1" />
+      <LineId Id="40" Count="1" />
     </LineIds>
     <LineIds Name="FB_CIP.m_PosMove_Down_HMI">
       <LineId Id="5" Count="0" />
