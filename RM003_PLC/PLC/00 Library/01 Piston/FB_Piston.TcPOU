@@ -49,9 +49,11 @@ VAR
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[act_Get_Reference();
-act_State_Machine();
-act_StateDeafult();
+      <ST><![CDATA[IF iFB_Num <> E_Pis_Name.e0_not_in_use THEN;
+	act_Get_Reference();
+	act_State_Machine();
+	act_StateDeafult();
+END_IF
 
 IF iFB_Num = E_Pis_Name.e0_not_in_use THEN;
 	stPis.st_Deafult:=TRUE;
@@ -417,22 +419,25 @@ END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[m_CheckByRecipe:=FALSE;
-CASE req OF
-	E_Piston_Recipe_State.NoChanges:;
-		m_CheckByRecipe:=TRUE;
-	E_Piston_Recipe_State.Act:;
-		IF (stPis.DefaultCmd=E_PistonDefault_CMD.Close AND stPis.st_Open) 
-		OR (stPis.DefaultCmd=E_PistonDefault_CMD.Open AND stPis.st_Close)
-		THEN;
+IF iFB_Num <> E_Pis_Name.e0_not_in_use THEN
+	CASE req OF
+		E_Piston_Recipe_State.NoChanges:;
 			m_CheckByRecipe:=TRUE;
-		END_IF
-	E_Piston_Recipe_State.Release:;
-		IF (stPis.DefaultCmd=E_PistonDefault_CMD.Close AND stPis.st_Close) 
-		OR (stPis.DefaultCmd=E_PistonDefault_CMD.Open AND stPis.st_Open)
-		THEN;
-			m_CheckByRecipe:=TRUE;
-		END_IF	
-END_CASE]]></ST>
+		E_Piston_Recipe_State.Act:;
+			IF (stPis.DefaultCmd=E_PistonDefault_CMD.Close AND stPis.st_Open) 
+			OR (stPis.DefaultCmd=E_PistonDefault_CMD.Open AND stPis.st_Close)
+			THEN;
+				m_CheckByRecipe:=TRUE;
+			END_IF
+		E_Piston_Recipe_State.Release:;
+			IF (stPis.DefaultCmd=E_PistonDefault_CMD.Close AND stPis.st_Close) 
+			OR (stPis.DefaultCmd=E_PistonDefault_CMD.Open AND stPis.st_Open)
+			THEN;
+				m_CheckByRecipe:=TRUE;
+			END_IF	
+	END_CASE
+END_IF
+]]></ST>
       </Implementation>
     </Method>
     <Method Name="m_PistonSensorCheck" Id="{c8a92531-63c9-446a-a8cf-58db140f8780}">
@@ -520,9 +525,11 @@ END_CASE]]></ST>
       </Implementation>
     </Method>
     <LineIds Name="FB_Piston">
+      <LineId Id="249" Count="0" />
       <LineId Id="31" Count="0" />
       <LineId Id="9" Count="0" />
       <LineId Id="154" Count="0" />
+      <LineId Id="250" Count="0" />
       <LineId Id="110" Count="0" />
       <LineId Id="65" Count="0" />
       <LineId Id="201" Count="1" />
@@ -757,20 +764,9 @@ END_CASE]]></ST>
     </LineIds>
     <LineIds Name="FB_Piston.m_CheckByRecipe">
       <LineId Id="25" Count="0" />
-      <LineId Id="5" Count="0" />
-      <LineId Id="13" Count="0" />
-      <LineId Id="24" Count="0" />
-      <LineId Id="14" Count="0" />
-      <LineId Id="16" Count="0" />
-      <LineId Id="34" Count="0" />
-      <LineId Id="33" Count="0" />
-      <LineId Id="19" Count="1" />
-      <LineId Id="15" Count="0" />
-      <LineId Id="22" Count="0" />
-      <LineId Id="32" Count="0" />
-      <LineId Id="31" Count="0" />
-      <LineId Id="23" Count="0" />
-      <LineId Id="21" Count="0" />
+      <LineId Id="40" Count="0" />
+      <LineId Id="43" Count="14" />
+      <LineId Id="41" Count="1" />
       <LineId Id="12" Count="0" />
     </LineIds>
     <LineIds Name="FB_Piston.m_PistonSensorCheck">

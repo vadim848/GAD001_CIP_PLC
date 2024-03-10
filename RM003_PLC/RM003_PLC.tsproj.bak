@@ -2,18 +2,21 @@
 <TcSmProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2012/07/TcSmProject" TcSmVersion="1.0" TcVersion="3.1.4024.55">
 	<Project ProjectGUID="{B2325421-01BA-4B9E-AC46-CC5BF373E737}" Target64Bit="true" ShowHideConfigurations="#x3c7">
 		<System>
+			<Settings MaxCpus="16" NonWinCpus="8" Packages="4">
+				<Cpu CpuId="15"/>
+			</Settings>
 			<Tasks>
-				<Task Id="3" Priority="20" CycleTime="100000" AmsPort="350" AdtTasks="true">
+				<Task Id="3" Disabled="true" CreateSymbols="true" Priority="20" CycleTime="100000" AmsPort="350" AdtTasks="true">
 					<Name>PlcTask</Name>
 				</Task>
-				<Task Id="4" Priority="30" CycleTime="2000000" AmsPort="351" DisableFpExceptions="true" AdtTasks="true">
+				<Task Id="4" Disabled="true" Priority="30" CycleTime="2000000" AmsPort="351" Affinity="#x00008000" DisableFpExceptions="true" AdtTasks="true">
 					<Name>VISU_TASK</Name>
 				</Task>
 			</Tasks>
 		</System>
 		<Plc>
 			<Project GUID="{AD98C8E8-1161-4C5F-BAB4-CA4317288767}" Name="PLC" PrjFilePath="PLC\PLC.plcproj" TmcFilePath="PLC\PLC.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="PLC\PLC.tmc" TmcHash="{2E9C6D49-667F-37BF-8266-308A83C2F9AD}">
+				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="PLC\PLC.tmc" TmcHash="{E1295BA6-9E32-1F42-5929-4833F23C385C}">
 					<Name>PLC Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Contexts>
