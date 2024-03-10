@@ -10,11 +10,12 @@ END_VAR
       <ST><![CDATA[prg_RealClock();
 prg_Piston();
 
+act_SetValves();
 act_Call_Elements();
 act_Call_Elements_Imp();
 prg_InterCon_Usage();
 
-fbCIP();
+//fbCIP();
 
 
 g_SFC.fbSFC_Temp1();
@@ -961,7 +962,7 @@ g_SFC.fbSFC_Temp1();
                           <v n="LValue">false</v>
                           <v n="Boolean">false</v>
                           <v n="IsInstance">true</v>
-                          <v n="Id">82L</v>
+                          <v n="Id">180L</v>
                         </o>
                         <o n="OutputItems" t="OutputItemList">
                           <l2 n="OutputItems">
@@ -1015,8 +1016,8 @@ g_SFC.fbSFC_Temp1();
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
-                              <v n="Operand">"E_Pis_Name.V3016"</v>
-                              <v n="Type">"E_PIS_NAME"</v>
+                              <v n="Operand">"g_Data.arr_TankValves[1]"</v>
+                              <v n="Type">"st_TankValves"</v>
                               <v n="Comment">""</v>
                               <v n="SymbolComment">""</v>
                               <v n="Address">""</v>
@@ -1034,8 +1035,8 @@ g_SFC.fbSFC_Temp1();
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
-                              <v n="Operand">"E_Pis_Name.V3017"</v>
-                              <v n="Type">"E_PIS_NAME"</v>
+                              <v n="Operand">"g_Data.arr_LineSourceValves[1]"</v>
+                              <v n="Type">"st_LineSourceValves"</v>
                               <v n="Comment">""</v>
                               <v n="SymbolComment">""</v>
                               <v n="Address">""</v>
@@ -1053,8 +1054,8 @@ g_SFC.fbSFC_Temp1();
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
-                              <v n="Operand">"E_Pis_Name.V3023"</v>
-                              <v n="Type">"E_PIS_NAME"</v>
+                              <v n="Operand">"g_Data.arr_TriBlenderSourceValves[1]"</v>
+                              <v n="Type">"st_LineSourceValves"</v>
                               <v n="Comment">""</v>
                               <v n="SymbolComment">""</v>
                               <v n="Address">""</v>
@@ -1072,8 +1073,8 @@ g_SFC.fbSFC_Temp1();
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
-                              <v n="Operand">"E_Pis_Name.V3024"</v>
-                              <v n="Type">"E_PIS_NAME"</v>
+                              <v n="Operand">"g_Data.arr_LineTargetValves[1]"</v>
+                              <v n="Type">"st_LineTargetValves"</v>
                               <v n="Comment">""</v>
                               <v n="SymbolComment">""</v>
                               <v n="Address">""</v>
@@ -1091,8 +1092,8 @@ g_SFC.fbSFC_Temp1();
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
-                              <v n="Operand">"E_Pis_Name.V3025"</v>
-                              <v n="Type">"E_PIS_NAME"</v>
+                              <v n="Operand">"g_Data.arr_fbTriBlenderTargetValves[1]"</v>
+                              <v n="Type">"st_LineTargetValves"</v>
                               <v n="Comment">""</v>
                               <v n="SymbolComment">""</v>
                               <v n="Address">""</v>
@@ -1126,44 +1127,6 @@ g_SFC.fbSFC_Temp1();
                               <v n="Id">85L</v>
                             </o>
                             <v n="Id">84L</v>
-                          </o>
-                          <o>
-                            <o n="Operand" t="Operand">
-                              <v n="Operand">""</v>
-                              <n n="Type" />
-                              <v n="Comment">""</v>
-                              <v n="SymbolComment">""</v>
-                              <v n="Address">""</v>
-                              <o n="Flags" t="Flags">
-                                <v n="Flags">0</v>
-                                <v n="Fixed">false</v>
-                                <v n="Extensible">false</v>
-                              </o>
-                              <v n="LValue">false</v>
-                              <v n="Boolean">false</v>
-                              <v n="IsInstance">false</v>
-                              <v n="Id">87L</v>
-                            </o>
-                            <v n="Id">86L</v>
-                          </o>
-                          <o>
-                            <o n="Operand" t="Operand">
-                              <v n="Operand">""</v>
-                              <n n="Type" />
-                              <v n="Comment">""</v>
-                              <v n="SymbolComment">""</v>
-                              <v n="Address">""</v>
-                              <o n="Flags" t="Flags">
-                                <v n="Flags">0</v>
-                                <v n="Fixed">false</v>
-                                <v n="Extensible">false</v>
-                              </o>
-                              <v n="LValue">false</v>
-                              <v n="Boolean">false</v>
-                              <v n="IsInstance">false</v>
-                              <v n="Id">89L</v>
-                            </o>
-                            <v n="Id">88L</v>
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
@@ -1260,41 +1223,79 @@ g_SFC.fbSFC_Temp1();
                             </o>
                             <v n="Id">98L</v>
                           </o>
+                          <o>
+                            <o n="Operand" t="Operand">
+                              <v n="Operand">"g_Data.fbPumpLine_P3001"</v>
+                              <v n="Type">"FB_Pump"</v>
+                              <v n="Comment">""</v>
+                              <v n="SymbolComment">""</v>
+                              <v n="Address">""</v>
+                              <o n="Flags" t="Flags">
+                                <v n="Flags">0</v>
+                                <v n="Fixed">false</v>
+                                <v n="Extensible">false</v>
+                              </o>
+                              <v n="LValue">false</v>
+                              <v n="Boolean">false</v>
+                              <v n="IsInstance">false</v>
+                              <v n="Id">161L</v>
+                            </o>
+                            <v n="Id">160L</v>
+                          </o>
+                          <o>
+                            <o n="Operand" t="Operand">
+                              <v n="Operand">"g_Data.fbPumpTriblender_TB001"</v>
+                              <v n="Type">"FB_Pump"</v>
+                              <v n="Comment">""</v>
+                              <v n="SymbolComment">""</v>
+                              <v n="Address">""</v>
+                              <o n="Flags" t="Flags">
+                                <v n="Flags">0</v>
+                                <v n="Fixed">false</v>
+                                <v n="Extensible">false</v>
+                              </o>
+                              <v n="LValue">false</v>
+                              <v n="Boolean">false</v>
+                              <v n="IsInstance">false</v>
+                              <v n="Id">163L</v>
+                            </o>
+                            <v n="Id">162L</v>
+                          </o>
                         </l2>
                         <o n="InputParam" t="ParamList">
                           <l2 n="Names" cet="String">
                             <v>EN</v>
                             <v>eElementID</v>
-                            <v>valOutlet</v>
-                            <v>valLine</v>
-                            <v>valTriBlender</v>
-                            <v>valDrain</v>
-                            <v>valCIP</v>
+                            <v>stTankValves</v>
+                            <v>stLineSourceValves</v>
+                            <v>stTriBlenderSourceValves</v>
+                            <v>stLineTargetValves</v>
+                            <v>stfbTriBlenderTargetValves</v>
                             <v>valFillWater</v>
-                            <v>valPumpLine</v>
-                            <v>valPumpTriBleder</v>
                             <v>fbTarget</v>
                             <v>fbLineSource</v>
                             <v>fbLineTarget</v>
                             <v>fbTriBlenderSource</v>
                             <v>fbTriBlenderTarget</v>
+                            <v>fb_PumpLine</v>
+                            <v>fb_PumpTriBlender</v>
                           </l2>
                           <l2 n="Types" cet="String">
                             <v>BOOL</v>
                             <v>E_Element_List</v>
-                            <v>E_Pis_Name</v>
-                            <v>E_Pis_Name</v>
-                            <v>E_Pis_Name</v>
-                            <v>E_Pis_Name</v>
-                            <v>E_Pis_Name</v>
-                            <v>E_Pis_Name</v>
-                            <v>E_Pis_Name</v>
+                            <v>st_TankValves</v>
+                            <v>st_LineSourceValves</v>
+                            <v>st_LineSourceValves</v>
+                            <v>st_LineTargetValves</v>
+                            <v>st_LineTargetValves</v>
                             <v>E_Pis_Name</v>
                             <v>FB_Tank_Target[REF]</v>
                             <v>FB_Line_Source[REF]</v>
                             <v>FB_Line_Target[REF]</v>
                             <v>FB_Line_Source[REF]</v>
                             <v>FB_Line_Target[REF]</v>
+                            <v>FB_Pump[REF]</v>
+                            <v>FB_Pump[REF]</v>
                           </l2>
                         </o>
                         <o n="OutputParam" t="ParamList">
@@ -1311,7 +1312,7 @@ g_SFC.fbSFC_Temp1();
                         <n n="STSnippet" />
                         <v n="ContainsExtensibleInputs">false</v>
                         <v n="ProvidesSTSnippet">false</v>
-                        <v n="Id">83L</v>
+                        <v n="Id">181L</v>
                       </o>
                     </l2>
                     <l2 n="Connectors" />
@@ -1343,7 +1344,7 @@ g_SFC.fbSFC_Temp1();
                           <v n="LValue">false</v>
                           <v n="Boolean">false</v>
                           <v n="IsInstance">true</v>
-                          <v n="Id">154L</v>
+                          <v n="Id">182L</v>
                         </o>
                         <o n="OutputItems" t="OutputItemList">
                           <l2 n="OutputItems">
@@ -1397,8 +1398,8 @@ g_SFC.fbSFC_Temp1();
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
-                              <v n="Operand">"E_Pis_Name.V3015"</v>
-                              <v n="Type">"E_PIS_NAME"</v>
+                              <v n="Operand">"g_Data.arr_TankValves[2]"</v>
+                              <v n="Type">"st_TankValves"</v>
                               <v n="Comment">""</v>
                               <v n="SymbolComment">""</v>
                               <v n="Address">""</v>
@@ -1416,8 +1417,8 @@ g_SFC.fbSFC_Temp1();
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
-                              <v n="Operand">"E_Pis_Name.V3027"</v>
-                              <v n="Type">"E_PIS_NAME"</v>
+                              <v n="Operand">"g_Data.arr_LineSourceValves[2]"</v>
+                              <v n="Type">"st_LineSourceValves"</v>
                               <v n="Comment">""</v>
                               <v n="SymbolComment">""</v>
                               <v n="Address">""</v>
@@ -1435,8 +1436,8 @@ g_SFC.fbSFC_Temp1();
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
-                              <v n="Operand">"E_Pis_Name.V3028"</v>
-                              <v n="Type">"E_PIS_NAME"</v>
+                              <v n="Operand">"g_Data.arr_TriBlenderSourceValves[2]"</v>
+                              <v n="Type">"st_LineSourceValves"</v>
                               <v n="Comment">""</v>
                               <v n="SymbolComment">""</v>
                               <v n="Address">""</v>
@@ -1454,8 +1455,8 @@ g_SFC.fbSFC_Temp1();
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
-                              <v n="Operand">"E_Pis_Name.V3029"</v>
-                              <v n="Type">"E_PIS_NAME"</v>
+                              <v n="Operand">"g_Data.arr_LineTargetValves[2]"</v>
+                              <v n="Type">"st_LineTargetValves"</v>
                               <v n="Comment">""</v>
                               <v n="SymbolComment">""</v>
                               <v n="Address">""</v>
@@ -1473,8 +1474,8 @@ g_SFC.fbSFC_Temp1();
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
-                              <v n="Operand">"E_Pis_Name.V3030"</v>
-                              <v n="Type">"E_PIS_NAME"</v>
+                              <v n="Operand">"g_Data.arr_fbTriBlenderTargetValves[2]"</v>
+                              <v n="Type">"st_LineTargetValves"</v>
                               <v n="Comment">""</v>
                               <v n="SymbolComment">""</v>
                               <v n="Address">""</v>
@@ -1508,44 +1509,6 @@ g_SFC.fbSFC_Temp1();
                               <v n="Id">103L</v>
                             </o>
                             <v n="Id">102L</v>
-                          </o>
-                          <o>
-                            <o n="Operand" t="Operand">
-                              <v n="Operand">""</v>
-                              <n n="Type" />
-                              <v n="Comment">""</v>
-                              <v n="SymbolComment">""</v>
-                              <v n="Address">""</v>
-                              <o n="Flags" t="Flags">
-                                <v n="Flags">0</v>
-                                <v n="Fixed">false</v>
-                                <v n="Extensible">false</v>
-                              </o>
-                              <v n="LValue">false</v>
-                              <v n="Boolean">false</v>
-                              <v n="IsInstance">false</v>
-                              <v n="Id">105L</v>
-                            </o>
-                            <v n="Id">104L</v>
-                          </o>
-                          <o>
-                            <o n="Operand" t="Operand">
-                              <v n="Operand">""</v>
-                              <n n="Type" />
-                              <v n="Comment">""</v>
-                              <v n="SymbolComment">""</v>
-                              <v n="Address">""</v>
-                              <o n="Flags" t="Flags">
-                                <v n="Flags">0</v>
-                                <v n="Fixed">false</v>
-                                <v n="Extensible">false</v>
-                              </o>
-                              <v n="LValue">false</v>
-                              <v n="Boolean">false</v>
-                              <v n="IsInstance">false</v>
-                              <v n="Id">107L</v>
-                            </o>
-                            <v n="Id">106L</v>
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
@@ -1642,41 +1605,79 @@ g_SFC.fbSFC_Temp1();
                             </o>
                             <v n="Id">116L</v>
                           </o>
+                          <o>
+                            <o n="Operand" t="Operand">
+                              <v n="Operand">"g_Data.fbPumpLine_P3001"</v>
+                              <v n="Type">"FB_Pump"</v>
+                              <v n="Comment">""</v>
+                              <v n="SymbolComment">""</v>
+                              <v n="Address">""</v>
+                              <o n="Flags" t="Flags">
+                                <v n="Flags">0</v>
+                                <v n="Fixed">false</v>
+                                <v n="Extensible">false</v>
+                              </o>
+                              <v n="LValue">false</v>
+                              <v n="Boolean">false</v>
+                              <v n="IsInstance">false</v>
+                              <v n="Id">169L</v>
+                            </o>
+                            <v n="Id">168L</v>
+                          </o>
+                          <o>
+                            <o n="Operand" t="Operand">
+                              <v n="Operand">"g_Data.fbPumpTriblender_TB001"</v>
+                              <v n="Type">"FB_Pump"</v>
+                              <v n="Comment">""</v>
+                              <v n="SymbolComment">""</v>
+                              <v n="Address">""</v>
+                              <o n="Flags" t="Flags">
+                                <v n="Flags">0</v>
+                                <v n="Fixed">false</v>
+                                <v n="Extensible">false</v>
+                              </o>
+                              <v n="LValue">false</v>
+                              <v n="Boolean">false</v>
+                              <v n="IsInstance">false</v>
+                              <v n="Id">171L</v>
+                            </o>
+                            <v n="Id">170L</v>
+                          </o>
                         </l2>
                         <o n="InputParam" t="ParamList">
                           <l2 n="Names" cet="String">
                             <v>EN</v>
                             <v>eElementID</v>
-                            <v>valOutlet</v>
-                            <v>valLine</v>
-                            <v>valTriBlender</v>
-                            <v>valDrain</v>
-                            <v>valCIP</v>
+                            <v>stTankValves</v>
+                            <v>stLineSourceValves</v>
+                            <v>stTriBlenderSourceValves</v>
+                            <v>stLineTargetValves</v>
+                            <v>stfbTriBlenderTargetValves</v>
                             <v>valFillWater</v>
-                            <v>valPumpLine</v>
-                            <v>valPumpTriBleder</v>
                             <v>fbTarget</v>
                             <v>fbLineSource</v>
                             <v>fbLineTarget</v>
                             <v>fbTriBlenderSource</v>
                             <v>fbTriBlenderTarget</v>
+                            <v>fb_PumpLine</v>
+                            <v>fb_PumpTriBlender</v>
                           </l2>
                           <l2 n="Types" cet="String">
                             <v>BOOL</v>
                             <v>E_Element_List</v>
-                            <v>E_Pis_Name</v>
-                            <v>E_Pis_Name</v>
-                            <v>E_Pis_Name</v>
-                            <v>E_Pis_Name</v>
-                            <v>E_Pis_Name</v>
-                            <v>E_Pis_Name</v>
-                            <v>E_Pis_Name</v>
+                            <v>st_TankValves</v>
+                            <v>st_LineSourceValves</v>
+                            <v>st_LineSourceValves</v>
+                            <v>st_LineTargetValves</v>
+                            <v>st_LineTargetValves</v>
                             <v>E_Pis_Name</v>
                             <v>FB_Tank_Target[REF]</v>
                             <v>FB_Line_Source[REF]</v>
                             <v>FB_Line_Target[REF]</v>
                             <v>FB_Line_Source[REF]</v>
                             <v>FB_Line_Target[REF]</v>
+                            <v>FB_Pump[REF]</v>
+                            <v>FB_Pump[REF]</v>
                           </l2>
                         </o>
                         <o n="OutputParam" t="ParamList">
@@ -1693,7 +1694,7 @@ g_SFC.fbSFC_Temp1();
                         <n n="STSnippet" />
                         <v n="ContainsExtensibleInputs">false</v>
                         <v n="ProvidesSTSnippet">false</v>
-                        <v n="Id">155L</v>
+                        <v n="Id">183L</v>
                       </o>
                     </l2>
                     <l2 n="Connectors" />
@@ -1725,7 +1726,7 @@ g_SFC.fbSFC_Temp1();
                           <v n="LValue">false</v>
                           <v n="Boolean">false</v>
                           <v n="IsInstance">true</v>
-                          <v n="Id">118L</v>
+                          <v n="Id">184L</v>
                         </o>
                         <o n="OutputItems" t="OutputItemList">
                           <l2 n="OutputItems">
@@ -1779,8 +1780,8 @@ g_SFC.fbSFC_Temp1();
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
-                              <v n="Operand">"E_Pis_Name.V4016"</v>
-                              <v n="Type">"E_PIS_NAME"</v>
+                              <v n="Operand">"g_Data.arr_TankValves[3]"</v>
+                              <v n="Type">"st_TankValves"</v>
                               <v n="Comment">""</v>
                               <v n="SymbolComment">""</v>
                               <v n="Address">""</v>
@@ -1798,8 +1799,8 @@ g_SFC.fbSFC_Temp1();
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
-                              <v n="Operand">"E_Pis_Name.V4017"</v>
-                              <v n="Type">"E_PIS_NAME"</v>
+                              <v n="Operand">"g_Data.arr_LineSourceValves[3]"</v>
+                              <v n="Type">"st_LineSourceValves"</v>
                               <v n="Comment">""</v>
                               <v n="SymbolComment">""</v>
                               <v n="Address">""</v>
@@ -1817,8 +1818,8 @@ g_SFC.fbSFC_Temp1();
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
-                              <v n="Operand">"E_Pis_Name.V4023"</v>
-                              <v n="Type">"E_PIS_NAME"</v>
+                              <v n="Operand">"g_Data.arr_TriBlenderSourceValves[3]"</v>
+                              <v n="Type">"st_LineSourceValves"</v>
                               <v n="Comment">""</v>
                               <v n="SymbolComment">""</v>
                               <v n="Address">""</v>
@@ -1836,8 +1837,8 @@ g_SFC.fbSFC_Temp1();
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
-                              <v n="Operand">"E_Pis_Name.V4024"</v>
-                              <v n="Type">"E_PIS_NAME"</v>
+                              <v n="Operand">"g_Data.arr_LineTargetValves[3]"</v>
+                              <v n="Type">"st_LineTargetValves"</v>
                               <v n="Comment">""</v>
                               <v n="SymbolComment">""</v>
                               <v n="Address">""</v>
@@ -1855,8 +1856,8 @@ g_SFC.fbSFC_Temp1();
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
-                              <v n="Operand">"E_Pis_Name.V4025"</v>
-                              <v n="Type">"E_PIS_NAME"</v>
+                              <v n="Operand">"g_Data.arr_fbTriBlenderTargetValves[3]"</v>
+                              <v n="Type">"st_LineTargetValves"</v>
                               <v n="Comment">""</v>
                               <v n="SymbolComment">""</v>
                               <v n="Address">""</v>
@@ -1893,8 +1894,8 @@ g_SFC.fbSFC_Temp1();
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
-                              <v n="Operand">""</v>
-                              <n n="Type" />
+                              <v n="Operand">"g_Data.fbTankTarget_3"</v>
+                              <v n="Type">"FB_Tank_Target"</v>
                               <v n="Comment">""</v>
                               <v n="SymbolComment">""</v>
                               <v n="Address">""</v>
@@ -1912,8 +1913,8 @@ g_SFC.fbSFC_Temp1();
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
-                              <v n="Operand">""</v>
-                              <n n="Type" />
+                              <v n="Operand">"g_Data.fbLineSource_Color"</v>
+                              <v n="Type">"FB_Line_Source"</v>
                               <v n="Comment">""</v>
                               <v n="SymbolComment">""</v>
                               <v n="Address">""</v>
@@ -1931,8 +1932,8 @@ g_SFC.fbSFC_Temp1();
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
-                              <v n="Operand">"g_Data.fbTankTarget_3"</v>
-                              <v n="Type">"FB_Tank_Target"</v>
+                              <v n="Operand">"g_Data.fbLineTarget_Color"</v>
+                              <v n="Type">"FB_Line_Target"</v>
                               <v n="Comment">""</v>
                               <v n="SymbolComment">""</v>
                               <v n="Address">""</v>
@@ -1950,7 +1951,7 @@ g_SFC.fbSFC_Temp1();
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
-                              <v n="Operand">"g_Data.fbLineSource_Color"</v>
+                              <v n="Operand">"g_Data.fbTriBlenderSource_Color"</v>
                               <v n="Type">"FB_Line_Source"</v>
                               <v n="Comment">""</v>
                               <v n="SymbolComment">""</v>
@@ -1969,7 +1970,7 @@ g_SFC.fbSFC_Temp1();
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
-                              <v n="Operand">"g_Data.fbLineTarget_Color"</v>
+                              <v n="Operand">"g_Data.fbTriBlenderTarget_Color"</v>
                               <v n="Type">"FB_Line_Target"</v>
                               <v n="Comment">""</v>
                               <v n="SymbolComment">""</v>
@@ -1988,8 +1989,8 @@ g_SFC.fbSFC_Temp1();
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
-                              <v n="Operand">"g_Data.fbTriBlenderSource_Color"</v>
-                              <v n="Type">"FB_Line_Source"</v>
+                              <v n="Operand">"g_Data.fbPumpLine_P4001"</v>
+                              <v n="Type">"FB_Pump"</v>
                               <v n="Comment">""</v>
                               <v n="SymbolComment">""</v>
                               <v n="Address">""</v>
@@ -2007,8 +2008,8 @@ g_SFC.fbSFC_Temp1();
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
-                              <v n="Operand">"g_Data.fbTriBlenderTarget_Color"</v>
-                              <v n="Type">"FB_Line_Target"</v>
+                              <v n="Operand">"g_Data.fbPumpTriblender_TB001"</v>
+                              <v n="Type">"FB_Pump"</v>
                               <v n="Comment">""</v>
                               <v n="SymbolComment">""</v>
                               <v n="Address">""</v>
@@ -2029,36 +2030,36 @@ g_SFC.fbSFC_Temp1();
                           <l2 n="Names" cet="String">
                             <v>EN</v>
                             <v>eElementID</v>
-                            <v>valOutlet</v>
-                            <v>valLine</v>
-                            <v>valTriBlender</v>
-                            <v>valDrain</v>
-                            <v>valCIP</v>
+                            <v>stTankValves</v>
+                            <v>stLineSourceValves</v>
+                            <v>stTriBlenderSourceValves</v>
+                            <v>stLineTargetValves</v>
+                            <v>stfbTriBlenderTargetValves</v>
                             <v>valFillWater</v>
-                            <v>valPumpLine</v>
-                            <v>valPumpTriBleder</v>
                             <v>fbTarget</v>
                             <v>fbLineSource</v>
                             <v>fbLineTarget</v>
                             <v>fbTriBlenderSource</v>
                             <v>fbTriBlenderTarget</v>
+                            <v>fb_PumpLine</v>
+                            <v>fb_PumpTriBlender</v>
                           </l2>
                           <l2 n="Types" cet="String">
                             <v>BOOL</v>
                             <v>E_Element_List</v>
-                            <v>E_Pis_Name</v>
-                            <v>E_Pis_Name</v>
-                            <v>E_Pis_Name</v>
-                            <v>E_Pis_Name</v>
-                            <v>E_Pis_Name</v>
-                            <v>E_Pis_Name</v>
-                            <v>E_Pis_Name</v>
+                            <v>st_TankValves</v>
+                            <v>st_LineSourceValves</v>
+                            <v>st_LineSourceValves</v>
+                            <v>st_LineTargetValves</v>
+                            <v>st_LineTargetValves</v>
                             <v>E_Pis_Name</v>
                             <v>FB_Tank_Target[REF]</v>
                             <v>FB_Line_Source[REF]</v>
                             <v>FB_Line_Target[REF]</v>
                             <v>FB_Line_Source[REF]</v>
                             <v>FB_Line_Target[REF]</v>
+                            <v>FB_Pump[REF]</v>
+                            <v>FB_Pump[REF]</v>
                           </l2>
                         </o>
                         <o n="OutputParam" t="ParamList">
@@ -2075,7 +2076,7 @@ g_SFC.fbSFC_Temp1();
                         <n n="STSnippet" />
                         <v n="ContainsExtensibleInputs">false</v>
                         <v n="ProvidesSTSnippet">false</v>
-                        <v n="Id">119L</v>
+                        <v n="Id">185L</v>
                       </o>
                     </l2>
                     <l2 n="Connectors" />
@@ -2107,7 +2108,7 @@ g_SFC.fbSFC_Temp1();
                           <v n="LValue">false</v>
                           <v n="Boolean">false</v>
                           <v n="IsInstance">true</v>
-                          <v n="Id">136L</v>
+                          <v n="Id">186L</v>
                         </o>
                         <o n="OutputItems" t="OutputItemList">
                           <l2 n="OutputItems">
@@ -2161,8 +2162,8 @@ g_SFC.fbSFC_Temp1();
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
-                              <v n="Operand">"E_Pis_Name.V4015"</v>
-                              <v n="Type">"E_PIS_NAME"</v>
+                              <v n="Operand">"g_Data.arr_TankValves[4]"</v>
+                              <v n="Type">"st_TankValves"</v>
                               <v n="Comment">""</v>
                               <v n="SymbolComment">""</v>
                               <v n="Address">""</v>
@@ -2180,8 +2181,8 @@ g_SFC.fbSFC_Temp1();
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
-                              <v n="Operand">"E_Pis_Name.V4027"</v>
-                              <v n="Type">"E_PIS_NAME"</v>
+                              <v n="Operand">"g_Data.arr_LineSourceValves[4]"</v>
+                              <v n="Type">"st_LineSourceValves"</v>
                               <v n="Comment">""</v>
                               <v n="SymbolComment">""</v>
                               <v n="Address">""</v>
@@ -2199,8 +2200,8 @@ g_SFC.fbSFC_Temp1();
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
-                              <v n="Operand">"E_Pis_Name.V4028"</v>
-                              <v n="Type">"E_PIS_NAME"</v>
+                              <v n="Operand">"g_Data.arr_TriBlenderSourceValves[4]"</v>
+                              <v n="Type">"st_LineSourceValves"</v>
                               <v n="Comment">""</v>
                               <v n="SymbolComment">""</v>
                               <v n="Address">""</v>
@@ -2218,8 +2219,8 @@ g_SFC.fbSFC_Temp1();
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
-                              <v n="Operand">"E_Pis_Name.V4029"</v>
-                              <v n="Type">"E_PIS_NAME"</v>
+                              <v n="Operand">"g_Data.arr_LineTargetValves[4]"</v>
+                              <v n="Type">"st_LineTargetValves"</v>
                               <v n="Comment">""</v>
                               <v n="SymbolComment">""</v>
                               <v n="Address">""</v>
@@ -2237,8 +2238,8 @@ g_SFC.fbSFC_Temp1();
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
-                              <v n="Operand">"E_Pis_Name.V4030"</v>
-                              <v n="Type">"E_PIS_NAME"</v>
+                              <v n="Operand">"g_Data.arr_fbTriBlenderTargetValves[4]"</v>
+                              <v n="Type">"st_LineTargetValves"</v>
                               <v n="Comment">""</v>
                               <v n="SymbolComment">""</v>
                               <v n="Address">""</v>
@@ -2275,8 +2276,8 @@ g_SFC.fbSFC_Temp1();
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
-                              <v n="Operand">""</v>
-                              <n n="Type" />
+                              <v n="Operand">"g_Data.fbTankTarget_4"</v>
+                              <v n="Type">"FB_Tank_Target"</v>
                               <v n="Comment">""</v>
                               <v n="SymbolComment">""</v>
                               <v n="Address">""</v>
@@ -2294,8 +2295,8 @@ g_SFC.fbSFC_Temp1();
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
-                              <v n="Operand">""</v>
-                              <n n="Type" />
+                              <v n="Operand">"g_Data.fbLineSource_Color"</v>
+                              <v n="Type">"FB_Line_Source"</v>
                               <v n="Comment">""</v>
                               <v n="SymbolComment">""</v>
                               <v n="Address">""</v>
@@ -2313,8 +2314,8 @@ g_SFC.fbSFC_Temp1();
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
-                              <v n="Operand">"g_Data.fbTankTarget_4"</v>
-                              <v n="Type">"FB_Tank_Target"</v>
+                              <v n="Operand">"g_Data.fbLineTarget_Color"</v>
+                              <v n="Type">"FB_Line_Target"</v>
                               <v n="Comment">""</v>
                               <v n="SymbolComment">""</v>
                               <v n="Address">""</v>
@@ -2332,7 +2333,7 @@ g_SFC.fbSFC_Temp1();
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
-                              <v n="Operand">"g_Data.fbLineSource_Color"</v>
+                              <v n="Operand">"g_Data.fbTriBlenderSource_Color"</v>
                               <v n="Type">"FB_Line_Source"</v>
                               <v n="Comment">""</v>
                               <v n="SymbolComment">""</v>
@@ -2351,7 +2352,7 @@ g_SFC.fbSFC_Temp1();
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
-                              <v n="Operand">"g_Data.fbLineTarget_Color"</v>
+                              <v n="Operand">"g_Data.fbTriBlenderTarget_Color"</v>
                               <v n="Type">"FB_Line_Target"</v>
                               <v n="Comment">""</v>
                               <v n="SymbolComment">""</v>
@@ -2370,8 +2371,8 @@ g_SFC.fbSFC_Temp1();
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
-                              <v n="Operand">"g_Data.fbTriBlenderSource_Color"</v>
-                              <v n="Type">"FB_Line_Source"</v>
+                              <v n="Operand">"g_Data.fbPumpLine_P4001"</v>
+                              <v n="Type">"FB_Pump"</v>
                               <v n="Comment">""</v>
                               <v n="SymbolComment">""</v>
                               <v n="Address">""</v>
@@ -2389,8 +2390,8 @@ g_SFC.fbSFC_Temp1();
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
-                              <v n="Operand">"g_Data.fbTriBlenderTarget_Color"</v>
-                              <v n="Type">"FB_Line_Target"</v>
+                              <v n="Operand">"g_Data.fbPumpTriblender_TB001"</v>
+                              <v n="Type">"FB_Pump"</v>
                               <v n="Comment">""</v>
                               <v n="SymbolComment">""</v>
                               <v n="Address">""</v>
@@ -2411,36 +2412,36 @@ g_SFC.fbSFC_Temp1();
                           <l2 n="Names" cet="String">
                             <v>EN</v>
                             <v>eElementID</v>
-                            <v>valOutlet</v>
-                            <v>valLine</v>
-                            <v>valTriBlender</v>
-                            <v>valDrain</v>
-                            <v>valCIP</v>
+                            <v>stTankValves</v>
+                            <v>stLineSourceValves</v>
+                            <v>stTriBlenderSourceValves</v>
+                            <v>stLineTargetValves</v>
+                            <v>stfbTriBlenderTargetValves</v>
                             <v>valFillWater</v>
-                            <v>valPumpLine</v>
-                            <v>valPumpTriBleder</v>
                             <v>fbTarget</v>
                             <v>fbLineSource</v>
                             <v>fbLineTarget</v>
                             <v>fbTriBlenderSource</v>
                             <v>fbTriBlenderTarget</v>
+                            <v>fb_PumpLine</v>
+                            <v>fb_PumpTriBlender</v>
                           </l2>
                           <l2 n="Types" cet="String">
                             <v>BOOL</v>
                             <v>E_Element_List</v>
-                            <v>E_Pis_Name</v>
-                            <v>E_Pis_Name</v>
-                            <v>E_Pis_Name</v>
-                            <v>E_Pis_Name</v>
-                            <v>E_Pis_Name</v>
-                            <v>E_Pis_Name</v>
-                            <v>E_Pis_Name</v>
+                            <v>st_TankValves</v>
+                            <v>st_LineSourceValves</v>
+                            <v>st_LineSourceValves</v>
+                            <v>st_LineTargetValves</v>
+                            <v>st_LineTargetValves</v>
                             <v>E_Pis_Name</v>
                             <v>FB_Tank_Target[REF]</v>
                             <v>FB_Line_Source[REF]</v>
                             <v>FB_Line_Target[REF]</v>
                             <v>FB_Line_Source[REF]</v>
                             <v>FB_Line_Target[REF]</v>
+                            <v>FB_Pump[REF]</v>
+                            <v>FB_Pump[REF]</v>
                           </l2>
                         </o>
                         <o n="OutputParam" t="ParamList">
@@ -2457,7 +2458,7 @@ g_SFC.fbSFC_Temp1();
                         <n n="STSnippet" />
                         <v n="ContainsExtensibleInputs">false</v>
                         <v n="ProvidesSTSnippet">false</v>
-                        <v n="Id">137L</v>
+                        <v n="Id">187L</v>
                       </o>
                     </l2>
                     <l2 n="Connectors" />
@@ -2487,9 +2488,209 @@ g_SFC.fbSFC_Temp1();
         </NWL>
       </Implementation>
     </Action>
+    <Action Name="act_Call_TankTargets" Id="{250d1796-6961-486b-9de7-1fb9e6e9ab7d}">
+      <Implementation>
+        <NWL>
+          <XmlArchive>
+            <Data>
+              <o xml:space="preserve" t="NWLImplementationObject">
+                <v n="NetworkListComment">""</v>
+                <v n="DefaultViewMode">"Fbd"</v>
+                <l2 n="NetworkList" cet="Network">
+                  <o>
+                    <v n="ILActive">false</v>
+                    <v n="FBDValid">false</v>
+                    <v n="ILValid">false</v>
+                    <l2 n="ILLines" />
+                    <v n="Comment">""</v>
+                    <v n="Title">""</v>
+                    <v n="Label">""</v>
+                    <v n="OutCommented">false</v>
+                    <l2 n="NetworkItems" />
+                    <l2 n="Connectors" />
+                    <v n="Id">2L</v>
+                  </o>
+                  <o>
+                    <v n="ILActive">false</v>
+                    <v n="FBDValid">false</v>
+                    <v n="ILValid">false</v>
+                    <l2 n="ILLines" />
+                    <v n="Comment">""</v>
+                    <v n="Title">""</v>
+                    <v n="Label">""</v>
+                    <v n="OutCommented">false</v>
+                    <l2 n="NetworkItems" />
+                    <l2 n="Connectors" />
+                    <v n="Id">1L</v>
+                  </o>
+                </l2>
+                <v n="BranchCounter">0</v>
+                <v n="ValidIds">true</v>
+              </o>
+            </Data>
+            <TypeList>
+              <Type n="Boolean">System.Boolean</Type>
+              <Type n="Int32">System.Int32</Type>
+              <Type n="Int64">System.Int64</Type>
+              <Type n="Network">{d9a99d73-b633-47db-b876-a752acb25871}</Type>
+              <Type n="NWLImplementationObject">{25e509de-33d4-4447-93f8-c9e4ea381c8b}</Type>
+              <Type n="String">System.String</Type>
+            </TypeList>
+          </XmlArchive>
+        </NWL>
+      </Implementation>
+    </Action>
+    <Action Name="act_SetValves" Id="{606bb271-252e-407f-8120-3b3f040d1b23}">
+      <Implementation>
+        <ST><![CDATA[//Production tank
+	//Tank1
+	g_Data.arr_TankValves[1].valOutlet:=	E_Pis_Name.V3016;
+	g_Data.arr_TankValves[1].valLine:=		E_Pis_Name.V3017;
+	g_Data.arr_TankValves[1].valTriBlender:=E_Pis_Name.V3023;
+	g_Data.arr_TankValves[1].valDrain:=		E_Pis_Name.V3024;
+	g_Data.arr_TankValves[1].valCIP:=		E_Pis_Name.V3025;
+	
+	g_Data.arr_LineSourceValves[1].valTankA:=			E_Pis_Name.V3017;
+	g_Data.arr_LineSourceValves[1].valTankB:=			E_Pis_Name.V3027;
+	g_Data.arr_LineSourceValves[1].valTapWater:=		0;
+	g_Data.arr_LineSourceValves[1].valTapWater_Drain:=	0;
+	g_Data.arr_LineSourceValves[1].valDrain:=			E_Pis_Name.V3018;
+	g_Data.arr_LineSourceValves[1].valCIP:=				E_Pis_Name.V3019;
+	g_Data.arr_LineSourceValves[1].valBlockWater:=		0;
+	g_Data.arr_LineSourceValves[1].valWaterSource:=		0;
+	
+	g_Data.arr_TriBlenderSourceValves[1].valTankA:=				E_Pis_Name.V3023;
+	g_Data.arr_TriBlenderSourceValves[1].valTankB:=				E_Pis_Name.V3028;
+	g_Data.arr_TriBlenderSourceValves[1].valTapWater:=			0;
+	g_Data.arr_TriBlenderSourceValves[1].valTapWater_Drain:=	0;
+	g_Data.arr_TriBlenderSourceValves[1].valDrain:=				E_Pis_Name.V3021;
+	g_Data.arr_TriBlenderSourceValves[1].valCIP:=				E_Pis_Name.V3022;
+	g_Data.arr_TriBlenderSourceValves[1].valBlockWater:=		E_Pis_Name.V3014;
+	g_Data.arr_TriBlenderSourceValves[1].valWaterSource:=		E_Pis_Name.V3113;
+	
+	g_Data.arr_LineTargetValves[1].valTankA:=	0;
+	g_Data.arr_LineTargetValves[1].valTankB:=	0;
+	g_Data.arr_LineTargetValves[1].valDrain:=	0;
+	g_Data.arr_LineTargetValves[1].valCIP:=		0;
+	
+	g_Data.arr_fbTriBlenderTargetValves[1].valTankA:=	E_Pis_Name.V3004;
+	g_Data.arr_fbTriBlenderTargetValves[1].valTankB:=	E_Pis_Name.V3010;
+	g_Data.arr_fbTriBlenderTargetValves[1].valDrain:=	E_Pis_Name.V3007;
+	g_Data.arr_fbTriBlenderTargetValves[1].valCIP:=		E_Pis_Name.V3009;
+	
+	//Tank2
+	g_Data.arr_TankValves[2].valOutlet:=	E_Pis_Name.V3017;
+	g_Data.arr_TankValves[2].valLine:=		E_Pis_Name.V3027;
+	g_Data.arr_TankValves[2].valTriBlender:=E_Pis_Name.V3028;
+	g_Data.arr_TankValves[2].valDrain:=		E_Pis_Name.V3029;
+	g_Data.arr_TankValves[2].valCIP:=		E_Pis_Name.V3030;
+	
+	g_Data.arr_LineSourceValves[2].valTankA:=			E_Pis_Name.V3017;
+	g_Data.arr_LineSourceValves[2].valTankB:=			E_Pis_Name.V3027;
+	g_Data.arr_LineSourceValves[2].valTapWater:=		0;
+	g_Data.arr_LineSourceValves[2].valTapWater_Drain:=	0;
+	g_Data.arr_LineSourceValves[2].valDrain:=			E_Pis_Name.V3018;
+	g_Data.arr_LineSourceValves[2].valCIP:=				E_Pis_Name.V3019;
+	g_Data.arr_LineSourceValves[2].valBlockWater:=		0;
+	g_Data.arr_LineSourceValves[2].valWaterSource:=		0;
+	
+	
+	g_Data.arr_TriBlenderSourceValves[2].valTankA:=				E_Pis_Name.V3023;
+	g_Data.arr_TriBlenderSourceValves[2].valTankB:=				E_Pis_Name.V3028;
+	g_Data.arr_TriBlenderSourceValves[2].valTapWater:=			0;
+	g_Data.arr_TriBlenderSourceValves[2].valTapWater_Drain:=	0;
+	g_Data.arr_TriBlenderSourceValves[2].valDrain:=				E_Pis_Name.V3021;
+	g_Data.arr_TriBlenderSourceValves[2].valCIP:=				E_Pis_Name.V3022;
+	g_Data.arr_TriBlenderSourceValves[2].valBlockWater:=		E_Pis_Name.V3014;
+	g_Data.arr_TriBlenderSourceValves[2].valWaterSource:=		E_Pis_Name.V3113;
+	
+	g_Data.arr_LineTargetValves[2].valTankA:=	0;
+	g_Data.arr_LineTargetValves[2].valTankB:=	0;
+	g_Data.arr_LineTargetValves[2].valDrain:=	0;
+	g_Data.arr_LineTargetValves[2].valCIP:=		0;
+	
+	g_Data.arr_fbTriBlenderTargetValves[2].valTankA:=	E_Pis_Name.V3004;
+	g_Data.arr_fbTriBlenderTargetValves[2].valTankB:=	E_Pis_Name.V3010;
+	g_Data.arr_fbTriBlenderTargetValves[2].valDrain:=	E_Pis_Name.V3007;
+	g_Data.arr_fbTriBlenderTargetValves[2].valCIP:=		E_Pis_Name.V3009;
+	
+	//Tank3
+	g_Data.arr_TankValves[3].valOutlet:=	E_Pis_Name.V4016;
+	g_Data.arr_TankValves[3].valLine:=		E_Pis_Name.V4017;
+	g_Data.arr_TankValves[3].valTriBlender:=E_Pis_Name.V4023;
+	g_Data.arr_TankValves[3].valDrain:=		E_Pis_Name.V4024;
+	g_Data.arr_TankValves[3].valCIP:=		E_Pis_Name.V4025;
+	
+	g_Data.arr_LineSourceValves[3].valTankA:=			E_Pis_Name.V4017;
+	g_Data.arr_LineSourceValves[3].valTankB:=			E_Pis_Name.V4027;
+	g_Data.arr_LineSourceValves[3].valTapWater:=		E_Pis_Name.V2115;
+	g_Data.arr_LineSourceValves[3].valTapWater_Drain:=	E_Pis_Name.V3117;
+	g_Data.arr_LineSourceValves[3].valDrain:=			E_Pis_Name.V4018;
+	g_Data.arr_LineSourceValves[3].valCIP:=				E_Pis_Name.V4019;
+	g_Data.arr_LineSourceValves[3].valBlockWater:=		0;
+	g_Data.arr_LineSourceValves[3].valWaterSource:=		0;
+	
+	g_Data.arr_TriBlenderSourceValves[3].valTankA:=				E_Pis_Name.V4023;
+	g_Data.arr_TriBlenderSourceValves[3].valTankB:=				E_Pis_Name.V4028;
+	g_Data.arr_TriBlenderSourceValves[3].valTapWater:=			E_Pis_Name.V2116;
+	g_Data.arr_TriBlenderSourceValves[3].valTapWater_Drain:=	E_Pis_Name.V3117;
+	g_Data.arr_TriBlenderSourceValves[3].valDrain:=				E_Pis_Name.V4021;
+	g_Data.arr_TriBlenderSourceValves[3].valCIP:=				E_Pis_Name.V4022;
+	g_Data.arr_TriBlenderSourceValves[3].valBlockWater:=		E_Pis_Name.V4014;
+	g_Data.arr_TriBlenderSourceValves[3].valWaterSource:=		E_Pis_Name.V2114;
+	
+	g_Data.arr_LineTargetValves[3].valTankA:=	E_Pis_Name.V4034;
+	g_Data.arr_LineTargetValves[3].valTankB:=	E_Pis_Name.V4033;
+	g_Data.arr_LineTargetValves[3].valDrain:=	E_Pis_Name.V4035;
+	g_Data.arr_LineTargetValves[3].valCIP:=		E_Pis_Name.V4036;
+	
+	g_Data.arr_fbTriBlenderTargetValves[3].valTankA:=	E_Pis_Name.V4004;
+	g_Data.arr_fbTriBlenderTargetValves[3].valTankB:=	E_Pis_Name.V4010;
+	g_Data.arr_fbTriBlenderTargetValves[3].valDrain:=	E_Pis_Name.V4008;
+	g_Data.arr_fbTriBlenderTargetValves[3].valCIP:=		E_Pis_Name.V4009;
+	
+	//Tank4
+	g_Data.arr_TankValves[4].valOutlet:=	E_Pis_Name.V4017;
+	g_Data.arr_TankValves[4].valLine:=		E_Pis_Name.V4027;
+	g_Data.arr_TankValves[4].valTriBlender:=E_Pis_Name.V4028;
+	g_Data.arr_TankValves[4].valDrain:=		E_Pis_Name.V4029;
+	g_Data.arr_TankValves[4].valCIP:=		E_Pis_Name.V4030;
+	
+	g_Data.arr_LineSourceValves[4].valTankA:=			E_Pis_Name.V4017;
+	g_Data.arr_LineSourceValves[4].valTankB:=			E_Pis_Name.V4027;
+	g_Data.arr_LineSourceValves[4].valTapWater:=		E_Pis_Name.V2115;
+	g_Data.arr_LineSourceValves[4].valTapWater_Drain:=	E_Pis_Name.V3117;
+	g_Data.arr_LineSourceValves[4].valDrain:=			E_Pis_Name.V4018;
+	g_Data.arr_LineSourceValves[4].valCIP:=				E_Pis_Name.V4019;
+	g_Data.arr_LineSourceValves[4].valBlockWater:=		0;
+	g_Data.arr_LineSourceValves[4].valWaterSource:=		0;
+	
+	g_Data.arr_TriBlenderSourceValves[4].valTankA:=				E_Pis_Name.V4023;
+	g_Data.arr_TriBlenderSourceValves[4].valTankB:=				E_Pis_Name.V4028;
+	g_Data.arr_TriBlenderSourceValves[4].valTapWater:=			E_Pis_Name.V2116;
+	g_Data.arr_TriBlenderSourceValves[4].valTapWater_Drain:=	E_Pis_Name.V3117;
+	g_Data.arr_TriBlenderSourceValves[4].valDrain:=				E_Pis_Name.V4021;
+	g_Data.arr_TriBlenderSourceValves[4].valCIP:=				E_Pis_Name.V4022;
+	g_Data.arr_TriBlenderSourceValves[4].valBlockWater:=		E_Pis_Name.V4014;
+	g_Data.arr_TriBlenderSourceValves[4].valWaterSource:=		E_Pis_Name.V2114;
+	
+	g_Data.arr_LineTargetValves[4].valTankA:=	E_Pis_Name.V4034;
+	g_Data.arr_LineTargetValves[4].valTankB:=	E_Pis_Name.V4033;
+	g_Data.arr_LineTargetValves[4].valDrain:=	E_Pis_Name.V4035;
+	g_Data.arr_LineTargetValves[4].valCIP:=		E_Pis_Name.V4036;
+	
+	g_Data.arr_fbTriBlenderTargetValves[4].valTankA:=	E_Pis_Name.V4004;
+	g_Data.arr_fbTriBlenderTargetValves[4].valTankB:=	E_Pis_Name.V4010;
+	g_Data.arr_fbTriBlenderTargetValves[4].valDrain:=	E_Pis_Name.V4008;
+	g_Data.arr_fbTriBlenderTargetValves[4].valCIP:=		E_Pis_Name.V4009;
+	]]></ST>
+      </Implementation>
+    </Action>
     <LineIds Name="MAIN">
       <LineId Id="28" Count="0" />
-      <LineId Id="45" Count="1" />
+      <LineId Id="45" Count="0" />
+      <LineId Id="57" Count="0" />
+      <LineId Id="46" Count="0" />
       <LineId Id="37" Count="1" />
       <LineId Id="30" Count="0" />
       <LineId Id="40" Count="0" />
@@ -2498,6 +2699,66 @@ g_SFC.fbSFC_Temp1();
       <LineId Id="39" Count="0" />
       <LineId Id="32" Count="0" />
       <LineId Id="16" Count="0" />
+    </LineIds>
+    <LineIds Name="MAIN.act_SetValves">
+      <LineId Id="1" Count="0" />
+      <LineId Id="3" Count="0" />
+      <LineId Id="2" Count="0" />
+      <LineId Id="4" Count="3" />
+      <LineId Id="33" Count="8" />
+      <LineId Id="99" Count="0" />
+      <LineId Id="101" Count="6" />
+      <LineId Id="100" Count="0" />
+      <LineId Id="70" Count="4" />
+      <LineId Id="131" Count="0" />
+      <LineId Id="133" Count="2" />
+      <LineId Id="132" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="13" Count="4" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="90" Count="0" />
+      <LineId Id="92" Count="6" />
+      <LineId Id="91" Count="0" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="44" Count="7" />
+      <LineId Id="43" Count="0" />
+      <LineId Id="126" Count="0" />
+      <LineId Id="128" Count="2" />
+      <LineId Id="127" Count="0" />
+      <LineId Id="75" Count="0" />
+      <LineId Id="77" Count="2" />
+      <LineId Id="76" Count="0" />
+      <LineId Id="18" Count="1" />
+      <LineId Id="22" Count="3" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="52" Count="0" />
+      <LineId Id="54" Count="6" />
+      <LineId Id="53" Count="0" />
+      <LineId Id="117" Count="0" />
+      <LineId Id="119" Count="6" />
+      <LineId Id="118" Count="0" />
+      <LineId Id="80" Count="0" />
+      <LineId Id="82" Count="2" />
+      <LineId Id="81" Count="0" />
+      <LineId Id="141" Count="0" />
+      <LineId Id="143" Count="2" />
+      <LineId Id="142" Count="0" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="28" Count="4" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="108" Count="0" />
+      <LineId Id="110" Count="6" />
+      <LineId Id="109" Count="0" />
+      <LineId Id="61" Count="0" />
+      <LineId Id="63" Count="6" />
+      <LineId Id="62" Count="0" />
+      <LineId Id="136" Count="0" />
+      <LineId Id="138" Count="2" />
+      <LineId Id="137" Count="0" />
+      <LineId Id="85" Count="0" />
+      <LineId Id="87" Count="2" />
+      <LineId Id="86" Count="0" />
+      <LineId Id="10" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>
