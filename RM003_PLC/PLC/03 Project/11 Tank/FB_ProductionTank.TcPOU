@@ -35,6 +35,8 @@ VAR
 	
 	stPis_FillWater			: REFERENCE TO ST_Piston;
 	
+	bMoveStep	:	BOOL	;//For testing purposes, to be deleted 
+	
 END_VAR
 VAR_IN_OUT
 
@@ -50,7 +52,9 @@ END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[act_GetReference();
 act_Oper();
-act_Call_Interface(); //There is no need to Call block if it comes from the outside]]></ST>
+act_Call_Interface(); //There is no need to Call block if it comes from the outside
+
+IF bMoveStep THEN bMoveStep:=FALSE; END_IF]]></ST>
     </Implementation>
     <Folder Name="Manage" Id="{4859bb81-2525-4c2b-a781-1bdd74a1527c}" />
     <Action Name="_aBlending_Prod_active" Id="{eb157051-12c1-4da7-a6b8-de6dd61a0fec}">
@@ -4492,7 +4496,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"TRUE"</v>
+                                          <v n="Value">"TRUE "</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">161L</v>
@@ -4621,7 +4625,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{cacf1a68-236e-47c2-b7b1-1cf9199718cb}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">""</v>
+                                          <v n="Value">"t#2s"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">397L</v>
@@ -4804,7 +4808,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{cacf1a68-236e-47c2-b7b1-1cf9199718cb}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">""</v>
+                                          <v n="Value">"t#2s"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">416L</v>
@@ -4987,7 +4991,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{cacf1a68-236e-47c2-b7b1-1cf9199718cb}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">""</v>
+                                          <v n="Value">"t#2s"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">435L</v>
@@ -5170,7 +5174,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{cacf1a68-236e-47c2-b7b1-1cf9199718cb}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">""</v>
+                                          <v n="Value">"t#2s"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">454L</v>
@@ -5353,7 +5357,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{cacf1a68-236e-47c2-b7b1-1cf9199718cb}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">""</v>
+                                          <v n="Value">"t#2s"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">473L</v>
@@ -5536,7 +5540,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{cacf1a68-236e-47c2-b7b1-1cf9199718cb}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">""</v>
+                                          <v n="Value">"t#2s"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">492L</v>
@@ -5719,7 +5723,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{cacf1a68-236e-47c2-b7b1-1cf9199718cb}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">""</v>
+                                          <v n="Value">"t#2s"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">181L</v>
@@ -6060,7 +6064,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"TRUE"</v>
+                                          <v n="Value">"TRUE AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">210L</v>
@@ -6243,7 +6247,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"bStepDone"</v>
+                                          <v n="Value">"bStepDone AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">517L</v>
@@ -6426,7 +6430,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"bStepDone"</v>
+                                          <v n="Value">"bStepDone AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">536L</v>
@@ -6615,7 +6619,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                                   <o>
                                                     <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                     <o n="Value" t="StringValue">
-                                                      <v n="Value">"bStepDone"</v>
+                                                      <v n="Value">"bStepDone AND bMoveStep"</v>
                                                       <v n="DefaultValue">""</v>
                                                     </o>
                                                     <v n="Id">841L</v>
@@ -6798,7 +6802,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                                   <o>
                                                     <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                     <o n="Value" t="StringValue">
-                                                      <v n="Value">"bStepDone"</v>
+                                                      <v n="Value">"bStepDone AND bMoveStep"</v>
                                                       <v n="DefaultValue">""</v>
                                                     </o>
                                                     <v n="Id">860L</v>
@@ -7345,7 +7349,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"bStepDone"</v>
+                                          <v n="Value">"bStepDone AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">593L</v>
@@ -7528,7 +7532,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"bStepDone"</v>
+                                          <v n="Value">"bStepDone AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">612L</v>
@@ -7717,7 +7721,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                                   <o>
                                                     <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                     <o n="Value" t="StringValue">
-                                                      <v n="Value">"TRUE"</v>
+                                                      <v n="Value">"TRUE AND bMoveStep"</v>
                                                       <v n="DefaultValue">""</v>
                                                     </o>
                                                     <v n="Id">995L</v>
@@ -7900,7 +7904,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                                   <o>
                                                     <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                     <o n="Value" t="StringValue">
-                                                      <v n="Value">"bStepDone"</v>
+                                                      <v n="Value">"bStepDone AND bMoveStep"</v>
                                                       <v n="DefaultValue">""</v>
                                                     </o>
                                                     <v n="Id">1014L</v>
@@ -8004,7 +8008,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                                   <o>
                                                     <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                     <o n="Value" t="StringValue">
-                                                      <v n="Value">"TRUE AND FALSE"</v>
+                                                      <v n="Value">" FALSE"</v>
                                                       <v n="DefaultValue">""</v>
                                                     </o>
                                                     <v n="Id">956L</v>
@@ -8447,7 +8451,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"bStepDone"</v>
+                                          <v n="Value">"bStepDone AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">1040L</v>
@@ -8630,7 +8634,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"TRUE"</v>
+                                          <v n="Value">"TRUE AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">631L</v>
@@ -8813,7 +8817,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"eReq=E_Request_List.eDissolve"</v>
+                                          <v n="Value">"eReq=E_Request_List.eDissolve AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">650L</v>
@@ -8996,7 +9000,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"bStepDone"</v>
+                                          <v n="Value">"bStepDone AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">669L</v>
@@ -9179,7 +9183,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"bStepDone"</v>
+                                          <v n="Value">"bStepDone AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">688L</v>
@@ -9362,7 +9366,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"bStepDone"</v>
+                                          <v n="Value">"bStepDone AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">707L</v>
@@ -9545,7 +9549,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"bStepDone"</v>
+                                          <v n="Value">"bStepDone AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">726L</v>
@@ -9728,7 +9732,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"bStepDone"</v>
+                                          <v n="Value">"bStepDone AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">745L</v>
@@ -9917,7 +9921,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                                   <o>
                                                     <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                     <o n="Value" t="StringValue">
-                                                      <v n="Value">"bStepDone"</v>
+                                                      <v n="Value">"bStepDone AND bMoveStep"</v>
                                                       <v n="DefaultValue">""</v>
                                                     </o>
                                                     <v n="Id">899L</v>
@@ -10100,7 +10104,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                                   <o>
                                                     <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                     <o n="Value" t="StringValue">
-                                                      <v n="Value">"bStepDone"</v>
+                                                      <v n="Value">"bStepDone AND bMoveStep"</v>
                                                       <v n="DefaultValue">""</v>
                                                     </o>
                                                     <v n="Id">918L</v>
@@ -10647,7 +10651,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"bStepDone"</v>
+                                          <v n="Value">"bStepDone AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">802L</v>
@@ -10830,7 +10834,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"bStepDone"</v>
+                                          <v n="Value">"bStepDone AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">821L</v>
@@ -11013,7 +11017,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"TRUE"</v>
+                                          <v n="Value">"TRUE AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">217L</v>
@@ -11849,7 +11853,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"FALSE"</v>
+                                          <v n="Value">"TRUE AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">1090L</v>
@@ -11978,7 +11982,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{cacf1a68-236e-47c2-b7b1-1cf9199718cb}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">""</v>
+                                          <v n="Value">"t#2s"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">1103L</v>
@@ -12161,7 +12165,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{cacf1a68-236e-47c2-b7b1-1cf9199718cb}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">""</v>
+                                          <v n="Value">"t#2s"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">1122L</v>
@@ -12508,7 +12512,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                                   <o>
                                                     <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                     <o n="Value" t="StringValue">
-                                                      <v n="Value">"bStepDone"</v>
+                                                      <v n="Value">"bStepDone AND FALSE"</v>
                                                       <v n="DefaultValue">""</v>
                                                     </o>
                                                     <v n="Id">1128L</v>
@@ -13793,7 +13797,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                                   <o>
                                                     <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                     <o n="Value" t="StringValue">
-                                                      <v n="Value">"TRUE"</v>
+                                                      <v n="Value">"FALSE"</v>
                                                       <v n="DefaultValue">""</v>
                                                     </o>
                                                     <v n="Id">1300L</v>
@@ -17702,6 +17706,8 @@ m_SFC_Handle();]]></ST>
     <LineIds Name="FB_ProductionTank">
       <LineId Id="9" Count="1" />
       <LineId Id="32" Count="0" />
+      <LineId Id="81" Count="0" />
+      <LineId Id="80" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank._aBlending_Prod_active">
       <LineId Id="2" Count="0" />

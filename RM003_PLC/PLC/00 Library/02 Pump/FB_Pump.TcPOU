@@ -2,6 +2,9 @@
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="FB_Pump" Id="{85164826-ad0f-4589-97dc-725e0f6c34e4}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_Pump
+VAR_IN_OUT
+	ST_Pump	:	st_Pump	;
+END_VAR
 VAR_INPUT
 END_VAR
 VAR_OUTPUT
@@ -18,7 +21,9 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[]]></ST>
+        <ST><![CDATA[ST_Pump.bAuto:=TRUE;
+ST_Pump.bRun:=TRUE;
+m_Auto:=TRUE;]]></ST>
       </Implementation>
     </Method>
     <Method Name="m_Run" Id="{c021bce4-07f3-44e5-a920-e4b2f00640f2}">
@@ -27,7 +32,9 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[]]></ST>
+        <ST><![CDATA[ST_Pump.bAuto:=FALSE;
+ST_Pump.bRun:=TRUE;
+m_Run:=TRUE;]]></ST>
       </Implementation>
     </Method>
     <Method Name="m_Stop" Id="{32beb2f6-b52c-44a4-83d0-2553e54c7ded}">
@@ -36,7 +43,9 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[]]></ST>
+        <ST><![CDATA[ST_Pump.bAuto:=FALSE;
+ST_Pump.bRun:=FALSE;
+m_Stop:=TRUE;]]></ST>
       </Implementation>
     </Method>
     <LineIds Name="FB_Pump">
@@ -44,12 +53,17 @@ END_VAR
     </LineIds>
     <LineIds Name="FB_Pump.m_Auto">
       <LineId Id="5" Count="0" />
+      <LineId Id="9" Count="1" />
     </LineIds>
     <LineIds Name="FB_Pump.m_Run">
+      <LineId Id="9" Count="0" />
       <LineId Id="5" Count="0" />
+      <LineId Id="10" Count="0" />
     </LineIds>
     <LineIds Name="FB_Pump.m_Stop">
+      <LineId Id="9" Count="0" />
       <LineId Id="5" Count="0" />
+      <LineId Id="10" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>
