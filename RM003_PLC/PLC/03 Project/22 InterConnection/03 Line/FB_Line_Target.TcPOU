@@ -261,10 +261,13 @@ bDone:=FALSE;]]></ST>
     <Action Name="_aTank_A_active" Id="{11e988fc-4330-4d0d-b9fd-24a06f163182}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
-IF TRUE 
-AND eStatus=E_Line_Target.eTank_A
-THEN;
+IF TRUE  AND eStatus=E_Line_Target.eTank_A THEN;
 	bStepDone:=TRUE;
+ELSE
+	fbPis.m_SetByRecipe(stPis:=stPis_TankA, 			req:=E_Piston_Recipe_State.Act);		
+	fbPis.m_SetByRecipe(stPis:=stPis_TankB, 			req:=E_Piston_Recipe_State.Release);
+	fbPis.m_SetByRecipe(stPis:=stPis_Drain, 			req:=E_Piston_Recipe_State.Act);
+	fbPis.m_SetByRecipe(stPis:=stPis_CIP, 				req:=E_Piston_Recipe_State.Release);
 END_IF]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -2811,7 +2814,10 @@ m_SFC_Handle();]]></ST>
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_Line_Target._aTank_A_active">
-      <LineId Id="2" Count="4" />
+      <LineId Id="2" Count="1" />
+      <LineId Id="6" Count="1" />
+      <LineId Id="9" Count="2" />
+      <LineId Id="8" Count="0" />
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_Line_Target._aTank_A_entry">

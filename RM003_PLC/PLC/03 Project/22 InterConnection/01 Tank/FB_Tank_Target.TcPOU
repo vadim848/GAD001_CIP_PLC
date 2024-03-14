@@ -144,6 +144,7 @@ fbPis.m_SetByRecipe(stPis:=stPis_CIP, 			req:=E_Piston_Recipe_State.Release);
       <Implementation>
         <ST><![CDATA[eProcess:=E_Tank_Target.eNone;
 eReq:=E_Tank_Target.eNone;
+eStatus:=E_Tank_Target.eNone;
 bRun:=FALSE;
 bDone:=TRUE;
 ]]></ST>
@@ -297,7 +298,7 @@ fbPis.m_SetByRecipe(stPis:=stPis_CIP, req:=E_Piston_Recipe_State.Release);]]></S
     <Action Name="_aReady_active" Id="{11ea1fd0-5021-4a91-99b3-72574a941116}">
       <Implementation>
         <ST><![CDATA[
-
+eStatus:=E_Tank_Target.eNone;
 CASE eReq OF
 	E_Tank_Target.eClose:;
 			IF TRUE THEN;
@@ -2838,6 +2839,7 @@ m_SFC_Handle();]]></ST>
     <LineIds Name="FB_Tank_Target._aDone_entry">
       <LineId Id="1" Count="0" />
       <LineId Id="3" Count="0" />
+      <LineId Id="9" Count="0" />
       <LineId Id="6" Count="1" />
       <LineId Id="2" Count="0" />
     </LineIds>
