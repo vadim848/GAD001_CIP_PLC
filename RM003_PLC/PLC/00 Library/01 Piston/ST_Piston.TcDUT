@@ -5,6 +5,10 @@
 STRUCT
 	req_Open		:BOOL;		(* Auto cycle command, will operate the piston to open, not for HMI usage	*)
 	req_Close		:BOOL;		(* Auto cycle command, will operate the piston to close, not for HMI usage	*)
+	
+	//additional requests for Upper and Lower 
+	req_Upper		:	BOOL	;
+	req_Lower		:	BOOL	;
 
 	req_OpenMan		:BOOL;		(* Manual command, for HMI, will operate the piston to open	*)
 	req_CloseMan	:BOOL;		(* Manual command, for HMI, will operate the piston to close	*)
@@ -25,7 +29,9 @@ STRUCT
 	st_Open			: BOOL	:=FALSE;	(* Piston state open	*)
 	st_Close		: BOOL	:=FALSE;	(* Piston state close	*)
 	st_Deafult		: BOOL;
-
+	//additional status for Upper and Lower
+	st_Upper		:	BOOL	;
+	st_Lower		:	BOOL	;
 
 	// Each piston has its ID number
 	iPisNum			:INT;

@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_Pisto_U_L" Id="{f6df062b-8dd7-4dca-98fe-56ea9e281485}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK PUBLIC FB_Pisto_U_L// EXTENDS FB_Piston
+VAR_INPUT
+	enable: BOOL;
+END_VAR
+VAR_OUTPUT
+	valve_Upper		:BOOL;
+	valve_Lower		:BOOL;	
+END_VAR
+VAR
+END_VAR
+VAR_IN_OUT
+	st_Piston_U_L	:	ST_Piston_U_L	;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[act_Get_Reference();
+act_SetOutputs();
+
+IF NOT enable THEN;
+	valve_Upper:=FALSE;
+	valve_Lower:=FALSE;
+END_IF]]></ST>
+    </Implementation>
+    <Action Name="act_Get_Reference" Id="{60607663-ce4f-44c4-8288-4340f34ed98c}">
+      <Implementation>
+        <ST><![CDATA[st_Piston_U_L.str_Piston REF= g_Piston.stPis[iFB_Num];]]></ST>
+      </Implementation>
+    </Action>
+    <Action Name="act_SetOutputs" Id="{fe9d830e-c8cb-470f-9da2-a61c532c4f0f}">
+      <Implementation>
+        <ST><![CDATA[IF st_Piston_U_L.str_Piston.st_Open AND st_Piston_U_L.req_Lower THEN
+	st_Piston_U_L.out_Lower:=TRUE;
+	st_Piston_U_L.out_Upper:=FALSE;
+	
+	st_Piston_U_L.st_OpenLower:=TRUE;
+	st_Piston_U_L.st_OpenUpper:=FALSE;
+	st_Piston_U_L.st_CloseLower:=FALSE;
+	st_Piston_U_L.st_CloseUpper:=FALSE;
+	
+	st_Piston_U_L.req_Lower:=FALSE;
+ELSIF st_Piston_U_L.str_Piston.st_Open AND st_Piston_U_L.req_Upper THEN
+	st_Piston_U_L.out_Lower:=FALSE;
+	st_Piston_U_L.out_Upper:=TRUE;
+	
+	st_Piston_U_L.st_OpenLower:=FALSE;
+	st_Piston_U_L.st_OpenUpper:=TRUE;
+	st_Piston_U_L.st_CloseLower:=FALSE;
+	st_Piston_U_L.st_CloseUpper:=FALSE;
+	
+	st_Piston_U_L.req_Upper:=FALSE;
+ELSIF st_Piston_U_L.str_Piston.st_Close AND st_Piston_U_L.req_Upper THEN
+	st_Piston_U_L.out_Lower:=FALSE;
+	st_Piston_U_L.out_Upper:=TRUE;
+	
+	st_Piston_U_L.st_OpenLower:=FALSE;
+	st_Piston_U_L.st_OpenUpper:=FALSE;
+	st_Piston_U_L.st_CloseLower:=FALSE;
+	st_Piston_U_L.st_CloseUpper:=TRUE;
+	
+	st_Piston_U_L.req_Upper:=FALSE;
+ELSIF st_Piston_U_L.str_Piston.st_Close AND st_Piston_U_L.req_Lower THEN
+	st_Piston_U_L.out_Lower:=TRUE;
+	st_Piston_U_L.out_Upper:=FALSE;
+	
+	st_Piston_U_L.st_OpenLower:=FALSE;
+	st_Piston_U_L.st_OpenUpper:=FALSE;
+	st_Piston_U_L.st_CloseLower:=TRUE;
+	st_Piston_U_L.st_CloseUpper:=FALSE;
+	
+	st_Piston_U_L.req_Lower:=FALSE;
+END_IF]]></ST>
+      </Implementation>
+    </Action>
+    <LineIds Name="FB_Pisto_U_L">
+      <LineId Id="9" Count="0" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="24" Count="1" />
+      <LineId Id="22" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Pisto_U_L.act_Get_Reference">
+      <LineId Id="1" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Pisto_U_L.act_SetOutputs">
+      <LineId Id="1" Count="1" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="11" Count="1" />
+      <LineId Id="17" Count="1" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="4" Count="0" />
+      <LineId Id="21" Count="7" />
+      <LineId Id="5" Count="1" />
+      <LineId Id="29" Count="7" />
+      <LineId Id="7" Count="1" />
+      <LineId Id="37" Count="7" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="3" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>
