@@ -30,7 +30,8 @@ VAR
 	refState_Long		: REFERENCE TO E_Element_State_Long;
 	eReq				: E_Request_List;		
 	eProcess			: E_Element_Process;
-
+	eStatus				: E_Element_State_Long; // for HMI only as status
+	
 	fbPis				: FB_Piston;	
 	
 	stPis_FillWater			: REFERENCE TO ST_Piston;
@@ -2977,6 +2978,8 @@ END_IF]]></ST>
 refElement REF= fbElement[eElementID];
 refState_Long REF= fbElement[eElementID].eState_Long;
 stPis_FillWater REF= stPis[valFillWater];
+
+eStatus:=refState_Long;
 (*
 stPis_Outlet		REF= g_Piston.stPis[valOutlet];
 stPis_Line			REF= g_Piston.stPis[valOutlet];
@@ -18083,6 +18086,8 @@ m_SFC_Handle();]]></ST>
     <LineIds Name="FB_ProductionTank.act_GetReference">
       <LineId Id="1" Count="2" />
       <LineId Id="11" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="12" Count="0" />
       <LineId Id="5" Count="4" />
       <LineId Id="4" Count="0" />
       <LineId Id="10" Count="0" />
