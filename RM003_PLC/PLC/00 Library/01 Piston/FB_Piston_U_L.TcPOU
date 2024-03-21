@@ -19,10 +19,7 @@ END_VAR
       <ST><![CDATA[act_Get_Reference();
 act_SetOutputs();
 
-IF NOT enable THEN;
-	valve_Upper:=FALSE;
-	valve_Lower:=FALSE;
-END_IF]]></ST>
+]]></ST>
     </Implementation>
     <Action Name="act_Get_Reference" Id="{60607663-ce4f-44c4-8288-4340f34ed98c}">
       <Implementation>
@@ -31,7 +28,25 @@ END_IF]]></ST>
     </Action>
     <Action Name="act_SetOutputs" Id="{fe9d830e-c8cb-470f-9da2-a61c532c4f0f}">
       <Implementation>
-        <ST><![CDATA[IF st_Piston_U_L.str_Piston.st_Open AND st_Piston_U_L.req_Lower THEN
+        <ST><![CDATA[IF enable THEN;
+	IF st_Piston_U_L.req_Upper THEN;
+		valve_Upper:=TRUE;
+		valve_Lower:=FALSE;		
+	ELSIF st_Piston_U_L.req_Lower THEN;
+		valve_Upper:=FALSE;
+		valve_Lower:=TRUE;		
+	ELSE;
+		valve_Upper:=FALSE;
+		valve_Lower:=FALSE;		
+	END_IF
+ELSE;
+	valve_Upper:=FALSE;
+	valve_Lower:=FALSE;
+END_IF
+
+
+(*
+IF st_Piston_U_L.str_Piston.st_Open AND st_Piston_U_L.req_Lower THEN
 	st_Piston_U_L.out_Lower:=TRUE;
 	st_Piston_U_L.out_Upper:=FALSE;
 	
@@ -71,21 +86,33 @@ ELSIF st_Piston_U_L.str_Piston.st_Close AND st_Piston_U_L.req_Lower THEN
 	st_Piston_U_L.st_CloseUpper:=FALSE;
 	
 	st_Piston_U_L.req_Lower:=FALSE;
-END_IF]]></ST>
+END_IF
+*)]]></ST>
       </Implementation>
     </Action>
     <LineIds Name="FB_Piston_U_L">
       <LineId Id="9" Count="0" />
       <LineId Id="16" Count="0" />
       <LineId Id="20" Count="0" />
-      <LineId Id="19" Count="0" />
-      <LineId Id="24" Count="1" />
       <LineId Id="22" Count="0" />
     </LineIds>
     <LineIds Name="FB_Piston_U_L.act_Get_Reference">
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_Piston_U_L.act_SetOutputs">
+      <LineId Id="47" Count="0" />
+      <LineId Id="52" Count="0" />
+      <LineId Id="64" Count="0" />
+      <LineId Id="58" Count="1" />
+      <LineId Id="63" Count="0" />
+      <LineId Id="60" Count="2" />
+      <LineId Id="54" Count="1" />
+      <LineId Id="53" Count="0" />
+      <LineId Id="48" Count="1" />
+      <LineId Id="45" Count="0" />
+      <LineId Id="51" Count="0" />
+      <LineId Id="50" Count="0" />
+      <LineId Id="46" Count="0" />
       <LineId Id="1" Count="1" />
       <LineId Id="10" Count="0" />
       <LineId Id="13" Count="0" />
@@ -101,6 +128,7 @@ END_IF]]></ST>
       <LineId Id="37" Count="7" />
       <LineId Id="9" Count="0" />
       <LineId Id="3" Count="0" />
+      <LineId Id="65" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>

@@ -71,8 +71,8 @@ END_IF
     <Folder Name="Manage" Id="{38103117-043f-403d-a53b-cc92b5c9eca8}" />
     <Action Name="_aDone_entry" Id="{60428b5e-2664-48fc-baa3-5f1fc5212655}">
       <Implementation>
-        <ST><![CDATA[eProcess:=E_CIP_Usage.eLocal;
-eReq:=E_CIP_Usage.eLocal;
+        <ST><![CDATA[eProcess:=E_CIP_Usage.eNotInUse;
+eReq:=E_CIP_Usage.eNotInUse;
 bRun:=FALSE;
 bDone:=TRUE;
 ]]></ST>
@@ -111,8 +111,8 @@ bDone:=TRUE;
     </Action>
     <Action Name="_aInit_exit" Id="{f29be3ee-e528-4005-96b2-1ef3343e2f94}">
       <Implementation>
-        <ST><![CDATA[eProcess:=E_CIP_Usage.eLocal;
-eReq:=E_CIP_Usage.eLocal;
+        <ST><![CDATA[eProcess:=E_CIP_Usage.eNotInUse;
+eReq:=E_CIP_Usage.eNotInUse;
 ]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -4723,8 +4723,8 @@ END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF eStatus=eReqStatus 
-AND eProcess=E_CIP_Usage.eLocal
-AND eReq=E_CIP_Usage.eLocal
+AND eProcess=E_CIP_Usage.eNotInUse
+AND eReq=E_CIP_Usage.eNotInUse
 AND bDone
 AND NOT bRun
 THEN;

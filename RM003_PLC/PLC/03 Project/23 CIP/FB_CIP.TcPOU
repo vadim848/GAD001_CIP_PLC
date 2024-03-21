@@ -36,6 +36,7 @@ VAR
 	rtPosDeleteAllHMI	: R_TRIG;
 	
 	eRefClient_fbElement		: REFERENCE TO FB_Element; // FB_Element // E_Element_State_Long
+	bClientRef_done				: BOOL;
 	fbElement_Blank				: FB_Element;
 	eState_Long_Blank			: E_Element_State_Long;
 	
@@ -67,6 +68,7 @@ END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[m_Set_SFCFlags_Reference();
+act_GetReference();
 SUPER^();
 
 act_Oper();
@@ -88,7 +90,7 @@ IF rtModeAuto.Q THEN;
 	//SFCReset:=TRUE;
 END_IF
 
-IF bRun THEN;
+IF bRun AND bClientRef_done THEN;
 	act_Run();
 END_IF
  
@@ -384,7 +386,6 @@ END_IF
     <Action Name="_aFill_Water_T93_active" Id="{f14f71ad-6ba8-47fc-a0d3-a46c63414f6e}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
-fbPis.m_SetByRecipe(stPis:=stPis_FillWater_T93, 			req:=E_Piston_Recipe_State.Act);
 IF fbCIP_Source.m_CheckStatus(eReqStatus:=E_CIP_Source.eClose) 
 	AND fbCIP_Usage.m_CheckStatus(eReqStatus:=E_CIP_Usage.eLocal)
 	AND fbCIP_Return.m_CheckStatus(eReqStatus:=E_CIP_Return.eDrain) 
@@ -413,6 +414,8 @@ END_IF
         <ST><![CDATA[fbCIP_Source.m_Run(eReqProc:=E_CIP_Source.eClose);
 fbCIP_Usage.m_Run(eReqProc:=E_CIP_Usage.eLocal);
 fbCIP_Return.m_Run(eReqProc:=E_CIP_Return.eDrain);
+fbPis.m_SetByRecipe(stPis:=stPis_FillWater_T93, 			req:=E_Piston_Recipe_State.Act);
+
 ]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -477,7 +480,7 @@ IF eRun<>E_CIP_Source.eNone THEN;
 	eRefClient_fbElement.m_InterConnect(value:=E_InterConnection.ConnToCIP);
 END_IF
 
-
+bClientRef_done:=TRUE;
 ]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -518,6 +521,7 @@ END_IF
 IF eMode=E_CIP_Mode.eAuto THEN;
 	eMode:=E_CIP_Mode.eManual;
 END_IF
+_aGet_Client_active();
 ]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -714,6 +718,15 @@ fb_PumpClient.m_Stop();]]></ST>
           </TypeList>
         </XmlArchive>
       </ObjectProperties>
+    </Action>
+    <Action Name="act_GetReference" Id="{483d260d-ab35-4076-91bc-ffd5a0e6d733}" FolderPath="Manage\">
+      <Implementation>
+        <ST><![CDATA[stPis_FillWater_T91 REF= stPis[valFillWater_T91];
+stPis_FillWater_T92 REF= stPis[valFillWater_T92];
+stPis_FillWater_T93 REF= stPis[valFillWater_T93];
+stPis_FillWater_T94 REF= stPis[valFillWater_T94];
+]]></ST>
+      </Implementation>
     </Action>
     <Action Name="act_Oper" Id="{c3825564-eb19-4e3f-91a4-377e8a0daffd}" FolderPath="Manage\">
       <Implementation>
@@ -12743,7 +12756,7 @@ END_IF
     </Action>
     <Action Name="act_Run" Id="{1474794e-dde4-4a3c-8164-060b43f4cb22}" FolderPath="Manage\">
       <Implementation>
-        <ST><![CDATA[IF eRefClient_fbElement.bError THEN;
+        <ST><![CDATA[IF eRefClient_fbElement.bError AND SFCCurrentStep<>'Ready' THEN;
 	m_Set_LastStepBeforeError();
 	sError_Message:='Client Error';
 	mResetCycle();
@@ -12948,6 +12961,7 @@ END_IF
     </Method>
     <LineIds Name="FB_CIP">
       <LineId Id="184" Count="0" />
+      <LineId Id="256" Count="0" />
       <LineId Id="25" Count="1" />
       <LineId Id="9" Count="0" />
       <LineId Id="31" Count="0" />
@@ -13043,7 +13057,6 @@ END_IF
     </LineIds>
     <LineIds Name="FB_CIP._aFill_Water_T93_active">
       <LineId Id="18" Count="0" />
-      <LineId Id="16" Count="0" />
       <LineId Id="2" Count="0" />
       <LineId Id="4" Count="0" />
       <LineId Id="6" Count="0" />
@@ -13053,7 +13066,10 @@ END_IF
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aFill_Water_T93_entry">
-      <LineId Id="1" Count="3" />
+      <LineId Id="1" Count="2" />
+      <LineId Id="6" Count="0" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="4" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aGet_Client_active">
       <LineId Id="3" Count="0" />
@@ -13090,7 +13106,7 @@ END_IF
     </LineIds>
     <LineIds Name="FB_CIP._ainit_exit">
       <LineId Id="1" Count="0" />
-      <LineId Id="9" Count="2" />
+      <LineId Id="9" Count="3" />
       <LineId Id="3" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aReady_active">
@@ -13138,6 +13154,10 @@ END_IF
     <LineIds Name="FB_CIP._aStopPump_CIP1_01_entry">
       <LineId Id="2" Count="0" />
       <LineId Id="1" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_CIP.act_GetReference">
+      <LineId Id="3" Count="3" />
+      <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP.act_ReqBuffer">
       <LineId Id="34" Count="11" />

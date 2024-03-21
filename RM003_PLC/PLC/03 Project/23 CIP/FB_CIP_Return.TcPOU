@@ -92,8 +92,8 @@ fbPis.m_SetByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release);
     </Action>
     <Action Name="_aDone_entry" Id="{6239f642-a270-42c1-9339-15a3c1a424dc}">
       <Implementation>
-        <ST><![CDATA[eProcess:=E_CIP_Return.eDrain;
-eReq:=E_CIP_Return.eDrain;
+        <ST><![CDATA[eProcess:=E_CIP_Return.eNone; 
+eReq:=E_CIP_Return.eNone;
 bRun:=FALSE;
 bDone:=TRUE;
 ]]></ST>
@@ -178,8 +178,8 @@ fbPis.m_SetByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release);
     </Action>
     <Action Name="_aInit_exit" Id="{bde120a9-c223-4833-809a-adf0c636618f}">
       <Implementation>
-        <ST><![CDATA[eProcess:=E_CIP_Return.eDrain;
-eReq:=E_CIP_Return.eDrain;
+        <ST><![CDATA[eProcess:=E_CIP_Return.eNone;
+eReq:=E_CIP_Return.eNone;
 ]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -3093,8 +3093,8 @@ END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF eStatus=eReqStatus 
-AND eProcess=E_CIP_Return.eDrain
-AND eReq=E_CIP_Return.eDrain
+AND eProcess=E_CIP_Return.eNone
+AND eReq=E_CIP_Return.eNone
 AND bDone
 AND NOT bRun
 THEN;
