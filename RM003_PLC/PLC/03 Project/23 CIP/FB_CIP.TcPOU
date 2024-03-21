@@ -237,7 +237,7 @@ END_IF]]></ST>
         <ST><![CDATA[bStepDone:=FALSE;
 
 IF fbCIP_Source.m_CheckStatus(eReqStatus:=E_CIP_Source.eT93_R_Water) 
-	AND fbCIP_Usage.m_CheckStatus(eReqStatus:=E_CIP_Usage.eNotInUse)
+	AND fbCIP_Usage.m_CheckStatus(eReqStatus:=eReq.eClient)
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_FillWater_T93, 	req:=E_Piston_Recipe_State.Release) THEN
 	bStepDone:=TRUE;
 END_IF
@@ -260,7 +260,7 @@ END_IF
     <Action Name="_aConnect_CIP1_01_entry" Id="{f8896680-aaad-4c37-8e47-205e55062b9d}">
       <Implementation>
         <ST><![CDATA[fbCIP_Source.m_Run(eReqProc:=E_CIP_Source.eT93_R_Water);
-fbCIP_Usage.m_Run(eReqProc:=E_CIP_Usage.eNotInUse);
+fbCIP_Usage.m_Run(eReqProc:=eReq.eClient);
 fbPis.m_SetByRecipe(stPis:=stPis_FillWater_T93, req:=E_Piston_Recipe_State.Release);]]></ST>
       </Implementation>
       <ObjectProperties>
