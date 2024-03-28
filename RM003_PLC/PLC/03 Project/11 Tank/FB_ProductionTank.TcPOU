@@ -18,7 +18,9 @@ VAR_INPUT
 	//valDrain		: E_Pis_Name;//Comment?
 	//valCIP			: E_Pis_Name;//Comment?
 	
-	valFillWater		: E_Pis_Name;
+	valFillWater			: E_Pis_Name;
+	valFillWaterDrain		: E_Pis_Name;
+	valDrainTapWater		: E_Pis_Name;
 	
 	//pumpEnum			:	E_Pump_List	;
 	
@@ -34,7 +36,9 @@ VAR
 	
 	fbPis				: FB_Piston;	
 	
-	stPis_FillWater			: REFERENCE TO ST_Piston;
+	stPis_FillWater				: REFERENCE TO ST_Piston;
+	stPis_FillWaterDrain		: REFERENCE TO ST_Piston;
+	stPis_DrainTapWater			: REFERENCE TO ST_Piston;
 	
 	bMoveStep	:	BOOL	;//For testing purposes, to be deleted 
 	
@@ -467,7 +471,8 @@ bTON_Active:=FALSE;]]></ST>
     <Action Name="_aConn_Tank_active" Id="{ff32bc83-3182-476f-8923-08282db126ba}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
-IF fbTriBlenderSource.m_CheckStatus(eReqStatus:=E_Line_Source.eFillWater) THEN;
+IF fbTriBlenderSource.m_CheckStatus(eReqStatus:=E_Line_Source.eFillWater) 
+AND fbPis.m_CheckByRecipe(stPis:=stPis_FillWaterDrain, req:=E_Piston_Recipe_State.Release) THEN;
 	bStepDone:=TRUE;
 END_IF]]></ST>
       </Implementation>
@@ -487,7 +492,8 @@ END_IF]]></ST>
     </Action>
     <Action Name="_aConn_Tank_entry" Id="{2f0bed0f-71b0-4f0a-b52e-3a24e43288ea}">
       <Implementation>
-        <ST><![CDATA[fbTriBlenderSource.m_Run(eReqProc:=E_Line_Source.eFillWater);]]></ST>
+        <ST><![CDATA[fbTriBlenderSource.m_Run(eReqProc:=E_Line_Source.eFillWater);
+fbPis.m_SetByRecipe(stPis:=stPis_FillWaterDrain, req:=E_Piston_Recipe_State.Release);]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -623,7 +629,8 @@ END_IF]]></ST>
     <Action Name="_aConn_Tri_TapWater_active" Id="{24138e04-1a15-4964-9d15-188dc29195f1}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
-IF fbTriBlenderSource.m_CheckStatus(eReqStatus:=E_Line_Source.eTapWater) THEN;
+IF fbTriBlenderSource.m_CheckStatus(eReqStatus:=E_Line_Source.eTapWater) 
+AND fbPis.m_CheckByRecipe(stPis:=stPis_DrainTapWater, req:=E_Piston_Recipe_State.Release) THEN;
 	bTON_Active:=TRUE;
 END_IF
 IF Call_TON.Q THEN
@@ -647,6 +654,7 @@ END_IF]]></ST>
     <Action Name="_aConn_Tri_TapWater_entry" Id="{bdbd17fc-d3cd-4d43-8766-70118e5d3ab5}">
       <Implementation>
         <ST><![CDATA[fbTriBlenderSource.m_Run(eReqProc:=E_Line_Source.eTapWater);
+fbPis.m_SetByRecipe(stPis:=stPis_DrainTapWater, req:=E_Piston_Recipe_State.Release);
 bTON_Active:=FALSE;]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -844,6 +852,24 @@ bDone:=TRUE;]]></ST>
         </XmlArchive>
       </ObjectProperties>
     </Action>
+    <Action Name="_aDrain_Tri_Line_active" Id="{81d134cd-a182-4f22-906b-f3879f9c0975}">
+      <Implementation>
+        <ST><![CDATA[bStepDone:=TRUE;]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
     <Action Name="_aDrain_Tri_ToDrain_active" Id="{16ba7324-771a-4c87-9ee6-6423d58e799c}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
@@ -956,7 +982,7 @@ END_IF]]></ST>
     </Action>
     <Action Name="_aDrain_Tri_ToTankB_entry" Id="{e79d7efd-5d10-44d4-9d14-f20284cfec6a}">
       <Implementation>
-        <ST><![CDATA[fbTriBlenderTarget.m_Run(eReqProc:=E_Line_Target.eTank_A);
+        <ST><![CDATA[fbTriBlenderTarget.m_Run(eReqProc:=E_Line_Target.eTank_B);
 bTON_Active:=FALSE;]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -1051,6 +1077,24 @@ eReq:=E_Request_List.eNone;
         </XmlArchive>
       </ObjectProperties>
     </Action>
+    <Action Name="_aLine_Drain_Time_active" Id="{085f5f6c-28a2-4d59-8091-383fe212cada}">
+      <Implementation>
+        <ST><![CDATA[bStepDone:=TRUE;]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
     <Action Name="_aLineSource_Drain_active" Id="{d3e4117a-8f26-4725-b3c1-44265824670e}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
@@ -1097,7 +1141,8 @@ bTON_Active:=FALSE;]]></ST>
     <Action Name="_aLineSource_TapWater_active" Id="{71366205-9d33-479e-b3ed-6668795bb9be}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
-IF fbLineSource.m_CheckStatus(eReqStatus:=E_Line_Source.eTapWater) THEN;
+IF fbLineSource.m_CheckStatus(eReqStatus:=E_Line_Source.eTapWater) 
+AND fbPis.m_CheckByRecipe(stPis:=stPis_DrainTapWater, req:=E_Piston_Recipe_State.Release) THEN;
 	bTON_Active:=TRUE;
 END_IF
 IF Call_TON.Q THEN
@@ -1121,6 +1166,7 @@ END_IF]]></ST>
     <Action Name="_aLineSource_TapWater_entry" Id="{ee9b6cf5-d9c5-4123-9787-9fcd70002802}">
       <Implementation>
         <ST><![CDATA[fbLineSource.m_Run(eReqProc:=E_Line_Source.eTapWater);
+fbPis.m_SetByRecipe(stPis:=stPis_DrainTapWater, req:=E_Piston_Recipe_State.Release);
 bTON_Active:=FALSE;]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -1408,6 +1454,24 @@ bTON_Active:=FALSE;]]></ST>
     <Action Name="_aPumpLine_Start_1_entry" Id="{dd39f47a-56ce-4e66-9fad-766c758a0414}">
       <Implementation>
         <ST><![CDATA[fb_PumpLine.m_Run();]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
+    <Action Name="_aPumpLine_Start_2_active" Id="{4fe22aaa-3af3-4740-801b-1aab2ee3b312}">
+      <Implementation>
+        <ST><![CDATA[bStepDone:=TRUE;]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -3161,6 +3225,8 @@ END_IF]]></ST>
 refElement REF= fbElement[eElementID];
 refState_Long REF= fbElement[eElementID].eState_Long;
 stPis_FillWater REF= stPis[valFillWater];
+stPis_FillWaterDrain REF= stPis[valFillWaterDrain];
+stPis_DrainTapWater REF= stPis[valDrainTapWater];
 
 eStatus:=refState_Long;
 (*
@@ -3860,7 +3926,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"bStepDone"</v>
+                                          <v n="Value">"bStepDone AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">103L</v>
@@ -4043,7 +4109,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"TRUE"</v>
+                                          <v n="Value">"TRUE AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">384L</v>
@@ -4226,7 +4292,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"bStepDone"</v>
+                                          <v n="Value">"bStepDone AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">353L</v>
@@ -4409,7 +4475,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"TRUE"</v>
+                                          <v n="Value">"TRUE AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">122L</v>
@@ -4696,7 +4762,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"TRUE "</v>
+                                          <v n="Value">"TRUE AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">161L</v>
@@ -4879,7 +4945,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"bStepDone"</v>
+                                          <v n="Value">"bStepDone AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">403L</v>
@@ -5008,7 +5074,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{cacf1a68-236e-47c2-b7b1-1cf9199718cb}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"t#2s"</v>
+                                          <v n="Value">"t#3s"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">416L</v>
@@ -5026,7 +5092,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{700a583f-b4d4-43e4-8c14-629c7cd3bec8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">""</v>
+                                          <v n="Value">"Drain_Water_active"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">418L</v>
@@ -5035,7 +5101,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{a6b08bd8-b696-47e3-9cbf-7408b61c9ff8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">""</v>
+                                          <v n="Value">"Drain_Water_entry"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">419L</v>
@@ -5062,7 +5128,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"TRUE"</v>
+                                          <v n="Value">"bStepDone AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">422L</v>
@@ -5245,7 +5311,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"bStepDone"</v>
+                                          <v n="Value">"bStepDone AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">441L</v>
@@ -5428,7 +5494,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"TRUE"</v>
+                                          <v n="Value">"TRUE AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">460L</v>
@@ -5611,7 +5677,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"bStepDone"</v>
+                                          <v n="Value">"bStepDone AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">479L</v>
@@ -5794,7 +5860,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"bStepDone"</v>
+                                          <v n="Value">"bStepDone AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">498L</v>
@@ -5977,7 +6043,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"TRUE"</v>
+                                          <v n="Value">"TRUE AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">168L</v>
@@ -6264,7 +6330,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"TRUE"</v>
+                                          <v n="Value">"TRUE AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">210L</v>
@@ -6447,7 +6513,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"bStepDone "</v>
+                                          <v n="Value">"bStepDone  AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">517L</v>
@@ -6630,7 +6696,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"bStepDone"</v>
+                                          <v n="Value">"bStepDone AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">536L</v>
@@ -6819,7 +6885,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                                   <o>
                                                     <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                     <o n="Value" t="StringValue">
-                                                      <v n="Value">"bStepDone"</v>
+                                                      <v n="Value">"trn_Tank_A AND bMoveStep"</v>
                                                       <v n="DefaultValue">""</v>
                                                     </o>
                                                     <v n="Id">841L</v>
@@ -7002,7 +7068,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                                   <o>
                                                     <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                     <o n="Value" t="StringValue">
-                                                      <v n="Value">"bStepDone"</v>
+                                                      <v n="Value">"bStepDone AND bMoveStep"</v>
                                                       <v n="DefaultValue">""</v>
                                                     </o>
                                                     <v n="Id">860L</v>
@@ -7106,7 +7172,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                                   <o>
                                                     <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                     <o n="Value" t="StringValue">
-                                                      <v n="Value">"bStepDone AND FALSE"</v>
+                                                      <v n="Value">"trn_Tank_B AND bMoveStep"</v>
                                                       <v n="DefaultValue">""</v>
                                                     </o>
                                                     <v n="Id">555L</v>
@@ -7289,7 +7355,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                                   <o>
                                                     <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                     <o n="Value" t="StringValue">
-                                                      <v n="Value">"bStepDone"</v>
+                                                      <v n="Value">"bStepDone AND bMoveStep"</v>
                                                       <v n="DefaultValue">""</v>
                                                     </o>
                                                     <v n="Id">879L</v>
@@ -7549,7 +7615,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"bStepDone"</v>
+                                          <v n="Value">"bStepDone AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">593L</v>
@@ -7732,7 +7798,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"bStepDone "</v>
+                                          <v n="Value">"bStepDone  AND bMoveStep "</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">612L</v>
@@ -7879,7 +7945,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{700a583f-b4d4-43e4-8c14-629c7cd3bec8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">""</v>
+                                          <v n="Value">"_aDrain_Tri_Line_active"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">952L</v>
@@ -7921,7 +7987,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                                   <o>
                                                     <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                     <o n="Value" t="StringValue">
-                                                      <v n="Value">"TRUE"</v>
+                                                      <v n="Value">"trn_Tank_A AND bMoveStep"</v>
                                                       <v n="DefaultValue">""</v>
                                                     </o>
                                                     <v n="Id">995L</v>
@@ -8104,7 +8170,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                                   <o>
                                                     <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                     <o n="Value" t="StringValue">
-                                                      <v n="Value">"bStepDone"</v>
+                                                      <v n="Value">"bStepDone AND bMoveStep"</v>
                                                       <v n="DefaultValue">""</v>
                                                     </o>
                                                     <v n="Id">1014L</v>
@@ -8208,7 +8274,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                                   <o>
                                                     <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                     <o n="Value" t="StringValue">
-                                                      <v n="Value">" FALSE"</v>
+                                                      <v n="Value">"trn_Tank_B AND bMoveStep"</v>
                                                       <v n="DefaultValue">""</v>
                                                     </o>
                                                     <v n="Id">956L</v>
@@ -8391,7 +8457,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                                   <o>
                                                     <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                     <o n="Value" t="StringValue">
-                                                      <v n="Value">"bStepDone"</v>
+                                                      <v n="Value">"bStepDone AND bMoveStep"</v>
                                                       <v n="DefaultValue">""</v>
                                                     </o>
                                                     <v n="Id">1033L</v>
@@ -8651,7 +8717,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"bStepDone"</v>
+                                          <v n="Value">"bStepDone AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">1040L</v>
@@ -8834,7 +8900,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"TRUE"</v>
+                                          <v n="Value">"TRUE AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">631L</v>
@@ -9017,7 +9083,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"eReq=E_Request_List.eDissolve"</v>
+                                          <v n="Value">"eReq=E_Request_List.eDissolve AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">650L</v>
@@ -9200,7 +9266,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"bStepDone"</v>
+                                          <v n="Value">"bStepDone AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">669L</v>
@@ -9383,7 +9449,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"bStepDone"</v>
+                                          <v n="Value">"bStepDone AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">688L</v>
@@ -9566,7 +9632,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"bStepDone"</v>
+                                          <v n="Value">"bStepDone AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">707L</v>
@@ -9742,14 +9808,14 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                     <v n="IdParent">186L</v>
                                   </o>
                                   <o t="SFCTransition">
-                                    <v n="VariableName">"Disconn_Tri_Tank__to__Conn_Tri_TapWater"</v>
+                                    <v n="VariableName">"Disconn_Tri_Tank__to__Drain_TapWater_01"</v>
                                     <n n="EmbeddedTransition" />
                                     <l2 n="EmbeddedTransitionProperties" />
                                     <l2 n="Attributes" cet="SFCAttribute">
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"bStepDone"</v>
+                                          <v n="Value">"bStepDone AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">726L</v>
@@ -9806,6 +9872,189 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       </o>
                                     </l2>
                                     <v n="Id">725L</v>
+                                    <v n="IdParent">186L</v>
+                                  </o>
+                                  <o t="SFCStep">
+                                    <n n="EmbeddedMainAction" />
+                                    <n n="EmbeddedEntryAction" />
+                                    <n n="EmbeddedExitAction" />
+                                    <l2 n="EmbeddedMainActionProperties" />
+                                    <l2 n="EmbeddedEntryActionProperties" />
+                                    <l2 n="EmbeddedExitActionProperties" />
+                                    <o n="ElementList" t="SFCElementList">
+                                      <l2 n="InnerList" />
+                                    </o>
+                                    <l2 n="Attributes" cet="SFCAttribute">
+                                      <o>
+                                        <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
+                                        <o n="Value" t="StringValue">
+                                          <v n="Value">"Drain_TapWater_01"</v>
+                                          <v n="DefaultValue">""</v>
+                                        </o>
+                                        <v n="Id">1613L</v>
+                                        <v n="IdParent">1612L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{7d894980-aeea-405c-a0f6-e2b26429c58f}</v>
+                                        <o n="Value" t="StringValue">
+                                          <v n="Value">""</v>
+                                          <v n="DefaultValue">""</v>
+                                        </o>
+                                        <v n="Id">1614L</v>
+                                        <v n="IdParent">1612L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{01580b27-6378-448b-8ecb-0e4b795b58d6}</v>
+                                        <o n="Value" t="BoolValue">
+                                          <v n="Value">"FALSE"</v>
+                                          <v n="DefaultValue">"FALSE"</v>
+                                        </o>
+                                        <v n="Id">1615L</v>
+                                        <v n="IdParent">1612L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{bc882c11-1e91-4dd8-a6b8-2075724ed18b}</v>
+                                        <o n="Value" t="EnumValue">
+                                          <v n="TemplateGuid">{79a4fdd5-c859-4de4-aa8d-c03372c880c2}</v>
+                                          <n n="BaseType" />
+                                          <v n="Value">"0"</v>
+                                          <v n="DefaultValue">"0"</v>
+                                        </o>
+                                        <v n="Id">1616L</v>
+                                        <v n="IdParent">1612L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{6844a48e-46c2-4cc8-a185-a478f3b99cc0}</v>
+                                        <o n="Value" t="BoolValue">
+                                          <v n="Value">"FALSE"</v>
+                                          <v n="DefaultValue">"FALSE"</v>
+                                        </o>
+                                        <v n="Id">1617L</v>
+                                        <v n="IdParent">1612L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{62e1754b-7629-4e63-9cec-10ae0c536f1f}</v>
+                                        <o n="Value" t="BoolValue">
+                                          <v n="Value">"FALSE"</v>
+                                          <v n="DefaultValue">"FALSE"</v>
+                                        </o>
+                                        <v n="Id">1618L</v>
+                                        <v n="IdParent">1612L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{cacf1a68-236e-47c2-b7b1-1cf9199718cb}</v>
+                                        <o n="Value" t="StringValue">
+                                          <v n="Value">"t#3s"</v>
+                                          <v n="DefaultValue">""</v>
+                                        </o>
+                                        <v n="Id">1619L</v>
+                                        <v n="IdParent">1612L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{b693554c-1b01-4a8d-afde-9e3a46f7465d}</v>
+                                        <o n="Value" t="StringValue">
+                                          <v n="Value">""</v>
+                                          <v n="DefaultValue">""</v>
+                                        </o>
+                                        <v n="Id">1620L</v>
+                                        <v n="IdParent">1612L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{700a583f-b4d4-43e4-8c14-629c7cd3bec8}</v>
+                                        <o n="Value" t="StringValue">
+                                          <v n="Value">"Drain_TapWater_01_active"</v>
+                                          <v n="DefaultValue">""</v>
+                                        </o>
+                                        <v n="Id">1621L</v>
+                                        <v n="IdParent">1612L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{a6b08bd8-b696-47e3-9cbf-7408b61c9ff8}</v>
+                                        <o n="Value" t="StringValue">
+                                          <v n="Value">"Drain_TapWater_01_entry"</v>
+                                          <v n="DefaultValue">""</v>
+                                        </o>
+                                        <v n="Id">1622L</v>
+                                        <v n="IdParent">1612L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{a2621e18-7de3-4ea6-ae6d-89e9e0b7befd}</v>
+                                        <o n="Value" t="StringValue">
+                                          <v n="Value">""</v>
+                                          <v n="DefaultValue">""</v>
+                                        </o>
+                                        <v n="Id">1623L</v>
+                                        <v n="IdParent">1612L</v>
+                                      </o>
+                                    </l2>
+                                    <v n="Id">1612L</v>
+                                    <v n="IdParent">186L</v>
+                                  </o>
+                                  <o t="SFCTransition">
+                                    <v n="VariableName">"Drain_TapWater_01__to__Conn_Tri_TapWater"</v>
+                                    <n n="EmbeddedTransition" />
+                                    <l2 n="EmbeddedTransitionProperties" />
+                                    <l2 n="Attributes" cet="SFCAttribute">
+                                      <o>
+                                        <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
+                                        <o n="Value" t="StringValue">
+                                          <v n="Value">"bStepDone AND bMoveStep"</v>
+                                          <v n="DefaultValue">""</v>
+                                        </o>
+                                        <v n="Id">1625L</v>
+                                        <v n="IdParent">1624L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{7d894980-aeea-405c-a0f6-e2b26429c58f}</v>
+                                        <o n="Value" t="StringValue">
+                                          <v n="Value">""</v>
+                                          <v n="DefaultValue">""</v>
+                                        </o>
+                                        <v n="Id">1626L</v>
+                                        <v n="IdParent">1624L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{01580b27-6378-448b-8ecb-0e4b795b58d6}</v>
+                                        <o n="Value" t="BoolValue">
+                                          <v n="Value">"FALSE"</v>
+                                          <v n="DefaultValue">"FALSE"</v>
+                                        </o>
+                                        <v n="Id">1627L</v>
+                                        <v n="IdParent">1624L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{bc882c11-1e91-4dd8-a6b8-2075724ed18b}</v>
+                                        <o n="Value" t="EnumValue">
+                                          <v n="TemplateGuid">{79a4fdd5-c859-4de4-aa8d-c03372c880c2}</v>
+                                          <n n="BaseType" />
+                                          <v n="Value">"0"</v>
+                                          <v n="DefaultValue">"0"</v>
+                                        </o>
+                                        <v n="Id">1628L</v>
+                                        <v n="IdParent">1624L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{62e1754b-7629-4e63-9cec-10ae0c536f1f}</v>
+                                        <o n="Value" t="BoolValue">
+                                          <v n="Value">"FALSE"</v>
+                                          <v n="DefaultValue">"FALSE"</v>
+                                        </o>
+                                        <v n="Id">1629L</v>
+                                        <v n="IdParent">1624L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{8294df19-5962-4dee-a874-1051dabb0e3e}</v>
+                                        <o n="Value" t="EnumValue">
+                                          <v n="TemplateGuid">{6ecff51c-9b8f-4338-aab0-67c2b31b07e9}</v>
+                                          <n n="BaseType" />
+                                          <v n="Value">"0"</v>
+                                          <v n="DefaultValue">"0"</v>
+                                        </o>
+                                        <v n="Id">1630L</v>
+                                        <v n="IdParent">1624L</v>
+                                      </o>
+                                    </l2>
+                                    <v n="Id">1624L</v>
                                     <v n="IdParent">186L</v>
                                   </o>
                                   <o t="SFCStep">
@@ -9932,7 +10181,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"bStepDone"</v>
+                                          <v n="Value">"bStepDone AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">745L</v>
@@ -10121,7 +10370,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                                   <o>
                                                     <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                     <o n="Value" t="StringValue">
-                                                      <v n="Value">"bStepDone"</v>
+                                                      <v n="Value">"trn_Tank_A AND bMoveStep"</v>
                                                       <v n="DefaultValue">""</v>
                                                     </o>
                                                     <v n="Id">899L</v>
@@ -10304,7 +10553,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                                   <o>
                                                     <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                     <o n="Value" t="StringValue">
-                                                      <v n="Value">"bStepDone"</v>
+                                                      <v n="Value">"bStepDone AND bMoveStep"</v>
                                                       <v n="DefaultValue">""</v>
                                                     </o>
                                                     <v n="Id">918L</v>
@@ -10408,7 +10657,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                                   <o>
                                                     <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                     <o n="Value" t="StringValue">
-                                                      <v n="Value">"bStepDone AND FALSE"</v>
+                                                      <v n="Value">"trn_Tank_B AND bMoveStep"</v>
                                                       <v n="DefaultValue">""</v>
                                                     </o>
                                                     <v n="Id">764L</v>
@@ -10591,7 +10840,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                                   <o>
                                                     <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                     <o n="Value" t="StringValue">
-                                                      <v n="Value">"bStepDone"</v>
+                                                      <v n="Value">"bStepDone AND bMoveStep"</v>
                                                       <v n="DefaultValue">""</v>
                                                     </o>
                                                     <v n="Id">937L</v>
@@ -10851,7 +11100,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"bStepDone"</v>
+                                          <v n="Value">"bStepDone AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">802L</v>
@@ -11034,7 +11283,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"bStepDone"</v>
+                                          <v n="Value">"bStepDone AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">821L</v>
@@ -11217,7 +11466,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"TRUE"</v>
+                                          <v n="Value">" TRUE AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">217L</v>
@@ -11504,7 +11753,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"TRUE"</v>
+                                          <v n="Value">"TRUE AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">278L</v>
@@ -11687,7 +11936,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"TRUE"</v>
+                                          <v n="Value">"TRUE AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">1415L</v>
@@ -11870,7 +12119,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"bStepDone"</v>
+                                          <v n="Value">"bStepDone AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">1071L</v>
@@ -12236,7 +12485,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"bStepDone"</v>
+                                          <v n="Value">"bStepDone AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">1109L</v>
@@ -12425,7 +12674,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                                   <o>
                                                     <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                     <o n="Value" t="StringValue">
-                                                      <v n="Value">"bStepDone"</v>
+                                                      <v n="Value">"trn_Tank_A AND bMoveStep"</v>
                                                       <v n="DefaultValue">""</v>
                                                     </o>
                                                     <v n="Id">1167L</v>
@@ -12608,7 +12857,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                                   <o>
                                                     <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                     <o n="Value" t="StringValue">
-                                                      <v n="Value">"bStepDone"</v>
+                                                      <v n="Value">"bStepDone AND bMoveStep"</v>
                                                       <v n="DefaultValue">""</v>
                                                     </o>
                                                     <v n="Id">1186L</v>
@@ -12712,7 +12961,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                                   <o>
                                                     <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                     <o n="Value" t="StringValue">
-                                                      <v n="Value">"bStepDone AND FALSE"</v>
+                                                      <v n="Value">"trn_Tank_B AND bMoveStep"</v>
                                                       <v n="DefaultValue">""</v>
                                                     </o>
                                                     <v n="Id">1128L</v>
@@ -12895,7 +13144,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                                   <o>
                                                     <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                     <o n="Value" t="StringValue">
-                                                      <v n="Value">"bStepDone"</v>
+                                                      <v n="Value">"bStepDone AND bMoveStep"</v>
                                                       <v n="DefaultValue">""</v>
                                                     </o>
                                                     <v n="Id">1205L</v>
@@ -13155,7 +13404,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"bStepDone"</v>
+                                          <v n="Value">"bStepDone AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">1231L</v>
@@ -13338,7 +13587,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"TRUE"</v>
+                                          <v n="Value">"TRUE AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">1262L</v>
@@ -13521,7 +13770,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"TRUE"</v>
+                                          <v n="Value">"TRUE AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">1281L</v>
@@ -13668,7 +13917,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{700a583f-b4d4-43e4-8c14-629c7cd3bec8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">""</v>
+                                          <v n="Value">"_aLine_Drain_Time_active"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">1296L</v>
@@ -13710,7 +13959,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                                   <o>
                                                     <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                     <o n="Value" t="StringValue">
-                                                      <v n="Value">"TRUE"</v>
+                                                      <v n="Value">"trn_Tank_A AND bMoveStep"</v>
                                                       <v n="DefaultValue">""</v>
                                                     </o>
                                                     <v n="Id">1320L</v>
@@ -13893,7 +14142,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                                   <o>
                                                     <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                     <o n="Value" t="StringValue">
-                                                      <v n="Value">"bStepDone"</v>
+                                                      <v n="Value">"bStepDone AND bMoveStep"</v>
                                                       <v n="DefaultValue">""</v>
                                                     </o>
                                                     <v n="Id">1339L</v>
@@ -13997,7 +14246,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                                   <o>
                                                     <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                     <o n="Value" t="StringValue">
-                                                      <v n="Value">"FALSE"</v>
+                                                      <v n="Value">"trn_Tank_B AND bMoveStep"</v>
                                                       <v n="DefaultValue">""</v>
                                                     </o>
                                                     <v n="Id">1300L</v>
@@ -14180,7 +14429,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                                   <o>
                                                     <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                     <o n="Value" t="StringValue">
-                                                      <v n="Value">"bStepDone"</v>
+                                                      <v n="Value">"bStepDone AND bMoveStep"</v>
                                                       <v n="DefaultValue">""</v>
                                                     </o>
                                                     <v n="Id">1358L</v>
@@ -14440,7 +14689,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"TRUE"</v>
+                                          <v n="Value">"TRUE AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">1365L</v>
@@ -14623,7 +14872,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"TRUE"</v>
+                                          <v n="Value">"TRUE AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">1396L</v>
@@ -14806,7 +15055,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"TRUE"</v>
+                                          <v n="Value">"TRUE AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">285L</v>
@@ -15093,7 +15342,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"TRUE"</v>
+                                          <v n="Value">"TRUE AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">327L</v>
@@ -15276,7 +15525,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"TRUE"</v>
+                                          <v n="Value">"TRUE AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">1434L</v>
@@ -15459,7 +15708,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"bStepDone"</v>
+                                          <v n="Value">"bStepDone AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">1453L</v>
@@ -15635,14 +15884,14 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                     <v n="IdParent">303L</v>
                                   </o>
                                   <o t="SFCTransition">
-                                    <v n="VariableName">"LineSource_Drain__to__LineSource_TapWater"</v>
+                                    <v n="VariableName">"LineSource_Drain__to__Drain_TapWater_02"</v>
                                     <n n="EmbeddedTransition" />
                                     <l2 n="EmbeddedTransitionProperties" />
                                     <l2 n="Attributes" cet="SFCAttribute">
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"bStepDone"</v>
+                                          <v n="Value">"bStepDone AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">1472L</v>
@@ -15699,6 +15948,189 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       </o>
                                     </l2>
                                     <v n="Id">1471L</v>
+                                    <v n="IdParent">303L</v>
+                                  </o>
+                                  <o t="SFCStep">
+                                    <n n="EmbeddedMainAction" />
+                                    <n n="EmbeddedEntryAction" />
+                                    <n n="EmbeddedExitAction" />
+                                    <l2 n="EmbeddedMainActionProperties" />
+                                    <l2 n="EmbeddedEntryActionProperties" />
+                                    <l2 n="EmbeddedExitActionProperties" />
+                                    <o n="ElementList" t="SFCElementList">
+                                      <l2 n="InnerList" />
+                                    </o>
+                                    <l2 n="Attributes" cet="SFCAttribute">
+                                      <o>
+                                        <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
+                                        <o n="Value" t="StringValue">
+                                          <v n="Value">"Drain_TapWater_02"</v>
+                                          <v n="DefaultValue">""</v>
+                                        </o>
+                                        <v n="Id">1632L</v>
+                                        <v n="IdParent">1631L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{7d894980-aeea-405c-a0f6-e2b26429c58f}</v>
+                                        <o n="Value" t="StringValue">
+                                          <v n="Value">""</v>
+                                          <v n="DefaultValue">""</v>
+                                        </o>
+                                        <v n="Id">1633L</v>
+                                        <v n="IdParent">1631L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{01580b27-6378-448b-8ecb-0e4b795b58d6}</v>
+                                        <o n="Value" t="BoolValue">
+                                          <v n="Value">"FALSE"</v>
+                                          <v n="DefaultValue">"FALSE"</v>
+                                        </o>
+                                        <v n="Id">1634L</v>
+                                        <v n="IdParent">1631L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{bc882c11-1e91-4dd8-a6b8-2075724ed18b}</v>
+                                        <o n="Value" t="EnumValue">
+                                          <v n="TemplateGuid">{79a4fdd5-c859-4de4-aa8d-c03372c880c2}</v>
+                                          <n n="BaseType" />
+                                          <v n="Value">"0"</v>
+                                          <v n="DefaultValue">"0"</v>
+                                        </o>
+                                        <v n="Id">1635L</v>
+                                        <v n="IdParent">1631L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{6844a48e-46c2-4cc8-a185-a478f3b99cc0}</v>
+                                        <o n="Value" t="BoolValue">
+                                          <v n="Value">"FALSE"</v>
+                                          <v n="DefaultValue">"FALSE"</v>
+                                        </o>
+                                        <v n="Id">1636L</v>
+                                        <v n="IdParent">1631L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{62e1754b-7629-4e63-9cec-10ae0c536f1f}</v>
+                                        <o n="Value" t="BoolValue">
+                                          <v n="Value">"FALSE"</v>
+                                          <v n="DefaultValue">"FALSE"</v>
+                                        </o>
+                                        <v n="Id">1637L</v>
+                                        <v n="IdParent">1631L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{cacf1a68-236e-47c2-b7b1-1cf9199718cb}</v>
+                                        <o n="Value" t="StringValue">
+                                          <v n="Value">""</v>
+                                          <v n="DefaultValue">""</v>
+                                        </o>
+                                        <v n="Id">1638L</v>
+                                        <v n="IdParent">1631L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{b693554c-1b01-4a8d-afde-9e3a46f7465d}</v>
+                                        <o n="Value" t="StringValue">
+                                          <v n="Value">""</v>
+                                          <v n="DefaultValue">""</v>
+                                        </o>
+                                        <v n="Id">1639L</v>
+                                        <v n="IdParent">1631L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{700a583f-b4d4-43e4-8c14-629c7cd3bec8}</v>
+                                        <o n="Value" t="StringValue">
+                                          <v n="Value">"Drain_TapWater_02_active"</v>
+                                          <v n="DefaultValue">""</v>
+                                        </o>
+                                        <v n="Id">1640L</v>
+                                        <v n="IdParent">1631L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{a6b08bd8-b696-47e3-9cbf-7408b61c9ff8}</v>
+                                        <o n="Value" t="StringValue">
+                                          <v n="Value">"Drain_TapWater_02_entry"</v>
+                                          <v n="DefaultValue">""</v>
+                                        </o>
+                                        <v n="Id">1641L</v>
+                                        <v n="IdParent">1631L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{a2621e18-7de3-4ea6-ae6d-89e9e0b7befd}</v>
+                                        <o n="Value" t="StringValue">
+                                          <v n="Value">""</v>
+                                          <v n="DefaultValue">""</v>
+                                        </o>
+                                        <v n="Id">1642L</v>
+                                        <v n="IdParent">1631L</v>
+                                      </o>
+                                    </l2>
+                                    <v n="Id">1631L</v>
+                                    <v n="IdParent">303L</v>
+                                  </o>
+                                  <o t="SFCTransition">
+                                    <v n="VariableName">"Drain_TapWater_02__to__LineSource_TapWater"</v>
+                                    <n n="EmbeddedTransition" />
+                                    <l2 n="EmbeddedTransitionProperties" />
+                                    <l2 n="Attributes" cet="SFCAttribute">
+                                      <o>
+                                        <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
+                                        <o n="Value" t="StringValue">
+                                          <v n="Value">"bStepDone AND bMoveStep"</v>
+                                          <v n="DefaultValue">""</v>
+                                        </o>
+                                        <v n="Id">1644L</v>
+                                        <v n="IdParent">1643L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{7d894980-aeea-405c-a0f6-e2b26429c58f}</v>
+                                        <o n="Value" t="StringValue">
+                                          <v n="Value">""</v>
+                                          <v n="DefaultValue">""</v>
+                                        </o>
+                                        <v n="Id">1645L</v>
+                                        <v n="IdParent">1643L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{01580b27-6378-448b-8ecb-0e4b795b58d6}</v>
+                                        <o n="Value" t="BoolValue">
+                                          <v n="Value">"FALSE"</v>
+                                          <v n="DefaultValue">"FALSE"</v>
+                                        </o>
+                                        <v n="Id">1646L</v>
+                                        <v n="IdParent">1643L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{bc882c11-1e91-4dd8-a6b8-2075724ed18b}</v>
+                                        <o n="Value" t="EnumValue">
+                                          <v n="TemplateGuid">{79a4fdd5-c859-4de4-aa8d-c03372c880c2}</v>
+                                          <n n="BaseType" />
+                                          <v n="Value">"0"</v>
+                                          <v n="DefaultValue">"0"</v>
+                                        </o>
+                                        <v n="Id">1647L</v>
+                                        <v n="IdParent">1643L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{62e1754b-7629-4e63-9cec-10ae0c536f1f}</v>
+                                        <o n="Value" t="BoolValue">
+                                          <v n="Value">"FALSE"</v>
+                                          <v n="DefaultValue">"FALSE"</v>
+                                        </o>
+                                        <v n="Id">1648L</v>
+                                        <v n="IdParent">1643L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{8294df19-5962-4dee-a874-1051dabb0e3e}</v>
+                                        <o n="Value" t="EnumValue">
+                                          <v n="TemplateGuid">{6ecff51c-9b8f-4338-aab0-67c2b31b07e9}</v>
+                                          <n n="BaseType" />
+                                          <v n="Value">"0"</v>
+                                          <v n="DefaultValue">"0"</v>
+                                        </o>
+                                        <v n="Id">1649L</v>
+                                        <v n="IdParent">1643L</v>
+                                      </o>
+                                    </l2>
+                                    <v n="Id">1643L</v>
                                     <v n="IdParent">303L</v>
                                   </o>
                                   <o t="SFCStep">
@@ -15825,7 +16257,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"bStepDone"</v>
+                                          <v n="Value">"bStepDone AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">1594L</v>
@@ -15972,7 +16404,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{700a583f-b4d4-43e4-8c14-629c7cd3bec8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">""</v>
+                                          <v n="Value">"_aPumpLine_Start_2_active"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">1609L</v>
@@ -16014,7 +16446,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                                   <o>
                                                     <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                     <o n="Value" t="StringValue">
-                                                      <v n="Value">"TRUE"</v>
+                                                      <v n="Value">"trn_Tank_A AND bMoveStep"</v>
                                                       <v n="DefaultValue">""</v>
                                                     </o>
                                                     <v n="Id">1511L</v>
@@ -16197,7 +16629,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                                   <o>
                                                     <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                     <o n="Value" t="StringValue">
-                                                      <v n="Value">"bStepDone"</v>
+                                                      <v n="Value">"bStepDone AND bMoveStep"</v>
                                                       <v n="DefaultValue">""</v>
                                                     </o>
                                                     <v n="Id">1530L</v>
@@ -16301,7 +16733,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                                   <o>
                                                     <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                     <o n="Value" t="StringValue">
-                                                      <v n="Value">"FALSE"</v>
+                                                      <v n="Value">"trn_Tank_B AND bMoveStep"</v>
                                                       <v n="DefaultValue">""</v>
                                                     </o>
                                                     <v n="Id">1491L</v>
@@ -16484,7 +16916,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                                   <o>
                                                     <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                     <o n="Value" t="StringValue">
-                                                      <v n="Value">"bStepDone"</v>
+                                                      <v n="Value">"bStepDone AND bMoveStep"</v>
                                                       <v n="DefaultValue">""</v>
                                                     </o>
                                                     <v n="Id">1549L</v>
@@ -16744,7 +17176,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"bStepDone"</v>
+                                          <v n="Value">"bStepDone AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">1556L</v>
@@ -16927,7 +17359,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"TRUE"</v>
+                                          <v n="Value">"TRUE AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">1587L</v>
@@ -17110,7 +17542,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"TRUE"</v>
+                                          <v n="Value">"TRUE AND bMoveStep"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">334L</v>
@@ -17879,6 +18311,53 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
         </XmlArchive>
       </ObjectProperties>
     </Action>
+    <Action Name="Drain_TapWater_01_active" Id="{30b94932-29a4-4643-a735-a63304d5897d}">
+      <Implementation>
+        <ST><![CDATA[bStepDone:=FALSE;
+IF TRUE 
+AND fbPis.m_CheckByRecipe(stPis:=stPis_DrainTapWater, req:=E_Piston_Recipe_State.Act)
+THEN;
+	bStepDone:=TRUE;
+END_IF]]></ST>
+      </Implementation>
+    </Action>
+    <Action Name="Drain_TapWater_01_entry" Id="{10380ff9-5c82-470f-8a08-64600773637a}">
+      <Implementation>
+        <ST><![CDATA[fbPis.m_SetByRecipe(stPis:=stPis_DrainTapWater, req:=E_Piston_Recipe_State.Act);]]></ST>
+      </Implementation>
+    </Action>
+    <Action Name="Drain_TapWater_02_active" Id="{4acaeef2-76dc-474e-a51d-030223dd5ff5}">
+      <Implementation>
+        <ST><![CDATA[bStepDone:=FALSE;
+IF TRUE 
+AND fbPis.m_CheckByRecipe(stPis:=stPis_DrainTapWater, req:=E_Piston_Recipe_State.Act)
+THEN;
+	bStepDone:=TRUE;
+END_IF]]></ST>
+      </Implementation>
+    </Action>
+    <Action Name="Drain_TapWater_02_entry" Id="{2ca056a0-ed02-4d3e-b277-57193498b756}">
+      <Implementation>
+        <ST><![CDATA[fbPis.m_SetByRecipe(stPis:=stPis_DrainTapWater, req:=E_Piston_Recipe_State.Act);]]></ST>
+      </Implementation>
+    </Action>
+    <Action Name="Drain_Water_active" Id="{861ce898-9936-45d9-aef3-f54358e07190}">
+      <Implementation>
+        <ST><![CDATA[bStepDone:=FALSE;
+IF TRUE 
+AND fbPis.m_CheckByRecipe(stPis:=stPis_FillWaterDrain, 		req:=E_Piston_Recipe_State.Act)
+AND fbPis.m_CheckByRecipe(stPis:=stPis_FillWater, 			req:=E_Piston_Recipe_State.Act) 
+THEN;
+	bStepDone:=TRUE;
+END_IF]]></ST>
+      </Implementation>
+    </Action>
+    <Action Name="Drain_Water_entry" Id="{7eb23368-a8ab-4179-9315-ebe70b83bdf1}">
+      <Implementation>
+        <ST><![CDATA[fbPis.m_SetByRecipe(stPis:=stPis_FillWaterDrain, 			req:=E_Piston_Recipe_State.Act);
+fbPis.m_SetByRecipe(stPis:=stPis_FillWater, 			req:=E_Piston_Recipe_State.Act);]]></ST>
+      </Implementation>
+    </Action>
     <Method Name="m_Set_SFCFlags_Reference" Id="{e572de0c-3d24-464d-bb17-5deb316affd4}">
       <Declaration><![CDATA[{warning 'add method implementation '}
 METHOD m_Set_SFCFlags_Reference : BOOL
@@ -17903,6 +18382,16 @@ refSFC.SFCCurrentStep REF= SFCCurrentStep;
 m_SFC_Handle();]]></ST>
       </Implementation>
     </Method>
+    <Transition Name="trn_Tank_A" Id="{7f0e7518-f66a-4b4a-b16b-a3f65f501415}">
+      <Implementation>
+        <ST><![CDATA[trn_Tank_A:=(eElementID=E_Element_List.eTank_1 OR eElementID=E_Element_List.eTank_3) AND bStepDone;]]></ST>
+      </Implementation>
+    </Transition>
+    <Transition Name="trn_Tank_B" Id="{e4cef271-82c6-43c9-bc0b-ff7cff0b1929}">
+      <Implementation>
+        <ST><![CDATA[trn_Tank_B:=(eElementID=E_Element_List.eTank_2 OR eElementID=E_Element_List.eTank_4)  AND bStepDone;]]></ST>
+      </Implementation>
+    </Transition>
     <LineIds Name="FB_ProductionTank">
       <LineId Id="9" Count="1" />
       <LineId Id="32" Count="0" />
@@ -17984,11 +18473,13 @@ m_SFC_Handle();]]></ST>
       <LineId Id="1" Count="1" />
     </LineIds>
     <LineIds Name="FB_ProductionTank._aConn_Tank_active">
-      <LineId Id="2" Count="2" />
+      <LineId Id="2" Count="1" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="4" Count="0" />
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank._aConn_Tank_entry">
-      <LineId Id="2" Count="0" />
+      <LineId Id="2" Count="1" />
     </LineIds>
     <LineIds Name="FB_ProductionTank._aConn_Tri_Drain_active">
       <LineId Id="3" Count="2" />
@@ -18013,11 +18504,14 @@ m_SFC_Handle();]]></ST>
     </LineIds>
     <LineIds Name="FB_ProductionTank._aConn_Tri_TapWater_active">
       <LineId Id="2" Count="1" />
+      <LineId Id="11" Count="0" />
       <LineId Id="7" Count="3" />
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank._aConn_Tri_TapWater_entry">
-      <LineId Id="1" Count="1" />
+      <LineId Id="1" Count="0" />
+      <LineId Id="3" Count="0" />
+      <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank._aConn_Tri_ToTankA_active">
       <LineId Id="2" Count="2" />
@@ -18052,6 +18546,9 @@ m_SFC_Handle();]]></ST>
       <LineId Id="1" Count="0" />
       <LineId Id="3" Count="1" />
       <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ProductionTank._aDrain_Tri_Line_active">
+      <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank._aDrain_Tri_ToDrain_active">
       <LineId Id="2" Count="1" />
@@ -18091,6 +18588,9 @@ m_SFC_Handle();]]></ST>
       <LineId Id="3" Count="0" />
       <LineId Id="2" Count="0" />
     </LineIds>
+    <LineIds Name="FB_ProductionTank._aLine_Drain_Time_active">
+      <LineId Id="1" Count="0" />
+    </LineIds>
     <LineIds Name="FB_ProductionTank._aLineSource_Drain_active">
       <LineId Id="2" Count="1" />
       <LineId Id="5" Count="3" />
@@ -18101,11 +18601,14 @@ m_SFC_Handle();]]></ST>
     </LineIds>
     <LineIds Name="FB_ProductionTank._aLineSource_TapWater_active">
       <LineId Id="2" Count="1" />
+      <LineId Id="11" Count="0" />
       <LineId Id="7" Count="3" />
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank._aLineSource_TapWater_entry">
-      <LineId Id="1" Count="1" />
+      <LineId Id="1" Count="0" />
+      <LineId Id="3" Count="0" />
+      <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank._aLineTarget_Drain_1_active">
       <LineId Id="2" Count="2" />
@@ -18158,6 +18661,9 @@ m_SFC_Handle();]]></ST>
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank._aPumpLine_Start_1_entry">
+      <LineId Id="1" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ProductionTank._aPumpLine_Start_2_active">
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank._aPumpLine_Start_2_entry">
@@ -18289,15 +18795,45 @@ m_SFC_Handle();]]></ST>
     <LineIds Name="FB_ProductionTank.act_GetReference">
       <LineId Id="1" Count="2" />
       <LineId Id="11" Count="0" />
+      <LineId Id="14" Count="1" />
       <LineId Id="13" Count="0" />
       <LineId Id="12" Count="0" />
       <LineId Id="5" Count="4" />
       <LineId Id="4" Count="0" />
       <LineId Id="10" Count="0" />
     </LineIds>
+    <LineIds Name="FB_ProductionTank.Drain_TapWater_01_active">
+      <LineId Id="2" Count="4" />
+      <LineId Id="1" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ProductionTank.Drain_TapWater_01_entry">
+      <LineId Id="1" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ProductionTank.Drain_TapWater_02_active">
+      <LineId Id="2" Count="4" />
+      <LineId Id="1" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ProductionTank.Drain_TapWater_02_entry">
+      <LineId Id="1" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ProductionTank.Drain_Water_active">
+      <LineId Id="2" Count="2" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="5" Count="1" />
+      <LineId Id="1" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ProductionTank.Drain_Water_entry">
+      <LineId Id="1" Count="1" />
+    </LineIds>
     <LineIds Name="FB_ProductionTank.m_Set_SFCFlags_Reference">
       <LineId Id="5" Count="15" />
       <LineId Id="4" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ProductionTank.trn_Tank_A">
+      <LineId Id="1" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ProductionTank.trn_Tank_B">
+      <LineId Id="1" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>
