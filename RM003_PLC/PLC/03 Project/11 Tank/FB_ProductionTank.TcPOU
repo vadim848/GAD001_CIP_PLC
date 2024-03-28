@@ -40,7 +40,8 @@ VAR
 	stPis_FillWaterDrain		: REFERENCE TO ST_Piston;
 	stPis_DrainTapWater			: REFERENCE TO ST_Piston;
 	
-	bMoveStep	:	BOOL	;//For testing purposes, to be deleted 
+	bTestingMode	:	BOOL	;//For testing purposes, to be deleted 
+	bMoveStep		:	BOOL	;//For testing purposes, to be deleted 
 	
 	Call_TON	:	TON	;//Call ton for double request same object
 	bTON_Active	:	BOOL	;
@@ -62,7 +63,14 @@ END_VAR]]></Declaration>
 act_Oper();
 act_Call_Interface(); //There is no need to Call block if it comes from the outside
 
-IF bMoveStep THEN bMoveStep:=FALSE; END_IF]]></ST>
+IF bTestingMode THEN;
+	IF bMoveStep THEN;
+		bMoveStep:=FALSE; 
+	END_IF	
+ELSE;
+	bMoveStep:=TRUE; 
+END_IF
+]]></ST>
     </Implementation>
     <Folder Name="Manage" Id="{4859bb81-2525-4c2b-a781-1bdd74a1527c}" />
     <Action Name="_aBlending_Prod_active" Id="{eb157051-12c1-4da7-a6b8-de6dd61a0fec}">
@@ -18395,8 +18403,13 @@ m_SFC_Handle();]]></ST>
     <LineIds Name="FB_ProductionTank">
       <LineId Id="9" Count="1" />
       <LineId Id="32" Count="0" />
+      <LineId Id="139" Count="0" />
       <LineId Id="81" Count="0" />
-      <LineId Id="80" Count="0" />
+      <LineId Id="144" Count="1" />
+      <LineId Id="142" Count="0" />
+      <LineId Id="146" Count="1" />
+      <LineId Id="143" Count="0" />
+      <LineId Id="138" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank._aBlending_Prod_active">
       <LineId Id="2" Count="0" />
