@@ -4528,186 +4528,190 @@ stPis_S_Future				REF= g_Piston.stPis[valS_Future];]]></ST>
     </Action>
     <Action Name="act_Status" Id="{62143100-fdee-42d6-8a63-1ad3f74db813}" FolderPath="Manage\">
       <Implementation>
-        <ST><![CDATA[IF TRUE 
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Source, 		req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Return, 		req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up, 		req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up_Drain, req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low, 		req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up, 			req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up_Drain, 	req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low, 		req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_1, 				req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_2, 				req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_3, 				req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_4, 				req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low_Select, 	req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low_Select, 	req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_NoName, 				req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Future, 			req:=E_Piston_Recipe_State.Release)
-THEN;
-	eStatus:=E_CIP_Usage.eLocal;
-ELSIF TRUE
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Source, 		req:=E_Piston_Recipe_State.Act)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Return, 		req:=E_Piston_Recipe_State.Act)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up, 		req:=E_Piston_Recipe_State.Act)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up_Drain, req:=E_Piston_Recipe_State.Act)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low, 		req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up, 			req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up_Drain, 	req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low, 		req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_1, 				req:=E_Piston_Recipe_State.Act)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_2, 				req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_3, 				req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_4, 				req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low_Select, 	req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low_Select, 	req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_NoName, 				req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Future, 			req:=E_Piston_Recipe_State.Release)
-THEN;
-	eStatus:=E_CIP_Usage.eTank_1;
-ELSIF TRUE 
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Source, 		req:=E_Piston_Recipe_State.Act)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Return, 		req:=E_Piston_Recipe_State.Act)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up, 		req:=E_Piston_Recipe_State.Act)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up_Drain, req:=E_Piston_Recipe_State.Act)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low, 		req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up, 			req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up_Drain, 	req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low, 		req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_1, 				req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_2, 				req:=E_Piston_Recipe_State.Act)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_3, 				req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_4, 				req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low_Select, 	req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low_Select, 	req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_NoName, 				req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Future, 			req:=E_Piston_Recipe_State.Release)
-THEN;
-	eStatus:=E_CIP_Usage.eTank_2;
-ELSIF TRUE 
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Source, 		req:=E_Piston_Recipe_State.Act)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Return, 		req:=E_Piston_Recipe_State.Act)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up, 		req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up_Drain, req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low, 		req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up, 			req:=E_Piston_Recipe_State.Act)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up_Drain, 	req:=E_Piston_Recipe_State.Act)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low, 		req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_1, 				req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_2, 				req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_3, 				req:=E_Piston_Recipe_State.Act)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_4, 				req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low_Select, 	req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low_Select, 	req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_NoName, 				req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Future, 			req:=E_Piston_Recipe_State.Release)
-THEN;
-	eStatus:=E_CIP_Usage.eTank_3;
-ELSIF TRUE 
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Source, 		req:=E_Piston_Recipe_State.Act)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Return, 		req:=E_Piston_Recipe_State.Act)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up, 		req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up_Drain, req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low, 		req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up, 			req:=E_Piston_Recipe_State.Act)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up_Drain, 	req:=E_Piston_Recipe_State.Act)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low, 		req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_1, 				req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_2, 				req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_3, 				req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_4, 				req:=E_Piston_Recipe_State.Act)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low_Select, 	req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low_Select, 	req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_NoName, 				req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Future, 			req:=E_Piston_Recipe_State.Release)
-THEN;
-	eStatus:=E_CIP_Usage.eTank_4;
-ELSIF TRUE 
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Source, 		req:=E_Piston_Recipe_State.Act)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Return, 		req:=E_Piston_Recipe_State.Act)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up, 		req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up_Drain, req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low, 		req:=E_Piston_Recipe_State.Act)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up, 			req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up_Drain, 	req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low, 		req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_1, 				req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_2, 				req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_3, 				req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_4, 				req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low_Select, 	req:=E_Piston_Recipe_State.Act)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low_Select, 	req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_NoName, 				req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Future, 			req:=E_Piston_Recipe_State.Release)
-THEN;
-	eStatus:=E_CIP_Usage.eTriBlender_Marinada;
-ELSIF TRUE 
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Source, 		req:=E_Piston_Recipe_State.Act)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Return, 		req:=E_Piston_Recipe_State.Act)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up, 		req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up_Drain, req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low, 		req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up, 			req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up_Drain, 	req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low, 		req:=E_Piston_Recipe_State.Act)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_1, 				req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_2, 				req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_3, 				req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_4, 				req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low_Select, 	req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low_Select, 	req:=E_Piston_Recipe_State.Act)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_NoName, 				req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Future, 			req:=E_Piston_Recipe_State.Release)
-THEN;
-	eStatus:=E_CIP_Usage.eTriBlender_Color;
-ELSIF TRUE 
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Source, 		req:=E_Piston_Recipe_State.Act)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Return, 		req:=E_Piston_Recipe_State.Act)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up, 		req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up_Drain, req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low, 		req:=E_Piston_Recipe_State.Act)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up, 			req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up_Drain, 	req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low, 		req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_1, 				req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_2, 				req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_3, 				req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_4, 				req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low_Select, 	req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low_Select, 	req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_NoName, 				req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Future, 			req:=E_Piston_Recipe_State.Release)
-THEN;
-	eStatus:=E_CIP_Usage.eLine_Marinada;
-ELSIF TRUE 
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Source, 		req:=E_Piston_Recipe_State.Act)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Return, 		req:=E_Piston_Recipe_State.Act)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up, 		req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up_Drain, req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low, 		req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up, 			req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up_Drain, 	req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low, 		req:=E_Piston_Recipe_State.Act)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_1, 				req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_2, 				req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_3, 				req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_4, 				req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low_Select, 	req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low_Select, 	req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_NoName, 				req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Future, 			req:=E_Piston_Recipe_State.Release)
-THEN;
-	eStatus:=E_CIP_Usage.eLine_Color;
+        <ST><![CDATA[IF bReady AND bDone OR TRUE THEN;
+	IF TRUE 
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Source, 		req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Return, 		req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up, 		req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up_Drain, req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low, 		req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up, 			req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up_Drain, 	req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low, 		req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_1, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_2, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_3, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_4, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low_Select, 	req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low_Select, 	req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_NoName, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Future, 			req:=E_Piston_Recipe_State.Release)
+	THEN;
+		eStatus:=E_CIP_Usage.eLocal;
+	ELSIF TRUE
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Source, 		req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Return, 		req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up, 		req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up_Drain, req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low, 		req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up, 			req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up_Drain, 	req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low, 		req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_1, 				req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_2, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_3, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_4, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low_Select, 	req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low_Select, 	req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_NoName, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Future, 			req:=E_Piston_Recipe_State.Release)
+	THEN;
+		eStatus:=E_CIP_Usage.eTank_1;
+	ELSIF TRUE 
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Source, 		req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Return, 		req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up, 		req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up_Drain, req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low, 		req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up, 			req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up_Drain, 	req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low, 		req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_1, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_2, 				req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_3, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_4, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low_Select, 	req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low_Select, 	req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_NoName, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Future, 			req:=E_Piston_Recipe_State.Release)
+	THEN;
+		eStatus:=E_CIP_Usage.eTank_2;
+	ELSIF TRUE 
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Source, 		req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Return, 		req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up, 		req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up_Drain, req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low, 		req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up, 			req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up_Drain, 	req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low, 		req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_1, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_2, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_3, 				req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_4, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low_Select, 	req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low_Select, 	req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_NoName, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Future, 			req:=E_Piston_Recipe_State.Release)
+	THEN;
+		eStatus:=E_CIP_Usage.eTank_3;
+	ELSIF TRUE 
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Source, 		req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Return, 		req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up, 		req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up_Drain, req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low, 		req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up, 			req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up_Drain, 	req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low, 		req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_1, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_2, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_3, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_4, 				req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low_Select, 	req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low_Select, 	req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_NoName, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Future, 			req:=E_Piston_Recipe_State.Release)
+	THEN;
+		eStatus:=E_CIP_Usage.eTank_4;
+	ELSIF TRUE 
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Source, 		req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Return, 		req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up, 		req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up_Drain, req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low, 		req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up, 			req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up_Drain, 	req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low, 		req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_1, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_2, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_3, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_4, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low_Select, 	req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low_Select, 	req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_NoName, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Future, 			req:=E_Piston_Recipe_State.Release)
+	THEN;
+		eStatus:=E_CIP_Usage.eTriBlender_Marinada;
+	ELSIF TRUE 
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Source, 		req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Return, 		req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up, 		req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up_Drain, req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low, 		req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up, 			req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up_Drain, 	req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low, 		req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_1, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_2, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_3, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_4, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low_Select, 	req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low_Select, 	req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_NoName, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Future, 			req:=E_Piston_Recipe_State.Release)
+	THEN;
+		eStatus:=E_CIP_Usage.eTriBlender_Color;
+	ELSIF TRUE 
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Source, 		req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Return, 		req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up, 		req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up_Drain, req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low, 		req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up, 			req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up_Drain, 	req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low, 		req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_1, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_2, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_3, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_4, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low_Select, 	req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low_Select, 	req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_NoName, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Future, 			req:=E_Piston_Recipe_State.Release)
+	THEN;
+		eStatus:=E_CIP_Usage.eLine_Marinada;
+	ELSIF TRUE 
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Source, 		req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Return, 		req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up, 		req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up_Drain, req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low, 		req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up, 			req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up_Drain, 	req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low, 		req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_1, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_2, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_3, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_4, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low_Select, 	req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low_Select, 	req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_NoName, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Future, 			req:=E_Piston_Recipe_State.Release)
+	THEN;
+		eStatus:=E_CIP_Usage.eLine_Color;
+	ELSE;
+		eStatus:=E_CIP_Usage.eNotInUse;
+	END_IF
 ELSE;
 	eStatus:=E_CIP_Usage.eNotInUse;
 END_IF]]></ST>
@@ -4723,6 +4727,7 @@ END_VAR
         <ST><![CDATA[IF eStatus=eReqStatus 
 AND eProcess=E_CIP_Usage.eNotInUse
 AND eReq=E_CIP_Usage.eNotInUse
+AND bReady
 AND bDone
 AND NOT bRun
 THEN;
@@ -4919,6 +4924,7 @@ m_SFC_Handle();]]></ST>
       <LineId Id="24" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP_Client.act_Status">
+      <LineId Id="284" Count="0" />
       <LineId Id="1" Count="0" />
       <LineId Id="26" Count="3" />
       <LineId Id="7" Count="0" />
@@ -4945,10 +4951,12 @@ m_SFC_Handle();]]></ST>
       <LineId Id="15" Count="0" />
       <LineId Id="17" Count="0" />
       <LineId Id="5" Count="0" />
+      <LineId Id="285" Count="2" />
     </LineIds>
     <LineIds Name="FB_CIP_Client.m_CheckStatus">
       <LineId Id="5" Count="0" />
       <LineId Id="13" Count="1" />
+      <LineId Id="19" Count="0" />
       <LineId Id="10" Count="1" />
       <LineId Id="9" Count="0" />
       <LineId Id="7" Count="1" />

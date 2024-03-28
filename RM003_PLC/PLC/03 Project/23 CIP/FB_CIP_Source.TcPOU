@@ -3035,50 +3035,54 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
     </Action>
     <Action Name="act_Status" Id="{8c5bd8f8-66f0-4098-9f33-9015434f732a}" FolderPath="Manage\">
       <Implementation>
-        <ST><![CDATA[IF TRUE 
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_Water, 			req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_R_Water, 		req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_Detergent, 		req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_DisInfection, 	req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release)
-THEN;
-	eStatus:=E_CIP_Source.eClose;
-
-ELSIF TRUE 
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_Water, 			req:=E_Piston_Recipe_State.Act)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_R_Water, 		req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_Detergent, 		req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_DisInfection, 	req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release)
-THEN;
-	eStatus:=E_CIP_Source.eT94_Water;
+        <ST><![CDATA[IF bReady AND bDone OR TRUE THEN;
+	IF TRUE 
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_Water, 			req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_R_Water, 		req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_Detergent, 		req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_DisInfection, 	req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release)
+	THEN;
+		eStatus:=E_CIP_Source.eClose;
 	
-ELSIF TRUE 
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_Water, 			req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_R_Water, 		req:=E_Piston_Recipe_State.Act)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_Detergent, 		req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_DisInfection, 	req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Act)
-THEN;
-	eStatus:=E_CIP_Source.eT93_R_Water;
-	
-ELSIF TRUE 	
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_Water, 			req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_R_Water, 		req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_Detergent, 		req:=E_Piston_Recipe_State.Act)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_DisInfection, 	req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Act)
-THEN;
-	eStatus:=E_CIP_Source.eT92_Detergent;
-	
-ELSIF TRUE 	
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_Water, 			req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_R_Water, 		req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_Detergent, 		req:=E_Piston_Recipe_State.Release)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_DisInfection, 	req:=E_Piston_Recipe_State.Act)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Act)
-THEN;
-	eStatus:=E_CIP_Source.eT91_Sanitation;
+	ELSIF TRUE 
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_Water, 			req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_R_Water, 		req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_Detergent, 		req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_DisInfection, 	req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release)
+	THEN;
+		eStatus:=E_CIP_Source.eT94_Water;
+		
+	ELSIF TRUE 
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_Water, 			req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_R_Water, 		req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_Detergent, 		req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_DisInfection, 	req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Act)
+	THEN;
+		eStatus:=E_CIP_Source.eT93_R_Water;
+		
+	ELSIF TRUE 	
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_Water, 			req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_R_Water, 		req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_Detergent, 		req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_DisInfection, 	req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Act)
+	THEN;
+		eStatus:=E_CIP_Source.eT92_Detergent;
+		
+	ELSIF TRUE 	
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_Water, 			req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_R_Water, 		req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_Detergent, 		req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_DisInfection, 	req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Act)
+	THEN;
+		eStatus:=E_CIP_Source.eT91_Sanitation;
+	ELSE;
+		eStatus:=E_Tank_Target.eNone;
+	END_IF
 ELSE;
 	eStatus:=E_Tank_Target.eNone;
 END_IF]]></ST>
@@ -3094,6 +3098,7 @@ END_VAR
         <ST><![CDATA[IF eStatus=eReqStatus 
 AND eProcess=E_CIP_Source.eNone
 AND eReq=E_CIP_Source.eNone
+AND bReady
 AND bDone
 AND NOT bRun
 THEN;
@@ -3231,6 +3236,7 @@ m_SFC_Handle();]]></ST>
       <LineId Id="18" Count="5" />
     </LineIds>
     <LineIds Name="FB_CIP_Source.act_Status">
+      <LineId Id="73" Count="0" />
       <LineId Id="1" Count="0" />
       <LineId Id="26" Count="3" />
       <LineId Id="7" Count="0" />
@@ -3254,10 +3260,12 @@ m_SFC_Handle();]]></ST>
       <LineId Id="15" Count="0" />
       <LineId Id="17" Count="0" />
       <LineId Id="5" Count="0" />
+      <LineId Id="74" Count="2" />
     </LineIds>
     <LineIds Name="FB_CIP_Source.m_CheckStatus">
       <LineId Id="5" Count="0" />
       <LineId Id="13" Count="1" />
+      <LineId Id="19" Count="0" />
       <LineId Id="10" Count="1" />
       <LineId Id="9" Count="0" />
       <LineId Id="7" Count="1" />
