@@ -452,53 +452,52 @@ fbPis.m_SetByRecipe(stPis:=stPis_FillWater_T93, 			req:=E_Piston_Recipe_State.Ac
     </Action>
     <Action Name="_aGet_Client_active" Id="{18e627b5-82b2-485b-93fe-c20af040d1ae}">
       <Implementation>
-        <ST><![CDATA[CASE eReq.eType OF
-	E_CIP_Type.R_Water:;
-		CASE eRefClient_fbElement.eState_Long OF
-			E_Element_State_Long.eNotClean:;
-					eRun:=E_CIP_Source.eT93_R_Water;	
-		END_CASE
-	
-	E_CIP_Type.Detergent:;
-		CASE eRefClient_fbElement.eState_Long OF
-			E_Element_State_Long.eNotClean:;
-					eRun:=E_CIP_Source.eT93_R_Water;	
-				
-			E_Element_State_Long.eCIP_1_Rinzed:;
-					eRun:=E_CIP_Source.eT92_Detergent;	
+        <ST><![CDATA[IF __ISVALIDREF(eRefClient_fbElement) THEN
+	CASE eReq.eType OF
+		E_CIP_Type.R_Water:;
+			CASE eRefClient_fbElement.eState_Long OF
+				E_Element_State_Long.eNotClean:;
+						eRun:=E_CIP_Source.eT93_R_Water;	
+			END_CASE
+		
+		E_CIP_Type.Detergent:;
+			CASE eRefClient_fbElement.eState_Long OF
+				E_Element_State_Long.eNotClean:;
+						eRun:=E_CIP_Source.eT93_R_Water;	
 					
-			E_Element_State_Long.eCIP_2_Deterged:;
-					eRun:=E_CIP_Source.eT94_Water;					
-		END_CASE
+				E_Element_State_Long.eCIP_1_Rinzed:;
+						eRun:=E_CIP_Source.eT92_Detergent;	
+						
+				E_Element_State_Long.eCIP_2_Deterged:;
+						eRun:=E_CIP_Source.eT94_Water;					
+			END_CASE
+		
+		E_CIP_Type.Full:;
+			CASE eRefClient_fbElement.eState_Long OF
+				E_Element_State_Long.eNotClean:;
+						eRun:=E_CIP_Source.eT93_R_Water;	
+					
+				E_Element_State_Long.eCIP_1_Rinzed:;
+						eRun:=E_CIP_Source.eT92_Detergent;	
+					
+				E_Element_State_Long.eCIP_2_Deterged:;
+						eRun:=E_CIP_Source.eT94_Water;	
+					
+				E_Element_State_Long.eCIP_3_Deterged_Clean:;
+						eRun:=E_CIP_Source.eT91_Sanitation;		
+				
+				E_Element_State_Long.eCIP_4_Sanitized:;
+						eRun:=E_CIP_Source.eT94_Water;					
+			END_CASE	
+		
+	END_CASE
 	
-	E_CIP_Type.Full:;
-		CASE eRefClient_fbElement.eState_Long OF
-			E_Element_State_Long.eNotClean:;
-					eRun:=E_CIP_Source.eT93_R_Water;	
-				
-			E_Element_State_Long.eCIP_1_Rinzed:;
-					eRun:=E_CIP_Source.eT92_Detergent;	
-				
-			E_Element_State_Long.eCIP_2_Deterged:;
-					eRun:=E_CIP_Source.eT94_Water;	
-				
-			E_Element_State_Long.eCIP_3_Deterged_Clean:;
-					eRun:=E_CIP_Source.eT91_Sanitation;		
-			
-			E_Element_State_Long.eCIP_4_Sanitized:;
-					eRun:=E_CIP_Source.eT94_Water;					
-		END_CASE	
-	
-END_CASE
-
-
-
-
-IF eRun<>E_CIP_Source.eNone THEN;
-	eRefClient_fbElement.m_InterConnect(value:=E_InterConnection.ConnToCIP);
+	IF eRun<>E_CIP_Source.eNone THEN;
+		eRefClient_fbElement.m_InterConnect(value:=E_InterConnection.ConnToCIP);
+	END_IF
 END_IF
 
-bClientRef_done:=TRUE;
+
 ]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -640,7 +639,7 @@ CASE eReq.eClient OF
 
 END_CASE
 
-]]></ST>
+bClientRef_done:=TRUE;]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -13714,11 +13713,15 @@ END_IF
     </Action>
     <Action Name="act_Run" Id="{1474794e-dde4-4a3c-8164-060b43f4cb22}" FolderPath="Manage\">
       <Implementation>
-        <ST><![CDATA[IF eRefClient_fbElement.bError AND SFCCurrentStep<>'Ready' THEN;
-	m_Set_LastStepBeforeError();
-	sError_Message:='Client Error';
-	mResetCycle();
-END_IF]]></ST>
+        <ST><![CDATA[IF __ISVALIDREF(eRefClient_fbElement) THEN
+	IF eRefClient_fbElement.bError AND SFCCurrentStep<>'Ready' THEN;
+		m_Set_LastStepBeforeError();
+		sError_Message:='Client Error';
+		mResetCycle();
+	END_IF	
+END_IF
+
+]]></ST>
       </Implementation>
     </Action>
     <Action Name="Client_Check_CIP4_active" Id="{972d8a9c-6f90-434c-9eee-b7777733be46}">
@@ -14450,6 +14453,7 @@ fb_PumpClient.m_Stop();]]></ST>
       <LineId Id="4" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aGet_Client_active">
+      <LineId Id="140" Count="0" />
       <LineId Id="3" Count="0" />
       <LineId Id="59" Count="0" />
       <LineId Id="130" Count="2" />
@@ -14469,12 +14473,10 @@ fb_PumpClient.m_Stop();]]></ST>
       <LineId Id="66" Count="0" />
       <LineId Id="58" Count="0" />
       <LineId Id="57" Count="0" />
-      <LineId Id="32" Count="0" />
-      <LineId Id="34" Count="0" />
-      <LineId Id="36" Count="0" />
       <LineId Id="65" Count="0" />
       <LineId Id="53" Count="0" />
-      <LineId Id="63" Count="1" />
+      <LineId Id="63" Count="0" />
+      <LineId Id="141" Count="1" />
       <LineId Id="52" Count="0" />
       <LineId Id="55" Count="0" />
       <LineId Id="54" Count="0" />
@@ -14556,9 +14558,10 @@ fb_PumpClient.m_Stop();]]></ST>
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP.act_Run">
-      <LineId Id="1" Count="0" />
-      <LineId Id="4" Count="1" />
-      <LineId Id="2" Count="1" />
+      <LineId Id="6" Count="0" />
+      <LineId Id="10" Count="3" />
+      <LineId Id="7" Count="2" />
+      <LineId Id="3" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP.Client_Check_CIP4_active">
       <LineId Id="2" Count="0" />
