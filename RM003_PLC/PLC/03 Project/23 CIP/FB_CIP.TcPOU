@@ -13793,7 +13793,7 @@ fb_PumpClient.m_Run();]]></ST>
     <Action Name="Connect_CIP2_Drain_active" Id="{cc8a26b6-3142-4ea7-a379-53edb9e4d6fd}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
-IF fbCIP_Usage.m_CheckStatus(eReqStatus:=E_CIP_Usage.eClient)  
+IF fbCIP_Usage.m_CheckStatus(eReqStatus:=eReq.eClient)  
 AND fbCIP_Return.m_CheckStatus(eReqStatus:=E_CIP_Return.eDrain)  THEN
 	bStepDone:=TRUE;
 END_IF]]></ST>
@@ -13801,7 +13801,8 @@ END_IF]]></ST>
     </Action>
     <Action Name="Connect_CIP2_Drain_entry" Id="{f852288b-60ab-4030-a5d9-399179d0fac3}">
       <Implementation>
-        <ST><![CDATA[fbCIP_Usage.m_Run(eReqProc:=E_CIP_Usage.eClient);
+        <ST><![CDATA[//fbCIP_Usage.m_Run(eReqProc:=E_CIP_Usage.eClient);
+fbCIP_Usage.m_Run(eReqProc:=eReq.eClient);
 fbCIP_Return.m_Run(eReqProc:=E_CIP_Return.eDrain);
 fb_HeatExchenger.m_Auto();
 ]]></ST>
@@ -13827,14 +13828,14 @@ fbPis.m_SetByRecipe(stPis:=stPis_FillWater_T91, req:=E_Piston_Recipe_State.Relea
     <Action Name="Connect_CIP3_02_active" Id="{792efcc2-564d-489b-9d68-8f14ba3ef505}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
-IF fbCIP_Usage.m_CheckStatus(eReqStatus:=E_CIP_Usage.eClient)  THEN;
+IF fbCIP_Usage.m_CheckStatus(eReqStatus:=eReq.eClient)  THEN;
 	bStepDone:=TRUE;
 END_IF]]></ST>
       </Implementation>
     </Action>
     <Action Name="Connect_CIP3_02_entry" Id="{3d7e9a21-8eb7-46bc-aab2-fb63e0bca5ca}">
       <Implementation>
-        <ST><![CDATA[fbCIP_Usage.m_Run(eReqProc:=E_CIP_Usage.eClient);]]></ST>
+        <ST><![CDATA[fbCIP_Usage.m_Run(eReqProc:=eReq.eClient);]]></ST>
       </Implementation>
     </Action>
     <Action Name="Connect_CIP3_04_active" Id="{f91e3e04-db9d-4b78-bf7f-951c85a19bab}">
@@ -13869,7 +13870,7 @@ END_IF]]></ST>
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
 IF fbCIP_Source.m_CheckStatus(eReqStatus:=E_CIP_Source.eT94_Water) 
-AND fbCIP_Usage.m_CheckStatus(eReqStatus:=E_CIP_Usage.eClient)  
+AND fbCIP_Usage.m_CheckStatus(eReqStatus:=eReq.eClient)  
 AND fbCIP_Return.m_CheckStatus(eReqStatus:=E_CIP_Return.eDrain) THEN;
 	bStepDone:=TRUE;
 END_IF]]></ST>
@@ -13878,7 +13879,7 @@ END_IF]]></ST>
     <Action Name="Connect_CIP4_Drain_entry" Id="{d1686611-0993-4792-8cea-0053851f56d2}">
       <Implementation>
         <ST><![CDATA[fbCIP_Source.m_Run(eReqProc:=E_CIP_Source.eT94_Water);
-fbCIP_Usage.m_Run(eReqProc:=E_CIP_Usage.eClient);
+fbCIP_Usage.m_Run(eReqProc:=eReq.eClient);
 fbCIP_Return.m_Run(eReqProc:=E_CIP_Return.eDrain);]]></ST>
       </Implementation>
     </Action>
@@ -14610,7 +14611,8 @@ fb_PumpClient.m_Stop();]]></ST>
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP.Connect_CIP2_Drain_entry">
-      <LineId Id="3" Count="2" />
+      <LineId Id="6" Count="1" />
+      <LineId Id="4" Count="1" />
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP.Connect_CIP3_01_active">
