@@ -68,7 +68,25 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[refSFC.SFCEnableLimit:=TRUE;
+        <ST><![CDATA[
+
+IF NOT __ISVALIDREF(refSFC.SFCInit) 
+OR NOT  __ISVALIDREF(refSFC.SFCReset) 
+OR NOT  __ISVALIDREF(refSFC.SFCError) 
+OR NOT  __ISVALIDREF(refSFC.SFCEnableLimit) 
+OR NOT  __ISVALIDREF(refSFC.SFCErrorStep) 
+OR NOT  __ISVALIDREF(refSFC.SFCErrorPOU) 
+OR NOT  __ISVALIDREF(refSFC.SFCQuitError) 
+OR NOT  __ISVALIDREF(refSFC.SFCPause) 
+OR NOT  __ISVALIDREF(refSFC.SFCTrans) 
+OR NOT  __ISVALIDREF(refSFC.SFCCurrentStep) 
+OR NOT  __ISVALIDREF(refSFC.SFCTip) 
+OR NOT  __ISVALIDREF(refSFC.SFCTipMode) 
+THEN;
+	RETURN;
+END_IF
+
+refSFC.SFCEnableLimit:=TRUE;
 IF refSFC.SFCTrans THEN;
 	bStepDone:=FALSE;
 	ton_StepTime(IN:=FALSE);
@@ -110,6 +128,9 @@ rtRun(CLK:=bRun);
 IF rtRun.Q THEN;
 	bDone:=FALSE;
 END_IF
+
+StepByStep();
+
 
 
 (*
@@ -161,6 +182,27 @@ END_VAR
 bDone:=FALSE;]]></ST>
       </Implementation>
     </Method>
+    <Method Name="StepByStep" Id="{530b4b0f-9753-4875-9dbf-b777c30197f1}">
+      <Declaration><![CDATA[METHOD StepByStep : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[
+
+IF bStepMode THEN;
+	IF refSFC.SFCTrans THEN;
+		refSFC.SFCTipMode:=TRUE;
+		bNextStep:=FALSE;
+	END_IF
+	IF bNextStep THEN;
+		refSFC.SFCTipMode:=FALSE;
+	END_IF
+ELSE;
+	refSFC.SFCTipMode:=FALSE;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
     <LineIds Name="FB_SFC_Cycle">
       <LineId Id="99" Count="0" />
       <LineId Id="57" Count="0" />
@@ -173,6 +215,14 @@ bDone:=FALSE;]]></ST>
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_SFC_Cycle.m_SFC_Handle">
+      <LineId Id="91" Count="1" />
+      <LineId Id="76" Count="2" />
+      <LineId Id="83" Count="5" />
+      <LineId Id="93" Count="1" />
+      <LineId Id="90" Count="0" />
+      <LineId Id="80" Count="1" />
+      <LineId Id="75" Count="0" />
+      <LineId Id="82" Count="0" />
       <LineId Id="32" Count="0" />
       <LineId Id="6" Count="4" />
       <LineId Id="5" Count="0" />
@@ -201,7 +251,9 @@ bDone:=FALSE;]]></ST>
       <LineId Id="55" Count="0" />
       <LineId Id="54" Count="0" />
       <LineId Id="59" Count="1" />
-      <LineId Id="53" Count="0" />
+      <LineId Id="69" Count="0" />
+      <LineId Id="73" Count="1" />
+      <LineId Id="70" Count="0" />
       <LineId Id="52" Count="0" />
       <LineId Id="47" Count="4" />
       <LineId Id="46" Count="0" />
@@ -221,6 +273,21 @@ bDone:=FALSE;]]></ST>
     <LineIds Name="FB_SFC_Cycle.mToBe_Done">
       <LineId Id="13" Count="0" />
       <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_SFC_Cycle.StepByStep">
+      <LineId Id="22" Count="0" />
+      <LineId Id="6" Count="0" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="8" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>
