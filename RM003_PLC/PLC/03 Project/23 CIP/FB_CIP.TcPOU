@@ -14784,6 +14784,198 @@ END_IF
 ]]></ST>
       </Implementation>
     </Method>
+    <Method Name="mCIP_Clients_command" Id="{80c84e09-bced-4039-86dd-22d66f3f838c}" FolderPath="Manage\">
+      <Declaration><![CDATA[METHOD mCIP_Clients_command : BOOL
+VAR_INPUT
+	command: E_CIP_Client_Command ;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[
+//eReq.eClient<>E_CIP_Usage.eLocal
+IF command=E_CIP_Client_Command.Drain THEN;
+	CASE eReq.eClient OF
+		E_CIP_Usage.eTank_1:;
+			g_Data.fbTankTarget_1.m_Run(eReqProc:=E_Tank_Target.eDrain);
+		E_CIP_Usage.eTank_2:;
+			g_Data.fbTankTarget_2.m_Run(eReqProc:=E_Tank_Target.eDrain);	
+		E_CIP_Usage.eTank_3:;
+			g_Data.fbTankTarget_3.m_Run(eReqProc:=E_Tank_Target.eDrain);	
+		E_CIP_Usage.eTank_4:;
+			g_Data.fbTankTarget_4.m_Run(eReqProc:=E_Tank_Target.eDrain);	
+		E_CIP_Usage.eTriBlender_Marinada:;
+			g_Data.fbTriBlenderSource_Marinade.m_Run(eReqProc:=E_Line_Source.eDrain);	
+			g_Data.fbTriBlenderTarget_Marinade.m_Run(eReqProc:=E_Line_Target.eDrain);	
+		E_CIP_Usage.eTriBlender_Color:;
+			g_Data.fbTriBlenderSource_Color.m_Run(eReqProc:=E_Line_Source.eDrain);	
+			g_Data.fbTriBlenderTarget_Color.m_Run(eReqProc:=E_Line_Target.eDrain);		
+		E_CIP_Usage.eLine_Marinada:;
+			g_Data.fbLineSource_Marinade.m_Run(eReqProc:=E_Line_Source.eDrain);	
+			g_Data.fbLineTarget_Marinade.m_Run(eReqProc:=E_Line_Target.eDrain);	
+		E_CIP_Usage.eLine_Color:;
+			g_Data.fbLineSource_Color.m_Run(eReqProc:=E_Line_Source.eDrain);	
+			g_Data.fbLineTarget_Color.m_Run(eReqProc:=E_Line_Target.eDrain);	
+	ELSE;
+		//wrong, - local
+	END_CASE	
+ELSIF command=E_CIP_Client_Command.CIP THEN;
+	CASE eReq.eClient OF
+		E_CIP_Usage.eTank_1:;
+			g_Data.fbTankTarget_1.m_Run(eReqProc:=E_Tank_Target.eCIP);
+		E_CIP_Usage.eTank_2:;
+			g_Data.fbTankTarget_2.m_Run(eReqProc:=E_Tank_Target.eCIP);	
+		E_CIP_Usage.eTank_3:;
+			g_Data.fbTankTarget_3.m_Run(eReqProc:=E_Tank_Target.eCIP);	
+		E_CIP_Usage.eTank_4:;
+			g_Data.fbTankTarget_4.m_Run(eReqProc:=E_Tank_Target.eCIP);	
+		E_CIP_Usage.eTriBlender_Marinada:;
+			g_Data.fbTriBlenderSource_Marinade.m_Run(eReqProc:=E_Line_Source.eCIP);	
+			g_Data.fbTriBlenderTarget_Marinade.m_Run(eReqProc:=E_Line_Target.eCIP);	
+		E_CIP_Usage.eTriBlender_Color:;
+			g_Data.fbTriBlenderSource_Color.m_Run(eReqProc:=E_Line_Source.eCIP);	
+			g_Data.fbTriBlenderTarget_Color.m_Run(eReqProc:=E_Line_Target.eCIP);		
+		E_CIP_Usage.eLine_Marinada:;
+			g_Data.fbLineSource_Marinade.m_Run(eReqProc:=E_Line_Source.eCIP);	
+			g_Data.fbLineTarget_Marinade.m_Run(eReqProc:=E_Line_Target.eCIP);	
+		E_CIP_Usage.eLine_Color:;
+			g_Data.fbLineSource_Color.m_Run(eReqProc:=E_Line_Source.eCIP);	
+			g_Data.fbLineTarget_Color.m_Run(eReqProc:=E_Line_Target.eCIP);	
+	ELSE;
+		//wrong, - local
+	END_CASE	
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="mCIP_Clients_status" Id="{ef5af15a-35a7-4e4b-8e95-aba37ca0b182}" FolderPath="Manage\">
+      <Declaration><![CDATA[METHOD mCIP_Clients_status : BOOL
+VAR_INPUT
+	command: E_CIP_Client_Command ;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[
+//eReq.eClient<>E_CIP_Usage.eLocal
+IF command=E_CIP_Client_Command.Drain THEN;
+	CASE eReq.eClient OF
+		E_CIP_Usage.eTank_1:;
+			IF g_Data.fbTankTarget_1.m_CheckStatus(eReqStatus:=E_Tank_Target.eDrain) THEN;
+				mCIP_Clients_status:=TRUE;
+			ELSE;
+				mCIP_Clients_status:=FALSE;	
+			END_IF
+		E_CIP_Usage.eTank_2:;
+			IF g_Data.fbTankTarget_2.m_CheckStatus(eReqStatus:=E_Tank_Target.eDrain) THEN;
+				mCIP_Clients_status:=TRUE;
+			ELSE;
+				mCIP_Clients_status:=FALSE;	
+			END_IF	
+		E_CIP_Usage.eTank_3:;
+			IF g_Data.fbTankTarget_3.m_CheckStatus(eReqStatus:=E_Tank_Target.eDrain) THEN;
+				mCIP_Clients_status:=TRUE;
+			ELSE;
+				mCIP_Clients_status:=FALSE;	
+			END_IF	
+		E_CIP_Usage.eTank_4:;
+			IF g_Data.fbTankTarget_4.m_CheckStatus(eReqStatus:=E_Tank_Target.eDrain) THEN;
+				mCIP_Clients_status:=TRUE;
+			ELSE;
+				mCIP_Clients_status:=FALSE;	
+			END_IF	
+		E_CIP_Usage.eTriBlender_Marinada:;
+			IF  g_Data.fbTriBlenderSource_Marinade.m_CheckStatus(eReqStatus:=E_Line_Source.eDrain) 
+			AND g_Data.fbTriBlenderTarget_Marinade.m_CheckStatus(eReqStatus:=E_Line_Target.eDrain) THEN;
+				mCIP_Clients_status:=TRUE;
+			ELSE;
+				mCIP_Clients_status:=FALSE;	
+			END_IF
+		E_CIP_Usage.eTriBlender_Color:;
+			IF  g_Data.fbTriBlenderSource_Color.m_CheckStatus(eReqStatus:=E_Line_Source.eDrain) 
+			AND g_Data.fbTriBlenderTarget_Color.m_CheckStatus(eReqStatus:=E_Line_Target.eDrain) THEN;
+				mCIP_Clients_status:=TRUE;
+			ELSE;
+				mCIP_Clients_status:=FALSE;	
+			END_IF		
+		E_CIP_Usage.eLine_Marinada:;
+			IF  g_Data.fbLineSource_Marinade.m_CheckStatus(eReqStatus:=E_Line_Source.eDrain) 
+			AND g_Data.fbLineTarget_Marinade.m_CheckStatus(eReqStatus:=E_Line_Target.eDrain) THEN;
+				mCIP_Clients_status:=TRUE;
+			ELSE;
+				mCIP_Clients_status:=FALSE;	
+			END_IF	
+		E_CIP_Usage.eLine_Color:;
+			IF  g_Data.fbLineSource_Color.m_CheckStatus(eReqStatus:=E_Line_Source.eDrain) 
+			AND g_Data.fbLineTarget_Color.m_CheckStatus(eReqStatus:=E_Line_Target.eDrain) THEN;
+				mCIP_Clients_status:=TRUE;
+			ELSE;
+				mCIP_Clients_status:=FALSE;	
+			END_IF	
+	ELSE;
+		//wrong, - local
+		mCIP_Clients_status:=FALSE;
+	END_CASE	
+ELSIF command=E_CIP_Client_Command.CIP THEN;
+	CASE eReq.eClient OF
+		E_CIP_Usage.eTank_1:;
+			IF g_Data.fbTankTarget_1.m_CheckStatus(eReqStatus:=E_Tank_Target.eCIP) THEN;
+				mCIP_Clients_status:=TRUE;
+			ELSE;
+				mCIP_Clients_status:=FALSE;	
+			END_IF
+		E_CIP_Usage.eTank_2:;
+			IF g_Data.fbTankTarget_2.m_CheckStatus(eReqStatus:=E_Tank_Target.eCIP) THEN;
+				mCIP_Clients_status:=TRUE;
+			ELSE;
+				mCIP_Clients_status:=FALSE;	
+			END_IF	
+		E_CIP_Usage.eTank_3:;
+			IF g_Data.fbTankTarget_3.m_CheckStatus(eReqStatus:=E_Tank_Target.eCIP) THEN;
+				mCIP_Clients_status:=TRUE;
+			ELSE;
+				mCIP_Clients_status:=FALSE;	
+			END_IF	
+		E_CIP_Usage.eTank_4:;
+			IF g_Data.fbTankTarget_4.m_CheckStatus(eReqStatus:=E_Tank_Target.eCIP) THEN;
+				mCIP_Clients_status:=TRUE;
+			ELSE;
+				mCIP_Clients_status:=FALSE;	
+			END_IF	
+		E_CIP_Usage.eTriBlender_Marinada:;
+			IF  g_Data.fbTriBlenderSource_Marinade.m_CheckStatus(eReqStatus:=E_Line_Source.eCIP) 
+			AND g_Data.fbTriBlenderTarget_Marinade.m_CheckStatus(eReqStatus:=E_Line_Target.eCIP) THEN;
+				mCIP_Clients_status:=TRUE;
+			ELSE;
+				mCIP_Clients_status:=FALSE;	
+			END_IF
+		E_CIP_Usage.eTriBlender_Color:;
+			IF  g_Data.fbTriBlenderSource_Color.m_CheckStatus(eReqStatus:=E_Line_Source.eCIP) 
+			AND g_Data.fbTriBlenderTarget_Color.m_CheckStatus(eReqStatus:=E_Line_Target.eCIP) THEN;
+				mCIP_Clients_status:=TRUE;
+			ELSE;
+				mCIP_Clients_status:=FALSE;	
+			END_IF		
+		E_CIP_Usage.eLine_Marinada:;
+			IF  g_Data.fbLineSource_Marinade.m_CheckStatus(eReqStatus:=E_Line_Source.eCIP) 
+			AND g_Data.fbLineTarget_Marinade.m_CheckStatus(eReqStatus:=E_Line_Target.eCIP) THEN;
+				mCIP_Clients_status:=TRUE;
+			ELSE;
+				mCIP_Clients_status:=FALSE;	
+			END_IF	
+		E_CIP_Usage.eLine_Color:;
+			IF  g_Data.fbLineSource_Color.m_CheckStatus(eReqStatus:=E_Line_Source.eCIP) 
+			AND g_Data.fbLineTarget_Color.m_CheckStatus(eReqStatus:=E_Line_Target.eCIP) THEN;
+				mCIP_Clients_status:=TRUE;
+			ELSE;
+				mCIP_Clients_status:=FALSE;	
+			END_IF	
+	ELSE;
+		//wrong, - local
+		mCIP_Clients_status:=FALSE;
+	END_CASE	
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
     <LineIds Name="FB_CIP">
       <LineId Id="184" Count="0" />
       <LineId Id="256" Count="0" />
@@ -15397,6 +15589,36 @@ END_IF
       <LineId Id="17" Count="0" />
       <LineId Id="15" Count="0" />
       <LineId Id="8" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_CIP.mCIP_Clients_command">
+      <LineId Id="8" Count="1" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="63" Count="22" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="38" Count="0" />
+      <LineId Id="40" Count="22" />
+      <LineId Id="39" Count="0" />
+      <LineId Id="37" Count="0" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_CIP.mCIP_Clients_status">
+      <LineId Id="8" Count="1" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="159" Count="55" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="38" Count="0" />
+      <LineId Id="91" Count="1" />
+      <LineId Id="94" Count="5" />
+      <LineId Id="101" Count="5" />
+      <LineId Id="108" Count="5" />
+      <LineId Id="115" Count="5" />
+      <LineId Id="123" Count="6" />
+      <LineId Id="132" Count="6" />
+      <LineId Id="141" Count="6" />
+      <LineId Id="150" Count="8" />
+      <LineId Id="39" Count="0" />
+      <LineId Id="37" Count="0" />
+      <LineId Id="5" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>
