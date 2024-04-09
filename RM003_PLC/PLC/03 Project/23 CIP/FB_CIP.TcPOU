@@ -338,8 +338,23 @@ AND fbCIP_Usage.m_CheckStatus(eReqStatus:=eReq.eClient)
 AND fbPis.m_CheckByRecipe(stPis:=stPis_FillWater_T93, 	req:=E_Piston_Recipe_State.Release) 
 AND mCIP_Clients_status(command:=E_CIP_Client_Command.eCIP)
 THEN
-	bStepDone:=TRUE;
+
+	CASE eReq.eClient OF
+	
+		E_CIP_Usage.eTank_1:;
+					bStepDone:=fbCIP_ClientTank_Marinade.m_CheckStatus(eReqStatus:=E_CIP_ClientTank.eTank_A);
+		E_CIP_Usage.eTank_2:;
+					bStepDone:=fbCIP_ClientTank_Marinade.m_CheckStatus(eReqStatus:=E_CIP_ClientTank.eTank_B);	
+		E_CIP_Usage.eTank_3:;
+					bStepDone:=fbCIP_ClientTank_Color.m_CheckStatus(eReqStatus:=E_CIP_ClientTank.eTank_A);
+		E_CIP_Usage.eTank_4:;
+					bStepDone:=fbCIP_ClientTank_Color.m_CheckStatus(eReqStatus:=E_CIP_ClientTank.eTank_A);	
+	ELSE;				
+		bStepDone:=TRUE;
+	END_CASE
+	
 END_IF
+
 ]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -362,6 +377,40 @@ END_IF
 fbCIP_Usage.m_Run(eReqProc:=eReq.eClient);
 fbPis.m_SetByRecipe(stPis:=stPis_FillWater_T93, req:=E_Piston_Recipe_State.Release);
 mCIP_Clients_command(command:=E_CIP_Client_Command.eCIP);
+
+CASE eReq.eClient OF
+
+	E_CIP_Usage.eTank_1:;
+				fbCIP_ClientTank_Marinade.m_Run(eReqProc:=E_CIP_ClientTank.eTank_A);
+	E_CIP_Usage.eTank_2:;
+				fbCIP_ClientTank_Marinade.m_Run(eReqProc:=E_CIP_ClientTank.eTank_B);	
+	E_CIP_Usage.eTank_3:;
+				fbCIP_ClientTank_Color.m_Run(eReqProc:=E_CIP_ClientTank.eTank_A);
+	E_CIP_Usage.eTank_4:;
+				fbCIP_ClientTank_Color.m_Run(eReqProc:=E_CIP_ClientTank.eTank_A);	
+
+END_CASE
+
+(*
+CASE eReq.eClient OF
+	E_CIP_Usage.eLocal:;
+				//
+	E_CIP_Usage.eTank_1:;
+				fbCIP_ClientTank_Marinade.m_Run(eReqProc:=E_CIP_ClientTank.eTank_A);
+	E_CIP_Usage.eTank_2:;
+				fbCIP_ClientTank_Marinade.m_Run(eReqProc:=E_CIP_ClientTank.eTank_B);	
+	E_CIP_Usage.eTank_3:;
+				fbCIP_ClientTank_Color.m_Run(eReqProc:=E_CIP_ClientTank.eTank_A);
+	E_CIP_Usage.eTank_4:;
+				fbCIP_ClientTank_Color.m_Run(eReqProc:=E_CIP_ClientTank.eTank_A);	
+	E_CIP_Usage.eTriBlender_Marinada,
+	E_CIP_Usage.eLine_Marinada:;
+				//
+	E_CIP_Usage.eTriBlender_Color,
+	E_CIP_Usage.eLine_Color:;
+				//		
+END_CASE
+*)
 ]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -491,7 +540,21 @@ IF fbCIP_Usage.m_CheckStatus(eReqStatus:=eReq.eClient)
 AND fbCIP_Return.m_CheckStatus(eReqStatus:=E_CIP_Return.eDrain) 
 AND mCIP_Clients_status(command:=E_CIP_Client_Command.eCIP)
 THEN;
-	bStepDone:=TRUE;
+
+	CASE eReq.eClient OF
+	
+		E_CIP_Usage.eTank_1:;
+					bStepDone:=fbCIP_ClientTank_Marinade.m_CheckStatus(eReqStatus:=E_CIP_ClientTank.eTank_A);
+		E_CIP_Usage.eTank_2:;
+					bStepDone:=fbCIP_ClientTank_Marinade.m_CheckStatus(eReqStatus:=E_CIP_ClientTank.eTank_B);	
+		E_CIP_Usage.eTank_3:;
+					bStepDone:=fbCIP_ClientTank_Color.m_CheckStatus(eReqStatus:=E_CIP_ClientTank.eTank_A);
+		E_CIP_Usage.eTank_4:;
+					bStepDone:=fbCIP_ClientTank_Color.m_CheckStatus(eReqStatus:=E_CIP_ClientTank.eTank_A);	
+	ELSE;				
+		bStepDone:=TRUE;
+	END_CASE
+	
 END_IF
 
 (*
@@ -583,12 +646,24 @@ END_IF
     </Action>
     <Action Name="_aConnect_CIP2_Drain_entry" Id="{f852288b-60ab-4030-a5d9-399179d0fac3}">
       <Implementation>
-        <ST><![CDATA[//fbCIP_Usage.m_Run(eReqProc:=E_CIP_Usage.eClient);
-fbCIP_Usage.m_Run(eReqProc:=eReq.eClient);
+        <ST><![CDATA[fbCIP_Usage.m_Run(eReqProc:=eReq.eClient);
 fbCIP_Return.m_Run(eReqProc:=E_CIP_Return.eDrain);
 fb_HeatExchenger.m_Auto();
 
 mCIP_Clients_command(command:=E_CIP_Client_Command.eCIP);
+
+CASE eReq.eClient OF
+
+	E_CIP_Usage.eTank_1:;
+				fbCIP_ClientTank_Marinade.m_Run(eReqProc:=E_CIP_ClientTank.eTank_A);
+	E_CIP_Usage.eTank_2:;
+				fbCIP_ClientTank_Marinade.m_Run(eReqProc:=E_CIP_ClientTank.eTank_B);	
+	E_CIP_Usage.eTank_3:;
+				fbCIP_ClientTank_Color.m_Run(eReqProc:=E_CIP_ClientTank.eTank_A);
+	E_CIP_Usage.eTank_4:;
+				fbCIP_ClientTank_Color.m_Run(eReqProc:=E_CIP_ClientTank.eTank_A);	
+
+END_CASE
 
 (*
 //eReq.eClient<>E_CIP_Usage.eLocal
@@ -681,7 +756,21 @@ fbPis.m_SetByRecipe(stPis:=stPis_FillWater_T91, req:=E_Piston_Recipe_State.Relea
 IF fbCIP_Usage.m_CheckStatus(eReqStatus:=eReq.eClient)  
 AND mCIP_Clients_status(command:=E_CIP_Client_Command.eCIP)
 THEN;
-	bStepDone:=TRUE;
+
+	CASE eReq.eClient OF
+	
+		E_CIP_Usage.eTank_1:;
+					bStepDone:=fbCIP_ClientTank_Marinade.m_CheckStatus(eReqStatus:=E_CIP_ClientTank.eTank_A);
+		E_CIP_Usage.eTank_2:;
+					bStepDone:=fbCIP_ClientTank_Marinade.m_CheckStatus(eReqStatus:=E_CIP_ClientTank.eTank_B);	
+		E_CIP_Usage.eTank_3:;
+					bStepDone:=fbCIP_ClientTank_Color.m_CheckStatus(eReqStatus:=E_CIP_ClientTank.eTank_A);
+		E_CIP_Usage.eTank_4:;
+					bStepDone:=fbCIP_ClientTank_Color.m_CheckStatus(eReqStatus:=E_CIP_ClientTank.eTank_A);	
+	ELSE;				
+		bStepDone:=TRUE;
+	END_CASE
+	
 END_IF]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -702,6 +791,19 @@ END_IF]]></ST>
       <Implementation>
         <ST><![CDATA[fbCIP_Usage.m_Run(eReqProc:=eReq.eClient);
 mCIP_Clients_command(command:=E_CIP_Client_Command.eCIP);
+
+CASE eReq.eClient OF
+
+	E_CIP_Usage.eTank_1:;
+				fbCIP_ClientTank_Marinade.m_Run(eReqProc:=E_CIP_ClientTank.eTank_A);
+	E_CIP_Usage.eTank_2:;
+				fbCIP_ClientTank_Marinade.m_Run(eReqProc:=E_CIP_ClientTank.eTank_B);	
+	E_CIP_Usage.eTank_3:;
+				fbCIP_ClientTank_Color.m_Run(eReqProc:=E_CIP_ClientTank.eTank_A);
+	E_CIP_Usage.eTank_4:;
+				fbCIP_ClientTank_Color.m_Run(eReqProc:=E_CIP_ClientTank.eTank_A);	
+
+END_CASE
 ]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -806,7 +908,21 @@ AND fbCIP_Usage.m_CheckStatus(eReqStatus:=eReq.eClient)
 AND fbCIP_Return.m_CheckStatus(eReqStatus:=E_CIP_Return.eDrain) 
 AND mCIP_Clients_status(command:=E_CIP_Client_Command.eCIP)
 THEN;
-	bStepDone:=TRUE;
+
+	CASE eReq.eClient OF
+	
+		E_CIP_Usage.eTank_1:;
+					bStepDone:=fbCIP_ClientTank_Marinade.m_CheckStatus(eReqStatus:=E_CIP_ClientTank.eTank_A);
+		E_CIP_Usage.eTank_2:;
+					bStepDone:=fbCIP_ClientTank_Marinade.m_CheckStatus(eReqStatus:=E_CIP_ClientTank.eTank_B);	
+		E_CIP_Usage.eTank_3:;
+					bStepDone:=fbCIP_ClientTank_Color.m_CheckStatus(eReqStatus:=E_CIP_ClientTank.eTank_A);
+		E_CIP_Usage.eTank_4:;
+					bStepDone:=fbCIP_ClientTank_Color.m_CheckStatus(eReqStatus:=E_CIP_ClientTank.eTank_A);	
+	ELSE;				
+		bStepDone:=TRUE;
+	END_CASE
+	
 END_IF]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -829,6 +945,19 @@ END_IF]]></ST>
 fbCIP_Usage.m_Run(eReqProc:=eReq.eClient);
 fbCIP_Return.m_Run(eReqProc:=E_CIP_Return.eDrain);
 mCIP_Clients_command(command:=E_CIP_Client_Command.eCIP);
+
+CASE eReq.eClient OF
+
+	E_CIP_Usage.eTank_1:;
+				fbCIP_ClientTank_Marinade.m_Run(eReqProc:=E_CIP_ClientTank.eTank_A);
+	E_CIP_Usage.eTank_2:;
+				fbCIP_ClientTank_Marinade.m_Run(eReqProc:=E_CIP_ClientTank.eTank_B);	
+	E_CIP_Usage.eTank_3:;
+				fbCIP_ClientTank_Color.m_Run(eReqProc:=E_CIP_ClientTank.eTank_A);
+	E_CIP_Usage.eTank_4:;
+				fbCIP_ClientTank_Color.m_Run(eReqProc:=E_CIP_ClientTank.eTank_A);	
+
+END_CASE
 ]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -893,7 +1022,21 @@ AND fbCIP_Usage.m_CheckStatus(eReqStatus:=E_CIP_Usage.eLocal)
 AND fbCIP_Return.m_CheckStatus(eReqStatus:=E_CIP_Return.eDrain)
 AND mCIP_Clients_status(command:=E_CIP_Client_Command.eDrain)
 THEN
-	bStepDone:=TRUE;
+
+	CASE eReq.eClient OF
+	
+		E_CIP_Usage.eTank_1:;
+					bStepDone:=fbCIP_ClientTank_Marinade.m_CheckStatus(eReqStatus:=E_CIP_ClientTank.eClose);
+		E_CIP_Usage.eTank_2:;
+					bStepDone:=fbCIP_ClientTank_Marinade.m_CheckStatus(eReqStatus:=E_CIP_ClientTank.eClose);	
+		E_CIP_Usage.eTank_3:;
+					bStepDone:=fbCIP_ClientTank_Color.m_CheckStatus(eReqStatus:=E_CIP_ClientTank.eClose);
+		E_CIP_Usage.eTank_4:;
+					bStepDone:=fbCIP_ClientTank_Color.m_CheckStatus(eReqStatus:=E_CIP_ClientTank.eClose);	
+	ELSE;				
+		bStepDone:=TRUE;
+	END_CASE
+	
 END_IF]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -916,7 +1059,19 @@ END_IF]]></ST>
 fbCIP_Usage.m_Run(eReqProc:=E_CIP_Usage.eLocal);
 fbCIP_Return.m_Run(eReqProc:=E_CIP_Return.eDrain);
 mCIP_Clients_command(command:=E_CIP_Client_Command.eDrain);
-]]></ST>
+
+CASE eReq.eClient OF
+
+	E_CIP_Usage.eTank_1:;
+				fbCIP_ClientTank_Marinade.m_Run(eReqProc:=E_CIP_ClientTank.eClose);
+	E_CIP_Usage.eTank_2:;
+				fbCIP_ClientTank_Marinade.m_Run(eReqProc:=E_CIP_ClientTank.eClose);	
+	E_CIP_Usage.eTank_3:;
+				fbCIP_ClientTank_Color.m_Run(eReqProc:=E_CIP_ClientTank.eClose);
+	E_CIP_Usage.eTank_4:;
+				fbCIP_ClientTank_Color.m_Run(eReqProc:=E_CIP_ClientTank.eClose);	
+
+END_CASE]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -16791,13 +16946,37 @@ END_IF
       <LineId Id="7" Count="0" />
       <LineId Id="12" Count="0" />
       <LineId Id="11" Count="0" />
-      <LineId Id="9" Count="1" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="16" Count="9" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="28" Count="0" />
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aConnect_CIP1_01_entry">
       <LineId Id="2" Count="1" />
       <LineId Id="1" Count="0" />
-      <LineId Id="4" Count="1" />
+      <LineId Id="4" Count="0" />
+      <LineId Id="53" Count="0" />
+      <LineId Id="6" Count="0" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="15" Count="1" />
+      <LineId Id="7" Count="1" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="36" Count="16" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aConnect_CIP2_01_active">
       <LineId Id="2" Count="1" />
@@ -16827,6 +17006,7 @@ END_IF
       <LineId Id="2" Count="2" />
       <LineId Id="179" Count="0" />
       <LineId Id="178" Count="0" />
+      <LineId Id="180" Count="13" />
       <LineId Id="108" Count="0" />
       <LineId Id="1" Count="0" />
       <LineId Id="8" Count="0" />
@@ -16836,10 +17016,13 @@ END_IF
       <LineId Id="9" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aConnect_CIP2_Drain_entry">
-      <LineId Id="6" Count="1" />
+      <LineId Id="7" Count="0" />
       <LineId Id="4" Count="1" />
       <LineId Id="9" Count="0" />
-      <LineId Id="39" Count="1" />
+      <LineId Id="39" Count="0" />
+      <LineId Id="42" Count="11" />
+      <LineId Id="40" Count="0" />
+      <LineId Id="54" Count="0" />
       <LineId Id="10" Count="0" />
       <LineId Id="8" Count="0" />
       <LineId Id="1" Count="0" />
@@ -16882,11 +17065,16 @@ END_IF
       <LineId Id="2" Count="1" />
       <LineId Id="8" Count="0" />
       <LineId Id="7" Count="0" />
+      <LineId Id="9" Count="13" />
       <LineId Id="6" Count="0" />
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aConnect_CIP3_02_entry">
-      <LineId Id="1" Count="2" />
+      <LineId Id="1" Count="1" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="5" Count="10" />
+      <LineId Id="4" Count="0" />
+      <LineId Id="3" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aConnect_CIP3_04_active">
       <LineId Id="2" Count="1" />
@@ -16910,12 +17098,15 @@ END_IF
       <LineId Id="11" Count="0" />
       <LineId Id="15" Count="0" />
       <LineId Id="14" Count="0" />
+      <LineId Id="16" Count="13" />
       <LineId Id="12" Count="0" />
       <LineId Id="4" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aConnect_CIP4_Drain_entry">
       <LineId Id="2" Count="2" />
       <LineId Id="6" Count="0" />
+      <LineId Id="8" Count="11" />
+      <LineId Id="7" Count="0" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aConnect_CIP4_R_Water_active">
@@ -16932,13 +17123,18 @@ END_IF
       <LineId Id="10" Count="0" />
       <LineId Id="9" Count="0" />
       <LineId Id="8" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="13" Count="11" />
       <LineId Id="7" Count="0" />
+      <LineId Id="12" Count="0" />
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aDisconnect_CIP_Client_entry">
       <LineId Id="2" Count="1" />
       <LineId Id="6" Count="0" />
-      <LineId Id="4" Count="1" />
+      <LineId Id="4" Count="0" />
+      <LineId Id="7" Count="11" />
+      <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aDisconnect_CIP1_active">
       <LineId Id="2" Count="3" />
