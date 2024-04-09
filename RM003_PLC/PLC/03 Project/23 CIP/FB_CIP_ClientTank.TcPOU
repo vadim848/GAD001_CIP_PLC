@@ -24,6 +24,7 @@ VAR
 	stPis_Tank_B_Sprinkler	: REFERENCE TO ST_Piston;
 	stPis_Drain				: REFERENCE TO ST_Piston;
 
+	tonDrainTime: TON;
 END_VAR
 VAR_IN_OUT
 
@@ -36,6 +37,14 @@ END_VAR
 act_Oper();
 IF NOT Init.x THEN;
 	act_Status();
+END_IF
+
+tonDrainTime(PT:=T#1M, IN:=eStatus=E_CIP_ClientTank.eDrain);
+IF tonDrainTime.Q 
+AND eReq=E_CIP_ClientTank.eNone
+AND eProcess=E_CIP_ClientTank.eNone
+THEN;
+	eReq:=E_CIP_ClientTank.eClose;
 END_IF
 
 ]]></ST>
@@ -2779,6 +2788,9 @@ m_SFC_Handle();]]></ST>
     <LineIds Name="FB_CIP_ClientTank">
       <LineId Id="89" Count="2" />
       <LineId Id="93" Count="2" />
+      <LineId Id="127" Count="0" />
+      <LineId Id="136" Count="5" />
+      <LineId Id="131" Count="0" />
       <LineId Id="97" Count="0" />
       <LineId Id="55" Count="0" />
     </LineIds>

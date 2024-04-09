@@ -52,6 +52,7 @@ VAR
 	stPis_Loop					: REFERENCE TO ST_Piston;//V1030
 	stPis_S_Future				: REFERENCE TO ST_Piston;
 
+	tonDrainTime: TON;
 END_VAR
 VAR_IN_OUT
 
@@ -66,6 +67,13 @@ IF NOT Init.x THEN;
 	act_Status();
 END_IF
 
+tonDrainTime(PT:=T#1M, IN:=eStatus=E_CIP_Client_Selector.eDrain);
+IF tonDrainTime.Q 
+AND eReq=E_CIP_Client_Selector.eNone
+AND eProcess=E_CIP_Client_Selector.eNone
+THEN;
+	eReq:=E_CIP_Client_Selector.eClose;
+END_IF
 ]]></ST>
     </Implementation>
     <Folder Name="Manage" Id="{38103117-043f-403d-a53b-cc92b5c9eca8}" />
@@ -4316,6 +4324,7 @@ m_SFC_Handle();]]></ST>
     <LineIds Name="FB_CIP_Client">
       <LineId Id="89" Count="2" />
       <LineId Id="93" Count="2" />
+      <LineId Id="154" Count="6" />
       <LineId Id="97" Count="0" />
       <LineId Id="55" Count="0" />
     </LineIds>

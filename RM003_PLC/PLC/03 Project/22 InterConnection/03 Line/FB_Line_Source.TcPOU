@@ -33,6 +33,7 @@ VAR
 	stPis_WaterSource		: REFERENCE TO ST_Piston;
 	
 	stPis_Outlet: ST_Piston;
+	tonDrainTime: TON;
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -42,7 +43,14 @@ act_Oper();
 //IF NOT Init.x THEN
 	act_Status();
 //END_IF
-]]></ST>
+
+tonDrainTime(PT:=T#1M, IN:=eStatus=E_Line_Source.eDrain);
+IF tonDrainTime.Q 
+AND eReq=E_Line_Source.eNone
+AND eProcess=E_Line_Source.eNone
+THEN;
+	eReq:=E_Line_Source.eClose;
+END_IF]]></ST>
     </Implementation>
     <Folder Name="Manage" Id="{88761bd7-027b-418f-9edc-eb285488f960}" />
     <Action Name="_aCIP_active" Id="{d20e9967-4c28-47ef-96b1-f277270a5409}">
@@ -3861,6 +3869,7 @@ m_SFC_Handle();]]></ST>
     </Method>
     <LineIds Name="FB_Line_Source">
       <LineId Id="35" Count="5" />
+      <LineId Id="76" Count="6" />
       <LineId Id="9" Count="0" />
     </LineIds>
     <LineIds Name="FB_Line_Source._aCIP_active">

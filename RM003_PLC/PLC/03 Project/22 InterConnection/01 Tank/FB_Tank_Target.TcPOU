@@ -26,6 +26,7 @@ VAR
 	stPis_Drain			: REFERENCE TO ST_Piston;
 	stPis_CIP			: REFERENCE TO ST_Piston;
 
+	tonDrainTime: TON;
 END_VAR
 VAR_IN_OUT
 
@@ -40,7 +41,13 @@ IF NOT Init.x THEN;
 	act_Status();
 END_IF
 
-]]></ST>
+tonDrainTime(PT:=T#1M, IN:=eStatus=E_Tank_Target.eDrain);
+IF tonDrainTime.Q 
+AND eReq=E_Tank_Target.eNone
+AND eProcess=E_Tank_Target.eNone
+THEN;
+	eReq:=E_Tank_Target.eClose;
+END_IF]]></ST>
     </Implementation>
     <Folder Name="Manage" Id="{e461fcff-545d-4d57-a27d-4174ff6e3a51}" />
     <Action Name="_aCIP_active" Id="{e16ca9a6-461a-481e-961d-0ed26f76e308}">
@@ -2811,6 +2818,7 @@ m_SFC_Handle();]]></ST>
       <LineId Id="89" Count="2" />
       <LineId Id="93" Count="2" />
       <LineId Id="97" Count="0" />
+      <LineId Id="128" Count="5" />
       <LineId Id="55" Count="0" />
     </LineIds>
     <LineIds Name="FB_Tank_Target._aCIP_active">
