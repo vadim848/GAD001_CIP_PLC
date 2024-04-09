@@ -760,7 +760,7 @@ END_IF]]></ST>
     <Action Name="_aDis_Conn_Tank_active" Id="{d399ba12-cd90-4c44-8b92-acf4c24178ca}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
-IF fbTriBlenderSource.m_CheckStatus(eReqStatus:=E_Line_Source.eDrain) THEN;
+IF fbTriBlenderSource.m_CheckStatus(eReqStatus:=E_Line_Source.eClose) THEN;
 	bStepDone:=TRUE;
 END_IF]]></ST>
       </Implementation>
@@ -780,7 +780,7 @@ END_IF]]></ST>
     </Action>
     <Action Name="_aDis_Conn_Tank_entry" Id="{9ce403e4-db3c-4066-bb85-4f28e015e1d0}">
       <Implementation>
-        <ST><![CDATA[fbTriBlenderSource.m_Run(eReqProc:=E_Line_Source.eDrain);]]></ST>
+        <ST><![CDATA[fbTriBlenderSource.m_Run(eReqProc:=E_Line_Source.eClose);]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -799,7 +799,7 @@ END_IF]]></ST>
     <Action Name="_aDisconn_Tri_Tank_active" Id="{4e3daae7-f788-4a9e-93f8-c893f92f4637}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
-IF fbTriBlenderSource.m_CheckStatus(eReqStatus:=E_Line_Source.eDrain) THEN;
+IF fbTriBlenderSource.m_CheckStatus(eReqStatus:=E_Line_Source.eClose) THEN;
 	bTON_Active:=TRUE;
 END_IF
 IF Call_TON.Q THEN
@@ -822,7 +822,7 @@ END_IF]]></ST>
     </Action>
     <Action Name="_aDisconn_Tri_Tank_entry" Id="{08f1c6e2-9822-4dd1-8603-1c6b86dc2dc9}">
       <Implementation>
-        <ST><![CDATA[fbTriBlenderSource.m_Run(eReqProc:=E_Line_Source.eDrain);
+        <ST><![CDATA[fbTriBlenderSource.m_Run(eReqProc:=E_Line_Source.eClose);
 bTON_Active:=FALSE;]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -1106,7 +1106,7 @@ eReq:=E_Request_List.eNone;
     <Action Name="_aLineSource_Drain_active" Id="{d3e4117a-8f26-4725-b3c1-44265824670e}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
-IF fbLineSource.m_CheckStatus(eReqStatus:=E_Line_Source.eDrain) THEN;
+IF fbLineSource.m_CheckStatus(eReqStatus:=E_Line_Source.eClose) THEN;
 	bTON_Active:=TRUE;
 END_IF
 IF Call_TON.Q THEN
@@ -1129,7 +1129,7 @@ END_IF]]></ST>
     </Action>
     <Action Name="_aLineSource_Drain_entry" Id="{7db006b3-4237-4c87-b934-af632a6ac5a1}">
       <Implementation>
-        <ST><![CDATA[fbLineSource.m_Run(eReqProc:=E_Line_Source.eDrain);
+        <ST><![CDATA[fbLineSource.m_Run(eReqProc:=E_Line_Source.eClose);
 bTON_Active:=FALSE;]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -18582,7 +18582,7 @@ m_SFC_Handle();]]></ST>
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank._aDis_Conn_Tank_active">
-      <LineId Id="2" Count="2" />
+      <LineId Id="5" Count="2" />
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank._aDis_Conn_Tank_entry">
