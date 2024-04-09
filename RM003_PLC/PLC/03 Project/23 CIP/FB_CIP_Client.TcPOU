@@ -20,7 +20,7 @@ VAR_INPUT
 	//valS_Marinade_Low_Select	: E_Pis_Name;
 	//valS_Color_Low_Select	: E_Pis_Name;
 	valDrain				: E_Pis_Name;
-	valNoName				: E_Pis_Name;//V1030
+	valLoop					: E_Pis_Name;//V1030
 	valS_Future				: E_Pis_Name;
 	
 END_VAR
@@ -29,9 +29,9 @@ END_VAR
 VAR
 	//refElement		: REFERENCE TO FB_Element;
 	//refState_Long		: REFERENCE TO E_Element_State_Long;
-	eReq				: E_CIP_Usage;
-	eProcess			: E_CIP_Usage;
-	eStatus				: E_CIP_Usage;
+	eReq				: E_CIP_Client_Selector;
+	eProcess			: E_CIP_Client_Selector;
+	eStatus				: E_CIP_Client_Selector;
 	
 	fbPis					: FB_Piston;
 	stPis_Client_Source			: REFERENCE TO ST_Piston;
@@ -49,7 +49,7 @@ VAR
 	//stPis_S_Marinade_Low_Select	: REFERENCE TO ST_Piston;
 	//stPis_S_Color_Low_Select	: REFERENCE TO ST_Piston;
 	stPis_Drain					: REFERENCE TO ST_Piston;	
-	stPis_NoName				: REFERENCE TO ST_Piston;//V1030
+	stPis_Loop					: REFERENCE TO ST_Piston;//V1030
 	stPis_S_Future				: REFERENCE TO ST_Piston;
 
 END_VAR
@@ -69,6 +69,104 @@ END_IF
 ]]></ST>
     </Implementation>
     <Folder Name="Manage" Id="{38103117-043f-403d-a53b-cc92b5c9eca8}" />
+    <Action Name="_aColor_Low_active" Id="{88414d37-f878-422b-978f-18c0dc12a666}">
+      <Implementation>
+        <ST><![CDATA[bStepDone:=FALSE;
+IF TRUE 
+AND eStatus=E_CIP_Client_Selector.eColor_Low
+THEN;
+	bStepDone:=TRUE;
+END_IF]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
+    <Action Name="_aColor_Low_entry" Id="{c1927158-4d78-451e-a925-f4404ebed7c3}">
+      <Implementation>
+        <ST><![CDATA[fbPis.m_SetByRecipe(stPis:=stPis_Client_Source, 		req:=E_Piston_Recipe_State.Act);
+fbPis.m_SetByRecipe(stPis:=stPis_Client_Return, 		req:=E_Piston_Recipe_State.Act);
+fbPis.m_SetByRecipe(stPis:=stPis_S_Marinade_Up, 		req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_S_Marinade_Low, 		req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_S_Color_Up, 			req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_S_Color_Low, 			req:=E_Piston_Recipe_State.Act);
+fbPis.m_SetByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_Loop, 					req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_S_Future, 				req:=E_Piston_Recipe_State.Release);]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
+    <Action Name="_aColor_Up_active" Id="{371c6bec-9334-4491-864a-d33c65b63a61}">
+      <Implementation>
+        <ST><![CDATA[bStepDone:=FALSE;
+IF TRUE 
+AND eStatus=E_CIP_Client_Selector.eColor_Up
+THEN;
+	bStepDone:=TRUE;
+END_IF]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
+    <Action Name="_aColor_Up_entry" Id="{28e65717-9ec3-49b4-9c7a-55f22afa9837}">
+      <Implementation>
+        <ST><![CDATA[fbPis.m_SetByRecipe(stPis:=stPis_Client_Source, 		req:=E_Piston_Recipe_State.Act);
+fbPis.m_SetByRecipe(stPis:=stPis_Client_Return, 		req:=E_Piston_Recipe_State.Act);
+fbPis.m_SetByRecipe(stPis:=stPis_S_Marinade_Up, 		req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_S_Marinade_Low, 		req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_S_Color_Up, 			req:=E_Piston_Recipe_State.Act);
+fbPis.m_SetByRecipe(stPis:=stPis_S_Color_Low, 			req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_Loop, 					req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_S_Future, 				req:=E_Piston_Recipe_State.Release);]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
     <Action Name="_aDone_entry" Id="{60428b5e-2664-48fc-baa3-5f1fc5212655}">
       <Implementation>
         <ST><![CDATA[eProcess:=E_CIP_Usage.eNotInUse;
@@ -76,6 +174,104 @@ eReq:=E_CIP_Usage.eNotInUse;
 bRun:=FALSE;
 bDone:=TRUE;
 ]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
+    <Action Name="_aDrain_active" Id="{72cc4ab0-083a-4817-a202-7c56b859c63c}">
+      <Implementation>
+        <ST><![CDATA[bStepDone:=FALSE;
+IF TRUE 
+AND eStatus=E_CIP_Client_Selector.eDrain
+THEN;
+	bStepDone:=TRUE;
+END_IF]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
+    <Action Name="_aDrain_entry" Id="{954a9e30-8407-40fd-8169-d919834d753b}">
+      <Implementation>
+        <ST><![CDATA[fbPis.m_SetByRecipe(stPis:=stPis_Client_Source, 		req:=E_Piston_Recipe_State.Act);
+fbPis.m_SetByRecipe(stPis:=stPis_Client_Return, 		req:=E_Piston_Recipe_State.Act);
+fbPis.m_SetByRecipe(stPis:=stPis_S_Marinade_Up, 		req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_S_Marinade_Low, 		req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_S_Color_Up, 			req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_S_Color_Low, 			req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Act);
+fbPis.m_SetByRecipe(stPis:=stPis_Loop, 					req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_S_Future, 				req:=E_Piston_Recipe_State.Release);]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
+    <Action Name="_aFuture_active" Id="{74285a53-17ed-49d1-8065-636d4e3f572f}">
+      <Implementation>
+        <ST><![CDATA[bStepDone:=FALSE;
+IF TRUE 
+AND eStatus=E_CIP_Client_Selector.eFuture
+THEN;
+	bStepDone:=TRUE;
+END_IF]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
+    <Action Name="_aFuture_entry" Id="{8f148dfe-1383-4cb1-b559-71eda112affa}">
+      <Implementation>
+        <ST><![CDATA[fbPis.m_SetByRecipe(stPis:=stPis_Client_Source, 		req:=E_Piston_Recipe_State.Act);
+fbPis.m_SetByRecipe(stPis:=stPis_Client_Return, 		req:=E_Piston_Recipe_State.Act);
+fbPis.m_SetByRecipe(stPis:=stPis_S_Marinade_Up, 		req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_S_Marinade_Low, 		req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_S_Color_Up, 			req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_S_Color_Low, 			req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_Loop, 					req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_S_Future, 				req:=E_Piston_Recipe_State.Act);]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -129,125 +325,11 @@ eReq:=E_CIP_Usage.eNotInUse;
         </XmlArchive>
       </ObjectProperties>
     </Action>
-    <Action Name="_aLine_Color_active" Id="{f2da4561-e2b1-4031-b275-456749682309}">
-      <Implementation>
-        <ST><![CDATA[bStepDone:=FALSE;
-IF TRUE 
-AND eStatus=E_CIP_Usage.eLine_Color
-THEN;
-	bStepDone:=TRUE;
-END_IF]]></ST>
-      </Implementation>
-      <ObjectProperties>
-        <XmlArchive>
-          <Data>
-            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
-              <v n="Embedded">true</v>
-            </o>
-          </Data>
-          <TypeList>
-            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
-            <Type n="Boolean">System.Boolean</Type>
-          </TypeList>
-        </XmlArchive>
-      </ObjectProperties>
-    </Action>
-    <Action Name="_aLine_Color_entry" Id="{72d5631d-2f17-431d-af41-77b8d2aee607}">
-      <Implementation>
-        <ST><![CDATA[fbPis.m_SetByRecipe(stPis:=stPis_Client_Source, 		req:=E_Piston_Recipe_State.Act);
-fbPis.m_SetByRecipe(stPis:=stPis_Client_Return, 		req:=E_Piston_Recipe_State.Act);
-fbPis.m_SetByRecipe(stPis:=stPis_S_Marinade_Up, 		req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_S_Marinade_Up_Drain, 	req:=E_Piston_Recipe_State.Release);
-fbPis.m_SetByRecipe(stPis:=stPis_S_Marinade_Low, 		req:=E_Piston_Recipe_State.Release);
-fbPis.m_SetByRecipe(stPis:=stPis_S_Color_Up, 			req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_S_Color_Up_Drain, 		req:=E_Piston_Recipe_State.Release);
-fbPis.m_SetByRecipe(stPis:=stPis_S_Color_Low, 			req:=E_Piston_Recipe_State.Act);
-//fbPis.m_SetByRecipe(stPis:=stPis_Tank_1, 				req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_Tank_2, 				req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_Tank_3, 				req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_Tank_4, 				req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_S_Marinade_Low_Select, req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_S_Color_Low_Select, 	req:=E_Piston_Recipe_State.Release);
-fbPis.m_SetByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release);
-fbPis.m_SetByRecipe(stPis:=stPis_NoName, 				req:=E_Piston_Recipe_State.Release);
-fbPis.m_SetByRecipe(stPis:=stPis_S_Future, 				req:=E_Piston_Recipe_State.Release);]]></ST>
-      </Implementation>
-      <ObjectProperties>
-        <XmlArchive>
-          <Data>
-            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
-              <v n="Embedded">true</v>
-            </o>
-          </Data>
-          <TypeList>
-            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
-            <Type n="Boolean">System.Boolean</Type>
-          </TypeList>
-        </XmlArchive>
-      </ObjectProperties>
-    </Action>
-    <Action Name="_aLine_Marinada_active" Id="{74285a53-17ed-49d1-8065-636d4e3f572f}">
-      <Implementation>
-        <ST><![CDATA[bStepDone:=FALSE;
-IF TRUE 
-AND eStatus=E_CIP_Usage.eLine_Marinada
-THEN;
-	bStepDone:=TRUE;
-END_IF]]></ST>
-      </Implementation>
-      <ObjectProperties>
-        <XmlArchive>
-          <Data>
-            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
-              <v n="Embedded">true</v>
-            </o>
-          </Data>
-          <TypeList>
-            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
-            <Type n="Boolean">System.Boolean</Type>
-          </TypeList>
-        </XmlArchive>
-      </ObjectProperties>
-    </Action>
-    <Action Name="_aLine_Marinada_entry" Id="{8f148dfe-1383-4cb1-b559-71eda112affa}">
-      <Implementation>
-        <ST><![CDATA[fbPis.m_SetByRecipe(stPis:=stPis_Client_Source, 		req:=E_Piston_Recipe_State.Act);
-fbPis.m_SetByRecipe(stPis:=stPis_Client_Return, 		req:=E_Piston_Recipe_State.Act);
-fbPis.m_SetByRecipe(stPis:=stPis_S_Marinade_Up, 		req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_S_Marinade_Up_Drain, 	req:=E_Piston_Recipe_State.Release);
-fbPis.m_SetByRecipe(stPis:=stPis_S_Marinade_Low, 		req:=E_Piston_Recipe_State.Act);
-fbPis.m_SetByRecipe(stPis:=stPis_S_Color_Up, 			req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_S_Color_Up_Drain, 		req:=E_Piston_Recipe_State.Release);
-fbPis.m_SetByRecipe(stPis:=stPis_S_Color_Low, 			req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_Tank_1, 				req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_Tank_2, 				req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_Tank_3, 				req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_Tank_4, 				req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_S_Marinade_Low_Select, req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_S_Color_Low_Select, 	req:=E_Piston_Recipe_State.Release);
-fbPis.m_SetByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release);
-fbPis.m_SetByRecipe(stPis:=stPis_NoName, 				req:=E_Piston_Recipe_State.Release);
-fbPis.m_SetByRecipe(stPis:=stPis_S_Future, 				req:=E_Piston_Recipe_State.Release);]]></ST>
-      </Implementation>
-      <ObjectProperties>
-        <XmlArchive>
-          <Data>
-            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
-              <v n="Embedded">true</v>
-            </o>
-          </Data>
-          <TypeList>
-            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
-            <Type n="Boolean">System.Boolean</Type>
-          </TypeList>
-        </XmlArchive>
-      </ObjectProperties>
-    </Action>
     <Action Name="_aLocal_active" Id="{0c273ec4-07ea-4c3a-9a5b-c8ebfdd77695}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
 IF TRUE 
-AND eStatus=E_CIP_Usage.eLocal
+AND eStatus=E_CIP_Client_Selector.eLocal
 THEN;
 	bStepDone:=TRUE;
 END_IF]]></ST>
@@ -271,21 +353,160 @@ END_IF]]></ST>
         <ST><![CDATA[fbPis.m_SetByRecipe(stPis:=stPis_Client_Source, 		req:=E_Piston_Recipe_State.Release);
 fbPis.m_SetByRecipe(stPis:=stPis_Client_Return, 		req:=E_Piston_Recipe_State.Release);
 fbPis.m_SetByRecipe(stPis:=stPis_S_Marinade_Up, 		req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_S_Marinade_Up_Drain, 	req:=E_Piston_Recipe_State.Release);
 fbPis.m_SetByRecipe(stPis:=stPis_S_Marinade_Low, 		req:=E_Piston_Recipe_State.Release);
 fbPis.m_SetByRecipe(stPis:=stPis_S_Color_Up, 			req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_S_Color_Up_Drain, 		req:=E_Piston_Recipe_State.Release);
 fbPis.m_SetByRecipe(stPis:=stPis_S_Color_Low, 			req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_Tank_1, 				req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_Tank_2, 				req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_Tank_3, 				req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_Tank_4, 				req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_S_Marinade_Low_Select, req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_S_Color_Low_Select, 	req:=E_Piston_Recipe_State.Release);
 fbPis.m_SetByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release);
-fbPis.m_SetByRecipe(stPis:=stPis_NoName, 				req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_Loop, 					req:=E_Piston_Recipe_State.Release);
 fbPis.m_SetByRecipe(stPis:=stPis_S_Future, 				req:=E_Piston_Recipe_State.Release);
 ]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
+    <Action Name="_aLoop_active" Id="{3c0e8be8-f6f7-4fe6-b7ac-8c6a37c70621}">
+      <Implementation>
+        <ST><![CDATA[bStepDone:=FALSE;
+IF TRUE 
+AND eStatus=E_CIP_Client_Selector.eLoop
+THEN;
+	bStepDone:=TRUE;
+END_IF]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
+    <Action Name="_aLoop_entry" Id="{c991bc47-9ace-4a84-884a-f03475ca6c26}">
+      <Implementation>
+        <ST><![CDATA[fbPis.m_SetByRecipe(stPis:=stPis_Client_Source, 		req:=E_Piston_Recipe_State.Act);
+fbPis.m_SetByRecipe(stPis:=stPis_Client_Return, 		req:=E_Piston_Recipe_State.Act);
+fbPis.m_SetByRecipe(stPis:=stPis_S_Marinade_Up, 		req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_S_Marinade_Low, 		req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_S_Color_Up, 			req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_S_Color_Low, 			req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Act);
+fbPis.m_SetByRecipe(stPis:=stPis_Loop, 					req:=E_Piston_Recipe_State.Act);
+fbPis.m_SetByRecipe(stPis:=stPis_S_Future, 				req:=E_Piston_Recipe_State.Release);]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
+    <Action Name="_aMarinade_Low_active" Id="{d1483e64-4746-49a3-9e31-99ca013c3759}">
+      <Implementation>
+        <ST><![CDATA[bStepDone:=FALSE;
+IF TRUE 
+AND eStatus=E_CIP_Client_Selector.eMarinade_Low
+THEN;
+	bStepDone:=TRUE;
+END_IF]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
+    <Action Name="_aMarinade_Low_entry" Id="{14fd1617-abf4-47e8-b906-b9c9df5f476d}">
+      <Implementation>
+        <ST><![CDATA[fbPis.m_SetByRecipe(stPis:=stPis_Client_Source, 		req:=E_Piston_Recipe_State.Act);
+fbPis.m_SetByRecipe(stPis:=stPis_Client_Return, 		req:=E_Piston_Recipe_State.Act);
+fbPis.m_SetByRecipe(stPis:=stPis_S_Marinade_Up, 		req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_S_Marinade_Low, 		req:=E_Piston_Recipe_State.Act);
+fbPis.m_SetByRecipe(stPis:=stPis_S_Color_Up, 			req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_S_Color_Low, 			req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_Loop, 					req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_S_Future, 				req:=E_Piston_Recipe_State.Release);]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
+    <Action Name="_aMarinade_Up_active" Id="{35ac2ee3-7118-443b-9114-b224b600d3b5}">
+      <Implementation>
+        <ST><![CDATA[bStepDone:=FALSE;
+IF TRUE 
+AND eStatus=E_CIP_Client_Selector.eMarinade_Up
+THEN;
+	bStepDone:=TRUE;
+END_IF]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
+    <Action Name="_aMarinade_Up_entry" Id="{328f52ec-1b83-47ac-84bf-d158e139b2f9}">
+      <Implementation>
+        <ST><![CDATA[fbPis.m_SetByRecipe(stPis:=stPis_Client_Source, 		req:=E_Piston_Recipe_State.Act);
+fbPis.m_SetByRecipe(stPis:=stPis_Client_Return, 		req:=E_Piston_Recipe_State.Act);
+fbPis.m_SetByRecipe(stPis:=stPis_S_Marinade_Up, 		req:=E_Piston_Recipe_State.Act);
+fbPis.m_SetByRecipe(stPis:=stPis_S_Marinade_Low, 		req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_S_Color_Up, 			req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_S_Color_Low, 			req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_Loop, 					req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_S_Future, 				req:=E_Piston_Recipe_State.Release);]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -305,6 +526,16 @@ fbPis.m_SetByRecipe(stPis:=stPis_S_Future, 				req:=E_Piston_Recipe_State.Releas
       <Implementation>
         <ST><![CDATA[
 
+IF eReq<>E_CIP_Client_Selector.eNone THEN;
+	IF eProcess=E_CIP_Client_Selector.eNone 
+	THEN;
+		eProcess:=eReq;
+	ELSE;
+		eReq:=E_CIP_Client_Selector.eNone;
+	END_IF
+END_IF
+
+(*
 CASE eReq OF
 	E_CIP_Usage.eLine_Color:;
 			IF TRUE THEN;
@@ -352,26 +583,8 @@ CASE eReq OF
 			END_IF	
 
 END_CASE
-		
+*)		
 ]]></ST>
-      </Implementation>
-      <ObjectProperties>
-        <XmlArchive>
-          <Data>
-            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
-              <v n="Embedded">true</v>
-            </o>
-          </Data>
-          <TypeList>
-            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
-            <Type n="Boolean">System.Boolean</Type>
-          </TypeList>
-        </XmlArchive>
-      </ObjectProperties>
-    </Action>
-    <Action Name="_aReady_entry" Id="{212cc84d-c05e-4473-be8d-ce6c07a1947f}">
-      <Implementation>
-        <ST><![CDATA[]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -391,348 +604,6 @@ END_CASE
       <Implementation>
         <ST><![CDATA[bRun:=TRUE;
 bDone:=FALSE;]]></ST>
-      </Implementation>
-      <ObjectProperties>
-        <XmlArchive>
-          <Data>
-            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
-              <v n="Embedded">true</v>
-            </o>
-          </Data>
-          <TypeList>
-            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
-            <Type n="Boolean">System.Boolean</Type>
-          </TypeList>
-        </XmlArchive>
-      </ObjectProperties>
-    </Action>
-    <Action Name="_aTank_1_active" Id="{35ac2ee3-7118-443b-9114-b224b600d3b5}">
-      <Implementation>
-        <ST><![CDATA[bStepDone:=FALSE;
-IF TRUE 
-AND eStatus=E_CIP_Usage.eTank_1
-THEN;
-	bStepDone:=TRUE;
-END_IF]]></ST>
-      </Implementation>
-      <ObjectProperties>
-        <XmlArchive>
-          <Data>
-            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
-              <v n="Embedded">true</v>
-            </o>
-          </Data>
-          <TypeList>
-            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
-            <Type n="Boolean">System.Boolean</Type>
-          </TypeList>
-        </XmlArchive>
-      </ObjectProperties>
-    </Action>
-    <Action Name="_aTank_1_entry" Id="{328f52ec-1b83-47ac-84bf-d158e139b2f9}">
-      <Implementation>
-        <ST><![CDATA[fbPis.m_SetByRecipe(stPis:=stPis_Client_Source, 		req:=E_Piston_Recipe_State.Act);
-fbPis.m_SetByRecipe(stPis:=stPis_Client_Return, 		req:=E_Piston_Recipe_State.Act);
-fbPis.m_SetByRecipe(stPis:=stPis_S_Marinade_Up, 		req:=E_Piston_Recipe_State.Act);
-//fbPis.m_SetByRecipe(stPis:=stPis_S_Marinade_Up_Drain, 	req:=E_Piston_Recipe_State.Act);
-fbPis.m_SetByRecipe(stPis:=stPis_S_Marinade_Low, 		req:=E_Piston_Recipe_State.Release);
-fbPis.m_SetByRecipe(stPis:=stPis_S_Color_Up, 			req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_S_Color_Up_Drain, 		req:=E_Piston_Recipe_State.Release);
-fbPis.m_SetByRecipe(stPis:=stPis_S_Color_Low, 			req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_Tank_1, 				req:=E_Piston_Recipe_State.Act);
-//fbPis.m_SetByRecipe(stPis:=stPis_Tank_2, 				req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_Tank_3, 				req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_Tank_4, 				req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_S_Marinade_Low_Select, req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_S_Color_Low_Select, 	req:=E_Piston_Recipe_State.Release);
-fbPis.m_SetByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release);
-fbPis.m_SetByRecipe(stPis:=stPis_NoName, 				req:=E_Piston_Recipe_State.Release);
-fbPis.m_SetByRecipe(stPis:=stPis_S_Future, 				req:=E_Piston_Recipe_State.Release);]]></ST>
-      </Implementation>
-      <ObjectProperties>
-        <XmlArchive>
-          <Data>
-            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
-              <v n="Embedded">true</v>
-            </o>
-          </Data>
-          <TypeList>
-            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
-            <Type n="Boolean">System.Boolean</Type>
-          </TypeList>
-        </XmlArchive>
-      </ObjectProperties>
-    </Action>
-    <Action Name="_aTank_2_active" Id="{d1483e64-4746-49a3-9e31-99ca013c3759}">
-      <Implementation>
-        <ST><![CDATA[bStepDone:=FALSE;
-IF TRUE 
-AND eStatus=E_CIP_Usage.eTank_2
-THEN;
-	bStepDone:=TRUE;
-END_IF]]></ST>
-      </Implementation>
-      <ObjectProperties>
-        <XmlArchive>
-          <Data>
-            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
-              <v n="Embedded">true</v>
-            </o>
-          </Data>
-          <TypeList>
-            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
-            <Type n="Boolean">System.Boolean</Type>
-          </TypeList>
-        </XmlArchive>
-      </ObjectProperties>
-    </Action>
-    <Action Name="_aTank_2_entry" Id="{14fd1617-abf4-47e8-b906-b9c9df5f476d}">
-      <Implementation>
-        <ST><![CDATA[fbPis.m_SetByRecipe(stPis:=stPis_Client_Source, 		req:=E_Piston_Recipe_State.Act);
-fbPis.m_SetByRecipe(stPis:=stPis_Client_Return, 		req:=E_Piston_Recipe_State.Act);
-fbPis.m_SetByRecipe(stPis:=stPis_S_Marinade_Up, 		req:=E_Piston_Recipe_State.Act);
-//fbPis.m_SetByRecipe(stPis:=stPis_S_Marinade_Up_Drain, 	req:=E_Piston_Recipe_State.Act);
-fbPis.m_SetByRecipe(stPis:=stPis_S_Marinade_Low, 		req:=E_Piston_Recipe_State.Release);
-fbPis.m_SetByRecipe(stPis:=stPis_S_Color_Up, 			req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_S_Color_Up_Drain, 		req:=E_Piston_Recipe_State.Release);
-fbPis.m_SetByRecipe(stPis:=stPis_S_Color_Low, 			req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_Tank_1, 				req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_Tank_2, 				req:=E_Piston_Recipe_State.Act);
-//fbPis.m_SetByRecipe(stPis:=stPis_Tank_3, 				req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_Tank_4, 				req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_S_Marinade_Low_Select, req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_S_Color_Low_Select, 	req:=E_Piston_Recipe_State.Release);
-fbPis.m_SetByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release);
-fbPis.m_SetByRecipe(stPis:=stPis_NoName, 				req:=E_Piston_Recipe_State.Release);
-fbPis.m_SetByRecipe(stPis:=stPis_S_Future, 				req:=E_Piston_Recipe_State.Release);]]></ST>
-      </Implementation>
-      <ObjectProperties>
-        <XmlArchive>
-          <Data>
-            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
-              <v n="Embedded">true</v>
-            </o>
-          </Data>
-          <TypeList>
-            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
-            <Type n="Boolean">System.Boolean</Type>
-          </TypeList>
-        </XmlArchive>
-      </ObjectProperties>
-    </Action>
-    <Action Name="_aTank_3_active" Id="{371c6bec-9334-4491-864a-d33c65b63a61}">
-      <Implementation>
-        <ST><![CDATA[bStepDone:=FALSE;
-IF TRUE 
-AND eStatus=E_CIP_Usage.eTank_3
-THEN;
-	bStepDone:=TRUE;
-END_IF]]></ST>
-      </Implementation>
-      <ObjectProperties>
-        <XmlArchive>
-          <Data>
-            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
-              <v n="Embedded">true</v>
-            </o>
-          </Data>
-          <TypeList>
-            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
-            <Type n="Boolean">System.Boolean</Type>
-          </TypeList>
-        </XmlArchive>
-      </ObjectProperties>
-    </Action>
-    <Action Name="_aTank_3_entry" Id="{28e65717-9ec3-49b4-9c7a-55f22afa9837}">
-      <Implementation>
-        <ST><![CDATA[fbPis.m_SetByRecipe(stPis:=stPis_Client_Source, 		req:=E_Piston_Recipe_State.Act);
-fbPis.m_SetByRecipe(stPis:=stPis_Client_Return, 		req:=E_Piston_Recipe_State.Act);
-fbPis.m_SetByRecipe(stPis:=stPis_S_Marinade_Up, 		req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_S_Marinade_Up_Drain, 	req:=E_Piston_Recipe_State.Release);
-fbPis.m_SetByRecipe(stPis:=stPis_S_Marinade_Low, 		req:=E_Piston_Recipe_State.Release);
-fbPis.m_SetByRecipe(stPis:=stPis_S_Color_Up, 			req:=E_Piston_Recipe_State.Act);
-//fbPis.m_SetByRecipe(stPis:=stPis_S_Color_Up_Drain, 		req:=E_Piston_Recipe_State.Act);
-fbPis.m_SetByRecipe(stPis:=stPis_S_Color_Low, 			req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_Tank_1, 				req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_Tank_2, 				req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_Tank_3, 				req:=E_Piston_Recipe_State.Act);
-//fbPis.m_SetByRecipe(stPis:=stPis_Tank_4, 				req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_S_Marinade_Low_Select, req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_S_Color_Low_Select, 	req:=E_Piston_Recipe_State.Release);
-fbPis.m_SetByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release);
-fbPis.m_SetByRecipe(stPis:=stPis_NoName, 				req:=E_Piston_Recipe_State.Release);
-fbPis.m_SetByRecipe(stPis:=stPis_S_Future, 				req:=E_Piston_Recipe_State.Release);]]></ST>
-      </Implementation>
-      <ObjectProperties>
-        <XmlArchive>
-          <Data>
-            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
-              <v n="Embedded">true</v>
-            </o>
-          </Data>
-          <TypeList>
-            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
-            <Type n="Boolean">System.Boolean</Type>
-          </TypeList>
-        </XmlArchive>
-      </ObjectProperties>
-    </Action>
-    <Action Name="_aTank_4_active" Id="{88414d37-f878-422b-978f-18c0dc12a666}">
-      <Implementation>
-        <ST><![CDATA[bStepDone:=FALSE;
-IF TRUE 
-AND eStatus=E_CIP_Usage.eTank_4
-THEN;
-	bStepDone:=TRUE;
-END_IF]]></ST>
-      </Implementation>
-      <ObjectProperties>
-        <XmlArchive>
-          <Data>
-            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
-              <v n="Embedded">true</v>
-            </o>
-          </Data>
-          <TypeList>
-            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
-            <Type n="Boolean">System.Boolean</Type>
-          </TypeList>
-        </XmlArchive>
-      </ObjectProperties>
-    </Action>
-    <Action Name="_aTank_4_entry" Id="{c1927158-4d78-451e-a925-f4404ebed7c3}">
-      <Implementation>
-        <ST><![CDATA[fbPis.m_SetByRecipe(stPis:=stPis_Client_Source, 		req:=E_Piston_Recipe_State.Act);
-fbPis.m_SetByRecipe(stPis:=stPis_Client_Return, 		req:=E_Piston_Recipe_State.Act);
-fbPis.m_SetByRecipe(stPis:=stPis_S_Marinade_Up, 		req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_S_Marinade_Up_Drain, 	req:=E_Piston_Recipe_State.Release);
-fbPis.m_SetByRecipe(stPis:=stPis_S_Marinade_Low, 		req:=E_Piston_Recipe_State.Release);
-fbPis.m_SetByRecipe(stPis:=stPis_S_Color_Up, 			req:=E_Piston_Recipe_State.Act);
-//fbPis.m_SetByRecipe(stPis:=stPis_S_Color_Up_Drain, 		req:=E_Piston_Recipe_State.Act);
-fbPis.m_SetByRecipe(stPis:=stPis_S_Color_Low, 			req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_Tank_1, 				req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_Tank_2, 				req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_Tank_3, 				req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_Tank_4, 				req:=E_Piston_Recipe_State.Act);
-//fbPis.m_SetByRecipe(stPis:=stPis_S_Marinade_Low_Select, req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_S_Color_Low_Select, 	req:=E_Piston_Recipe_State.Release);
-fbPis.m_SetByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release);
-fbPis.m_SetByRecipe(stPis:=stPis_NoName, 				req:=E_Piston_Recipe_State.Release);
-fbPis.m_SetByRecipe(stPis:=stPis_S_Future, 				req:=E_Piston_Recipe_State.Release);]]></ST>
-      </Implementation>
-      <ObjectProperties>
-        <XmlArchive>
-          <Data>
-            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
-              <v n="Embedded">true</v>
-            </o>
-          </Data>
-          <TypeList>
-            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
-            <Type n="Boolean">System.Boolean</Type>
-          </TypeList>
-        </XmlArchive>
-      </ObjectProperties>
-    </Action>
-    <Action Name="_aTriBlender_Color_active" Id="{3c0e8be8-f6f7-4fe6-b7ac-8c6a37c70621}">
-      <Implementation>
-        <ST><![CDATA[bStepDone:=FALSE;
-IF TRUE 
-AND eStatus=E_CIP_Usage.eTriBlender_Color
-THEN;
-	bStepDone:=TRUE;
-END_IF]]></ST>
-      </Implementation>
-      <ObjectProperties>
-        <XmlArchive>
-          <Data>
-            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
-              <v n="Embedded">true</v>
-            </o>
-          </Data>
-          <TypeList>
-            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
-            <Type n="Boolean">System.Boolean</Type>
-          </TypeList>
-        </XmlArchive>
-      </ObjectProperties>
-    </Action>
-    <Action Name="_aTriBlender_Color_entry" Id="{c991bc47-9ace-4a84-884a-f03475ca6c26}">
-      <Implementation>
-        <ST><![CDATA[fbPis.m_SetByRecipe(stPis:=stPis_Client_Source, 		req:=E_Piston_Recipe_State.Act);
-fbPis.m_SetByRecipe(stPis:=stPis_Client_Return, 		req:=E_Piston_Recipe_State.Act);
-fbPis.m_SetByRecipe(stPis:=stPis_S_Marinade_Up, 		req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_S_Marinade_Up_Drain, 	req:=E_Piston_Recipe_State.Release);
-fbPis.m_SetByRecipe(stPis:=stPis_S_Marinade_Low, 		req:=E_Piston_Recipe_State.Release);
-fbPis.m_SetByRecipe(stPis:=stPis_S_Color_Up, 			req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_S_Color_Up_Drain, 		req:=E_Piston_Recipe_State.Release);
-fbPis.m_SetByRecipe(stPis:=stPis_S_Color_Low, 			req:=E_Piston_Recipe_State.Act);
-//fbPis.m_SetByRecipe(stPis:=stPis_Tank_1, 				req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_Tank_2, 				req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_Tank_3, 				req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_Tank_4, 				req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_S_Marinade_Low_Select, req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_S_Color_Low_Select, 	req:=E_Piston_Recipe_State.Act);
-fbPis.m_SetByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release);
-fbPis.m_SetByRecipe(stPis:=stPis_NoName, 				req:=E_Piston_Recipe_State.Release);
-fbPis.m_SetByRecipe(stPis:=stPis_S_Future, 				req:=E_Piston_Recipe_State.Release);]]></ST>
-      </Implementation>
-      <ObjectProperties>
-        <XmlArchive>
-          <Data>
-            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
-              <v n="Embedded">true</v>
-            </o>
-          </Data>
-          <TypeList>
-            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
-            <Type n="Boolean">System.Boolean</Type>
-          </TypeList>
-        </XmlArchive>
-      </ObjectProperties>
-    </Action>
-    <Action Name="_aTriBlender_Marinada_active" Id="{72cc4ab0-083a-4817-a202-7c56b859c63c}">
-      <Implementation>
-        <ST><![CDATA[bStepDone:=FALSE;
-IF TRUE 
-AND eStatus=E_CIP_Usage.eTriBlender_Marinada
-THEN;
-	bStepDone:=TRUE;
-END_IF]]></ST>
-      </Implementation>
-      <ObjectProperties>
-        <XmlArchive>
-          <Data>
-            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
-              <v n="Embedded">true</v>
-            </o>
-          </Data>
-          <TypeList>
-            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
-            <Type n="Boolean">System.Boolean</Type>
-          </TypeList>
-        </XmlArchive>
-      </ObjectProperties>
-    </Action>
-    <Action Name="_aTriBlender_Marinada_entry" Id="{954a9e30-8407-40fd-8169-d919834d753b}">
-      <Implementation>
-        <ST><![CDATA[fbPis.m_SetByRecipe(stPis:=stPis_Client_Source, 		req:=E_Piston_Recipe_State.Act);
-fbPis.m_SetByRecipe(stPis:=stPis_Client_Return, 		req:=E_Piston_Recipe_State.Act);
-fbPis.m_SetByRecipe(stPis:=stPis_S_Marinade_Up, 		req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_S_Marinade_Up_Drain, 	req:=E_Piston_Recipe_State.Release);
-fbPis.m_SetByRecipe(stPis:=stPis_S_Marinade_Low, 		req:=E_Piston_Recipe_State.Act);
-fbPis.m_SetByRecipe(stPis:=stPis_S_Color_Up, 			req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_S_Color_Up_Drain, 		req:=E_Piston_Recipe_State.Release);
-fbPis.m_SetByRecipe(stPis:=stPis_S_Color_Low, 			req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_Tank_1, 				req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_Tank_2, 				req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_Tank_3, 				req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_Tank_4, 				req:=E_Piston_Recipe_State.Release);
-//fbPis.m_SetByRecipe(stPis:=stPis_S_Marinade_Low_Select, req:=E_Piston_Recipe_State.Act);
-//fbPis.m_SetByRecipe(stPis:=stPis_S_Color_Low_Select, 	req:=E_Piston_Recipe_State.Release);
-fbPis.m_SetByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release);
-fbPis.m_SetByRecipe(stPis:=stPis_NoName, 				req:=E_Piston_Recipe_State.Release);
-fbPis.m_SetByRecipe(stPis:=stPis_S_Future, 				req:=E_Piston_Recipe_State.Release);]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -769,7 +640,7 @@ stPis_S_Color_Low			REF= g_Piston.stPis[valS_Color_Low];
 //stPis_S_Marinade_Low_Select	REF= g_Piston.stPis[valS_Marinade_Low_Select];
 //stPis_S_Color_Low_Select	REF= g_Piston.stPis[valS_Color_Low_Select];
 stPis_Drain					REF= g_Piston.stPis[valDrain];
-stPis_NoName				REF= g_Piston.stPis[valNoName];
+stPis_Loop				REF= g_Piston.stPis[valLoop];
 stPis_S_Future				REF= g_Piston.stPis[valS_Future];]]></ST>
       </Implementation>
     </Action>
@@ -1245,7 +1116,7 @@ stPis_S_Future				REF= g_Piston.stPis[valS_Future];]]></ST>
                           <o>
                             <v n="AttributeId">{a6b08bd8-b696-47e3-9cbf-7408b61c9ff8}</v>
                             <o n="Value" t="StringValue">
-                              <v n="Value">"_aReady_entry"</v>
+                              <v n="Value">""</v>
                               <v n="DefaultValue">""</v>
                             </o>
                             <v n="Id">38L</v>
@@ -1278,7 +1149,7 @@ stPis_S_Future				REF= g_Piston.stPis[valS_Future];]]></ST>
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"eProcess=E_CIP_Usage.eLocal"</v>
+                                          <v n="Value">"eProcess=E_CIP_Client_Selector.eLocal"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">922L</v>
@@ -1558,14 +1429,14 @@ stPis_S_Future				REF= g_Piston.stPis[valS_Future];]]></ST>
                               <o n="ElementList" t="SFCElementList">
                                 <l2 n="InnerList">
                                   <o t="SFCTransition">
-                                    <v n="VariableName">"Branch1__Ready__to__Tank_1"</v>
+                                    <v n="VariableName">"Branch1__Ready__to__Marinade_Up"</v>
                                     <n n="EmbeddedTransition" />
                                     <l2 n="EmbeddedTransitionProperties" />
                                     <l2 n="Attributes" cet="SFCAttribute">
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"eProcess=E_CIP_Usage.eTank_1"</v>
+                                          <v n="Value">"eProcess=E_CIP_Client_Selector.eMarinade_Up"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">952L</v>
@@ -1638,7 +1509,7 @@ stPis_S_Future				REF= g_Piston.stPis[valS_Future];]]></ST>
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"Tank_1"</v>
+                                          <v n="Value">"Marinade_Up"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">959L</v>
@@ -1712,7 +1583,7 @@ stPis_S_Future				REF= g_Piston.stPis[valS_Future];]]></ST>
                                       <o>
                                         <v n="AttributeId">{700a583f-b4d4-43e4-8c14-629c7cd3bec8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"_aTank_1_active"</v>
+                                          <v n="Value">"_aMarinade_Up_active"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">967L</v>
@@ -1721,7 +1592,7 @@ stPis_S_Future				REF= g_Piston.stPis[valS_Future];]]></ST>
                                       <o>
                                         <v n="AttributeId">{a6b08bd8-b696-47e3-9cbf-7408b61c9ff8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"_aTank_1_entry"</v>
+                                          <v n="Value">"_aMarinade_Up_entry"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">968L</v>
@@ -1741,7 +1612,7 @@ stPis_S_Future				REF= g_Piston.stPis[valS_Future];]]></ST>
                                     <v n="IdParent">947L</v>
                                   </o>
                                   <o t="SFCTransition">
-                                    <v n="VariableName">"Tank_1__to__Done"</v>
+                                    <v n="VariableName">"Marinade_Up__to__Done"</v>
                                     <n n="EmbeddedTransition" />
                                     <l2 n="EmbeddedTransitionProperties" />
                                     <l2 n="Attributes" cet="SFCAttribute">
@@ -1845,14 +1716,14 @@ stPis_S_Future				REF= g_Piston.stPis[valS_Future];]]></ST>
                               <o n="ElementList" t="SFCElementList">
                                 <l2 n="InnerList">
                                   <o t="SFCTransition">
-                                    <v n="VariableName">"Branch2__Ready__to__Tank_2"</v>
+                                    <v n="VariableName">"Branch2__Ready__to__Marinade_Low"</v>
                                     <n n="EmbeddedTransition" />
                                     <l2 n="EmbeddedTransitionProperties" />
                                     <l2 n="Attributes" cet="SFCAttribute">
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"eProcess=E_CIP_Usage.eTank_2"</v>
+                                          <v n="Value">"eProcess=E_CIP_Client_Selector.eMarinade_Low"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">982L</v>
@@ -1925,7 +1796,7 @@ stPis_S_Future				REF= g_Piston.stPis[valS_Future];]]></ST>
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"Tank_2"</v>
+                                          <v n="Value">"Marinade_Low"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">989L</v>
@@ -1999,7 +1870,7 @@ stPis_S_Future				REF= g_Piston.stPis[valS_Future];]]></ST>
                                       <o>
                                         <v n="AttributeId">{700a583f-b4d4-43e4-8c14-629c7cd3bec8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"_aTank_2_active"</v>
+                                          <v n="Value">"_aMarinade_Low_active"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">997L</v>
@@ -2008,7 +1879,7 @@ stPis_S_Future				REF= g_Piston.stPis[valS_Future];]]></ST>
                                       <o>
                                         <v n="AttributeId">{a6b08bd8-b696-47e3-9cbf-7408b61c9ff8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"_aTank_2_entry"</v>
+                                          <v n="Value">"_aMarinade_Low_entry"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">998L</v>
@@ -2028,7 +1899,7 @@ stPis_S_Future				REF= g_Piston.stPis[valS_Future];]]></ST>
                                     <v n="IdParent">977L</v>
                                   </o>
                                   <o t="SFCTransition">
-                                    <v n="VariableName">"Tank_2__to__Done"</v>
+                                    <v n="VariableName">"Marinade_Low__to__Done"</v>
                                     <n n="EmbeddedTransition" />
                                     <l2 n="EmbeddedTransitionProperties" />
                                     <l2 n="Attributes" cet="SFCAttribute">
@@ -2132,14 +2003,14 @@ stPis_S_Future				REF= g_Piston.stPis[valS_Future];]]></ST>
                               <o n="ElementList" t="SFCElementList">
                                 <l2 n="InnerList">
                                   <o t="SFCTransition">
-                                    <v n="VariableName">"Branch3__Ready__to__Tank_3"</v>
+                                    <v n="VariableName">"Branch3__Ready__to__Color_Up"</v>
                                     <n n="EmbeddedTransition" />
                                     <l2 n="EmbeddedTransitionProperties" />
                                     <l2 n="Attributes" cet="SFCAttribute">
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"eProcess=E_CIP_Usage.eTank_3"</v>
+                                          <v n="Value">"eProcess=E_CIP_Client_Selector.eColor_Up"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">1012L</v>
@@ -2212,7 +2083,7 @@ stPis_S_Future				REF= g_Piston.stPis[valS_Future];]]></ST>
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"Tank_3"</v>
+                                          <v n="Value">"Color_Up"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">1019L</v>
@@ -2286,7 +2157,7 @@ stPis_S_Future				REF= g_Piston.stPis[valS_Future];]]></ST>
                                       <o>
                                         <v n="AttributeId">{700a583f-b4d4-43e4-8c14-629c7cd3bec8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"_aTank_3_active"</v>
+                                          <v n="Value">"_aColor_Up_active"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">1027L</v>
@@ -2295,7 +2166,7 @@ stPis_S_Future				REF= g_Piston.stPis[valS_Future];]]></ST>
                                       <o>
                                         <v n="AttributeId">{a6b08bd8-b696-47e3-9cbf-7408b61c9ff8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"_aTank_3_entry"</v>
+                                          <v n="Value">"_aColor_Up_entry"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">1028L</v>
@@ -2315,7 +2186,7 @@ stPis_S_Future				REF= g_Piston.stPis[valS_Future];]]></ST>
                                     <v n="IdParent">1007L</v>
                                   </o>
                                   <o t="SFCTransition">
-                                    <v n="VariableName">"Tank_3__to__Done"</v>
+                                    <v n="VariableName">"Color_Up__to__Done"</v>
                                     <n n="EmbeddedTransition" />
                                     <l2 n="EmbeddedTransitionProperties" />
                                     <l2 n="Attributes" cet="SFCAttribute">
@@ -2419,14 +2290,14 @@ stPis_S_Future				REF= g_Piston.stPis[valS_Future];]]></ST>
                               <o n="ElementList" t="SFCElementList">
                                 <l2 n="InnerList">
                                   <o t="SFCTransition">
-                                    <v n="VariableName">"Branch4__Ready__to__Tank_4"</v>
+                                    <v n="VariableName">"Branch4__Ready__to__Color_Low"</v>
                                     <n n="EmbeddedTransition" />
                                     <l2 n="EmbeddedTransitionProperties" />
                                     <l2 n="Attributes" cet="SFCAttribute">
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"eProcess=E_CIP_Usage.eTank_4"</v>
+                                          <v n="Value">"eProcess=E_CIP_Client_Selector.eColor_Low"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">1042L</v>
@@ -2499,7 +2370,7 @@ stPis_S_Future				REF= g_Piston.stPis[valS_Future];]]></ST>
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"Tank_4"</v>
+                                          <v n="Value">"Color_Low"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">1049L</v>
@@ -2573,7 +2444,7 @@ stPis_S_Future				REF= g_Piston.stPis[valS_Future];]]></ST>
                                       <o>
                                         <v n="AttributeId">{700a583f-b4d4-43e4-8c14-629c7cd3bec8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"_aTank_4_active"</v>
+                                          <v n="Value">"_aColor_Low_active"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">1057L</v>
@@ -2582,7 +2453,7 @@ stPis_S_Future				REF= g_Piston.stPis[valS_Future];]]></ST>
                                       <o>
                                         <v n="AttributeId">{a6b08bd8-b696-47e3-9cbf-7408b61c9ff8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"_aTank_4_entry"</v>
+                                          <v n="Value">"_aColor_Low_entry"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">1058L</v>
@@ -2602,7 +2473,7 @@ stPis_S_Future				REF= g_Piston.stPis[valS_Future];]]></ST>
                                     <v n="IdParent">1037L</v>
                                   </o>
                                   <o t="SFCTransition">
-                                    <v n="VariableName">"Tank_4__to__Done"</v>
+                                    <v n="VariableName">"Color_Low__to__Done"</v>
                                     <n n="EmbeddedTransition" />
                                     <l2 n="EmbeddedTransitionProperties" />
                                     <l2 n="Attributes" cet="SFCAttribute">
@@ -2706,14 +2577,14 @@ stPis_S_Future				REF= g_Piston.stPis[valS_Future];]]></ST>
                               <o n="ElementList" t="SFCElementList">
                                 <l2 n="InnerList">
                                   <o t="SFCTransition">
-                                    <v n="VariableName">"Branch5__Ready__to__TriBlender_Marinada"</v>
+                                    <v n="VariableName">"Branch5__Ready__to__Drain"</v>
                                     <n n="EmbeddedTransition" />
                                     <l2 n="EmbeddedTransitionProperties" />
                                     <l2 n="Attributes" cet="SFCAttribute">
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"eProcess=E_CIP_Usage.eTriBlender_Marinada"</v>
+                                          <v n="Value">"eProcess=E_CIP_Client_Selector.eDrain"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">1171L</v>
@@ -2786,7 +2657,7 @@ stPis_S_Future				REF= g_Piston.stPis[valS_Future];]]></ST>
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"TriBlender_Marinada"</v>
+                                          <v n="Value">"Drain"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">1178L</v>
@@ -2860,7 +2731,7 @@ stPis_S_Future				REF= g_Piston.stPis[valS_Future];]]></ST>
                                       <o>
                                         <v n="AttributeId">{700a583f-b4d4-43e4-8c14-629c7cd3bec8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"_aTriBlender_Marinada_active"</v>
+                                          <v n="Value">"_aDrain_active"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">1186L</v>
@@ -2869,7 +2740,7 @@ stPis_S_Future				REF= g_Piston.stPis[valS_Future];]]></ST>
                                       <o>
                                         <v n="AttributeId">{a6b08bd8-b696-47e3-9cbf-7408b61c9ff8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"_aTriBlender_Marinada_entry"</v>
+                                          <v n="Value">"_aDrain_entry"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">1187L</v>
@@ -2889,7 +2760,7 @@ stPis_S_Future				REF= g_Piston.stPis[valS_Future];]]></ST>
                                     <v n="IdParent">1166L</v>
                                   </o>
                                   <o t="SFCTransition">
-                                    <v n="VariableName">"TriBlender_Marinada__to__Done"</v>
+                                    <v n="VariableName">"Drain__to__Done"</v>
                                     <n n="EmbeddedTransition" />
                                     <l2 n="EmbeddedTransitionProperties" />
                                     <l2 n="Attributes" cet="SFCAttribute">
@@ -2993,14 +2864,14 @@ stPis_S_Future				REF= g_Piston.stPis[valS_Future];]]></ST>
                               <o n="ElementList" t="SFCElementList">
                                 <l2 n="InnerList">
                                   <o t="SFCTransition">
-                                    <v n="VariableName">"Branch6__Ready__to__TriBlender_Color"</v>
+                                    <v n="VariableName">"Branch6__Ready__to__Loop"</v>
                                     <n n="EmbeddedTransition" />
                                     <l2 n="EmbeddedTransitionProperties" />
                                     <l2 n="Attributes" cet="SFCAttribute">
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"eProcess=E_CIP_Usage.eTriBlender_Color"</v>
+                                          <v n="Value">"eProcess=E_CIP_Client_Selector.eLoop"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">1201L</v>
@@ -3073,7 +2944,7 @@ stPis_S_Future				REF= g_Piston.stPis[valS_Future];]]></ST>
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"TriBlender_Color"</v>
+                                          <v n="Value">"Loop"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">1208L</v>
@@ -3147,7 +3018,7 @@ stPis_S_Future				REF= g_Piston.stPis[valS_Future];]]></ST>
                                       <o>
                                         <v n="AttributeId">{700a583f-b4d4-43e4-8c14-629c7cd3bec8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"_aTriBlender_Color_active"</v>
+                                          <v n="Value">"_aLoop_active"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">1216L</v>
@@ -3156,7 +3027,7 @@ stPis_S_Future				REF= g_Piston.stPis[valS_Future];]]></ST>
                                       <o>
                                         <v n="AttributeId">{a6b08bd8-b696-47e3-9cbf-7408b61c9ff8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"_aTriBlender_Color_entry"</v>
+                                          <v n="Value">"_aLoop_entry"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">1217L</v>
@@ -3176,7 +3047,7 @@ stPis_S_Future				REF= g_Piston.stPis[valS_Future];]]></ST>
                                     <v n="IdParent">1196L</v>
                                   </o>
                                   <o t="SFCTransition">
-                                    <v n="VariableName">"TriBlender_Color__to__Done"</v>
+                                    <v n="VariableName">"Loop__to__Done"</v>
                                     <n n="EmbeddedTransition" />
                                     <l2 n="EmbeddedTransitionProperties" />
                                     <l2 n="Attributes" cet="SFCAttribute">
@@ -3280,14 +3151,14 @@ stPis_S_Future				REF= g_Piston.stPis[valS_Future];]]></ST>
                               <o n="ElementList" t="SFCElementList">
                                 <l2 n="InnerList">
                                   <o t="SFCTransition">
-                                    <v n="VariableName">"Branch7__Ready__to__Line_Marinada"</v>
+                                    <v n="VariableName">"Branch7__Ready__to__Future"</v>
                                     <n n="EmbeddedTransition" />
                                     <l2 n="EmbeddedTransitionProperties" />
                                     <l2 n="Attributes" cet="SFCAttribute">
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"eProcess=E_CIP_Usage.eLine_Marinada"</v>
+                                          <v n="Value">"eProcess=E_CIP_Client_Selector.eFuture"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">1231L</v>
@@ -3360,7 +3231,7 @@ stPis_S_Future				REF= g_Piston.stPis[valS_Future];]]></ST>
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"Line_Marinada"</v>
+                                          <v n="Value">"Future"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">1238L</v>
@@ -3434,7 +3305,7 @@ stPis_S_Future				REF= g_Piston.stPis[valS_Future];]]></ST>
                                       <o>
                                         <v n="AttributeId">{700a583f-b4d4-43e4-8c14-629c7cd3bec8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"_aLine_Marinada_active"</v>
+                                          <v n="Value">"_aFuture_active"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">1246L</v>
@@ -3443,7 +3314,7 @@ stPis_S_Future				REF= g_Piston.stPis[valS_Future];]]></ST>
                                       <o>
                                         <v n="AttributeId">{a6b08bd8-b696-47e3-9cbf-7408b61c9ff8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"_aLine_Marinada_entry"</v>
+                                          <v n="Value">"_aFuture_entry"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">1247L</v>
@@ -3463,7 +3334,7 @@ stPis_S_Future				REF= g_Piston.stPis[valS_Future];]]></ST>
                                     <v n="IdParent">1226L</v>
                                   </o>
                                   <o t="SFCTransition">
-                                    <v n="VariableName">"Line_Marinada__to__Done"</v>
+                                    <v n="VariableName">"Future__to__Done"</v>
                                     <n n="EmbeddedTransition" />
                                     <l2 n="EmbeddedTransitionProperties" />
                                     <l2 n="Attributes" cet="SFCAttribute">
@@ -3561,293 +3432,6 @@ stPis_S_Future				REF= g_Piston.stPis[valS_Future];]]></ST>
                                 </o>
                               </l2>
                               <v n="Id">1226L</v>
-                              <v n="IdParent">908L</v>
-                            </o>
-                            <o>
-                              <o n="ElementList" t="SFCElementList">
-                                <l2 n="InnerList">
-                                  <o t="SFCTransition">
-                                    <v n="VariableName">"Branch8__Ready__to__Line_Color"</v>
-                                    <n n="EmbeddedTransition" />
-                                    <l2 n="EmbeddedTransitionProperties" />
-                                    <l2 n="Attributes" cet="SFCAttribute">
-                                      <o>
-                                        <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
-                                        <o n="Value" t="StringValue">
-                                          <v n="Value">"eProcess=E_CIP_Usage.eLine_Color"</v>
-                                          <v n="DefaultValue">""</v>
-                                        </o>
-                                        <v n="Id">1261L</v>
-                                        <v n="IdParent">1260L</v>
-                                      </o>
-                                      <o>
-                                        <v n="AttributeId">{7d894980-aeea-405c-a0f6-e2b26429c58f}</v>
-                                        <o n="Value" t="StringValue">
-                                          <v n="Value">""</v>
-                                          <v n="DefaultValue">""</v>
-                                        </o>
-                                        <v n="Id">1262L</v>
-                                        <v n="IdParent">1260L</v>
-                                      </o>
-                                      <o>
-                                        <v n="AttributeId">{01580b27-6378-448b-8ecb-0e4b795b58d6}</v>
-                                        <o n="Value" t="BoolValue">
-                                          <v n="Value">"FALSE"</v>
-                                          <v n="DefaultValue">"FALSE"</v>
-                                        </o>
-                                        <v n="Id">1263L</v>
-                                        <v n="IdParent">1260L</v>
-                                      </o>
-                                      <o>
-                                        <v n="AttributeId">{bc882c11-1e91-4dd8-a6b8-2075724ed18b}</v>
-                                        <o n="Value" t="EnumValue">
-                                          <v n="TemplateGuid">{79a4fdd5-c859-4de4-aa8d-c03372c880c2}</v>
-                                          <n n="BaseType" />
-                                          <v n="Value">"0"</v>
-                                          <v n="DefaultValue">"0"</v>
-                                        </o>
-                                        <v n="Id">1264L</v>
-                                        <v n="IdParent">1260L</v>
-                                      </o>
-                                      <o>
-                                        <v n="AttributeId">{62e1754b-7629-4e63-9cec-10ae0c536f1f}</v>
-                                        <o n="Value" t="BoolValue">
-                                          <v n="Value">"FALSE"</v>
-                                          <v n="DefaultValue">"FALSE"</v>
-                                        </o>
-                                        <v n="Id">1265L</v>
-                                        <v n="IdParent">1260L</v>
-                                      </o>
-                                      <o>
-                                        <v n="AttributeId">{8294df19-5962-4dee-a874-1051dabb0e3e}</v>
-                                        <o n="Value" t="EnumValue">
-                                          <v n="TemplateGuid">{6ecff51c-9b8f-4338-aab0-67c2b31b07e9}</v>
-                                          <n n="BaseType" />
-                                          <v n="Value">"0"</v>
-                                          <v n="DefaultValue">"0"</v>
-                                        </o>
-                                        <v n="Id">1266L</v>
-                                        <v n="IdParent">1260L</v>
-                                      </o>
-                                    </l2>
-                                    <v n="Id">1260L</v>
-                                    <v n="IdParent">1256L</v>
-                                  </o>
-                                  <o t="SFCStep">
-                                    <n n="EmbeddedMainAction" />
-                                    <n n="EmbeddedEntryAction" />
-                                    <n n="EmbeddedExitAction" />
-                                    <l2 n="EmbeddedMainActionProperties" />
-                                    <l2 n="EmbeddedEntryActionProperties" />
-                                    <l2 n="EmbeddedExitActionProperties" />
-                                    <o n="ElementList" t="SFCElementList">
-                                      <l2 n="InnerList" />
-                                    </o>
-                                    <l2 n="Attributes" cet="SFCAttribute">
-                                      <o>
-                                        <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
-                                        <o n="Value" t="StringValue">
-                                          <v n="Value">"Line_Color"</v>
-                                          <v n="DefaultValue">""</v>
-                                        </o>
-                                        <v n="Id">1268L</v>
-                                        <v n="IdParent">1267L</v>
-                                      </o>
-                                      <o>
-                                        <v n="AttributeId">{7d894980-aeea-405c-a0f6-e2b26429c58f}</v>
-                                        <o n="Value" t="StringValue">
-                                          <v n="Value">""</v>
-                                          <v n="DefaultValue">""</v>
-                                        </o>
-                                        <v n="Id">1269L</v>
-                                        <v n="IdParent">1267L</v>
-                                      </o>
-                                      <o>
-                                        <v n="AttributeId">{01580b27-6378-448b-8ecb-0e4b795b58d6}</v>
-                                        <o n="Value" t="BoolValue">
-                                          <v n="Value">"FALSE"</v>
-                                          <v n="DefaultValue">"FALSE"</v>
-                                        </o>
-                                        <v n="Id">1270L</v>
-                                        <v n="IdParent">1267L</v>
-                                      </o>
-                                      <o>
-                                        <v n="AttributeId">{bc882c11-1e91-4dd8-a6b8-2075724ed18b}</v>
-                                        <o n="Value" t="EnumValue">
-                                          <v n="TemplateGuid">{79a4fdd5-c859-4de4-aa8d-c03372c880c2}</v>
-                                          <n n="BaseType" />
-                                          <v n="Value">"0"</v>
-                                          <v n="DefaultValue">"0"</v>
-                                        </o>
-                                        <v n="Id">1271L</v>
-                                        <v n="IdParent">1267L</v>
-                                      </o>
-                                      <o>
-                                        <v n="AttributeId">{6844a48e-46c2-4cc8-a185-a478f3b99cc0}</v>
-                                        <o n="Value" t="BoolValue">
-                                          <v n="Value">"FALSE"</v>
-                                          <v n="DefaultValue">"FALSE"</v>
-                                        </o>
-                                        <v n="Id">1272L</v>
-                                        <v n="IdParent">1267L</v>
-                                      </o>
-                                      <o>
-                                        <v n="AttributeId">{62e1754b-7629-4e63-9cec-10ae0c536f1f}</v>
-                                        <o n="Value" t="BoolValue">
-                                          <v n="Value">"FALSE"</v>
-                                          <v n="DefaultValue">"FALSE"</v>
-                                        </o>
-                                        <v n="Id">1273L</v>
-                                        <v n="IdParent">1267L</v>
-                                      </o>
-                                      <o>
-                                        <v n="AttributeId">{cacf1a68-236e-47c2-b7b1-1cf9199718cb}</v>
-                                        <o n="Value" t="StringValue">
-                                          <v n="Value">""</v>
-                                          <v n="DefaultValue">""</v>
-                                        </o>
-                                        <v n="Id">1274L</v>
-                                        <v n="IdParent">1267L</v>
-                                      </o>
-                                      <o>
-                                        <v n="AttributeId">{b693554c-1b01-4a8d-afde-9e3a46f7465d}</v>
-                                        <o n="Value" t="StringValue">
-                                          <v n="Value">""</v>
-                                          <v n="DefaultValue">""</v>
-                                        </o>
-                                        <v n="Id">1275L</v>
-                                        <v n="IdParent">1267L</v>
-                                      </o>
-                                      <o>
-                                        <v n="AttributeId">{700a583f-b4d4-43e4-8c14-629c7cd3bec8}</v>
-                                        <o n="Value" t="StringValue">
-                                          <v n="Value">"_aLine_Color_active"</v>
-                                          <v n="DefaultValue">""</v>
-                                        </o>
-                                        <v n="Id">1276L</v>
-                                        <v n="IdParent">1267L</v>
-                                      </o>
-                                      <o>
-                                        <v n="AttributeId">{a6b08bd8-b696-47e3-9cbf-7408b61c9ff8}</v>
-                                        <o n="Value" t="StringValue">
-                                          <v n="Value">"_aLine_Color_entry"</v>
-                                          <v n="DefaultValue">""</v>
-                                        </o>
-                                        <v n="Id">1277L</v>
-                                        <v n="IdParent">1267L</v>
-                                      </o>
-                                      <o>
-                                        <v n="AttributeId">{a2621e18-7de3-4ea6-ae6d-89e9e0b7befd}</v>
-                                        <o n="Value" t="StringValue">
-                                          <v n="Value">""</v>
-                                          <v n="DefaultValue">""</v>
-                                        </o>
-                                        <v n="Id">1278L</v>
-                                        <v n="IdParent">1267L</v>
-                                      </o>
-                                    </l2>
-                                    <v n="Id">1267L</v>
-                                    <v n="IdParent">1256L</v>
-                                  </o>
-                                  <o t="SFCTransition">
-                                    <v n="VariableName">"Line_Color__to__Done"</v>
-                                    <n n="EmbeddedTransition" />
-                                    <l2 n="EmbeddedTransitionProperties" />
-                                    <l2 n="Attributes" cet="SFCAttribute">
-                                      <o>
-                                        <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
-                                        <o n="Value" t="StringValue">
-                                          <v n="Value">"bStepDone"</v>
-                                          <v n="DefaultValue">""</v>
-                                        </o>
-                                        <v n="Id">1280L</v>
-                                        <v n="IdParent">1279L</v>
-                                      </o>
-                                      <o>
-                                        <v n="AttributeId">{7d894980-aeea-405c-a0f6-e2b26429c58f}</v>
-                                        <o n="Value" t="StringValue">
-                                          <v n="Value">""</v>
-                                          <v n="DefaultValue">""</v>
-                                        </o>
-                                        <v n="Id">1281L</v>
-                                        <v n="IdParent">1279L</v>
-                                      </o>
-                                      <o>
-                                        <v n="AttributeId">{01580b27-6378-448b-8ecb-0e4b795b58d6}</v>
-                                        <o n="Value" t="BoolValue">
-                                          <v n="Value">"FALSE"</v>
-                                          <v n="DefaultValue">"FALSE"</v>
-                                        </o>
-                                        <v n="Id">1282L</v>
-                                        <v n="IdParent">1279L</v>
-                                      </o>
-                                      <o>
-                                        <v n="AttributeId">{bc882c11-1e91-4dd8-a6b8-2075724ed18b}</v>
-                                        <o n="Value" t="EnumValue">
-                                          <v n="TemplateGuid">{79a4fdd5-c859-4de4-aa8d-c03372c880c2}</v>
-                                          <n n="BaseType" />
-                                          <v n="Value">"0"</v>
-                                          <v n="DefaultValue">"0"</v>
-                                        </o>
-                                        <v n="Id">1283L</v>
-                                        <v n="IdParent">1279L</v>
-                                      </o>
-                                      <o>
-                                        <v n="AttributeId">{62e1754b-7629-4e63-9cec-10ae0c536f1f}</v>
-                                        <o n="Value" t="BoolValue">
-                                          <v n="Value">"FALSE"</v>
-                                          <v n="DefaultValue">"FALSE"</v>
-                                        </o>
-                                        <v n="Id">1284L</v>
-                                        <v n="IdParent">1279L</v>
-                                      </o>
-                                      <o>
-                                        <v n="AttributeId">{8294df19-5962-4dee-a874-1051dabb0e3e}</v>
-                                        <o n="Value" t="EnumValue">
-                                          <v n="TemplateGuid">{6ecff51c-9b8f-4338-aab0-67c2b31b07e9}</v>
-                                          <n n="BaseType" />
-                                          <v n="Value">"0"</v>
-                                          <v n="DefaultValue">"0"</v>
-                                        </o>
-                                        <v n="Id">1285L</v>
-                                        <v n="IdParent">1279L</v>
-                                      </o>
-                                    </l2>
-                                    <v n="Id">1279L</v>
-                                    <v n="IdParent">1256L</v>
-                                  </o>
-                                </l2>
-                              </o>
-                              <l2 n="Attributes" cet="SFCAttribute">
-                                <o>
-                                  <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
-                                  <o n="Value" t="StringValue">
-                                    <v n="Value">""</v>
-                                    <v n="DefaultValue">""</v>
-                                  </o>
-                                  <v n="Id">1257L</v>
-                                  <v n="IdParent">1256L</v>
-                                </o>
-                                <o>
-                                  <v n="AttributeId">{7d894980-aeea-405c-a0f6-e2b26429c58f}</v>
-                                  <o n="Value" t="StringValue">
-                                    <v n="Value">""</v>
-                                    <v n="DefaultValue">""</v>
-                                  </o>
-                                  <v n="Id">1258L</v>
-                                  <v n="IdParent">1256L</v>
-                                </o>
-                                <o>
-                                  <v n="AttributeId">{01580b27-6378-448b-8ecb-0e4b795b58d6}</v>
-                                  <o n="Value" t="BoolValue">
-                                    <v n="Value">"FALSE"</v>
-                                    <v n="DefaultValue">"FALSE"</v>
-                                  </o>
-                                  <v n="Id">1259L</v>
-                                  <v n="IdParent">1256L</v>
-                                </o>
-                              </l2>
-                              <v n="Id">1256L</v>
                               <v n="IdParent">908L</v>
                             </o>
                           </l2>
@@ -4533,187 +4117,103 @@ stPis_S_Future				REF= g_Piston.stPis[valS_Future];]]></ST>
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Source, 		req:=E_Piston_Recipe_State.Release)
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Return, 		req:=E_Piston_Recipe_State.Release)
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up, 		req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up_Drain, req:=E_Piston_Recipe_State.Release)
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low, 		req:=E_Piston_Recipe_State.Release)
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up, 			req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up_Drain, 	req:=E_Piston_Recipe_State.Release)
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low, 		req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_1, 				req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_2, 				req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_3, 				req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_4, 				req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low_Select, 	req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low_Select, 	req:=E_Piston_Recipe_State.Release)
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release)
-	AND fbPis.m_CheckByRecipe(stPis:=stPis_NoName, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Loop, 				req:=E_Piston_Recipe_State.Release)
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Future, 			req:=E_Piston_Recipe_State.Release)
 	THEN;
-		eStatus:=E_CIP_Usage.eLocal;
+		eStatus:=E_CIP_Client_Selector.eLocal;
 	ELSIF TRUE
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Source, 		req:=E_Piston_Recipe_State.Act)
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Return, 		req:=E_Piston_Recipe_State.Act)
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up, 		req:=E_Piston_Recipe_State.Act)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up_Drain, req:=E_Piston_Recipe_State.Act)
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low, 		req:=E_Piston_Recipe_State.Release)
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up, 			req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up_Drain, 	req:=E_Piston_Recipe_State.Release)
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low, 		req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_1, 				req:=E_Piston_Recipe_State.Act)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_2, 				req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_3, 				req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_4, 				req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low_Select, 	req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low_Select, 	req:=E_Piston_Recipe_State.Release)
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release)
-	AND fbPis.m_CheckByRecipe(stPis:=stPis_NoName, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Loop, 				req:=E_Piston_Recipe_State.Release)
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Future, 			req:=E_Piston_Recipe_State.Release)
 	THEN;
-		eStatus:=E_CIP_Usage.eTank_1;
-	ELSIF TRUE 
-	AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Source, 		req:=E_Piston_Recipe_State.Act)
-	AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Return, 		req:=E_Piston_Recipe_State.Act)
-	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up, 		req:=E_Piston_Recipe_State.Act)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up_Drain, req:=E_Piston_Recipe_State.Act)
-	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low, 		req:=E_Piston_Recipe_State.Release)
-	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up, 			req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up_Drain, 	req:=E_Piston_Recipe_State.Release)
-	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low, 		req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_1, 				req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_2, 				req:=E_Piston_Recipe_State.Act)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_3, 				req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_4, 				req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low_Select, 	req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low_Select, 	req:=E_Piston_Recipe_State.Release)
-	AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release)
-	AND fbPis.m_CheckByRecipe(stPis:=stPis_NoName, 				req:=E_Piston_Recipe_State.Release)
-	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Future, 			req:=E_Piston_Recipe_State.Release)
-	THEN;
-		eStatus:=E_CIP_Usage.eTank_2;
+		eStatus:=E_CIP_Client_Selector.eMarinade_Up;
 	ELSIF TRUE 
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Source, 		req:=E_Piston_Recipe_State.Act)
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Return, 		req:=E_Piston_Recipe_State.Act)
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up, 		req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up_Drain, req:=E_Piston_Recipe_State.Release)
-	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low, 		req:=E_Piston_Recipe_State.Release)
-	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up, 			req:=E_Piston_Recipe_State.Act)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up_Drain, 	req:=E_Piston_Recipe_State.Act)
-	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low, 		req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_1, 				req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_2, 				req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_3, 				req:=E_Piston_Recipe_State.Act)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_4, 				req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low_Select, 	req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low_Select, 	req:=E_Piston_Recipe_State.Release)
-	AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release)
-	AND fbPis.m_CheckByRecipe(stPis:=stPis_NoName, 				req:=E_Piston_Recipe_State.Release)
-	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Future, 			req:=E_Piston_Recipe_State.Release)
-	THEN;
-		eStatus:=E_CIP_Usage.eTank_3;
-	ELSIF TRUE 
-	AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Source, 		req:=E_Piston_Recipe_State.Act)
-	AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Return, 		req:=E_Piston_Recipe_State.Act)
-	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up, 		req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up_Drain, req:=E_Piston_Recipe_State.Release)
-	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low, 		req:=E_Piston_Recipe_State.Release)
-	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up, 			req:=E_Piston_Recipe_State.Act)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up_Drain, 	req:=E_Piston_Recipe_State.Act)
-	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low, 		req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_1, 				req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_2, 				req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_3, 				req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_4, 				req:=E_Piston_Recipe_State.Act)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low_Select, 	req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low_Select, 	req:=E_Piston_Recipe_State.Release)
-	AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release)
-	AND fbPis.m_CheckByRecipe(stPis:=stPis_NoName, 				req:=E_Piston_Recipe_State.Release)
-	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Future, 			req:=E_Piston_Recipe_State.Release)
-	THEN;
-		eStatus:=E_CIP_Usage.eTank_4;
-	ELSIF TRUE 
-	AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Source, 		req:=E_Piston_Recipe_State.Act)
-	AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Return, 		req:=E_Piston_Recipe_State.Act)
-	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up, 		req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up_Drain, req:=E_Piston_Recipe_State.Release)
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low, 		req:=E_Piston_Recipe_State.Act)
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up, 			req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up_Drain, 	req:=E_Piston_Recipe_State.Release)
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low, 		req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_1, 				req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_2, 				req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_3, 				req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_4, 				req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low_Select, 	req:=E_Piston_Recipe_State.Act)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low_Select, 	req:=E_Piston_Recipe_State.Release)
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release)
-	AND fbPis.m_CheckByRecipe(stPis:=stPis_NoName, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Loop, 				req:=E_Piston_Recipe_State.Release)
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Future, 			req:=E_Piston_Recipe_State.Release)
 	THEN;
-		eStatus:=E_CIP_Usage.eTriBlender_Marinada;
+		eStatus:=E_CIP_Client_Selector.eMarinade_Low;
 	ELSIF TRUE 
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Source, 		req:=E_Piston_Recipe_State.Act)
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Return, 		req:=E_Piston_Recipe_State.Act)
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up, 		req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up_Drain, req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low, 		req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up, 			req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low, 		req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Loop, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Future, 			req:=E_Piston_Recipe_State.Release)
+	THEN;
+		eStatus:=E_CIP_Client_Selector.eColor_Up;
+	ELSIF TRUE 
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Source, 		req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Return, 		req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up, 		req:=E_Piston_Recipe_State.Release)
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low, 		req:=E_Piston_Recipe_State.Release)
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up, 			req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up_Drain, 	req:=E_Piston_Recipe_State.Release)
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low, 		req:=E_Piston_Recipe_State.Act)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_1, 				req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_2, 				req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_3, 				req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_4, 				req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low_Select, 	req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low_Select, 	req:=E_Piston_Recipe_State.Act)
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release)
-	AND fbPis.m_CheckByRecipe(stPis:=stPis_NoName, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Loop, 				req:=E_Piston_Recipe_State.Release)
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Future, 			req:=E_Piston_Recipe_State.Release)
 	THEN;
-		eStatus:=E_CIP_Usage.eTriBlender_Color;
+		eStatus:=E_CIP_Client_Selector.eColor_Low;
 	ELSIF TRUE 
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Source, 		req:=E_Piston_Recipe_State.Act)
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Return, 		req:=E_Piston_Recipe_State.Act)
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up, 		req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up_Drain, req:=E_Piston_Recipe_State.Release)
-	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low, 		req:=E_Piston_Recipe_State.Act)
-	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up, 			req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up_Drain, 	req:=E_Piston_Recipe_State.Release)
-	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low, 		req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_1, 				req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_2, 				req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_3, 				req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_4, 				req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low_Select, 	req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low_Select, 	req:=E_Piston_Recipe_State.Release)
-	AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release)
-	AND fbPis.m_CheckByRecipe(stPis:=stPis_NoName, 				req:=E_Piston_Recipe_State.Release)
-	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Future, 			req:=E_Piston_Recipe_State.Release)
-	THEN;
-		eStatus:=E_CIP_Usage.eLine_Marinada;
-	ELSIF TRUE 
-	AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Source, 		req:=E_Piston_Recipe_State.Act)
-	AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Return, 		req:=E_Piston_Recipe_State.Act)
-	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up, 		req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up_Drain, req:=E_Piston_Recipe_State.Release)
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low, 		req:=E_Piston_Recipe_State.Release)
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up, 			req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up_Drain, 	req:=E_Piston_Recipe_State.Release)
-	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low, 		req:=E_Piston_Recipe_State.Act)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_1, 				req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_2, 				req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_3, 				req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_4, 				req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low_Select, 	req:=E_Piston_Recipe_State.Release)
-//	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low_Select, 	req:=E_Piston_Recipe_State.Release)
-	AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release)
-	AND fbPis.m_CheckByRecipe(stPis:=stPis_NoName, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low, 		req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Loop, 				req:=E_Piston_Recipe_State.Release)
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Future, 			req:=E_Piston_Recipe_State.Release)
 	THEN;
-		eStatus:=E_CIP_Usage.eLine_Color;
+		eStatus:=E_CIP_Client_Selector.eDrain;
+	ELSIF TRUE 
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Source, 		req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Return, 		req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up, 		req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low, 		req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up, 			req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low, 		req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Loop, 				req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Future, 			req:=E_Piston_Recipe_State.Release)
+	THEN;
+		eStatus:=E_CIP_Client_Selector.eLoop;
+	ELSIF TRUE 
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Source, 		req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Client_Return, 		req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Up, 		req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Marinade_Low, 		req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Up, 			req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low, 		req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Loop, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Future, 			req:=E_Piston_Recipe_State.Act)
+	THEN;
+		eStatus:=E_CIP_Client_Selector.eFuture;
 	ELSE;
-		eStatus:=E_CIP_Usage.eNotInUse;
+		eStatus:=E_CIP_Client_Selector.eNone;
 	END_IF
 ELSE;
-	eStatus:=E_CIP_Usage.eNotInUse;
+	eStatus:=E_CIP_Client_Selector.eNone;
 END_IF]]></ST>
       </Implementation>
     </Action>
@@ -4722,11 +4222,32 @@ END_IF]]></ST>
 VAR_INPUT
 	eReqStatus		: E_CIP_Usage;
 END_VAR
+VAR
+	eReqStatusLocal	: E_CIP_Client_Selector;
+END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF eStatus=eReqStatus 
-AND eProcess=E_CIP_Usage.eNotInUse
-AND eReq=E_CIP_Usage.eNotInUse
+        <ST><![CDATA[CASE eReqStatus OF
+	E_CIP_Usage.eLocal:;
+				eReqStatusLocal	:=E_CIP_Client_Selector.eLocal;
+	E_CIP_Usage.eTank_1,
+	E_CIP_Usage.eTank_2:;
+				eReqStatusLocal	:=E_CIP_Client_Selector.eMarinade_Up;	
+	E_CIP_Usage.eTank_3,
+	E_CIP_Usage.eTank_4:;
+				eReqStatusLocal	:=E_CIP_Client_Selector.eColor_Up;	
+	E_CIP_Usage.eTriBlender_Marinada,
+	E_CIP_Usage.eLine_Marinada:;
+				eReqStatusLocal	:=E_CIP_Client_Selector.eMarinade_Low;	
+	E_CIP_Usage.eTriBlender_Color,
+	E_CIP_Usage.eLine_Color:;
+				eReqStatusLocal	:=E_CIP_Client_Selector.eColor_Low;	
+	
+END_CASE
+
+IF eStatus=eReqStatusLocal 
+AND eProcess=E_CIP_Client_Selector.eNone
+AND eReq=E_CIP_Client_Selector.eNone
 AND bReady
 AND bDone
 AND NOT bRun
@@ -4740,10 +4261,30 @@ END_IF]]></ST>
 VAR_INPUT
 	eReqProc			: E_CIP_Usage;
 END_VAR
-]]></Declaration>
+VAR
+	eReqStatusLocal	: E_CIP_Client_Selector;
+END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF eProcess=E_CIP_Usage.eNotInUse THEN;
-	eProcess:=eReq:=eReqProc;
+        <ST><![CDATA[CASE eReqProc OF
+	E_CIP_Usage.eLocal:;
+				eReqStatusLocal	:=E_CIP_Client_Selector.eLocal;
+	E_CIP_Usage.eTank_1,
+	E_CIP_Usage.eTank_2:;
+				eReqStatusLocal	:=E_CIP_Client_Selector.eMarinade_Up;	
+	E_CIP_Usage.eTank_3,
+	E_CIP_Usage.eTank_4:;
+				eReqStatusLocal	:=E_CIP_Client_Selector.eColor_Up;	
+	E_CIP_Usage.eTriBlender_Marinada,
+	E_CIP_Usage.eLine_Marinada:;
+				eReqStatusLocal	:=E_CIP_Client_Selector.eMarinade_Low;	
+	E_CIP_Usage.eTriBlender_Color,
+	E_CIP_Usage.eLine_Color:;
+				eReqStatusLocal	:=E_CIP_Client_Selector.eColor_Low;	
+	
+END_CASE
+
+IF eProcess=E_CIP_Client_Selector.eNone THEN;
+	eProcess:=eReq:=eReqStatusLocal;
 	bDone:=FALSE;
 	m_Run:=TRUE;
 END_IF]]></ST>
@@ -4778,11 +4319,43 @@ m_SFC_Handle();]]></ST>
       <LineId Id="97" Count="0" />
       <LineId Id="55" Count="0" />
     </LineIds>
+    <LineIds Name="FB_CIP_Client._aColor_Low_active">
+      <LineId Id="2" Count="4" />
+      <LineId Id="1" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_CIP_Client._aColor_Low_entry">
+      <LineId Id="18" Count="7" />
+      <LineId Id="1" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_CIP_Client._aColor_Up_active">
+      <LineId Id="2" Count="4" />
+      <LineId Id="1" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_CIP_Client._aColor_Up_entry">
+      <LineId Id="18" Count="7" />
+      <LineId Id="1" Count="0" />
+    </LineIds>
     <LineIds Name="FB_CIP_Client._aDone_entry">
       <LineId Id="1" Count="0" />
       <LineId Id="3" Count="0" />
       <LineId Id="6" Count="1" />
       <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_CIP_Client._aDrain_active">
+      <LineId Id="2" Count="4" />
+      <LineId Id="1" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_CIP_Client._aDrain_entry">
+      <LineId Id="18" Count="7" />
+      <LineId Id="1" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_CIP_Client._aFuture_active">
+      <LineId Id="2" Count="4" />
+      <LineId Id="1" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_CIP_Client._aFuture_entry">
+      <LineId Id="19" Count="7" />
+      <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP_Client._aInit_active">
       <LineId Id="1" Count="0" />
@@ -4792,37 +4365,53 @@ m_SFC_Handle();]]></ST>
       <LineId Id="3" Count="0" />
       <LineId Id="2" Count="0" />
     </LineIds>
-    <LineIds Name="FB_CIP_Client._aLine_Color_active">
-      <LineId Id="2" Count="4" />
-      <LineId Id="1" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_CIP_Client._aLine_Color_entry">
-      <LineId Id="18" Count="0" />
-      <LineId Id="3" Count="14" />
-      <LineId Id="1" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_CIP_Client._aLine_Marinada_active">
-      <LineId Id="2" Count="4" />
-      <LineId Id="1" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_CIP_Client._aLine_Marinada_entry">
-      <LineId Id="18" Count="0" />
-      <LineId Id="2" Count="14" />
-      <LineId Id="1" Count="0" />
-    </LineIds>
     <LineIds Name="FB_CIP_Client._aLocal_active">
       <LineId Id="2" Count="4" />
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP_Client._aLocal_entry">
       <LineId Id="36" Count="0" />
-      <LineId Id="2" Count="3" />
+      <LineId Id="2" Count="1" />
+      <LineId Id="5" Count="0" />
       <LineId Id="1" Count="0" />
-      <LineId Id="24" Count="10" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="32" Count="2" />
       <LineId Id="6" Count="0" />
     </LineIds>
+    <LineIds Name="FB_CIP_Client._aLoop_active">
+      <LineId Id="2" Count="4" />
+      <LineId Id="1" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_CIP_Client._aLoop_entry">
+      <LineId Id="18" Count="7" />
+      <LineId Id="1" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_CIP_Client._aMarinade_Low_active">
+      <LineId Id="2" Count="4" />
+      <LineId Id="1" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_CIP_Client._aMarinade_Low_entry">
+      <LineId Id="18" Count="7" />
+      <LineId Id="1" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_CIP_Client._aMarinade_Up_active">
+      <LineId Id="2" Count="4" />
+      <LineId Id="1" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_CIP_Client._aMarinade_Up_entry">
+      <LineId Id="18" Count="7" />
+      <LineId Id="1" Count="0" />
+    </LineIds>
     <LineIds Name="FB_CIP_Client._aReady_active">
-      <LineId Id="2" Count="1" />
+      <LineId Id="59" Count="0" />
+      <LineId Id="62" Count="0" />
+      <LineId Id="2" Count="0" />
+      <LineId Id="65" Count="2" />
+      <LineId Id="69" Count="1" />
+      <LineId Id="64" Count="0" />
+      <LineId Id="68" Count="0" />
+      <LineId Id="71" Count="0" />
+      <LineId Id="3" Count="0" />
       <LineId Id="1" Count="0" />
       <LineId Id="6" Count="0" />
       <LineId Id="10" Count="2" />
@@ -4852,65 +4441,8 @@ m_SFC_Handle();]]></ST>
       <LineId Id="5" Count="0" />
       <LineId Id="4" Count="0" />
     </LineIds>
-    <LineIds Name="FB_CIP_Client._aReady_entry">
-      <LineId Id="2" Count="0" />
-    </LineIds>
     <LineIds Name="FB_CIP_Client._aReady_exit">
       <LineId Id="2" Count="0" />
-      <LineId Id="1" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_CIP_Client._aTank_1_active">
-      <LineId Id="2" Count="4" />
-      <LineId Id="1" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_CIP_Client._aTank_1_entry">
-      <LineId Id="17" Count="0" />
-      <LineId Id="2" Count="14" />
-      <LineId Id="1" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_CIP_Client._aTank_2_active">
-      <LineId Id="2" Count="4" />
-      <LineId Id="1" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_CIP_Client._aTank_2_entry">
-      <LineId Id="17" Count="0" />
-      <LineId Id="2" Count="14" />
-      <LineId Id="1" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_CIP_Client._aTank_3_active">
-      <LineId Id="2" Count="4" />
-      <LineId Id="1" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_CIP_Client._aTank_3_entry">
-      <LineId Id="17" Count="0" />
-      <LineId Id="2" Count="14" />
-      <LineId Id="1" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_CIP_Client._aTank_4_active">
-      <LineId Id="2" Count="4" />
-      <LineId Id="1" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_CIP_Client._aTank_4_entry">
-      <LineId Id="17" Count="0" />
-      <LineId Id="2" Count="14" />
-      <LineId Id="1" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_CIP_Client._aTriBlender_Color_active">
-      <LineId Id="2" Count="4" />
-      <LineId Id="1" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_CIP_Client._aTriBlender_Color_entry">
-      <LineId Id="17" Count="0" />
-      <LineId Id="2" Count="14" />
-      <LineId Id="1" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_CIP_Client._aTriBlender_Marinada_active">
-      <LineId Id="2" Count="4" />
-      <LineId Id="1" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_CIP_Client._aTriBlender_Marinada_entry">
-      <LineId Id="17" Count="0" />
-      <LineId Id="2" Count="14" />
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP_Client.act_GetReference">
@@ -4925,34 +4457,63 @@ m_SFC_Handle();]]></ST>
     <LineIds Name="FB_CIP_Client.act_Status">
       <LineId Id="284" Count="0" />
       <LineId Id="1" Count="0" />
-      <LineId Id="26" Count="3" />
+      <LineId Id="26" Count="2" />
       <LineId Id="7" Count="0" />
-      <LineId Id="111" Count="11" />
+      <LineId Id="111" Count="0" />
+      <LineId Id="113" Count="0" />
+      <LineId Id="120" Count="2" />
       <LineId Id="6" Count="0" />
       <LineId Id="9" Count="0" />
       <LineId Id="123" Count="0" />
-      <LineId Id="125" Count="17" />
+      <LineId Id="288" Count="7" />
+      <LineId Id="141" Count="1" />
       <LineId Id="124" Count="0" />
-      <LineId Id="144" Count="18" />
+      <LineId Id="144" Count="0" />
+      <LineId Id="296" Count="7" />
+      <LineId Id="161" Count="1" />
       <LineId Id="143" Count="0" />
-      <LineId Id="164" Count="18" />
+      <LineId Id="164" Count="0" />
+      <LineId Id="304" Count="7" />
+      <LineId Id="181" Count="1" />
       <LineId Id="163" Count="0" />
-      <LineId Id="184" Count="18" />
+      <LineId Id="184" Count="0" />
+      <LineId Id="312" Count="7" />
+      <LineId Id="201" Count="1" />
       <LineId Id="183" Count="0" />
-      <LineId Id="204" Count="18" />
+      <LineId Id="204" Count="0" />
+      <LineId Id="320" Count="7" />
+      <LineId Id="221" Count="1" />
       <LineId Id="203" Count="0" />
-      <LineId Id="225" Count="18" />
+      <LineId Id="225" Count="0" />
+      <LineId Id="328" Count="7" />
+      <LineId Id="242" Count="1" />
       <LineId Id="224" Count="0" />
-      <LineId Id="244" Count="18" />
+      <LineId Id="244" Count="0" />
+      <LineId Id="336" Count="7" />
+      <LineId Id="261" Count="1" />
       <LineId Id="223" Count="0" />
-      <LineId Id="264" Count="18" />
-      <LineId Id="263" Count="0" />
       <LineId Id="15" Count="0" />
       <LineId Id="17" Count="0" />
       <LineId Id="5" Count="0" />
       <LineId Id="285" Count="2" />
     </LineIds>
     <LineIds Name="FB_CIP_Client.m_CheckStatus">
+      <LineId Id="27" Count="0" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="45" Count="0" />
+      <LineId Id="43" Count="0" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="46" Count="0" />
+      <LineId Id="44" Count="0" />
+      <LineId Id="37" Count="1" />
+      <LineId Id="47" Count="0" />
+      <LineId Id="39" Count="1" />
+      <LineId Id="48" Count="0" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="28" Count="0" />
       <LineId Id="5" Count="0" />
       <LineId Id="13" Count="1" />
       <LineId Id="19" Count="0" />
@@ -4961,6 +4522,8 @@ m_SFC_Handle();]]></ST>
       <LineId Id="7" Count="1" />
     </LineIds>
     <LineIds Name="FB_CIP_Client.m_Run">
+      <LineId Id="17" Count="15" />
+      <LineId Id="15" Count="1" />
       <LineId Id="5" Count="0" />
       <LineId Id="7" Count="0" />
       <LineId Id="9" Count="1" />
