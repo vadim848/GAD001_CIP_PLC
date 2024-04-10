@@ -6,6 +6,7 @@ VAR_INPUT
 	valTankA				:	E_Pis_Name	;
 	valTankB				:	E_Pis_Name	;
 	valTapWater				:	E_Pis_Name	;
+	valTapWater_else		:	E_Pis_Name	;
 	valTapWater_Drain		:	E_Pis_Name	;	
 	valDrain				:	E_Pis_Name	;
 	valCIP					:	E_Pis_Name	;
@@ -25,6 +26,7 @@ VAR
 	stPis_TankA				: REFERENCE TO ST_Piston;
 	stPis_TankB				: REFERENCE TO ST_Piston;
 	stPis_TapWater			: REFERENCE TO ST_Piston;
+	stPis_TapWater_else		: REFERENCE TO ST_Piston;
 	stPis_TapWater_Drain	: REFERENCE TO ST_Piston;
 	stPis_Drain				: REFERENCE TO ST_Piston;
 	stPis_CIP				: REFERENCE TO ST_Piston;
@@ -535,6 +537,7 @@ fbPis.m_SetByRecipe(stPis:=stPis_WaterSource, 		req:=E_Piston_Recipe_State.Relea
 stPis_TankA				REF= g_Piston.stPis[valTankA];
 stPis_TankB				REF= g_Piston.stPis[valTankB];
 stPis_TapWater			REF= g_Piston.stPis[valTapWater];
+stPis_TapWater_else		REF= g_Piston.stPis[valTapWater_else];
 stPis_TapWater_Drain	REF= g_Piston.stPis[valTapWater_Drain];
 stPis_BlockWater		REF= g_Piston.stPis[valBlockWater];
 stPis_WaterSource		REF= g_Piston.stPis[valWaterSource];
@@ -3972,7 +3975,9 @@ m_SFC_Handle();]]></ST>
     <LineIds Name="FB_Line_Source.act_GetReference">
       <LineId Id="2" Count="0" />
       <LineId Id="5" Count="1" />
-      <LineId Id="21" Count="4" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="28" Count="1" />
+      <LineId Id="23" Count="2" />
       <LineId Id="9" Count="0" />
       <LineId Id="1" Count="0" />
       <LineId Id="26" Count="1" />
