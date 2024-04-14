@@ -3,13 +3,15 @@
   <POU Name="FB_TankLevel" Id="{b2733916-5f6c-401f-ba03-73f4ab298e9c}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_TankLevel
 VAR_IN_OUT
-	stTank_Level	: ST_Tank_Level	;
+	stTank_Level	: 	ST_Tank_Level	;
+	stAnalogSignal	:	ST_AnalogSignal	;
 END_VAR
 VAR_INPUT
 END_VAR
 VAR_OUTPUT
 END_VAR
 VAR
+	Call_AnalogSignal 	:	FB_AnalogSignal	;
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -21,11 +23,19 @@ ELSIF stTank_Level.bIn_LL_signal=TRUE AND stTank_Level.bIn_HL_signal=TRUE THEN
 	stTank_Level.e_state:=E_Tank_Level.eHL;
 ELSIF stTank_Level.bIn_LL_signal=FALSE AND stTank_Level.bIn_HL_signal=TRUE THEN
 	stTank_Level.e_state:=E_Tank_Level.eERROR;
-END_IF]]></ST>
+END_IF
+
+Call_AnalogSignal(AnalogSignal:=stAnalogSignal );
+
+stTank_Level.rOut_LvlAnalog:=stAnalogSignal.rOut_Converted;]]></ST>
     </Implementation>
     <LineIds Name="FB_TankLevel">
       <LineId Id="25" Count="7" />
       <LineId Id="18" Count="0" />
+      <LineId Id="56" Count="0" />
+      <LineId Id="55" Count="0" />
+      <LineId Id="58" Count="0" />
+      <LineId Id="57" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>
