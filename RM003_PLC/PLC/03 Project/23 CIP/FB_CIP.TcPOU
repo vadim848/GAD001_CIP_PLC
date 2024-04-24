@@ -343,44 +343,6 @@ END_IF]]></ST>
         </XmlArchive>
       </ObjectProperties>
     </Action>
-    <Action Name="_aCondition_CIP2_Client_entry" Id="{6c654597-3443-49f0-b6c3-b9bb6b5c0e65}">
-      <Implementation>
-        <ST><![CDATA[fb_PumpCIP.m_Stop();
-fb_PumpClient.m_Run();]]></ST>
-      </Implementation>
-      <ObjectProperties>
-        <XmlArchive>
-          <Data>
-            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
-              <v n="Embedded">true</v>
-            </o>
-          </Data>
-          <TypeList>
-            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
-            <Type n="Boolean">System.Boolean</Type>
-          </TypeList>
-        </XmlArchive>
-      </ObjectProperties>
-    </Action>
-    <Action Name="_aCondition_CIP3_Client_entry" Id="{dbfcba97-a05c-4a7e-9695-6f88d9860b5b}">
-      <Implementation>
-        <ST><![CDATA[fb_PumpCIP.m_Stop();
-fb_PumpClient.m_Run();]]></ST>
-      </Implementation>
-      <ObjectProperties>
-        <XmlArchive>
-          <Data>
-            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
-              <v n="Embedded">true</v>
-            </o>
-          </Data>
-          <TypeList>
-            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
-            <Type n="Boolean">System.Boolean</Type>
-          </TypeList>
-        </XmlArchive>
-      </ObjectProperties>
-    </Action>
     <Action Name="_aConnect_CIP1_01_active" Id="{027bf863-1ae4-4bdd-8945-394ab7bb998b}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
@@ -867,49 +829,7 @@ END_CASE
         </XmlArchive>
       </ObjectProperties>
     </Action>
-    <Action Name="_aConnect_CIP3_04_active" Id="{f91e3e04-db9d-4b78-bf7f-951c85a19bab}">
-      <Implementation>
-        <ST><![CDATA[bStepDone:=FALSE;
-IF fbCIP_Source.m_CheckStatus(eReqStatus:=E_CIP_Source.eT94_Water) 
-//AND fbCIP_Usage.m_CheckStatus(eReqStatus:=E_CIP_Usage.eLocal) 
-THEN;
-	bStepDone:=TRUE;
-END_IF]]></ST>
-      </Implementation>
-      <ObjectProperties>
-        <XmlArchive>
-          <Data>
-            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
-              <v n="Embedded">true</v>
-            </o>
-          </Data>
-          <TypeList>
-            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
-            <Type n="Boolean">System.Boolean</Type>
-          </TypeList>
-        </XmlArchive>
-      </ObjectProperties>
-    </Action>
-    <Action Name="_aConnect_CIP3_04_entry" Id="{a222b2a3-3228-456a-b38e-78bd356a0f6f}">
-      <Implementation>
-        <ST><![CDATA[fbCIP_Source.m_Run(eReqProc:=E_CIP_Source.eT94_Water);
-//fbCIP_Usage.m_Run(eReqProc:=E_CIP_Usage.eLocal);]]></ST>
-      </Implementation>
-      <ObjectProperties>
-        <XmlArchive>
-          <Data>
-            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
-              <v n="Embedded">true</v>
-            </o>
-          </Data>
-          <TypeList>
-            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
-            <Type n="Boolean">System.Boolean</Type>
-          </TypeList>
-        </XmlArchive>
-      </ObjectProperties>
-    </Action>
-    <Action Name="_aConnect_CIP4_04_active" Id="{a9246f62-51f9-46f2-be38-5dcdb555a206}">
+    <Action Name="_aConnect_CIP4_Drain_01_active" Id="{a9246f62-51f9-46f2-be38-5dcdb555a206}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE; 
 IF fbCIP_Return.m_CheckStatus(eReqStatus:=E_CIP_Return.eDrain) THEN;
@@ -930,7 +850,7 @@ END_IF]]></ST>
         </XmlArchive>
       </ObjectProperties>
     </Action>
-    <Action Name="_aConnect_CIP4_04_entry" Id="{268da9bb-12d5-4b57-abf3-81c7717ea36d}">
+    <Action Name="_aConnect_CIP4_Drain_01_entry" Id="{268da9bb-12d5-4b57-abf3-81c7717ea36d}">
       <Implementation>
         <ST><![CDATA[fbCIP_Return.m_Run(eReqProc:=E_CIP_Return.eDrain);]]></ST>
       </Implementation>
@@ -1351,6 +1271,48 @@ fbCIP_Usage.m_Run(eReqProc:=E_CIP_Usage.eLocal);
 fbCIP_Return.m_Run(eReqProc:=E_CIP_Return.eDrain);
 mCIP_Clients_command(command:=E_CIP_Client_Command.eDrain);
 ]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
+    <Action Name="_aDisonnect_CIP3_active" Id="{f91e3e04-db9d-4b78-bf7f-951c85a19bab}">
+      <Implementation>
+        <ST><![CDATA[bStepDone:=FALSE;
+IF fbCIP_Source.m_CheckStatus(eReqStatus:=E_CIP_Source.eT94_Water) 
+//AND fbCIP_Usage.m_CheckStatus(eReqStatus:=E_CIP_Usage.eLocal) 
+THEN;
+	bStepDone:=TRUE;
+END_IF]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
+    <Action Name="_aDisonnect_CIP3_entry" Id="{a222b2a3-3228-456a-b38e-78bd356a0f6f}">
+      <Implementation>
+        <ST><![CDATA[fbCIP_Source.m_Run(eReqProc:=E_CIP_Source.eT94_Water);
+//fbCIP_Usage.m_Run(eReqProc:=E_CIP_Usage.eLocal);]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -7163,7 +7125,7 @@ stPis_FillWater_T94 REF= stPis[valFillWater_T94];
                                                           <o>
                                                             <v n="AttributeId">{a6b08bd8-b696-47e3-9cbf-7408b61c9ff8}</v>
                                                             <o n="Value" t="StringValue">
-                                                              <v n="Value">"_aCondition_CIP2_Client_entry"</v>
+                                                              <v n="Value">""</v>
                                                               <v n="DefaultValue">""</v>
                                                             </o>
                                                             <v n="Id">1707L</v>
@@ -11375,7 +11337,7 @@ stPis_FillWater_T94 REF= stPis[valFillWater_T94];
                                                           <o>
                                                             <v n="AttributeId">{a6b08bd8-b696-47e3-9cbf-7408b61c9ff8}</v>
                                                             <o n="Value" t="StringValue">
-                                                              <v n="Value">"_aCondition_CIP3_Client_entry"</v>
+                                                              <v n="Value">""</v>
                                                               <v n="DefaultValue">""</v>
                                                             </o>
                                                             <v n="Id">1745L</v>
@@ -12131,7 +12093,7 @@ stPis_FillWater_T94 REF= stPis[valFillWater_T94];
                                                         <v n="IdParent">854L</v>
                                                       </o>
                                                       <o t="SFCTransition">
-                                                        <v n="VariableName">"StopPump_CIP3_03__to__Connect_CIP3_04"</v>
+                                                        <v n="VariableName">"StopPump_CIP3_03__to__Disonnect_CIP3"</v>
                                                         <n n="EmbeddedTransition" />
                                                         <l2 n="EmbeddedTransitionProperties" />
                                                         <l2 n="Attributes" cet="SFCAttribute">
@@ -12211,7 +12173,7 @@ stPis_FillWater_T94 REF= stPis[valFillWater_T94];
                                                           <o>
                                                             <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                             <o n="Value" t="StringValue">
-                                                              <v n="Value">"Connect_CIP3_04"</v>
+                                                              <v n="Value">"Disonnect_CIP3"</v>
                                                               <v n="DefaultValue">""</v>
                                                             </o>
                                                             <v n="Id">2331L</v>
@@ -12285,7 +12247,7 @@ stPis_FillWater_T94 REF= stPis[valFillWater_T94];
                                                           <o>
                                                             <v n="AttributeId">{700a583f-b4d4-43e4-8c14-629c7cd3bec8}</v>
                                                             <o n="Value" t="StringValue">
-                                                              <v n="Value">"_aConnect_CIP3_04_active"</v>
+                                                              <v n="Value">"_aDisonnect_CIP3_active"</v>
                                                               <v n="DefaultValue">""</v>
                                                             </o>
                                                             <v n="Id">2339L</v>
@@ -12294,7 +12256,7 @@ stPis_FillWater_T94 REF= stPis[valFillWater_T94];
                                                           <o>
                                                             <v n="AttributeId">{a6b08bd8-b696-47e3-9cbf-7408b61c9ff8}</v>
                                                             <o n="Value" t="StringValue">
-                                                              <v n="Value">"_aConnect_CIP3_04_entry"</v>
+                                                              <v n="Value">"_aDisonnect_CIP3_entry"</v>
                                                               <v n="DefaultValue">""</v>
                                                             </o>
                                                             <v n="Id">2340L</v>
@@ -12314,7 +12276,7 @@ stPis_FillWater_T94 REF= stPis[valFillWater_T94];
                                                         <v n="IdParent">854L</v>
                                                       </o>
                                                       <o t="SFCTransition">
-                                                        <v n="VariableName">"Connect_CIP3_04__to__StartPump_CIP3_04"</v>
+                                                        <v n="VariableName">"Disonnect_CIP3__to__StartPump_CIP3_04"</v>
                                                         <n n="EmbeddedTransition" />
                                                         <l2 n="EmbeddedTransitionProperties" />
                                                         <l2 n="Attributes" cet="SFCAttribute">
@@ -12497,7 +12459,7 @@ stPis_FillWater_T94 REF= stPis[valFillWater_T94];
                                                         <v n="IdParent">854L</v>
                                                       </o>
                                                       <o t="SFCTransition">
-                                                        <v n="VariableName">"StartPump_CIP3_04__to__Connect_CIP4_04"</v>
+                                                        <v n="VariableName">"StartPump_CIP3_04__to__Connect_CIP4_Drain_01"</v>
                                                         <n n="EmbeddedTransition" />
                                                         <l2 n="EmbeddedTransitionProperties" />
                                                         <l2 n="Attributes" cet="SFCAttribute">
@@ -12577,7 +12539,7 @@ stPis_FillWater_T94 REF= stPis[valFillWater_T94];
                                                           <o>
                                                             <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                             <o n="Value" t="StringValue">
-                                                              <v n="Value">"Connect_CIP4_04"</v>
+                                                              <v n="Value">"Connect_CIP4_Drain_01"</v>
                                                               <v n="DefaultValue">""</v>
                                                             </o>
                                                             <v n="Id">2293L</v>
@@ -12651,7 +12613,7 @@ stPis_FillWater_T94 REF= stPis[valFillWater_T94];
                                                           <o>
                                                             <v n="AttributeId">{700a583f-b4d4-43e4-8c14-629c7cd3bec8}</v>
                                                             <o n="Value" t="StringValue">
-                                                              <v n="Value">"_aConnect_CIP4_04_active"</v>
+                                                              <v n="Value">"_aConnect_CIP4_Drain_01_active"</v>
                                                               <v n="DefaultValue">""</v>
                                                             </o>
                                                             <v n="Id">2301L</v>
@@ -12660,7 +12622,7 @@ stPis_FillWater_T94 REF= stPis[valFillWater_T94];
                                                           <o>
                                                             <v n="AttributeId">{a6b08bd8-b696-47e3-9cbf-7408b61c9ff8}</v>
                                                             <o n="Value" t="StringValue">
-                                                              <v n="Value">"_aConnect_CIP4_04_entry"</v>
+                                                              <v n="Value">"_aConnect_CIP4_Drain_01_entry"</v>
                                                               <v n="DefaultValue">""</v>
                                                             </o>
                                                             <v n="Id">2302L</v>
@@ -12680,7 +12642,7 @@ stPis_FillWater_T94 REF= stPis[valFillWater_T94];
                                                         <v n="IdParent">854L</v>
                                                       </o>
                                                       <o t="SFCTransition">
-                                                        <v n="VariableName">"Connect_CIP4_04__to__StopPump_CIP3_04"</v>
+                                                        <v n="VariableName">"Connect_CIP4_Drain_01__to__StopPump_CIP3_04"</v>
                                                         <n n="EmbeddedTransition" />
                                                         <l2 n="EmbeddedTransitionProperties" />
                                                         <l2 n="Attributes" cet="SFCAttribute">
@@ -18127,14 +18089,6 @@ END_IF
     <LineIds Name="FB_CIP._aClient_Check_CIP4_entry">
       <LineId Id="1" Count="0" />
     </LineIds>
-    <LineIds Name="FB_CIP._aCondition_CIP2_Client_entry">
-      <LineId Id="2" Count="0" />
-      <LineId Id="1" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_CIP._aCondition_CIP3_Client_entry">
-      <LineId Id="2" Count="0" />
-      <LineId Id="1" Count="0" />
-    </LineIds>
     <LineIds Name="FB_CIP._aConnect_CIP1_01_active">
       <LineId Id="2" Count="3" />
       <LineId Id="7" Count="0" />
@@ -18249,22 +18203,12 @@ END_IF
       <LineId Id="4" Count="0" />
       <LineId Id="3" Count="0" />
     </LineIds>
-    <LineIds Name="FB_CIP._aConnect_CIP3_04_active">
-      <LineId Id="2" Count="1" />
-      <LineId Id="7" Count="0" />
-      <LineId Id="9" Count="0" />
-      <LineId Id="8" Count="0" />
-      <LineId Id="1" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_CIP._aConnect_CIP3_04_entry">
-      <LineId Id="2" Count="1" />
-    </LineIds>
-    <LineIds Name="FB_CIP._aConnect_CIP4_04_active">
+    <LineIds Name="FB_CIP._aConnect_CIP4_Drain_01_active">
       <LineId Id="2" Count="0" />
       <LineId Id="7" Count="1" />
       <LineId Id="1" Count="0" />
     </LineIds>
-    <LineIds Name="FB_CIP._aConnect_CIP4_04_entry">
+    <LineIds Name="FB_CIP._aConnect_CIP4_Drain_01_entry">
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aConnect_CIP4_Drain_active">
@@ -18370,6 +18314,16 @@ END_IF
       <LineId Id="1" Count="0" />
       <LineId Id="5" Count="0" />
       <LineId Id="4" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_CIP._aDisonnect_CIP3_active">
+      <LineId Id="2" Count="1" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="1" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_CIP._aDisonnect_CIP3_entry">
+      <LineId Id="2" Count="1" />
     </LineIds>
     <LineIds Name="FB_CIP._aDone_entry">
       <LineId Id="2" Count="2" />
