@@ -1,0 +1,139 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_TwinSAFE" Id="{4ab5defe-eed2-490f-bb56-b846d8da8e90}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_TwinSAFE
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+	bStateSafe: BOOL;
+END_VAR
+VAR
+	rt_TSafe_OK: R_TRIG;
+	rt_TSafe_Err: R_TRIG;
+	ton_TSafe_OK: TON;
+	ton_TSafe_Err_Reset_ON: TON;
+	ton_TSafe_Err_Reset_OFF: TON;	
+END_VAR
+VAR_IN_OUT
+	stTS: ST_TwinSAFE;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[ton_TSafe_OK(IN:=stTS.TSafeIn.InRun AND NOT stTS.TSafeIn.COM_Err, PT:=T#1S );
+IF ton_TSafe_OK.Q THEN;
+	bStateSafe:=TRUE;
+ELSE;
+	bStateSafe:=FALSE;	
+END_IF
+rt_TSafe_OK(CLK:=ton_TSafe_OK.Q );
+IF rt_TSafe_OK.Q THEN;
+	//m_Print_Success_Message();
+END_IF
+
+
+
+rt_TSafe_Err(CLK:=stTS.TSafeIn.COM_Err);
+IF rt_TSafe_Err.Q THEN;
+	//m_Print_Error_Message();
+END_IF
+
+ton_TSafe_Err_Reset_ON(IN:=stTS.TSafeIn.COM_Err AND NOT stTS.TSafeOut.ErrACK, PT:=T#2S );
+IF ton_TSafe_Err_Reset_ON.Q THEN;
+	stTS.TSafeOut.ErrACK:=TRUE;
+END_IF
+
+ton_TSafe_Err_Reset_OFF(IN:=stTS.TSafeOut.ErrACK, PT:=T#1S );
+IF ton_TSafe_Err_Reset_OFF.Q THEN;
+	stTS.TSafeOut.ErrACK:=FALSE;
+END_IF]]></ST>
+    </Implementation>
+    <Method Name="m_Print_Error_Message" Id="{083c4f03-3c6b-4b7e-b608-334a475b1764}">
+      <Declaration><![CDATA[METHOD m_Print_Error_Message : BOOL
+VAR_INPUT
+END_VAR
+
+VAR
+	i: INT;
+	sActErrorID: STRING(11);
+	sModuleDescription: STRING(80);
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[
+sActErrorID:='0x999x0';
+sModuleDescription:='TwinSAFE Group';
+
+FOR i:=100 TO 2 BY -1 DO
+	Buffer_Act_Message[i]:=Buffer_Act_Message[i-1];
+END_FOR
+
+Buffer_Act_Message[1].sDateTime:=sRealTime_Date;
+Buffer_Act_Message[1].sErrID:=sActErrorID;
+Buffer_Act_Message[1].sModuleDescription:=sModuleDescription;
+Buffer_Act_Message[1].sLevel:='Error';
+Buffer_Act_Message[1].sErrorMessage:='';
+
+Buffer_Act_Message[1].sErrorMessage:=CONCAT(Buffer_Act_Message[1].sErrorMessage,'TwinSAFE group has a communication error');
+FUN_Write_Line_To_History();	]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_Print_Success_Message" Id="{0548d864-a910-432c-b329-bfbcc1612a5d}">
+      <Declaration><![CDATA[METHOD m_Print_Success_Message : BOOL
+VAR_INPUT
+END_VAR
+
+VAR
+	i: INT;
+	sActErrorID: STRING(11);
+	sModuleDescription: STRING(80);
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[
+sActErrorID:='0x999x0';
+sModuleDescription:='TwinSAFE Group';
+
+FOR i:=1000 TO 2 BY -1 DO
+	Buffer_Act_History[i]:=Buffer_Act_History[i-1];
+END_FOR
+
+Buffer_Act_History[1].sDateTime:=sRealTime_Date;
+Buffer_Act_History[1].sErrID:=sActErrorID;
+Buffer_Act_History[1].sModuleDescription:=sModuleDescription;
+Buffer_Act_History[1].sLevel:='Message';
+Buffer_Act_History[1].sErrorMessage:='';
+
+Buffer_Act_History[1].sErrorMessage:=CONCAT(Buffer_Act_History[1].sErrorMessage,'TwinSAFE state is OK');
+	]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_TwinSAFE">
+      <LineId Id="19" Count="25" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_TwinSAFE.m_Print_Error_Message">
+      <LineId Id="30" Count="0" />
+      <LineId Id="66" Count="0" />
+      <LineId Id="6" Count="0" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="56" Count="1" />
+      <LineId Id="13" Count="3" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="22" Count="1" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="25" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_TwinSAFE.m_Print_Success_Message">
+      <LineId Id="30" Count="0" />
+      <LineId Id="66" Count="0" />
+      <LineId Id="6" Count="0" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="56" Count="1" />
+      <LineId Id="13" Count="3" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="22" Count="1" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="25" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>
