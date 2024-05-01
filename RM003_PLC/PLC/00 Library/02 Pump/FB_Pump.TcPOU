@@ -2,18 +2,42 @@
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="FB_Pump" Id="{85164826-ad0f-4589-97dc-725e0f6c34e4}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_Pump
+VAR_INPUT
+	
+END_VAR
+VAR
+	//request
+	modeAuto	:	BOOL	:= TRUE	;//System in automatic
+	bRun_Auto	:	BOOL	;
+	bRun_Man	:	BOOL	;
+
+	nRPM_Auto	:	INT		;//Pump RPM 
+	nRPM_Man	:	INT		;//Pump RPM 
+	//feedback
+	nRPM_fdbk	:	INT	;	
+	rtManual: R_TRIG;
+END_VAR
+VAR_OUTPUT
+	bRun		: 	BOOL;
+	nRPM		:	INT		;//Pump RPM 
+END_VAR
 VAR_IN_OUT
 	ST_Pump	:	st_Pump	;
 END_VAR
-VAR_INPUT
-END_VAR
-VAR_OUTPUT
-END_VAR
-VAR
-END_VAR
+
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[]]></ST>
+      <ST><![CDATA[IF modeAuto THEN;
+	bRun:=bRun_Auto;
+ELSE;
+	bRun:=bRun_Man;
+END_IF
+
+rtManual(CLK:=NOT modeAuto);
+IF rtManual.Q THEN;
+	bRun:=bRun_Man:=bRun_Auto;
+END_IF
+]]></ST>
     </Implementation>
     <Method Name="m_Auto" Id="{80bcb1da-caaf-4610-b5db-3ec5b0ee5d69}">
       <Declaration><![CDATA[METHOD m_Auto : BOOL
@@ -21,9 +45,9 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[ST_Pump.bAuto:=TRUE;
-ST_Pump.bRun:=TRUE;
+        <ST><![CDATA[//ST_Pump.bRun_Auto:=TRUE;
 m_Auto:=TRUE;
+bRun_Auto:=TRUE;
 //need to be set up an set point so the pump could keep the needed value in automatic mode]]></ST>
       </Implementation>
     </Method>
@@ -33,8 +57,7 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[ST_Pump.bAuto:=FALSE;
-ST_Pump.bRun:=TRUE;
+        <ST><![CDATA[bRun_Auto:=TRUE;
 m_Run:=TRUE;]]></ST>
       </Implementation>
     </Method>
@@ -44,26 +67,31 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[ST_Pump.bAuto:=FALSE;
-ST_Pump.bRun:=FALSE;
+        <ST><![CDATA[bRun_Auto:=FALSE;
 m_Stop:=TRUE;]]></ST>
       </Implementation>
     </Method>
     <LineIds Name="FB_Pump">
       <LineId Id="9" Count="0" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="44" Count="1" />
+      <LineId Id="43" Count="0" />
+      <LineId Id="71" Count="0" />
+      <LineId Id="70" Count="0" />
+      <LineId Id="72" Count="0" />
+      <LineId Id="74" Count="1" />
+      <LineId Id="46" Count="0" />
     </LineIds>
     <LineIds Name="FB_Pump.m_Auto">
-      <LineId Id="5" Count="0" />
-      <LineId Id="9" Count="1" />
+      <LineId Id="18" Count="1" />
+      <LineId Id="23" Count="0" />
       <LineId Id="14" Count="0" />
     </LineIds>
     <LineIds Name="FB_Pump.m_Run">
-      <LineId Id="9" Count="0" />
       <LineId Id="5" Count="0" />
       <LineId Id="10" Count="0" />
     </LineIds>
     <LineIds Name="FB_Pump.m_Stop">
-      <LineId Id="9" Count="0" />
       <LineId Id="5" Count="0" />
       <LineId Id="10" Count="0" />
     </LineIds>

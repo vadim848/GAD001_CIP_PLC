@@ -520,7 +520,7 @@ fbPis.m_SetByRecipe(stPis:=stPis_FillWaterDrain, req:=E_Piston_Recipe_State.Rele
     <Action Name="_aConn_Tri_Drain_active" Id="{21e23f89-c54d-4bdb-9092-280d6a536ad3}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
-IF fbTriBlenderTarget.m_CheckStatus(eReqStatus:=E_Line_Target.eClose) THEN;
+IF fbTriBlenderTarget.m_CheckStatus(eReqStatus:=E_Line_Target.eDrain) THEN;
 	bStepDone:=TRUE;
 END_IF]]></ST>
       </Implementation>
@@ -540,7 +540,7 @@ END_IF]]></ST>
     </Action>
     <Action Name="_aConn_Tri_Drain_entry" Id="{71c4c56c-665b-4d6c-b541-623bab0a3566}">
       <Implementation>
-        <ST><![CDATA[fbTriBlenderTarget.m_Run(eReqProc:=E_Line_Target.eClose);]]></ST>
+        <ST><![CDATA[fbTriBlenderTarget.m_Run(eReqProc:=E_Line_Target.eDrain);]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -881,7 +881,7 @@ bDone:=TRUE;]]></ST>
     <Action Name="_aDrain_Tri_ToDrain_active" Id="{16ba7324-771a-4c87-9ee6-6423d58e799c}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
-IF fbTriBlenderTarget.m_CheckStatus(eReqStatus:=E_Line_Target.eClose) THEN;
+IF fbTriBlenderTarget.m_CheckStatus(eReqStatus:=E_Line_Target.eDrain) THEN;
 	bTON_Active:=TRUE;
 END_IF
 IF Call_TON.Q THEN
@@ -904,7 +904,7 @@ END_IF]]></ST>
     </Action>
     <Action Name="_aDrain_Tri_ToDrain_entry" Id="{a561a662-bd87-41c2-aea4-a64ee58dffa4}">
       <Implementation>
-        <ST><![CDATA[fbTriBlenderTarget.m_Run(eReqProc:=E_Line_Target.eClose);
+        <ST><![CDATA[fbTriBlenderTarget.m_Run(eReqProc:=E_Line_Target.eDrain);
 bTON_Active:=FALSE;]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -1194,7 +1194,7 @@ bTON_Active:=FALSE;]]></ST>
     <Action Name="_aLineTarget_Drain_1_active" Id="{adb6446b-4400-4bcf-94cf-2e22730c7adb}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
-IF fbLineTarget.m_CheckStatus(eReqStatus:=E_Line_Target.eClose) THEN;
+IF fbLineTarget.m_CheckStatus(eReqStatus:=E_Line_Target.eDrain) THEN;
 	bStepDone:=TRUE;
 END_IF]]></ST>
       </Implementation>
@@ -1214,7 +1214,7 @@ END_IF]]></ST>
     </Action>
     <Action Name="_aLineTarget_Drain_1_entry" Id="{cc014450-5112-462e-9c3c-06e7b4fbf4c6}">
       <Implementation>
-        <ST><![CDATA[fbLineTarget.m_Run(eReqProc:=E_Line_Target.eClose);]]></ST>
+        <ST><![CDATA[fbLineTarget.m_Run(eReqProc:=E_Line_Target.eDrain);]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -1233,7 +1233,7 @@ END_IF]]></ST>
     <Action Name="_aLineTarget_Drain_2_active" Id="{8468c3c6-0205-4718-9096-334fe5c7bc14}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
-IF fbLineTarget.m_CheckStatus(eReqStatus:=E_Line_Target.eClose) THEN;
+IF fbLineTarget.m_CheckStatus(eReqStatus:=E_Line_Target.eDrain) THEN;
 	bTON_Active:=TRUE;
 END_IF
 IF Call_TON.Q THEN
@@ -1256,7 +1256,7 @@ END_IF]]></ST>
     </Action>
     <Action Name="_aLineTarget_Drain_2_entry" Id="{8a7d4cca-11e5-44ad-a00f-9c4b506ff64e}">
       <Implementation>
-        <ST><![CDATA[fbLineTarget.m_Run(eReqProc:=E_Line_Target.eClose);
+        <ST><![CDATA[fbLineTarget.m_Run(eReqProc:=E_Line_Target.eDrain);
 bTON_Active:=FALSE;]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -1443,7 +1443,7 @@ bTON_Active:=FALSE;]]></ST>
     </Action>
     <Action Name="_aPumpLine_Auto_1_entry" Id="{6d439a29-2ed4-43e5-8205-9d9203edcca2}">
       <Implementation>
-        <ST><![CDATA[fb_PumpLine.m_Auto();]]></ST>
+        <ST><![CDATA[//fb_PumpLine.m_Auto();]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
