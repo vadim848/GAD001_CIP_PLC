@@ -280,10 +280,10 @@
 			</ArrayInfo>
 		</DataType>
 		<DataType>
-			<Name GUID="{475A5654-F4D8-3AED-C089-36EF4FE00484}" AutoDeleteType="true">TwinSafeOut_PlcIn</Name>
-			<BitSize>40</BitSize>
+			<Name GUID="{43DBAE36-F52B-B81C-07B3-1EA511043F86}" AutoDeleteType="true">TwinSafeOut_PlcIn</Name>
+			<BitSize>48</BitSize>
 			<SubItem>
-				<Name>ES_FB_Err</Name>
+				<Name>FB_Err</Name>
 				<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
 				<BitSize>8</BitSize>
 				<BitOffs>0</BitOffs>
@@ -301,16 +301,22 @@
 				<BitOffs>16</BitOffs>
 			</SubItem>
 			<SubItem>
-				<Name>ES_State</Name>
+				<Name>Other_Err</Name>
 				<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
 				<BitSize>8</BitSize>
 				<BitOffs>24</BitOffs>
 			</SubItem>
 			<SubItem>
-				<Name>InRun</Name>
+				<Name>ES_State</Name>
 				<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
 				<BitSize>8</BitSize>
 				<BitOffs>32</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>InRun</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+				<BitSize>8</BitSize>
+				<BitOffs>40</BitOffs>
 			</SubItem>
 		</DataType>
 		<DataType>
@@ -899,12 +905,12 @@
 			</SubItem>
 		</DataType>
 		<DataType>
-			<Name GUID="{18071995-0000-0000-0000-002000000001}" IecBaseType="true" BitType="true" AutoDeleteType="true" HideSubItems="true">ARRAY [0..0] OF BIT</Name>
-			<BitSize>1</BitSize>
+			<Name GUID="{18071995-0000-0000-0000-002000000006}" IecBaseType="true" AutoDeleteType="true" HideSubItems="true">ARRAY [0..5] OF BIT</Name>
+			<BitSize>6</BitSize>
 			<BaseType GUID="{18071995-0000-0000-0000-000000000010}">BIT</BaseType>
 			<ArrayInfo>
 				<LBound>0</LBound>
-				<Elements>1</Elements>
+				<Elements>6</Elements>
 			</ArrayInfo>
 		</DataType>
 		<DataType>
@@ -953,12 +959,12 @@
 			</ArrayInfo>
 		</DataType>
 		<DataType>
-			<Name GUID="{18071995-0000-0000-0000-002000000006}" IecBaseType="true" AutoDeleteType="true" HideSubItems="true">ARRAY [0..5] OF BIT</Name>
-			<BitSize>6</BitSize>
+			<Name GUID="{18071995-0000-0000-0000-002000000001}" IecBaseType="true" BitType="true" AutoDeleteType="true" HideSubItems="true">ARRAY [0..0] OF BIT</Name>
+			<BitSize>1</BitSize>
 			<BaseType GUID="{18071995-0000-0000-0000-000000000010}">BIT</BaseType>
 			<ArrayInfo>
 				<LBound>0</LBound>
-				<Elements>6</Elements>
+				<Elements>1</Elements>
 			</ArrayInfo>
 		</DataType>
 		<DataType>
@@ -1004,7 +1010,7 @@
 		</System>
 		<Plc>
 			<Project GUID="{AD98C8E8-1161-4C5F-BAB4-CA4317288767}" Name="PLC" PrjFilePath="PLC\PLC.plcproj" TmcFilePath="PLC\PLC.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="PLC\PLC.tmc" TmcHash="{D2F99251-55FD-4EC4-A174-99045E16155B}">
+				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="PLC\PLC.tmc" TmcHash="{1377C049-1705-0126-E347-6A0FB80A0031}">
 					<Name>PLC Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Vars VarGrpType="1">
@@ -1019,7 +1025,7 @@
 						</Var>
 						<Var>
 							<Name>gIO.arSafe[1].TSafeIn</Name>
-							<Type GUID="{475A5654-F4D8-3AED-C089-36EF4FE00484}">TwinSafeOut_PlcIn</Type>
+							<Type GUID="{43DBAE36-F52B-B81C-07B3-1EA511043F86}">TwinSafeOut_PlcIn</Type>
 						</Var>
 						<Var>
 							<Name>gIO.arSafe[1].stSafetyIn</Name>
@@ -1121,7 +1127,7 @@
 							<SyncMan>001000012600010001000000000100010001001026010000</SyncMan>
 							<SyncMan>001100012200010002000000000100010001001122010000</SyncMan>
 							<SyncMan>001210002400010003000000000000000800001224010000</SyncMan>
-							<SyncMan>001d0f002000010004000000000000000900001d20010000</SyncMan>
+							<SyncMan>001d10002000010004000000000000000900001d20010000</SyncMan>
 							<SyncMan>002e00002400000003000000000000000000002e24000000</SyncMan>
 							<SyncMan>002f00002000000004000000000000000000002f20000000</SyncMan>
 							<Fmmu>0000000000000000001200020100000001000000060000000200000000000000</Fmmu>
@@ -1173,8 +1179,17 @@
 								<Entry Name="Standard Out Var 22" Index="#x7000" Sub="#x07">
 									<Type>BIT</Type>
 								</Entry>
+								<Entry Name="Standard Out Var 23" Index="#x7000" Sub="#x08">
+									<Type>BIT</Type>
+								</Entry>
+								<Entry Name="Standard Out Var 24" Index="#x7000" Sub="#x09">
+									<Type>BIT</Type>
+								</Entry>
+								<Entry Name="Standard Out Var 26" Index="#x7000" Sub="#x0a">
+									<Type>BIT</Type>
+								</Entry>
 								<Entry>
-									<Type GUID="{18071995-0000-0000-0000-002000000001}">ARRAY [0..0] OF BIT</Type>
+									<Type GUID="{18071995-0000-0000-0000-002000000006}">ARRAY [0..5] OF BIT</Type>
 								</Entry>
 							</Pdo>
 							<Pdo Name="StandardOutputs" Index="#x17f0" InOut="1" Flags="#x2011" SyncMan="2">
@@ -3276,8 +3291,11 @@ Bit1: Value bigger/equal Limit2]]></Comment>
 				<Link VarA="PlcTask Outputs^gIO.q_EL[1]^q_ch9" VarB="Channel 9^Output"/>
 			</OwnerB>
 			<OwnerB Name="TIID^Device 1 (EtherCAT)^Term 1 (EK1200)^Term 2 (EL1918)">
+				<Link VarA="PlcTask Inputs^gIO.arSafe[1].TSafeIn^COM_Err" VarB="StandardInputs^Standard Out Var 24"/>
 				<Link VarA="PlcTask Inputs^gIO.arSafe[1].TSafeIn^ES_State" VarB="StandardInputs^Standard Out Var 21"/>
+				<Link VarA="PlcTask Inputs^gIO.arSafe[1].TSafeIn^FB_Err" VarB="StandardInputs^Standard Out Var 23"/>
 				<Link VarA="PlcTask Inputs^gIO.arSafe[1].TSafeIn^InRun" VarB="StandardInputs^Standard Out Var 22"/>
+				<Link VarA="PlcTask Inputs^gIO.arSafe[1].TSafeIn^Other_Err" VarB="StandardInputs^Standard Out Var 26"/>
 				<Link VarA="PlcTask Inputs^gIO.arSafe[1].stSafetyIn^ES_PB1_State" VarB="StandardInputs^Standard Out Var 20"/>
 				<Link VarA="PlcTask Inputs^gIO.arSafe[1].stSafetyIn^TankLocked_CIP_T91" VarB="StandardInputs^Standard Out Var 13"/>
 				<Link VarA="PlcTask Inputs^gIO.arSafe[1].stSafetyIn^TankLocked_CIP_T92" VarB="StandardInputs^Standard Out Var 14"/>
