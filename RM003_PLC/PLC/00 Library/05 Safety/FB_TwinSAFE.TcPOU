@@ -3,6 +3,7 @@
   <POU Name="FB_TwinSAFE" Id="{4ab5defe-eed2-490f-bb56-b846d8da8e90}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_TwinSAFE
 VAR_INPUT
+	ES_Restart: BOOL;
 END_VAR
 VAR_OUTPUT
 	bStateSafe: BOOL;
@@ -19,7 +20,10 @@ VAR_IN_OUT
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[ton_TSafe_OK(IN:=stTS.TSafeIn.InRun AND NOT stTS.TSafeIn.COM_Err, PT:=T#1S );
+      <ST><![CDATA[stTS.stSafetyOut.bEstopRestart:=ES_Restart;
+stTS.TSafeOut.Restart:=ES_Restart;
+
+ton_TSafe_OK(IN:=stTS.TSafeIn.InRun AND NOT stTS.TSafeIn.COM_Err, PT:=T#1S );
 IF ton_TSafe_OK.Q THEN;
 	bStateSafe:=TRUE;
 ELSE;
@@ -106,6 +110,8 @@ Buffer_Act_History[1].sErrorMessage:=CONCAT(Buffer_Act_History[1].sErrorMessage,
       </Implementation>
     </Method>
     <LineIds Name="FB_TwinSAFE">
+      <LineId Id="65" Count="1" />
+      <LineId Id="64" Count="0" />
       <LineId Id="19" Count="25" />
       <LineId Id="9" Count="0" />
     </LineIds>
