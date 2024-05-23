@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EtherCATInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="EtherCATInfo.xsd" Version="1.3">
+	<Vendor>
+		<Id>249</Id>
+		<Name>Control Techniques</Name>
+		<ImageData16x14>424DCA000000000000005A00000028000000100000000E000000010004000000000070000000130B0000130B00000900000009000000FFFFFF00006600003399330099CC99000099330099CC6600CCFFCC0066996600CCCCCC0000000622276000000000411111146000006111111111130000411111111111600355300000000000041113000000000004111400000000000222227000000000041150000311111002111300002111400022000022222200000533333555580000081111111130000000032442300000</ImageData16x14>
+	</Vendor>
+	<Descriptions>
+		<Groups>
+			<Group>
+				<Type>Drives</Type>
+				<Name LcId="1033">Drives</Name>
+				<ImageData16x14>424DCA000000000000005A00000028000000100000000E000000010004000000000070000000120B0000120B00000900000009000000FFFFFF009999990066666600CCCCCC00333333000066330033996600336666000033330000003121300000000031112211130000003761221122300000156722112221000025672211213300004565221130000000856522110000000085572211000000004421221100000000212221110000000024444311000000002230433100000000411123310000000033333333000000</ImageData16x14>
+			</Group>
+		</Groups>
+		<Devices>
+			<Device Physics="YY">
+				<!-- Commander OpenLoop operating mode. -->
+				<!-- IMPORTANT!!! If ESI file changes are needed when creating a new firmware version, PRESERVE BACKWARDS COMPATIBILITY! -->
+				<Type ProductCode="#x01010903" RevisionNo="#x02000008" CheckRevisionNo="HW_EQ_LW_EQ_OR_G">Commander C300 Open Loop</Type>
+				<Name LcId="1033">Commander C300 Open Loop</Name>
+				<Info>
+					<StateMachine>
+						<Timeout>
+							<PreopTimeout>3000</PreopTimeout>
+							<SafeopOpTimeout>10000</SafeopOpTimeout>
+							<BackToInitTimeout>5000</BackToInitTimeout>
+							<BackToSafeopTimeout>200</BackToSafeopTimeout>
+						</Timeout>
+					</StateMachine>
+					<IdentificationAdo>#x12</IdentificationAdo>
+					<IdentificationReg134>true</IdentificationReg134>
+				</Info>
+				<GroupType>Drives</GroupType>
+				<Profile>
+					<DictionaryFile>UnidriveM\Mxxx OpenLoop Dictionary.xml</DictionaryFile>
+				</Profile>
+				<Fmmu Sm="2">Outputs</Fmmu>
+				<Fmmu Sm="3">Inputs</Fmmu>
+				<Fmmu Sm="4">Outputs</Fmmu>
+				<Fmmu Sm="5">Inputs</Fmmu>
+				<Fmmu>MBoxState</Fmmu>
+				<Sm DefaultSize="256" StartAddress="#x1000" ControlByte="#x26" Enable="1">MBoxOut</Sm>
+				<Sm DefaultSize="256" StartAddress="#x1100" ControlByte="#x22" Enable="1">MBoxIn</Sm>
+				<Sm StartAddress="#x1200" ControlByte="#x64" Enable="1">Outputs</Sm>
+				<Sm StartAddress="#x1380" ControlByte="#x20" Enable="1">Inputs</Sm>
+				<Sm StartAddress="#x1500" ControlByte="#x24" Enable="1">Outputs</Sm>
+				<Sm StartAddress="#x1900" ControlByte="#x20" Enable="1">Inputs</Sm>
+				<!-- PDO Mappings -->
+				<RxPdo>
+					<Index>#x1600</Index>
+					<Name>Receive PDO Mapping 1</Name>
+					<Entry>
+						<Index>#x6040</Index>
+						<SubIndex>0</SubIndex>
+						<BitLen>16</BitLen>
+						<Name>Control word</Name>
+						<DataType>UINT</DataType>
+					</Entry>
+				</RxPdo>
+				<RxPdo>
+					<Index>#x1601</Index>
+					<Name>Receive PDO Mapping 2</Name>
+					<Entry>
+						<Index>#x6040</Index>
+						<SubIndex>0</SubIndex>
+						<BitLen>16</BitLen>
+						<Name>Control word</Name>
+						<DataType>UINT</DataType>
+					</Entry>
+					<Entry>
+						<Index>#x6060</Index>
+						<SubIndex>0</SubIndex>
+						<BitLen>8</BitLen>
+						<Name>Modes of operation</Name>
+						<DataType>SINT</DataType>
+					</Entry>
+				</RxPdo>
+				<RxPdo Sm="2">
+					<Index>#x1605</Index>
+					<Name>Receive PDO Mapping 6</Name>
+					<Entry>
+						<Index>#x6040</Index>
+						<SubIndex>0</SubIndex>
+						<BitLen>16</BitLen>
+						<Name>Control word</Name>
+						<DataType>UINT</DataType>
+					</Entry>
+					<Entry>
+						<Index>#x6042</Index>
+						<SubIndex>0</SubIndex>
+						<BitLen>16</BitLen>
+						<Name>vl target velocity</Name>
+						<DataType>INT</DataType>
+					</Entry>
+				</RxPdo>
+				<TxPdo>
+					<Index>#x1A00</Index>
+					<Name>Transmit PDO Mapping 1</Name>
+					<Entry>
+						<Index>#x6041</Index>
+						<SubIndex>0</SubIndex>
+						<BitLen>16</BitLen>
+						<Name>Status word</Name>
+						<DataType>UINT</DataType>
+					</Entry>
+				</TxPdo>
+				<TxPdo>
+					<Index>#x1A01</Index>
+					<Name>Transmit PDO Mapping 2</Name>
+					<Entry>
+						<Index>#x6041</Index>
+						<SubIndex>0</SubIndex>
+						<BitLen>16</BitLen>
+						<Name>Status word</Name>
+						<DataType>UINT</DataType>
+					</Entry>
+					<Entry>
+						<Index>#x6061</Index>
+						<SubIndex>0</SubIndex>
+						<BitLen>8</BitLen>
+						<Name>Modes of operation display</Name>
+						<DataType>SINT</DataType>
+					</Entry>
+				</TxPdo>
+				<TxPdo Sm="3">
+					<Index>#x1A05</Index>
+					<Name>Transmit PDO Mapping 6</Name>
+					<Entry>
+						<Index>#x6041</Index>
+						<SubIndex>0</SubIndex>
+						<BitLen>16</BitLen>
+						<Name>Status word</Name>
+						<DataType>UINT</DataType>
+					</Entry>
+					<Entry>
+						<Index>#x6044</Index>
+						<SubIndex>0</SubIndex>
+						<BitLen>16</BitLen>
+						<Name>vl velocity actual value</Name>
+						<DataType>INT</DataType>
+					</Entry>
+				</TxPdo>
+				<Mailbox DataLinkLayer="1">
+					<EoE IP="1"></EoE>
+					<CoE SdoInfo="1" PdoAssign="1" PdoUpload="0" PdoConfig="1" CompleteAccess="1"></CoE>
+					<FoE></FoE>
+				</Mailbox>
+				<Eeprom>
+					<ByteSize>3584</ByteSize>
+					<ConfigData>090404440A000000000000000000</ConfigData>
+					<BootStrap>0010000100110001</BootStrap>
+				</Eeprom>
+				<ImageFile16x14>UnidriveM\Mxxx.bmp</ImageFile16x14>
+			</Device>
+			<Device Physics="YY">
+				<!-- Commander RFC-A operating mode. -->
+				<!-- IMPORTANT!!! If ESI file changes are needed when creating a new firmware version, PRESERVE BACKWARDS COMPATIBILITY! -->
+				<Type ProductCode="#x01020903" RevisionNo="#x02000008" CheckRevisionNo="HW_EQ_LW_EQ_OR_G">Commander C300 RFC-A</Type>
+				<Name LcId="1033">Commander C300 RFC-A</Name>
+				<Info>
+					<StateMachine>
+						<Timeout>
+							<PreopTimeout>3000</PreopTimeout>
+							<SafeopOpTimeout>10000</SafeopOpTimeout>
+							<BackToInitTimeout>5000</BackToInitTimeout>
+							<BackToSafeopTimeout>200</BackToSafeopTimeout>
+						</Timeout>
+					</StateMachine>
+					<IdentificationAdo>#x12</IdentificationAdo>
+					<IdentificationReg134>true</IdentificationReg134>
+				</Info>
+				<GroupType>Drives</GroupType>
+				<Profile>
+					<DictionaryFile>UnidriveM\Mxxx RFC-A Dictionary.xml</DictionaryFile>
+				</Profile>
+				<Fmmu Sm="2">Outputs</Fmmu>
+				<Fmmu Sm="3">Inputs</Fmmu>
+				<Fmmu Sm="4">Outputs</Fmmu>
+				<Fmmu Sm="5">Inputs</Fmmu>
+				<Fmmu>MBoxState</Fmmu>
+				<Sm DefaultSize="256" StartAddress="#x1000" ControlByte="#x26" Enable="1">MBoxOut</Sm>
+				<Sm DefaultSize="256" StartAddress="#x1100" ControlByte="#x22" Enable="1">MBoxIn</Sm>
+				<Sm StartAddress="#x1200" ControlByte="#x64" Enable="1">Outputs</Sm>
+				<Sm StartAddress="#x1380" ControlByte="#x20" Enable="1">Inputs</Sm>
+				<Sm StartAddress="#x1500" ControlByte="#x24" Enable="1">Outputs</Sm>
+				<Sm StartAddress="#x1900" ControlByte="#x20" Enable="1">Inputs</Sm>
+				<!-- PDO Mappings -->
+				<RxPdo>
+					<Index>#x1600</Index>
+					<Name>Receive PDO Mapping 1</Name>
+					<Entry>
+						<Index>#x6040</Index>
+						<SubIndex>0</SubIndex>
+						<BitLen>16</BitLen>
+						<Name>Control word</Name>
+						<DataType>UINT</DataType>
+					</Entry>
+				</RxPdo>
+				<RxPdo>
+					<Index>#x1601</Index>
+					<Name>Receive PDO Mapping 2</Name>
+					<Entry>
+						<Index>#x6040</Index>
+						<SubIndex>0</SubIndex>
+						<BitLen>16</BitLen>
+						<Name>Control word</Name>
+						<DataType>UINT</DataType>
+					</Entry>
+					<Entry>
+						<Index>#x6060</Index>
+						<SubIndex>0</SubIndex>
+						<BitLen>8</BitLen>
+						<Name>Modes of operation</Name>
+						<DataType>SINT</DataType>
+					</Entry>
+				</RxPdo>
+				<RxPdo Sm="2">
+					<Index>#x1605</Index>
+					<Name>Receive PDO Mapping 6</Name>
+					<Entry>
+						<Index>#x6040</Index>
+						<SubIndex>0</SubIndex>
+						<BitLen>16</BitLen>
+						<Name>Control word</Name>
+						<DataType>UINT</DataType>
+					</Entry>
+					<Entry>
+						<Index>#x6042</Index>
+						<SubIndex>0</SubIndex>
+						<BitLen>16</BitLen>
+						<Name>vl target velocity</Name>
+						<DataType>INT</DataType>
+					</Entry>
+				</RxPdo>
+				<TxPdo>
+					<Index>#x1A00</Index>
+					<Name>Transmit PDO Mapping 1</Name>
+					<Entry>
+						<Index>#x6041</Index>
+						<SubIndex>0</SubIndex>
+						<BitLen>16</BitLen>
+						<Name>Status word</Name>
+						<DataType>UINT</DataType>
+					</Entry>
+				</TxPdo>
+				<TxPdo>
+					<Index>#x1A01</Index>
+					<Name>Transmit PDO Mapping 2</Name>
+					<Entry>
+						<Index>#x6041</Index>
+						<SubIndex>0</SubIndex>
+						<BitLen>16</BitLen>
+						<Name>Status word</Name>
+						<DataType>UINT</DataType>
+					</Entry>
+					<Entry>
+						<Index>#x6061</Index>
+						<SubIndex>0</SubIndex>
+						<BitLen>8</BitLen>
+						<Name>Modes of operation display</Name>
+						<DataType>SINT</DataType>
+					</Entry>
+				</TxPdo>
+				<TxPdo Sm="3">
+					<Index>#x1A05</Index>
+					<Name>Transmit PDO Mapping 6</Name>
+					<Entry>
+						<Index>#x6041</Index>
+						<SubIndex>0</SubIndex>
+						<BitLen>16</BitLen>
+						<Name>Status word</Name>
+						<DataType>UINT</DataType>
+					</Entry>
+					<Entry>
+						<Index>#x6044</Index>
+						<SubIndex>0</SubIndex>
+						<BitLen>16</BitLen>
+						<Name>vl velocity actual value</Name>
+						<DataType>INT</DataType>
+					</Entry>
+				</TxPdo>
+				<Mailbox DataLinkLayer="1">
+					<EoE IP="1"></EoE>
+					<CoE SdoInfo="1" PdoAssign="1" PdoUpload="0" PdoConfig="1" CompleteAccess="1"></CoE>
+					<FoE></FoE>
+				</Mailbox>
+				<Eeprom>
+					<ByteSize>3584</ByteSize>
+					<ConfigData>090404440A000000000000000000</ConfigData>
+					<BootStrap>0010000100110001</BootStrap>
+				</Eeprom>
+				<ImageFile16x14>UnidriveM\Mxxx.bmp</ImageFile16x14>
+			</Device>
+		</Devices>
+	</Descriptions>
+</EtherCATInfo>
