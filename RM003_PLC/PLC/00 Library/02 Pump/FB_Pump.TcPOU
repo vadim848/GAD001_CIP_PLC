@@ -3,9 +3,13 @@
   <POU Name="FB_Pump" Id="{85164826-ad0f-4589-97dc-725e0f6c34e4}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_Pump
 VAR_INPUT
-	
+	status_word: WORD;
 END_VAR
 VAR
+	ControlWord: ControlWordStruct;
+	StatusWord: StatusWordStruct;
+
+
 	//request
 	modeAuto	:	BOOL	:= TRUE	;//System in automatic
 	bRun_Auto	:	BOOL	;
@@ -20,6 +24,8 @@ END_VAR
 VAR_OUTPUT
 	bRun		: 	BOOL;
 	nRPM		:	INT		;//Pump RPM 
+	
+	control_word: WORD;
 END_VAR
 VAR_IN_OUT
 	ST_Pump	:	st_Pump	;
@@ -37,7 +43,9 @@ rtManual(CLK:=NOT modeAuto);
 IF rtManual.Q THEN;
 	bRun:=bRun_Man:=bRun_Auto;
 END_IF
-]]></ST>
+
+control_word:=m_Map_ControlWord(cwStruct:=ControlWord);
+StatusWord:=m_Map_StatusWord(wordInput:=status_word);]]></ST>
     </Implementation>
     <Method Name="m_Auto" Id="{80bcb1da-caaf-4610-b5db-3ec5b0ee5d69}">
       <Declaration><![CDATA[METHOD m_Auto : BOOL
@@ -49,6 +57,65 @@ END_VAR
 m_Auto:=TRUE;
 bRun_Auto:=TRUE;
 //need to be set up an set point so the pump could keep the needed value in automatic mode]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_Map_ControlWord" Id="{de707bea-2c05-4e8e-8763-cf6ec1f146fa}">
+      <Declaration><![CDATA[METHOD m_Map_ControlWord : WORD
+VAR_INPUT
+	cwStruct : ControlWordStruct;
+END_VAR
+VAR
+    tempWord : WORD;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[
+
+// Map each bit from the structure to the corresponding bit in the control word
+tempWord := 0;
+IF cwStruct.SwitchOn THEN
+    tempWord := tempWord OR 1; // Bit 0
+END_IF
+IF cwStruct.EnableVoltage THEN
+    tempWord := tempWord OR 2; // Bit 1
+END_IF
+IF cwStruct.QuickStop THEN
+    tempWord := tempWord OR 4; // Bit 2
+END_IF
+IF cwStruct.EnableOperation THEN
+    tempWord := tempWord OR 8; // Bit 3
+END_IF
+// Reserved bits (4-7) are not set
+IF cwStruct.FaultReset THEN
+    tempWord := tempWord OR 256; // Bit 8
+END_IF
+// Reserved bits (9-15) are not set
+
+m_Map_ControlWord := tempWord;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_Map_StatusWord" Id="{5d50e45b-c861-42d8-b099-cb1dcb3c3141}">
+      <Declaration><![CDATA[METHOD m_Map_StatusWord : StatusWordStruct
+VAR_INPUT
+	wordInput : WORD;
+END_VAR
+VAR
+    swStruct : StatusWordStruct;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[
+
+// Map each bit from the status word to the corresponding field in the structure
+swStruct.ReadyToSwitchOn    := (wordInput AND 1) <> 0;         // Bit 0
+swStruct.SwitchedOn         := (wordInput AND 2) <> 0;         // Bit 1
+swStruct.OperationEnabled   := (wordInput AND 4) <> 0;         // Bit 2
+swStruct.Fault              := (wordInput AND 8) <> 0;         // Bit 3
+swStruct.VoltageEnabled     := (wordInput AND 16) <> 0;        // Bit 4
+swStruct.QuickStop          := (wordInput AND 32) <> 0;        // Bit 5
+swStruct.SwitchOnDisabled   := (wordInput AND 64) <> 0;        // Bit 6
+swStruct.Warning            := (wordInput AND 128) <> 0;       // Bit 7
+swStruct.Remote             := (wordInput AND 256) <> 0;       // Bit 8
+// Reserved bits (9-15) are not set, assuming FALSE
+m_Map_StatusWord := swStruct;]]></ST>
       </Implementation>
     </Method>
     <Method Name="m_Run" Id="{c021bce4-07f3-44e5-a920-e4b2f00640f2}">
@@ -80,12 +147,22 @@ m_Stop:=TRUE;]]></ST>
       <LineId Id="70" Count="0" />
       <LineId Id="72" Count="0" />
       <LineId Id="74" Count="1" />
+      <LineId Id="107" Count="0" />
       <LineId Id="46" Count="0" />
+      <LineId Id="109" Count="0" />
     </LineIds>
     <LineIds Name="FB_Pump.m_Auto">
       <LineId Id="18" Count="1" />
       <LineId Id="23" Count="0" />
       <LineId Id="14" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Pump.m_Map_ControlWord">
+      <LineId Id="9" Count="21" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Pump.m_Map_StatusWord">
+      <LineId Id="9" Count="12" />
+      <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_Pump.m_Run">
       <LineId Id="5" Count="0" />
