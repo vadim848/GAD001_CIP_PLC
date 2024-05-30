@@ -2,16 +2,28 @@
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="FB_TankLevel" Id="{b2733916-5f6c-401f-ba03-73f4ab298e9c}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_TankLevel
+VAR_INPUT
+	senHL: BOOL;
+	senLL: BOOL;
+	TankLevel: REAL;
+	TankCapacity: REAL;
+
+END_VAR
+
 VAR_IN_OUT
 	stTank_Level	: 	ST_Tank_Level	;
 	stAnalogSignal	:	ST_AnalogSignal	;
 END_VAR
-VAR_INPUT
-END_VAR
+
 VAR_OUTPUT
 END_VAR
 VAR
 	Call_AnalogSignal 	:	FB_AnalogSignal	;
+	fbScaleCapacityToPercentage: FB_ScaleFactor;
+	
+	rPercentageLevel: REAL;
+
+
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -27,7 +39,17 @@ END_IF
 
 Call_AnalogSignal(AnalogSignal:=stAnalogSignal );
 
-stTank_Level.rOut_LvlAnalog:=stAnalogSignal.rOut_Converted;]]></ST>
+stTank_Level.rOut_LvlAnalog:=stAnalogSignal.rOut_Converted;
+
+fbScaleCapacityToPercentage(
+	rVal:= TankLevel, 
+	rInValHigh:= TankCapacity, 
+	rInValLow:= 0, 
+	rOutValHigh:= 100, 
+	rOutValLow:= 0, 
+	rValOut=> rPercentageLevel, 
+	diValOut=> , 
+	iValOut=> );]]></ST>
     </Implementation>
     <LineIds Name="FB_TankLevel">
       <LineId Id="25" Count="7" />
@@ -36,6 +58,9 @@ stTank_Level.rOut_LvlAnalog:=stAnalogSignal.rOut_Converted;]]></ST>
       <LineId Id="55" Count="0" />
       <LineId Id="58" Count="0" />
       <LineId Id="57" Count="0" />
+      <LineId Id="88" Count="0" />
+      <LineId Id="90" Count="7" />
+      <LineId Id="89" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>
