@@ -20,6 +20,9 @@ VAR
 	//feedback
 	nRPM_fdbk	:	INT	;	
 	rtManual: R_TRIG;
+	ton_Drive_init: TON;
+	state_init: (OFF,stage1,stage2,stage3,stage4, Ready);
+
 END_VAR
 VAR_OUTPUT
 	bRun		: 	BOOL;
@@ -33,7 +36,8 @@ END_VAR
 
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[IF modeAuto THEN;
+      <ST><![CDATA[m_Nidec_Init();
+IF modeAuto THEN;
 	bRun:=bRun_Auto;
 ELSE;
 	bRun:=bRun_Man;
@@ -118,6 +122,79 @@ swStruct.Remote             := (wordInput AND 256) <> 0;       // Bit 8
 m_Map_StatusWord := swStruct;]]></ST>
       </Implementation>
     </Method>
+    <Method Name="m_Nidec_Init" Id="{8437beaa-fdb9-4bb5-970a-a6fc0677a284}">
+      <Declaration><![CDATA[METHOD m_Nidec_Init : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF  NOT StatusWord.VoltageEnabled OR StatusWord.Fault THEN;
+	ControlWord.SwitchOn:=FALSE;
+	ControlWord.EnableVoltage:=FALSE;
+	ControlWord.QuickStop:=FALSE;
+	ControlWord.EnableOperation:=FALSE;
+	ton_Drive_init(IN:=FALSE);
+	state_init:=OFF;
+	RETURN;
+END_IF
+
+
+CASE state_init OF
+	OFF:; 
+		IF TRUE
+		AND StatusWord.VoltageEnabled
+		AND StatusWord.QuickStop
+		AND StatusWord.SwitchOnDisabled
+		THEN;
+			ton_Drive_init(IN:=TRUE,PT:=T#2S);
+		ELSE;
+			ton_Drive_init(IN:=FALSE);RETURN;
+		END_IF
+		
+		IF ton_Drive_init.Q THEN;
+			ControlWord.EnableVoltage:=TRUE;
+			ControlWord.QuickStop:=TRUE;	
+			state_init:=stage1;
+			ton_Drive_init(IN:=FALSE);
+		END_IF	
+		
+	stage1:;
+		IF TRUE
+		AND StatusWord.VoltageEnabled
+		AND StatusWord.QuickStop
+		AND NOT StatusWord.SwitchOnDisabled
+		THEN;
+			ton_Drive_init(IN:=TRUE,PT:=T#0.5S);
+		ELSE;
+			ton_Drive_init(IN:=FALSE);RETURN;
+		END_IF
+		
+		IF ton_Drive_init.Q THEN;
+			ControlWord.SwitchOn:=TRUE;
+			state_init:=stage2;
+			ton_Drive_init(IN:=FALSE);
+		END_IF	
+		
+	stage2:;
+		IF TRUE
+		AND StatusWord.SwitchedOn
+		AND StatusWord.VoltageEnabled
+		AND StatusWord.QuickStop
+		AND NOT StatusWord.SwitchOnDisabled
+		THEN;
+			ton_Drive_init(IN:=TRUE,PT:=T#0.5S);
+		ELSE;
+			ton_Drive_init(IN:=FALSE);RETURN;
+		END_IF
+		
+		IF ton_Drive_init.Q THEN;
+			state_init:=Ready;
+			ton_Drive_init(IN:=FALSE);
+		END_IF		
+	
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="m_Run" Id="{c021bce4-07f3-44e5-a920-e4b2f00640f2}">
       <Declaration><![CDATA[METHOD m_Run : BOOL
 VAR_INPUT
@@ -139,6 +216,7 @@ m_Stop:=TRUE;]]></ST>
       </Implementation>
     </Method>
     <LineIds Name="FB_Pump">
+      <LineId Id="143" Count="0" />
       <LineId Id="9" Count="0" />
       <LineId Id="42" Count="0" />
       <LineId Id="44" Count="1" />
@@ -163,6 +241,36 @@ m_Stop:=TRUE;]]></ST>
     <LineIds Name="FB_Pump.m_Map_StatusWord">
       <LineId Id="9" Count="12" />
       <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Pump.m_Nidec_Init">
+      <LineId Id="5" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="15" Count="2" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="53" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="37" Count="12" />
+      <LineId Id="51" Count="0" />
+      <LineId Id="54" Count="0" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="50" Count="0" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="56" Count="11" />
+      <LineId Id="69" Count="1" />
+      <LineId Id="55" Count="0" />
+      <LineId Id="71" Count="0" />
+      <LineId Id="73" Count="1" />
+      <LineId Id="88" Count="1" />
+      <LineId Id="76" Count="8" />
+      <LineId Id="86" Count="1" />
+      <LineId Id="72" Count="0" />
+      <LineId Id="52" Count="0" />
+      <LineId Id="34" Count="0" />
     </LineIds>
     <LineIds Name="FB_Pump.m_Run">
       <LineId Id="5" Count="0" />
