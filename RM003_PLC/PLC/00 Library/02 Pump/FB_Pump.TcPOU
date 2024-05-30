@@ -3,9 +3,14 @@
   <POU Name="FB_Pump" Id="{85164826-ad0f-4589-97dc-725e0f6c34e4}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_Pump
 VAR_INPUT
-	status_word: WORD;
+	Pump_ID: E_Pump_List:=E_Pump_List.eNotSelected;
+
 END_VAR
 VAR
+	stNidec: REFERENCE TO ST_Nidec;
+	status_word: WORD;
+	control_word: WORD;
+
 	ControlWord: ControlWordStruct;
 	StatusWord: StatusWordStruct;
 
@@ -28,7 +33,6 @@ VAR_OUTPUT
 	bRun		: 	BOOL;
 	nRPM		:	INT		;//Pump RPM 
 	
-	control_word: WORD;
 END_VAR
 VAR_IN_OUT
 	ST_Pump	:	st_Pump	;
@@ -36,20 +40,52 @@ END_VAR
 
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[m_Nidec_Init();
+      <ST><![CDATA[stNidec REF= gIO.Nidec[Pump_ID];
+IF __ISVALIDREF(stNidec) THEN;
+	//run
+	status_word:=stNidec.StatusWord;
+	stNidec.ControlWord:=control_word;
+	
+	control_word:=m_Map_ControlWord(cwStruct:=ControlWord);
+	StatusWord:=m_Map_StatusWord(wordInput:=status_word);
+	
+	stNidec.targetVelocity:=nRPM;	
+	nRPM_fdbk:=stNidec.actVelocity;	
+	
+	m_Nidec_Init();
+
+ELSE;
+	RETURN;
+END_IF
+
+
 IF modeAuto THEN;
 	bRun:=bRun_Auto;
+	nRPM:=nRPM_Auto;
 ELSE;
 	bRun:=bRun_Man;
+	nRPM:=nRPM_Man;
 END_IF
 
 rtManual(CLK:=NOT modeAuto);
 IF rtManual.Q THEN;
 	bRun:=bRun_Man:=bRun_Auto;
+	nRPM:=nRPM_Man:=nRPM_Auto;
 END_IF
 
-control_word:=m_Map_ControlWord(cwStruct:=ControlWord);
-StatusWord:=m_Map_StatusWord(wordInput:=status_word);]]></ST>
+IF nRPM>3000 THEN;
+	nRPM:=3000;
+END_IF
+IF state_init=Ready THEN;
+	ControlWord.EnableOperation:=bRun;
+ELSE;
+	bRun:=bRun_Man:=bRun_Auto:=FALSE;
+	ControlWord.EnableOperation:=FALSE;
+END_IF
+
+
+
+]]></ST>
     </Implementation>
     <Method Name="m_Auto" Id="{80bcb1da-caaf-4610-b5db-3ec5b0ee5d69}">
       <Declaration><![CDATA[METHOD m_Auto : BOOL
@@ -216,17 +252,38 @@ m_Stop:=TRUE;]]></ST>
       </Implementation>
     </Method>
     <LineIds Name="FB_Pump">
-      <LineId Id="143" Count="0" />
+      <LineId Id="157" Count="0" />
+      <LineId Id="160" Count="1" />
+      <LineId Id="178" Count="6" />
+      <LineId Id="177" Count="0" />
+      <LineId Id="188" Count="0" />
+      <LineId Id="186" Count="1" />
+      <LineId Id="163" Count="1" />
+      <LineId Id="162" Count="0" />
+      <LineId Id="168" Count="0" />
+      <LineId Id="171" Count="0" />
       <LineId Id="9" Count="0" />
       <LineId Id="42" Count="0" />
+      <LineId Id="146" Count="0" />
       <LineId Id="44" Count="1" />
+      <LineId Id="147" Count="0" />
       <LineId Id="43" Count="0" />
       <LineId Id="71" Count="0" />
       <LineId Id="70" Count="0" />
       <LineId Id="72" Count="0" />
-      <LineId Id="74" Count="1" />
+      <LineId Id="74" Count="0" />
+      <LineId Id="148" Count="0" />
+      <LineId Id="75" Count="0" />
+      <LineId Id="190" Count="0" />
+      <LineId Id="189" Count="0" />
+      <LineId Id="191" Count="3" />
+      <LineId Id="196" Count="0" />
+      <LineId Id="198" Count="0" />
+      <LineId Id="197" Count="0" />
+      <LineId Id="195" Count="0" />
+      <LineId Id="144" Count="0" />
       <LineId Id="107" Count="0" />
-      <LineId Id="46" Count="0" />
+      <LineId Id="145" Count="0" />
       <LineId Id="109" Count="0" />
     </LineIds>
     <LineIds Name="FB_Pump.m_Auto">
