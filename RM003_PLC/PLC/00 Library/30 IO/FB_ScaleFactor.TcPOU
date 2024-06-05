@@ -8,6 +8,7 @@ VAR_INPUT
 	rInValLow: REAL;
 	rOutValHigh: REAL;
 	rOutValLow: REAL;
+	rOutOffset: REAL:=0;
 END_VAR
 
 VAR
@@ -28,7 +29,7 @@ ELSE;
 	a:=0;
 END_IF
 b:=rOutValHigh-(a*rInValHigh);
-rValOut:=a*rVal+b;
+rValOut:=(a*rVal+b)+rOutOffset;
 diValOut:=TRUNC(rValOut);
 iValOut:=DINT_TO_INT(diValOut);]]></ST>
     </Implementation>
