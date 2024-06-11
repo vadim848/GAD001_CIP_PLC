@@ -3,15 +3,99 @@
   <POU Name="FB_AnalogSensor" Id="{4149a809-7c27-49b8-ae2f-6ef38e3fd813}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_AnalogSensor
 VAR_INPUT
+	nSensorID	: 	E_ASense_Name	;
+	nRawSensor	:	INT				;
 END_VAR
 VAR_OUTPUT
 END_VAR
 VAR
+	stASens			:	REFERENCE TO ST_AnalogSensor	;
+	state			: 	E_ASensor_State					;
+	
+	fbScaleFactor	: 	FB_ScaleFactor					;
+	
+	nTicks			:	INT:=0	;
+	nI				:	INT		;
+	
+	bTestTemp		:	BOOL	;
+	
+	nTimeInCycles	:	INT:=1000; //10 se while cycletime is 10 ms
+	nBufferSize_S	:	INT:=10	;//Buffer size in seconds
+	nCycleTime_MS	:	INT:=10;//Cycle time in mili seconds
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[]]></ST>
+      <ST><![CDATA[nTimeInCycles:=TO_INT(nBufferSize_S*1000/nCycleTime_MS);
+act_Get_Reference();
+act_MA();
+act_SetValues();]]></ST>
     </Implementation>
+    <Action Name="act_Get_Reference" Id="{3b9743a6-e63a-4bc1-886c-5921c522c277}">
+      <Implementation>
+        <ST><![CDATA[stASens REF=g_AnalogSensor.stAnalogSensor[nSensorID];
+
+stASens.ID:=TO_STRING(nSensorID);
+
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//stASens.rawVal_Actual:=g_AnalogSensor.arAnalogSensorRawValue[nSensorID];
+stASens.rawVal_Actual:=nRawSensor;
+
+fbScaleFactor(
+	rVal:=stASens.rTempRawVal,//stASens.rawVal_Actual , 
+	rInValHigh:=stASens.rawVal_Max , 
+	rInValLow:=stASens.rawVal_Min , 
+	rOutValHigh:=stASens.outVal_Max , 
+	rOutValLow:=stASens.outVal_Min , 
+	rValOut=>stASens.Value , 
+	diValOut=>, 
+	iValOut=> );]]></ST>
+      </Implementation>
+    </Action>
+    <Action Name="act_MA" Id="{69960e6b-ad08-4ee1-9b6e-f116cc833ecb}">
+      <Implementation>
+        <ST><![CDATA[IF nTicks<nTimeInCycles THEN
+	nTicks:=nTicks+1;
+ELSIF nTicks>nTimeInCycles THEN
+	nTicks:=nTimeInCycles;
+END_IF
+
+//moving ticks
+stASens.nRawSumm:=0;
+FOR nI:=nTimeInCycles TO 1 BY -1 DO
+	stASens.arrRawVal_Actual[nI]:=stASens.arrRawVal_Actual[nI-1];
+	//calculating summ
+	stASens.nRawSumm:=stASens.nRawSumm+stASens.arrRawVal_Actual[nI];
+END_FOR
+
+stASens.arrRawVal_Actual[0]:=stASens.rawVal_Actual;
+stASens.nRawSumm:=stASens.nRawSumm+stASens.arrRawVal_Actual[0];
+
+stASens.rTempRawVal:=TO_REAL(stASens.nRawSumm/nTicks);]]></ST>
+      </Implementation>
+    </Action>
+    <Action Name="act_SetValues" Id="{50799016-694b-4fa3-95e7-b80421febf4b}">
+      <Implementation>
+        <ST><![CDATA[meth_SetRawValue(bSetValue:=stASens.bCopyRawTo_Max , nValToSet:=stASens.rawVal_Max , nRawValue:=stASens.rawVal_Actual );
+meth_SetRawValue(bSetValue:=stASens.bCopyRawTo_Min , nValToSet:=stASens.rawVal_Min , nRawValue:=stASens.rawVal_Actual );]]></ST>
+      </Implementation>
+    </Action>
+    <Method Name="meth_SetRawValue" Id="{9a7a01d2-f381-460b-bac2-ead7a5008be7}">
+      <Declaration><![CDATA[METHOD INTERNAL meth_SetRawValue : BOOL
+VAR_IN_OUT
+	bSetValue	:	BOOL	;
+	nValToSet	:	INT	;
+END_VAR
+VAR_INPUT
+	nRawValue	:	INT		;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF bSetValue THEN
+	nValToSet:=nRawValue;
+	bSetValue:=FALSE;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="set_Data" Id="{ce08728b-f0bd-4a94-ae65-6b0253b241c9}">
       <Declaration><![CDATA[METHOD set_Data : ST_AnalogSensor
 VAR_INPUT
@@ -23,6 +107,51 @@ END_VAR
       </Implementation>
     </Method>
     <LineIds Name="FB_AnalogSensor">
+      <LineId Id="42" Count="0" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="21" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_AnalogSensor.act_Get_Reference">
+      <LineId Id="1" Count="0" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="23" Count="6" />
+      <LineId Id="18" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_AnalogSensor.act_MA">
+      <LineId Id="2" Count="0" />
+      <LineId Id="1" Count="0" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="3" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="4" Count="0" />
+      <LineId Id="6" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="15" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_AnalogSensor.act_SetValues">
+      <LineId Id="1" Count="1" />
+    </LineIds>
+    <LineIds Name="FB_AnalogSensor.meth_SetRawValue">
+      <LineId Id="5" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="14" Count="0" />
       <LineId Id="9" Count="0" />
     </LineIds>
     <LineIds Name="FB_AnalogSensor.set_Data">
