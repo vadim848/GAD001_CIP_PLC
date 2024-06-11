@@ -280,10 +280,10 @@
 			</ArrayInfo>
 		</DataType>
 		<DataType>
-			<Name GUID="{EB524F7D-DB1D-44E1-071C-65BA24A19D69}" AutoDeleteType="true">TwinSAFE_In</Name>
-			<BitSize>40</BitSize>
+			<Name GUID="{43DBAE36-F52B-B81C-07B3-1EA511043F86}" AutoDeleteType="true">TwinSafeOut_PlcIn</Name>
+			<BitSize>48</BitSize>
 			<SubItem>
-				<Name>ES_FB_Err</Name>
+				<Name>FB_Err</Name>
 				<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
 				<BitSize>8</BitSize>
 				<BitOffs>0</BitOffs>
@@ -301,26 +301,80 @@
 				<BitOffs>16</BitOffs>
 			</SubItem>
 			<SubItem>
-				<Name>ES_State</Name>
+				<Name>Other_Err</Name>
 				<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
 				<BitSize>8</BitSize>
 				<BitOffs>24</BitOffs>
 			</SubItem>
 			<SubItem>
-				<Name>InRun</Name>
+				<Name>ES_State</Name>
 				<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
 				<BitSize>8</BitSize>
 				<BitOffs>32</BitOffs>
 			</SubItem>
+			<SubItem>
+				<Name>InRun</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+				<BitSize>8</BitSize>
+				<BitOffs>40</BitOffs>
+			</SubItem>
 		</DataType>
 		<DataType>
-			<Name GUID="{2BDEE6AB-4463-72C3-50A5-0FE07BBE79E0}" AutoDeleteType="true">ST_SafeIn</Name>
-			<BitSize>8</BitSize>
+			<Name GUID="{8A37FEC1-4584-6318-CCB3-6C1CAA64F117}" AutoDeleteType="true">ST_SafeOut_PlcIn</Name>
+			<BitSize>72</BitSize>
 			<SubItem>
-				<Name>Error_Ack</Name>
+				<Name>ES_PB1_State</Name>
 				<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
 				<BitSize>8</BitSize>
 				<BitOffs>0</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>TankLocked_CIP_T91</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+				<BitSize>8</BitSize>
+				<BitOffs>8</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>TankLocked_CIP_T92</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+				<BitSize>8</BitSize>
+				<BitOffs>16</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>TankLocked_CIP_T93</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+				<BitSize>8</BitSize>
+				<BitOffs>24</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>TankLocked_CIP_T94</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+				<BitSize>8</BitSize>
+				<BitOffs>32</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>TankLocked_Marinade_T3001</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+				<BitSize>8</BitSize>
+				<BitOffs>40</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>TankLocked_Marinade_T3002</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+				<BitSize>8</BitSize>
+				<BitOffs>48</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>TankLocked_Color_T4001</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+				<BitSize>8</BitSize>
+				<BitOffs>56</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>TankLocked_Color_T4002</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+				<BitSize>8</BitSize>
+				<BitOffs>64</BitOffs>
 			</SubItem>
 		</DataType>
 		<DataType>
@@ -760,7 +814,7 @@
 			</ArrayInfo>
 		</DataType>
 		<DataType>
-			<Name GUID="{C3F243FC-82F5-0571-D687-2A9D163D111D}" AutoDeleteType="true">TwinSAFE_Out</Name>
+			<Name GUID="{AF4A2308-F63C-4493-A7C7-C68A2BFD146B}" AutoDeleteType="true">TwinSafeIn_PlcOut</Name>
 			<BitSize>24</BitSize>
 			<SubItem>
 				<Name>RUN</Name>
@@ -785,7 +839,7 @@
 			</SubItem>
 		</DataType>
 		<DataType>
-			<Name GUID="{E2F3C49B-6E54-21C1-8EB6-D1F8FE648285}" AutoDeleteType="true">ST_SafeOut</Name>
+			<Name GUID="{93DED2F4-D3C9-090A-72FD-FFB5A26A924F}" AutoDeleteType="true">ST_SafeIn_PlcOut</Name>
 			<BitSize>8</BitSize>
 			<SubItem>
 				<Name>bEstopRestart</Name>
@@ -857,6 +911,15 @@
 			<ArrayInfo>
 				<LBound>0</LBound>
 				<Elements>6</Elements>
+			</ArrayInfo>
+		</DataType>
+		<DataType>
+			<Name GUID="{18071995-0000-0000-0000-002000000005}" IecBaseType="true" AutoDeleteType="true" HideSubItems="true">ARRAY [0..4] OF BIT</Name>
+			<BitSize>5</BitSize>
+			<BaseType GUID="{18071995-0000-0000-0000-000000000010}">BIT</BaseType>
+			<ArrayInfo>
+				<LBound>0</LBound>
+				<Elements>5</Elements>
 			</ArrayInfo>
 		</DataType>
 		<DataType>
@@ -947,7 +1010,7 @@
 		</System>
 		<Plc>
 			<Project GUID="{AD98C8E8-1161-4C5F-BAB4-CA4317288767}" Name="PLC" PrjFilePath="PLC\PLC.plcproj" TmcFilePath="PLC\PLC.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="PLC\PLC.tmc" TmcHash="{A8F0F61C-4DCD-6A50-C5B8-869752FB5FC0}">
+				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="PLC\PLC.tmc" TmcHash="{67D88DF1-437C-5805-1832-FEB65EE6E82A}">
 					<Name>PLC Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Vars VarGrpType="1">
@@ -961,12 +1024,102 @@
 							<Type GUID="{4D77766C-E1E9-CFB4-C001-D75FB898231C}">ARRAY [1..2] OF ST_EL3xx8</Type>
 						</Var>
 						<Var>
+							<Name>gIO.Nidec[0].StatusWord</Name>
+							<Comment><![CDATA[ Input from Receive PDO Mapping 6]]></Comment>
+							<Type>WORD</Type>
+						</Var>
+						<Var>
+							<Name>gIO.Nidec[0].actVelocity</Name>
+							<Type>INT</Type>
+						</Var>
+						<Var>
+							<Name>gIO.Nidec[1].StatusWord</Name>
+							<Comment><![CDATA[ Input from Receive PDO Mapping 6]]></Comment>
+							<Type>WORD</Type>
+						</Var>
+						<Var>
+							<Name>gIO.Nidec[1].actVelocity</Name>
+							<Type>INT</Type>
+						</Var>
+						<Var>
+							<Name>gIO.Nidec[2].StatusWord</Name>
+							<Comment><![CDATA[ Input from Receive PDO Mapping 6]]></Comment>
+							<Type>WORD</Type>
+						</Var>
+						<Var>
+							<Name>gIO.Nidec[2].actVelocity</Name>
+							<Type>INT</Type>
+						</Var>
+						<Var>
+							<Name>gIO.Nidec[3].StatusWord</Name>
+							<Comment><![CDATA[ Input from Receive PDO Mapping 6]]></Comment>
+							<Type>WORD</Type>
+						</Var>
+						<Var>
+							<Name>gIO.Nidec[3].actVelocity</Name>
+							<Type>INT</Type>
+						</Var>
+						<Var>
+							<Name>gIO.Nidec[4].StatusWord</Name>
+							<Comment><![CDATA[ Input from Receive PDO Mapping 6]]></Comment>
+							<Type>WORD</Type>
+						</Var>
+						<Var>
+							<Name>gIO.Nidec[4].actVelocity</Name>
+							<Type>INT</Type>
+						</Var>
+						<Var>
+							<Name>gIO.Nidec[5].StatusWord</Name>
+							<Comment><![CDATA[ Input from Receive PDO Mapping 6]]></Comment>
+							<Type>WORD</Type>
+						</Var>
+						<Var>
+							<Name>gIO.Nidec[5].actVelocity</Name>
+							<Type>INT</Type>
+						</Var>
+						<Var>
+							<Name>gIO.Nidec[6].StatusWord</Name>
+							<Comment><![CDATA[ Input from Receive PDO Mapping 6]]></Comment>
+							<Type>WORD</Type>
+						</Var>
+						<Var>
+							<Name>gIO.Nidec[6].actVelocity</Name>
+							<Type>INT</Type>
+						</Var>
+						<Var>
+							<Name>gIO.Nidec[7].StatusWord</Name>
+							<Comment><![CDATA[ Input from Receive PDO Mapping 6]]></Comment>
+							<Type>WORD</Type>
+						</Var>
+						<Var>
+							<Name>gIO.Nidec[7].actVelocity</Name>
+							<Type>INT</Type>
+						</Var>
+						<Var>
+							<Name>gIO.Nidec[8].StatusWord</Name>
+							<Comment><![CDATA[ Input from Receive PDO Mapping 6]]></Comment>
+							<Type>WORD</Type>
+						</Var>
+						<Var>
+							<Name>gIO.Nidec[8].actVelocity</Name>
+							<Type>INT</Type>
+						</Var>
+						<Var>
+							<Name>gIO.Nidec[9].StatusWord</Name>
+							<Comment><![CDATA[ Input from Receive PDO Mapping 6]]></Comment>
+							<Type>WORD</Type>
+						</Var>
+						<Var>
+							<Name>gIO.Nidec[9].actVelocity</Name>
+							<Type>INT</Type>
+						</Var>
+						<Var>
 							<Name>gIO.arSafe[1].TSafeIn</Name>
-							<Type GUID="{EB524F7D-DB1D-44E1-071C-65BA24A19D69}">TwinSAFE_In</Type>
+							<Type GUID="{43DBAE36-F52B-B81C-07B3-1EA511043F86}">TwinSafeOut_PlcIn</Type>
 						</Var>
 						<Var>
 							<Name>gIO.arSafe[1].stSafetyIn</Name>
-							<Type GUID="{2BDEE6AB-4463-72C3-50A5-0FE07BBE79E0}">ST_SafeIn</Type>
+							<Type GUID="{8A37FEC1-4584-6318-CCB3-6C1CAA64F117}">ST_SafeOut_PlcIn</Type>
 						</Var>
 					</Vars>
 					<Vars VarGrpType="2" AreaNo="1">
@@ -980,12 +1133,102 @@
 							<Type GUID="{0BF2D286-D3B7-C0D2-7A90-EA7C2007271E}">ARRAY [1..24] OF ST_VTUG</Type>
 						</Var>
 						<Var>
+							<Name>gIO.Nidec[0].ControlWord</Name>
+							<Comment><![CDATA[ Output to Transmit PDO Mapping 6]]></Comment>
+							<Type>WORD</Type>
+						</Var>
+						<Var>
+							<Name>gIO.Nidec[0].targetVelocity</Name>
+							<Type>INT</Type>
+						</Var>
+						<Var>
+							<Name>gIO.Nidec[1].ControlWord</Name>
+							<Comment><![CDATA[ Output to Transmit PDO Mapping 6]]></Comment>
+							<Type>WORD</Type>
+						</Var>
+						<Var>
+							<Name>gIO.Nidec[1].targetVelocity</Name>
+							<Type>INT</Type>
+						</Var>
+						<Var>
+							<Name>gIO.Nidec[2].ControlWord</Name>
+							<Comment><![CDATA[ Output to Transmit PDO Mapping 6]]></Comment>
+							<Type>WORD</Type>
+						</Var>
+						<Var>
+							<Name>gIO.Nidec[2].targetVelocity</Name>
+							<Type>INT</Type>
+						</Var>
+						<Var>
+							<Name>gIO.Nidec[3].ControlWord</Name>
+							<Comment><![CDATA[ Output to Transmit PDO Mapping 6]]></Comment>
+							<Type>WORD</Type>
+						</Var>
+						<Var>
+							<Name>gIO.Nidec[3].targetVelocity</Name>
+							<Type>INT</Type>
+						</Var>
+						<Var>
+							<Name>gIO.Nidec[4].ControlWord</Name>
+							<Comment><![CDATA[ Output to Transmit PDO Mapping 6]]></Comment>
+							<Type>WORD</Type>
+						</Var>
+						<Var>
+							<Name>gIO.Nidec[4].targetVelocity</Name>
+							<Type>INT</Type>
+						</Var>
+						<Var>
+							<Name>gIO.Nidec[5].ControlWord</Name>
+							<Comment><![CDATA[ Output to Transmit PDO Mapping 6]]></Comment>
+							<Type>WORD</Type>
+						</Var>
+						<Var>
+							<Name>gIO.Nidec[5].targetVelocity</Name>
+							<Type>INT</Type>
+						</Var>
+						<Var>
+							<Name>gIO.Nidec[6].ControlWord</Name>
+							<Comment><![CDATA[ Output to Transmit PDO Mapping 6]]></Comment>
+							<Type>WORD</Type>
+						</Var>
+						<Var>
+							<Name>gIO.Nidec[6].targetVelocity</Name>
+							<Type>INT</Type>
+						</Var>
+						<Var>
+							<Name>gIO.Nidec[7].ControlWord</Name>
+							<Comment><![CDATA[ Output to Transmit PDO Mapping 6]]></Comment>
+							<Type>WORD</Type>
+						</Var>
+						<Var>
+							<Name>gIO.Nidec[7].targetVelocity</Name>
+							<Type>INT</Type>
+						</Var>
+						<Var>
+							<Name>gIO.Nidec[8].ControlWord</Name>
+							<Comment><![CDATA[ Output to Transmit PDO Mapping 6]]></Comment>
+							<Type>WORD</Type>
+						</Var>
+						<Var>
+							<Name>gIO.Nidec[8].targetVelocity</Name>
+							<Type>INT</Type>
+						</Var>
+						<Var>
+							<Name>gIO.Nidec[9].ControlWord</Name>
+							<Comment><![CDATA[ Output to Transmit PDO Mapping 6]]></Comment>
+							<Type>WORD</Type>
+						</Var>
+						<Var>
+							<Name>gIO.Nidec[9].targetVelocity</Name>
+							<Type>INT</Type>
+						</Var>
+						<Var>
 							<Name>gIO.arSafe[1].TSafeOut</Name>
-							<Type GUID="{C3F243FC-82F5-0571-D687-2A9D163D111D}">TwinSAFE_Out</Type>
+							<Type GUID="{AF4A2308-F63C-4493-A7C7-C68A2BFD146B}">TwinSafeIn_PlcOut</Type>
 						</Var>
 						<Var>
 							<Name>gIO.arSafe[1].stSafetyOut</Name>
-							<Type GUID="{E2F3C49B-6E54-21C1-8EB6-D1F8FE648285}">ST_SafeOut</Type>
+							<Type GUID="{93DED2F4-D3C9-090A-72FD-FFB5A26A924F}">ST_SafeIn_PlcOut</Type>
 						</Var>
 					</Vars>
 					<Contexts>
@@ -1064,7 +1307,7 @@
 							<SyncMan>001000012600010001000000000100010001001026010000</SyncMan>
 							<SyncMan>001100012200010002000000000100010001001122010000</SyncMan>
 							<SyncMan>001210002400010003000000000000000800001224010000</SyncMan>
-							<SyncMan>001d0e002000010004000000000000000900001d20010000</SyncMan>
+							<SyncMan>001d10002000010004000000000000000900001d20010000</SyncMan>
 							<SyncMan>002e00002400000003000000000000000000002e24000000</SyncMan>
 							<SyncMan>002f00002000000004000000000000000000002f20000000</SyncMan>
 							<Fmmu>0000000000000000001200020100000001000000060000000200000000000000</Fmmu>
@@ -1094,6 +1337,41 @@
 									<Type GUID="{2438F91B-E188-4ED7-8594-54354F9ED6A4}" Namespace="Safety">FSOE_6</Type>
 								</Entry>
 							</Pdo>
+							<Pdo Name="StandardInputs" Index="#x1bf0" Flags="#x2011" SyncMan="3">
+								<Entry Name="Standard Out Var 13" Index="#x7000" Sub="#x01">
+									<Type>BIT</Type>
+								</Entry>
+								<Entry Name="Standard Out Var 14" Index="#x7000" Sub="#x02">
+									<Type>BIT</Type>
+								</Entry>
+								<Entry Name="Standard Out Var 15" Index="#x7000" Sub="#x03">
+									<Type>BIT</Type>
+								</Entry>
+								<Entry Name="Standard Out Var 16" Index="#x7000" Sub="#x04">
+									<Type>BIT</Type>
+								</Entry>
+								<Entry Name="Standard Out Var 20" Index="#x7000" Sub="#x05">
+									<Type>BIT</Type>
+								</Entry>
+								<Entry Name="Standard Out Var 21" Index="#x7000" Sub="#x06">
+									<Type>BIT</Type>
+								</Entry>
+								<Entry Name="Standard Out Var 22" Index="#x7000" Sub="#x07">
+									<Type>BIT</Type>
+								</Entry>
+								<Entry Name="Standard Out Var 23" Index="#x7000" Sub="#x08">
+									<Type>BIT</Type>
+								</Entry>
+								<Entry Name="Standard Out Var 24" Index="#x7000" Sub="#x09">
+									<Type>BIT</Type>
+								</Entry>
+								<Entry Name="Standard Out Var 26" Index="#x7000" Sub="#x0a">
+									<Type>BIT</Type>
+								</Entry>
+								<Entry>
+									<Type GUID="{18071995-0000-0000-0000-002000000006}">ARRAY [0..5] OF BIT</Type>
+								</Entry>
+							</Pdo>
 							<Pdo Name="StandardOutputs" Index="#x17f0" InOut="1" Flags="#x2011" SyncMan="2">
 								<Entry Name="Standard In Var 1" Index="#x6000" Sub="#x01">
 									<Type>BIT</Type>
@@ -1101,8 +1379,11 @@
 								<Entry Name="Standard In Var 2" Index="#x6000" Sub="#x02">
 									<Type>BIT</Type>
 								</Entry>
+								<Entry Name="Standard In Var 12" Index="#x6000" Sub="#x03">
+									<Type>BIT</Type>
+								</Entry>
 								<Entry>
-									<Type GUID="{18071995-0000-0000-0000-002000000006}">ARRAY [0..5] OF BIT</Type>
+									<Type GUID="{18071995-0000-0000-0000-002000000005}">ARRAY [0..4] OF BIT</Type>
 								</Entry>
 							</Pdo>
 							<Pdo Name="FSLOGIC Inputs" Index="#x1bff" Flags="#x0091" SyncMan="3">
