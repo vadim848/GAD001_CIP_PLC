@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="prg_RecipeManager" Id="{85473640-566c-4030-8ff1-15160df57023}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM prg_RecipeManager
+VAR
+	fbRecipe: RecipeManCommands;
+	LastError: DWORD;
+	LastInfo: InfoValues;
+
+	bCheckError: BOOL;
+	bResetError: BOOL;
+	bInit: BOOL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[
+IF bCheckError THEN;
+	//bCheckError:=FALSE;
+	LastError:=fbRecipe.GetLastError();
+	LastInfo:=fbRecipe.GetLastInfo();
+END_IF
+
+IF bResetError THEN;
+	bResetError:=FALSE;
+	LastError:=fbRecipe.ResetLastError();
+	LastError:=fbRecipe.ReloadRecipes(RecipeDefinitionName:='');
+	
+END_IF
+
+IF bInit THEN;
+	bInit:=FALSE;
+	LastError:=fbRecipe.ResetLastInfo();
+END_IF]]></ST>
+    </Implementation>
+    <LineIds Name="prg_RecipeManager">
+      <LineId Id="8" Count="0" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="29" Count="1" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="24" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>
