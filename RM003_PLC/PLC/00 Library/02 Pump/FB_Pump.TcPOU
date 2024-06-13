@@ -30,6 +30,7 @@ VAR
 
 END_VAR
 VAR_OUTPUT
+	DriveReady	:   BOOL;
 	bRun		: 	BOOL;
 	nRPM		:	INT		;//Pump RPM 
 	
@@ -55,8 +56,10 @@ IF __ISVALIDREF(stNidec) THEN;
 	m_Nidec_Init();
 	
 	IF state_init=Ready THEN;
+		DriveReady:=TRUE;
 		ControlWord.EnableOperation:=bRun;
 	ELSE;
+		DriveReady:=FALSE;
 		bRun:=bRun_Man:=bRun_Auto:=FALSE;
 		ControlWord.EnableOperation:=FALSE;
 	END_IF	
@@ -236,10 +239,12 @@ END_CASE]]></ST>
     <Method Name="m_Run" Id="{c021bce4-07f3-44e5-a920-e4b2f00640f2}">
       <Declaration><![CDATA[METHOD m_Run : BOOL
 VAR_INPUT
+	RPM: INT;
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[bRun_Auto:=TRUE;
+nRPM_Auto:=RPM;
 m_Run:=TRUE;]]></ST>
       </Implementation>
     </Method>
@@ -262,7 +267,11 @@ m_Stop:=TRUE;]]></ST>
       <LineId Id="188" Count="0" />
       <LineId Id="186" Count="0" />
       <LineId Id="236" Count="0" />
-      <LineId Id="238" Count="4" />
+      <LineId Id="238" Count="0" />
+      <LineId Id="244" Count="0" />
+      <LineId Id="239" Count="1" />
+      <LineId Id="245" Count="0" />
+      <LineId Id="241" Count="1" />
       <LineId Id="237" Count="0" />
       <LineId Id="187" Count="0" />
       <LineId Id="163" Count="1" />
@@ -335,6 +344,7 @@ m_Stop:=TRUE;]]></ST>
     </LineIds>
     <LineIds Name="FB_Pump.m_Run">
       <LineId Id="5" Count="0" />
+      <LineId Id="16" Count="0" />
       <LineId Id="10" Count="0" />
     </LineIds>
     <LineIds Name="FB_Pump.m_Stop">
