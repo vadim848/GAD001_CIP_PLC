@@ -77,8 +77,8 @@ VAR_IN_OUT
 	//Pumps
 	fb_PumpCIP				: FB_Pump;
 	fb_PumpClient			: FB_Pump;
-	fb_PumpDetergent		: FB_Pump;
-	fb_PumpDisinfection		: FB_Pump;
+	fb_PumpDetergent		: FB_DosingPump;
+	fb_PumpDisinfection		: FB_DosingPump;
 	
 	//Heat Exchenger	
 	fb_HeatExchenger	:	FB_HeatExchanger	;
@@ -511,7 +511,7 @@ END_IF
       <Implementation>
         <ST><![CDATA[fbCIP_Return.m_Run(eReqProc:=E_CIP_Return.eT92_Detergent);
 fbPis.m_SetByRecipe(stPis:=stPis_FillWater_T92, req:=E_Piston_Recipe_State.Release);
-fb_PumpDetergent.m_Auto();
+//fb_PumpDetergent.m_Auto();
 fb_HeatExchenger.m_Auto();]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -1930,7 +1930,7 @@ fb_PumpClient.m_Run();]]></ST>
     <Action Name="_aStartPump_CIP2_01_entry" Id="{4589c8d4-2b8a-47b6-b8e7-d8da9bb4ee5a}">
       <Implementation>
         <ST><![CDATA[fb_PumpCIP.m_Run();
-fb_PumpDetergent.m_Auto();
+//fb_PumpDetergent.m_Auto();
 fb_HeatExchenger.m_Auto();
 ]]></ST>
       </Implementation>
@@ -2010,7 +2010,7 @@ fb_HeatExchenger.m_Auto();]]></ST>
       <Implementation>
         <ST><![CDATA[fb_PumpCIP.m_Run();
 fb_PumpClient.m_Run();
-fb_PumpDisinfection.m_Auto();
+//fb_PumpDisinfection.m_Auto();
 	
 //Heat Exchenger	
 fb_HeatExchenger.m_Auto();]]></ST>

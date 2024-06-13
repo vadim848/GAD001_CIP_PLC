@@ -2189,6 +2189,20 @@ bDone:=TRUE;]]></ST>
         </XmlArchive>
       </ObjectProperties>
     </Action>
+    <Method Name="m_RunVolume" Id="{0d856e46-de18-4a27-9bfe-92513e0d3ab8}" FolderPath="manage\">
+      <Declaration><![CDATA[METHOD m_RunVolume : BOOL
+VAR_INPUT
+	Volume	:REAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[fReqVolume:=Volume;
+mRun();
+IF rtDone.Q THEN;
+	m_RunVolume:=TRUE;	
+END_IF]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="m_Set_SFCFlags_Reference" Id="{b86dd4e2-3c28-4c4e-ac24-8fad9b06dbde}" FolderPath="manage\">
       <Declaration><![CDATA[METHOD m_Set_SFCFlags_Reference : BOOL
 ]]></Declaration>
@@ -2210,6 +2224,15 @@ refSFC.SFCTipMode REF= SFCTipMode;
 
 // Cycle handle for SFC
 m_SFC_Handle();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_Stop" Id="{a4b5a574-39b4-41ee-a2fd-a4f071a60b58}" FolderPath="manage\">
+      <Declaration><![CDATA[METHOD m_Stop : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[SFCReset:=TRUE;]]></ST>
       </Implementation>
     </Method>
     <LineIds Name="FB_DosingPump">
@@ -2256,9 +2279,16 @@ m_SFC_Handle();]]></ST>
       <LineId Id="1" Count="0" />
       <LineId Id="23" Count="0" />
     </LineIds>
+    <LineIds Name="FB_DosingPump.m_RunVolume">
+      <LineId Id="24" Count="3" />
+      <LineId Id="10" Count="0" />
+    </LineIds>
     <LineIds Name="FB_DosingPump.m_Set_SFCFlags_Reference">
       <LineId Id="5" Count="15" />
       <LineId Id="4" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_DosingPump.m_Stop">
+      <LineId Id="5" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>
