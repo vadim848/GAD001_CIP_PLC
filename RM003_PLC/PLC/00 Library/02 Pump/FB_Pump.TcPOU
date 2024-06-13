@@ -53,9 +53,16 @@ IF __ISVALIDREF(stNidec) THEN;
 	nRPM_fdbk:=stNidec.actVelocity;	
 	
 	m_Nidec_Init();
+	
+	IF state_init=Ready THEN;
+		ControlWord.EnableOperation:=bRun;
+	ELSE;
+		bRun:=bRun_Man:=bRun_Auto:=FALSE;
+		ControlWord.EnableOperation:=FALSE;
+	END_IF	
 
 ELSE;
-	RETURN;
+	//RETURN;
 END_IF
 
 
@@ -76,12 +83,7 @@ END_IF
 IF nRPM>3000 THEN;
 	nRPM:=3000;
 END_IF
-IF state_init=Ready THEN;
-	ControlWord.EnableOperation:=bRun;
-ELSE;
-	bRun:=bRun_Man:=bRun_Auto:=FALSE;
-	ControlWord.EnableOperation:=FALSE;
-END_IF
+
 
 
 
@@ -248,6 +250,7 @@ END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[bRun_Auto:=FALSE;
+bRun_Man:=FALSE;
 m_Stop:=TRUE;]]></ST>
       </Implementation>
     </Method>
@@ -257,7 +260,11 @@ m_Stop:=TRUE;]]></ST>
       <LineId Id="178" Count="6" />
       <LineId Id="177" Count="0" />
       <LineId Id="188" Count="0" />
-      <LineId Id="186" Count="1" />
+      <LineId Id="186" Count="0" />
+      <LineId Id="236" Count="0" />
+      <LineId Id="238" Count="4" />
+      <LineId Id="237" Count="0" />
+      <LineId Id="187" Count="0" />
       <LineId Id="163" Count="1" />
       <LineId Id="162" Count="0" />
       <LineId Id="168" Count="0" />
@@ -276,10 +283,7 @@ m_Stop:=TRUE;]]></ST>
       <LineId Id="75" Count="0" />
       <LineId Id="190" Count="0" />
       <LineId Id="189" Count="0" />
-      <LineId Id="191" Count="3" />
-      <LineId Id="196" Count="0" />
-      <LineId Id="198" Count="0" />
-      <LineId Id="197" Count="0" />
+      <LineId Id="191" Count="1" />
       <LineId Id="195" Count="0" />
       <LineId Id="144" Count="0" />
       <LineId Id="107" Count="0" />
@@ -334,7 +338,8 @@ m_Stop:=TRUE;]]></ST>
       <LineId Id="10" Count="0" />
     </LineIds>
     <LineIds Name="FB_Pump.m_Stop">
-      <LineId Id="5" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="17" Count="0" />
       <LineId Id="10" Count="0" />
     </LineIds>
   </POU>

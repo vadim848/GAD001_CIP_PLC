@@ -1836,6 +1836,56 @@ bClientRef_done:=TRUE;]]></ST>
         </XmlArchive>
       </ObjectProperties>
     </Action>
+    <Action Name="_aSet_Valves_ToDeafult_active" Id="{6f0f9f2b-5faf-4a3e-bc50-2f79008d8530}">
+      <Implementation>
+        <ST><![CDATA[bStepDone:=FALSE;
+IF TRUE 
+AND fbPis.m_CheckByRecipe(stPis:=stPis_FillWater_T91, 	req:=E_Piston_Recipe_State.Release) 
+AND fbPis.m_CheckByRecipe(stPis:=stPis_FillWater_T92, 	req:=E_Piston_Recipe_State.Release) 
+AND fbPis.m_CheckByRecipe(stPis:=stPis_FillWater_T93, 	req:=E_Piston_Recipe_State.Release) 
+AND fbPis.m_CheckByRecipe(stPis:=stPis_FillWater_T94, 	req:=E_Piston_Recipe_State.Release) 
+THEN //checking the level
+	bStepDone:=TRUE;
+END_IF]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
+    <Action Name="_aSet_Valves_ToDeafult_entry" Id="{5504b883-dffe-4f34-ad68-2f1bab980d83}">
+      <Implementation>
+        <ST><![CDATA[fbPis.m_SetByRecipe(stPis:=stPis_FillWater_T91, req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_FillWater_T92, req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_FillWater_T93, req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_FillWater_T94, req:=E_Piston_Recipe_State.Release);
+
+
+]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
     <Action Name="_aStartPump_CIP1_01_active" Id="{e50e4f65-8145-4f79-b69c-1a7d9a136df2}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
@@ -2044,7 +2094,14 @@ fb_PumpClient.m_Run();]]></ST>
         <ST><![CDATA[eReq:=eReqBlank;
 eRun:=E_CIP_Source.eNone;
 m_CleanEmpty_Spaces();
-eRefClient_fbElement REF= fbElement_Blank;]]></ST>
+eRefClient_fbElement REF= fbElement_Blank;
+
+fb_PumpCIP.m_Stop();
+fb_PumpClient.m_Stop();
+fb_PumpDetergent.m_Stop();
+fb_PumpDisinfection.m_Stop();
+
+]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -2719,7 +2776,7 @@ stPis_FillWater_T94 REF= stPis[valFillWater_T94];
                           <o>
                             <v n="AttributeId">{700a583f-b4d4-43e4-8c14-629c7cd3bec8}</v>
                             <o n="Value" t="StringValue">
-                              <v n="Value">""</v>
+                              <v n="Value">"_aSet_Valves_ToDeafult_active"</v>
                               <v n="DefaultValue">""</v>
                             </o>
                             <v n="Id">115L</v>
@@ -2728,7 +2785,7 @@ stPis_FillWater_T94 REF= stPis[valFillWater_T94];
                           <o>
                             <v n="AttributeId">{a6b08bd8-b696-47e3-9cbf-7408b61c9ff8}</v>
                             <o n="Value" t="StringValue">
-                              <v n="Value">""</v>
+                              <v n="Value">"_aSet_Valves_ToDeafult_entry"</v>
                               <v n="DefaultValue">""</v>
                             </o>
                             <v n="Id">116L</v>
@@ -2755,7 +2812,7 @@ stPis_FillWater_T94 REF= stPis[valFillWater_T94];
                           <o>
                             <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                             <o n="Value" t="StringValue">
-                              <v n="Value">"TRUE"</v>
+                              <v n="Value">"bStepDone"</v>
                               <v n="DefaultValue">""</v>
                             </o>
                             <v n="Id">119L</v>
@@ -18485,6 +18542,19 @@ END_IF
       <LineId Id="32" Count="0" />
       <LineId Id="31" Count="0" />
     </LineIds>
+    <LineIds Name="FB_CIP._aSet_Valves_ToDeafult_active">
+      <LineId Id="2" Count="1" />
+      <LineId Id="10" Count="3" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="1" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_CIP._aSet_Valves_ToDeafult_entry">
+      <LineId Id="3" Count="3" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
     <LineIds Name="FB_CIP._aStartPump_CIP1_01_active">
       <LineId Id="2" Count="1" />
       <LineId Id="6" Count="1" />
@@ -18531,6 +18601,11 @@ END_IF
     <LineIds Name="FB_CIP._aStop_Pump_entry">
       <LineId Id="5" Count="2" />
       <LineId Id="1" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="14" Count="2" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="10" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aStopPump_CIP1_01_entry">
       <LineId Id="2" Count="0" />
