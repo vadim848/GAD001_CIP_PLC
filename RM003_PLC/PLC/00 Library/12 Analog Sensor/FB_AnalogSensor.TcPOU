@@ -4,7 +4,7 @@
     <Declaration><![CDATA[FUNCTION_BLOCK FB_AnalogSensor
 VAR_INPUT
 	nSensorID	: 	E_ASense_Name	;
-	nRawSensor	:	INT				;
+	nRawSensor	:	REAL				;
 END_VAR
 VAR_OUTPUT
 END_VAR
@@ -22,6 +22,10 @@ VAR
 	nTimeInCycles	:	INT:=1000; //10 se while cycletime is 10 ms
 	nBufferSize_S	:	INT:=10	;//Buffer size in seconds
 	nCycleTime_MS	:	INT:=10;//Cycle time in mili seconds
+	
+	ton_set_DATA: TON;
+	rt_set_DATE: R_TRIG;
+	fbScale: REFERENCE TO FB_ScaleFactor;
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -41,7 +45,7 @@ stASens.ID:=TO_STRING(nSensorID);
 stASens.rawVal_Actual:=nRawSensor;
 
 fbScaleFactor(
-	rVal:=stASens.rTempRawVal,//stASens.rawVal_Actual , 
+	rVal:=stASens.rawVal_Actual , //stASens.rTempRawVal
 	rInValHigh:=stASens.rawVal_Max , 
 	rInValLow:=stASens.rawVal_Min , 
 	rOutValHigh:=stASens.outVal_Max , 
@@ -49,7 +53,15 @@ fbScaleFactor(
 	rOutOffset:=stASens.outOffset , 
 	rValOut=>stASens.Value , 
 	diValOut=>, 
-	iValOut=> );]]></ST>
+	iValOut=> );
+	
+	
+	
+ton_set_DATA(PT:=T#20S, IN:=TRUE);
+rt_set_DATE(CLK:=ton_set_DATA.Q);
+IF rt_set_DATE.Q THEN;
+	set_Data(ID_reference:=nSensorID);
+END_IF]]></ST>
       </Implementation>
     </Action>
     <Action Name="act_MA" Id="{69960e6b-ad08-4ee1-9b6e-f116cc833ecb}">
@@ -71,7 +83,9 @@ END_FOR
 stASens.arrRawVal_Actual[0]:=stASens.rawVal_Actual;
 stASens.nRawSumm:=stASens.nRawSumm+stASens.arrRawVal_Actual[0];
 
-stASens.rTempRawVal:=TO_REAL(stASens.nRawSumm/nTicks);]]></ST>
+stASens.rTempRawVal:=TO_REAL(stASens.nRawSumm/nTicks);
+
+]]></ST>
       </Implementation>
     </Action>
     <Action Name="act_SetValues" Id="{50799016-694b-4fa3-95e7-b80421febf4b}">
@@ -84,10 +98,10 @@ meth_SetRawValue(bSetValue:=stASens.bCopyRawTo_Min , nValToSet:=stASens.rawVal_M
       <Declaration><![CDATA[METHOD INTERNAL meth_SetRawValue : BOOL
 VAR_IN_OUT
 	bSetValue	:	BOOL	;
-	nValToSet	:	INT	;
+	nValToSet	:	REAL	;
 END_VAR
 VAR_INPUT
-	nRawValue	:	INT		;
+	nRawValue	:	REAL		;
 END_VAR
 ]]></Declaration>
       <Implementation>
@@ -98,13 +112,26 @@ END_IF]]></ST>
       </Implementation>
     </Method>
     <Method Name="set_Data" Id="{ce08728b-f0bd-4a94-ae65-6b0253b241c9}">
-      <Declaration><![CDATA[METHOD set_Data : ST_AnalogSensor
+      <Declaration><![CDATA[METHOD set_Data : BOOL
 VAR_INPUT
-	
+	ID_reference: E_ASense_Name;
 END_VAR
+
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[]]></ST>
+        <ST><![CDATA[fbScale REF= gIO.fbScaleFactor[ID_reference];
+IF NOT __ISVALIDREF(fbScale) THEN;
+	RETURN;
+END_IF
+	
+
+
+stASens.rawVal_Max:=fbScale.rInValHigh;
+stASens.rawVal_Min:=fbScale.rInValLow;
+stASens.outVal_Max:=fbScale.rOutValHigh;
+stASens.outVal_Min:=fbScale.rOutValLow;
+stASens.outOffset:=fbScale.rOutOffset;
+]]></ST>
       </Implementation>
     </Method>
     <LineIds Name="FB_AnalogSensor">
@@ -114,19 +141,8 @@ END_VAR
       <LineId Id="21" Count="0" />
     </LineIds>
     <LineIds Name="FB_AnalogSensor.act_Get_Reference">
-      <LineId Id="1" Count="0" />
-      <LineId Id="32" Count="0" />
-      <LineId Id="22" Count="0" />
-      <LineId Id="35" Count="0" />
-      <LineId Id="34" Count="0" />
-      <LineId Id="33" Count="0" />
-      <LineId Id="36" Count="0" />
-      <LineId Id="31" Count="0" />
-      <LineId Id="30" Count="0" />
-      <LineId Id="23" Count="4" />
-      <LineId Id="37" Count="0" />
-      <LineId Id="28" Count="1" />
-      <LineId Id="18" Count="0" />
+      <LineId Id="46" Count="24" />
+      <LineId Id="45" Count="0" />
     </LineIds>
     <LineIds Name="FB_AnalogSensor.act_MA">
       <LineId Id="2" Count="0" />
@@ -147,6 +163,8 @@ END_VAR
       <LineId Id="14" Count="0" />
       <LineId Id="16" Count="0" />
       <LineId Id="15" Count="0" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="27" Count="0" />
     </LineIds>
     <LineIds Name="FB_AnalogSensor.act_SetValues">
       <LineId Id="1" Count="1" />
@@ -158,7 +176,15 @@ END_VAR
       <LineId Id="9" Count="0" />
     </LineIds>
     <LineIds Name="FB_AnalogSensor.set_Data">
+      <LineId Id="28" Count="0" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="26" Count="1" />
+      <LineId Id="25" Count="0" />
       <LineId Id="5" Count="0" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="19" Count="3" />
+      <LineId Id="18" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>
