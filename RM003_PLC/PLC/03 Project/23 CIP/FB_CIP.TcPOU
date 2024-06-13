@@ -1446,7 +1446,7 @@ AND fbCIP_Usage.m_CheckStatus(eReqStatus:=E_CIP_Usage.eLocal)
 AND fbCIP_Return.m_CheckStatus(eReqStatus:=E_CIP_Return.eDrain)  
 AND fbPis.m_CheckByRecipe(stPis:=stPis_FillWater_T92, req:=E_Piston_Recipe_State.Act) 
 //AND  lvlTank_T92.bIn_HL_signal 
-AND (FALSE)
+AND (lvlTank_T92.rTankLevel>200)
 
 THEN;
 
@@ -1478,7 +1478,7 @@ END_IF]]></ST>
         <ST><![CDATA[fbCIP_Source.m_Run(eReqProc:=E_CIP_Source.eClose);
 fbCIP_Usage.m_Run(eReqProc:=E_CIP_Usage.eLocal);
 fbCIP_Return.m_Run(eReqProc:=E_CIP_Return.eDrain);
-//fbPis.m_SetByRecipe(stPis:=stPis_FillWater_T92, req:=E_Piston_Recipe_State.Act);]]></ST>
+fbPis.m_SetByRecipe(stPis:=stPis_FillWater_T92, req:=E_Piston_Recipe_State.Act);]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>

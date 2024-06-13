@@ -22,7 +22,7 @@ act_Sensors();
 act_Call_Sensors_Analog();
 act_HeatExchenger();
 act_Call_ScaleFactor();
-
+act_Call_For_HMI();
 //fbCIP();
 act_Call_CIP();
 
@@ -4866,6 +4866,17 @@ g_SFC.fbSFC_Temp1();
             </TypeList>
           </XmlArchive>
         </NWL>
+      </Implementation>
+    </Action>
+    <Action Name="act_Call_For_HMI" Id="{95962895-82ce-49d5-9aef-33bffa18c9fd}">
+      <Implementation>
+        <ST><![CDATA[
+
+g_HMI.stT91_Sens:=g_Data.stTanksSens[E_Tank_Name.T91];
+g_HMI.stT92_Sens:=g_Data.stTanksSens[E_Tank_Name.T92];
+g_HMI.stT93_Sens:=g_Data.stTanksSens[E_Tank_Name.T93];
+g_HMI.stT94_Sens:=g_Data.stTanksSens[E_Tank_Name.T94];
+]]></ST>
       </Implementation>
     </Action>
     <Action Name="act_Call_Pumps" Id="{250d1796-6961-486b-9de7-1fb9e6e9ab7d}">
@@ -11978,7 +11989,7 @@ END_CASE]]></ST>
                           <v n="LValue">false</v>
                           <v n="Boolean">false</v>
                           <v n="IsInstance">true</v>
-                          <v n="Id">153L</v>
+                          <v n="Id">169L</v>
                         </o>
                         <o n="OutputItems" t="OutputItemList">
                           <l2 n="OutputItems" />
@@ -12008,6 +12019,25 @@ END_CASE]]></ST>
                               <v n="Id">5L</v>
                             </o>
                             <v n="Id">4L</v>
+                          </o>
+                          <o>
+                            <o n="Operand" t="Operand">
+                              <v n="Operand">"780"</v>
+                              <v n="Type">"INT"</v>
+                              <v n="Comment">""</v>
+                              <v n="SymbolComment">""</v>
+                              <v n="Address">""</v>
+                              <o n="Flags" t="Flags">
+                                <v n="Flags">0</v>
+                                <v n="Fixed">false</v>
+                                <v n="Extensible">false</v>
+                              </o>
+                              <v n="LValue">false</v>
+                              <v n="Boolean">false</v>
+                              <v n="IsInstance">false</v>
+                              <v n="Id">172L</v>
+                            </o>
+                            <v n="Id">171L</v>
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
@@ -12068,7 +12098,7 @@ END_CASE]]></ST>
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
-                              <v n="Operand">"gIO.ai_EL[1].ch7"</v>
+                              <v n="Operand">"gIO.ai_EL[1].ch4"</v>
                               <v n="Type">"INT"</v>
                               <v n="Comment">""</v>
                               <v n="SymbolComment">""</v>
@@ -12127,6 +12157,7 @@ END_CASE]]></ST>
                         <o n="InputParam" t="ParamList">
                           <l2 n="Names" cet="String">
                             <v>stTankLevel</v>
+                            <v>volume</v>
                             <v>senHL</v>
                             <v>senLL</v>
                             <v>nSensorLvl_ID</v>
@@ -12136,6 +12167,7 @@ END_CASE]]></ST>
                           </l2>
                           <l2 n="Types" cet="String">
                             <v>ST_Tank_Level[REF]</v>
+                            <v>REAL</v>
                             <v>BOOL</v>
                             <v>BOOL</v>
                             <v>E_ASense_Name</v>
@@ -12154,7 +12186,7 @@ END_CASE]]></ST>
                         <n n="STSnippet" />
                         <v n="ContainsExtensibleInputs">false</v>
                         <v n="ProvidesSTSnippet">false</v>
-                        <v n="Id">154L</v>
+                        <v n="Id">170L</v>
                       </o>
                     </l2>
                     <l2 n="Connectors" />
@@ -12186,7 +12218,7 @@ END_CASE]]></ST>
                           <v n="LValue">false</v>
                           <v n="Boolean">false</v>
                           <v n="IsInstance">true</v>
-                          <v n="Id">155L</v>
+                          <v n="Id">173L</v>
                         </o>
                         <o n="OutputItems" t="OutputItemList">
                           <l2 n="OutputItems" />
@@ -12216,6 +12248,25 @@ END_CASE]]></ST>
                               <v n="Id">24L</v>
                             </o>
                             <v n="Id">23L</v>
+                          </o>
+                          <o>
+                            <o n="Operand" t="Operand">
+                              <v n="Operand">"780"</v>
+                              <v n="Type">"INT"</v>
+                              <v n="Comment">""</v>
+                              <v n="SymbolComment">""</v>
+                              <v n="Address">""</v>
+                              <o n="Flags" t="Flags">
+                                <v n="Flags">0</v>
+                                <v n="Fixed">false</v>
+                                <v n="Extensible">false</v>
+                              </o>
+                              <v n="LValue">false</v>
+                              <v n="Boolean">false</v>
+                              <v n="IsInstance">false</v>
+                              <v n="Id">176L</v>
+                            </o>
+                            <v n="Id">175L</v>
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
@@ -12276,7 +12327,7 @@ END_CASE]]></ST>
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
-                              <v n="Operand">"gIO.ai_EL[1].ch5"</v>
+                              <v n="Operand">"gIO.ai_EL[1].ch3"</v>
                               <v n="Type">"INT"</v>
                               <v n="Comment">""</v>
                               <v n="SymbolComment">""</v>
@@ -12314,7 +12365,7 @@ END_CASE]]></ST>
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
-                              <v n="Operand">"gIO.ai_EL[1].ch6"</v>
+                              <v n="Operand">"gIO.ai_EL[1].ch7"</v>
                               <v n="Type">"INT"</v>
                               <v n="Comment">""</v>
                               <v n="SymbolComment">""</v>
@@ -12335,6 +12386,7 @@ END_CASE]]></ST>
                         <o n="InputParam" t="ParamList">
                           <l2 n="Names" cet="String">
                             <v>stTankLevel</v>
+                            <v>volume</v>
                             <v>senHL</v>
                             <v>senLL</v>
                             <v>nSensorLvl_ID</v>
@@ -12344,6 +12396,7 @@ END_CASE]]></ST>
                           </l2>
                           <l2 n="Types" cet="String">
                             <v>ST_Tank_Level[REF]</v>
+                            <v>REAL</v>
                             <v>BOOL</v>
                             <v>BOOL</v>
                             <v>E_ASense_Name</v>
@@ -12362,7 +12415,7 @@ END_CASE]]></ST>
                         <n n="STSnippet" />
                         <v n="ContainsExtensibleInputs">false</v>
                         <v n="ProvidesSTSnippet">false</v>
-                        <v n="Id">156L</v>
+                        <v n="Id">174L</v>
                       </o>
                     </l2>
                     <l2 n="Connectors" />
@@ -12394,7 +12447,7 @@ END_CASE]]></ST>
                           <v n="LValue">false</v>
                           <v n="Boolean">false</v>
                           <v n="IsInstance">true</v>
-                          <v n="Id">157L</v>
+                          <v n="Id">177L</v>
                         </o>
                         <o n="OutputItems" t="OutputItemList">
                           <l2 n="OutputItems" />
@@ -12424,6 +12477,25 @@ END_CASE]]></ST>
                               <v n="Id">43L</v>
                             </o>
                             <v n="Id">42L</v>
+                          </o>
+                          <o>
+                            <o n="Operand" t="Operand">
+                              <v n="Operand">"780"</v>
+                              <v n="Type">"INT"</v>
+                              <v n="Comment">""</v>
+                              <v n="SymbolComment">""</v>
+                              <v n="Address">""</v>
+                              <o n="Flags" t="Flags">
+                                <v n="Flags">0</v>
+                                <v n="Fixed">false</v>
+                                <v n="Extensible">false</v>
+                              </o>
+                              <v n="LValue">false</v>
+                              <v n="Boolean">false</v>
+                              <v n="IsInstance">false</v>
+                              <v n="Id">180L</v>
+                            </o>
+                            <v n="Id">179L</v>
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
@@ -12484,7 +12556,7 @@ END_CASE]]></ST>
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
-                              <v n="Operand">"gIO.ai_EL[1].ch3"</v>
+                              <v n="Operand">"gIO.ai_EL[1].ch2"</v>
                               <v n="Type">"INT"</v>
                               <v n="Comment">""</v>
                               <v n="SymbolComment">""</v>
@@ -12522,7 +12594,7 @@ END_CASE]]></ST>
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
-                              <v n="Operand">"gIO.ai_EL[1].ch4"</v>
+                              <v n="Operand">"gIO.ai_EL[1].ch6"</v>
                               <v n="Type">"INT"</v>
                               <v n="Comment">""</v>
                               <v n="SymbolComment">""</v>
@@ -12543,6 +12615,7 @@ END_CASE]]></ST>
                         <o n="InputParam" t="ParamList">
                           <l2 n="Names" cet="String">
                             <v>stTankLevel</v>
+                            <v>volume</v>
                             <v>senHL</v>
                             <v>senLL</v>
                             <v>nSensorLvl_ID</v>
@@ -12552,6 +12625,7 @@ END_CASE]]></ST>
                           </l2>
                           <l2 n="Types" cet="String">
                             <v>ST_Tank_Level[REF]</v>
+                            <v>REAL</v>
                             <v>BOOL</v>
                             <v>BOOL</v>
                             <v>E_ASense_Name</v>
@@ -12570,7 +12644,7 @@ END_CASE]]></ST>
                         <n n="STSnippet" />
                         <v n="ContainsExtensibleInputs">false</v>
                         <v n="ProvidesSTSnippet">false</v>
-                        <v n="Id">158L</v>
+                        <v n="Id">178L</v>
                       </o>
                     </l2>
                     <l2 n="Connectors" />
@@ -12602,7 +12676,7 @@ END_CASE]]></ST>
                           <v n="LValue">false</v>
                           <v n="Boolean">false</v>
                           <v n="IsInstance">true</v>
-                          <v n="Id">159L</v>
+                          <v n="Id">181L</v>
                         </o>
                         <o n="OutputItems" t="OutputItemList">
                           <l2 n="OutputItems" />
@@ -12632,6 +12706,25 @@ END_CASE]]></ST>
                               <v n="Id">60L</v>
                             </o>
                             <v n="Id">59L</v>
+                          </o>
+                          <o>
+                            <o n="Operand" t="Operand">
+                              <v n="Operand">"780"</v>
+                              <v n="Type">"INT"</v>
+                              <v n="Comment">""</v>
+                              <v n="SymbolComment">""</v>
+                              <v n="Address">""</v>
+                              <o n="Flags" t="Flags">
+                                <v n="Flags">0</v>
+                                <v n="Fixed">false</v>
+                                <v n="Extensible">false</v>
+                              </o>
+                              <v n="LValue">false</v>
+                              <v n="Boolean">false</v>
+                              <v n="IsInstance">false</v>
+                              <v n="Id">184L</v>
+                            </o>
+                            <v n="Id">183L</v>
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
@@ -12730,7 +12823,7 @@ END_CASE]]></ST>
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
-                              <v n="Operand">"gIO.ai_EL[1].ch2"</v>
+                              <v n="Operand">"gIO.ai_EL[1].ch5"</v>
                               <v n="Type">"INT"</v>
                               <v n="Comment">""</v>
                               <v n="SymbolComment">""</v>
@@ -12751,6 +12844,7 @@ END_CASE]]></ST>
                         <o n="InputParam" t="ParamList">
                           <l2 n="Names" cet="String">
                             <v>stTankLevel</v>
+                            <v>volume</v>
                             <v>senHL</v>
                             <v>senLL</v>
                             <v>nSensorLvl_ID</v>
@@ -12760,6 +12854,7 @@ END_CASE]]></ST>
                           </l2>
                           <l2 n="Types" cet="String">
                             <v>ST_Tank_Level[REF]</v>
+                            <v>REAL</v>
                             <v>BOOL</v>
                             <v>BOOL</v>
                             <v>E_ASense_Name</v>
@@ -12778,7 +12873,7 @@ END_CASE]]></ST>
                         <n n="STSnippet" />
                         <v n="ContainsExtensibleInputs">false</v>
                         <v n="ProvidesSTSnippet">false</v>
-                        <v n="Id">160L</v>
+                        <v n="Id">182L</v>
                       </o>
                     </l2>
                     <l2 n="Connectors" />
@@ -13807,6 +13902,11 @@ END_CASE]]></ST>
       <LineId Id="108" Count="1" />
       <LineId Id="99" Count="8" />
       <LineId Id="16" Count="0" />
+    </LineIds>
+    <LineIds Name="MAIN.act_Call_For_HMI">
+      <LineId Id="2" Count="1" />
+      <LineId Id="5" Count="3" />
+      <LineId Id="4" Count="0" />
     </LineIds>
     <LineIds Name="MAIN.act_ClientPump_Select">
       <LineId Id="1" Count="1" />
