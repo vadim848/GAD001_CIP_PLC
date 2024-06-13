@@ -5,8 +5,13 @@
 VAR_INPUT
 	nSensorID	: 	E_ASense_Name	;
 	nRawSensor	:	INT				;
+	arReset_AlrmWrn		:	ARRAY [0..3] OF BOOL		;//HH Alarm/LL Alarm/HH Warning/LL Warning
 END_VAR
 VAR_OUTPUT
+	bLL_Alarm	:	BOOL	;
+	bHH_Alarm	:	BOOL	;
+	bLL_Warning	:	BOOL	;
+	bHH_Warning	:	BOOL	;
 END_VAR
 VAR
 	stASens			:	REFERENCE TO ST_AnalogSensor	;
@@ -22,14 +27,41 @@ VAR
 	nTimeInCycles	:	INT:=1000; //10 se while cycletime is 10 ms
 	nBufferSize_S	:	INT:=10	;//Buffer size in seconds
 	nCycleTime_MS	:	INT:=10;//Cycle time in mili seconds
+	
+	
+	//From Structure
+	// Callibration 
+	rawVal_Actual	: INT;//fb
+	
+	//MA
+	arrRawVal_Actual	:	ARRAY [0..10000] OF INT	;//get out fb
+	rTempRawVal			:	REAL	;//fb
+	nRawSumm			:	DINT	;//fb
+	
+	bCopyRawTo_Min	: BOOL;//fb
+	bCopyRawTo_Max	: BOOL;//fb
+	
+	//triggers
+	arRS		:	ARRAY [0..3] OF RS		;//HH Alarm/LL Alarm/HH Warning/LL Warning
 END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[nTimeInCycles:=TO_INT(nBufferSize_S*1000/nCycleTime_MS);
 act_Get_Reference();
 act_MA();
-act_SetValues();]]></ST>
+act_SetValues();
+]]></ST>
     </Implementation>
+    <Action Name="act_AlarmWarnings" Id="{94bc8425-4f7d-409b-a6cf-b4ccd61c6a97}">
+      <Implementation>
+        <ST><![CDATA[//arRS		:	ARRAY [0..3] OF RS		;//HH Alarm/LL Alarm/HH Warning/LL Warning
+
+arRS[0](SET:=(stASens.Value>= stASens.rHH_Alarm AND NOT bHH_Alarm) , RESET1:=arReset_AlrmWrn[0] , Q1=>bHH_Alarm );
+arRS[1](SET:=(stASens.Value<= stASens.rLL_Alarm AND NOT bLL_Alarm) , RESET1:=arReset_AlrmWrn[1] , Q1=>bLL_Alarm );
+arRS[2](SET:=(stASens.Value>= stASens.rHH_Warning AND stASens.Value<stASens.rHH_Alarm AND NOT bHH_Warning) , RESET1:=arReset_AlrmWrn[2] , Q1=>bHH_Warning );
+arRS[3](SET:=(stASens.Value<= stASens.rLL_Warning AND stASens.Value>stASens.rLL_Alarm AND NOT bLL_Warning) , RESET1:=arReset_AlrmWrn[3] , Q1=>bLL_Warning );]]></ST>
+      </Implementation>
+    </Action>
     <Action Name="act_Get_Reference" Id="{3b9743a6-e63a-4bc1-886c-5921c522c277}">
       <Implementation>
         <ST><![CDATA[stASens REF=g_AnalogSensor.stAnalogSensor[nSensorID];
@@ -38,10 +70,10 @@ stASens.ID:=TO_STRING(nSensorID);
 
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //stASens.rawVal_Actual:=g_AnalogSensor.arAnalogSensorRawValue[nSensorID];
-stASens.rawVal_Actual:=nRawSensor;
+//stASens.rawVal_Actual:=nRawSensor;
 
 fbScaleFactor(
-	rVal:=stASens.rTempRawVal,//stASens.rawVal_Actual , 
+	rVal:=nRawSensor,//stASens.rawVal_Actual , 
 	rInValHigh:=stASens.rawVal_Max , 
 	rInValLow:=stASens.rawVal_Min , 
 	rOutValHigh:=stASens.outVal_Max , 
@@ -61,23 +93,23 @@ ELSIF nTicks>nTimeInCycles THEN
 END_IF
 
 //moving ticks
-stASens.nRawSumm:=0;
+nRawSumm:=0;
 FOR nI:=nTimeInCycles TO 1 BY -1 DO
-	stASens.arrRawVal_Actual[nI]:=stASens.arrRawVal_Actual[nI-1];
+	arrRawVal_Actual[nI]:=arrRawVal_Actual[nI-1];
 	//calculating summ
-	stASens.nRawSumm:=stASens.nRawSumm+stASens.arrRawVal_Actual[nI];
+	nRawSumm:=nRawSumm+arrRawVal_Actual[nI];
 END_FOR
 
-stASens.arrRawVal_Actual[0]:=stASens.rawVal_Actual;
-stASens.nRawSumm:=stASens.nRawSumm+stASens.arrRawVal_Actual[0];
+arrRawVal_Actual[0]:=rawVal_Actual;
+nRawSumm:=nRawSumm+arrRawVal_Actual[0];
 
-stASens.rTempRawVal:=TO_REAL(stASens.nRawSumm/nTicks);]]></ST>
+rTempRawVal:=TO_REAL(nRawSumm/nTicks);]]></ST>
       </Implementation>
     </Action>
     <Action Name="act_SetValues" Id="{50799016-694b-4fa3-95e7-b80421febf4b}">
       <Implementation>
-        <ST><![CDATA[meth_SetRawValue(bSetValue:=stASens.bCopyRawTo_Max , nValToSet:=stASens.rawVal_Max , nRawValue:=stASens.rawVal_Actual );
-meth_SetRawValue(bSetValue:=stASens.bCopyRawTo_Min , nValToSet:=stASens.rawVal_Min , nRawValue:=stASens.rawVal_Actual );]]></ST>
+        <ST><![CDATA[meth_SetRawValue(bSetValue:=bCopyRawTo_Max , nValToSet:=stASens.rawVal_Max , nRawValue:=rawVal_Actual );
+meth_SetRawValue(bSetValue:=bCopyRawTo_Min , nValToSet:=stASens.rawVal_Min , nRawValue:=rawVal_Actual );]]></ST>
       </Implementation>
     </Action>
     <Method Name="meth_SetRawValue" Id="{9a7a01d2-f381-460b-bac2-ead7a5008be7}">
@@ -97,21 +129,18 @@ END_VAR
 END_IF]]></ST>
       </Implementation>
     </Method>
-    <Method Name="set_Data" Id="{ce08728b-f0bd-4a94-ae65-6b0253b241c9}">
-      <Declaration><![CDATA[METHOD set_Data : ST_AnalogSensor
-VAR_INPUT
-	
-END_VAR
-]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[]]></ST>
-      </Implementation>
-    </Method>
     <LineIds Name="FB_AnalogSensor">
       <LineId Id="42" Count="0" />
       <LineId Id="35" Count="0" />
       <LineId Id="34" Count="0" />
       <LineId Id="21" Count="0" />
+      <LineId Id="85" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_AnalogSensor.act_AlarmWarnings">
+      <LineId Id="5" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="12" Count="2" />
     </LineIds>
     <LineIds Name="FB_AnalogSensor.act_Get_Reference">
       <LineId Id="1" Count="0" />
@@ -156,9 +185,6 @@ END_VAR
       <LineId Id="8" Count="0" />
       <LineId Id="14" Count="0" />
       <LineId Id="9" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_AnalogSensor.set_Data">
-      <LineId Id="5" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>

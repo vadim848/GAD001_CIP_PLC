@@ -5,12 +5,16 @@
 VAR
 
 	tt: REAL;
+	
+	bTesting	:	BOOL:=FALSE	;
 END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[prg_RealClock();
 prg_Piston();
 prg_Safety();
+
+act_SetAnalogSens_Test();//To be deleted, for testing purposes
 
 act_SetValves();
 act_ClientPump_Select();
@@ -12180,6 +12184,97 @@ END_CASE]]></ST>
         </NWL>
       </Implementation>
     </Action>
+    <Action Name="act_SetAnalogSens_Test" Id="{455abcb0-c90c-4f45-9ea9-f7b3ab53cef4}">
+      <Implementation>
+        <ST><![CDATA[//set analog sensors setting only for the test. 
+//Later this action should be deleted 
+IF NOT bTesting THEN
+	//Level
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.LT1004].rawVal_Max:=14350;
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.LT1004].rawVal_Min:=1270;
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.LT1004].outVal_Max:=785;
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.LT1004].outVal_Min:=0;
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.LT1004].outOffset:=73;
+	
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.LT1003].rawVal_Max:=14350;
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.LT1003].rawVal_Min:=1270;
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.LT1003].outVal_Max:=785;
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.LT1003].outVal_Min:=0;
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.LT1003].outOffset:=73;
+	
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.LT1002].rawVal_Max:=14350;
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.LT1002].rawVal_Min:=1270;
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.LT1002].outVal_Max:=785;
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.LT1002].outVal_Min:=0;
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.LT1002].outOffset:=73;
+	
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.LT1001].rawVal_Max:=14350;
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.LT1001].rawVal_Min:=1270;
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.LT1001].outVal_Max:=785;
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.LT1001].outVal_Min:=0;
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.LT1001].outOffset:=73;
+	
+	//Flow
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.FM1001].rawVal_Max:=10000;
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.FM1001].rawVal_Min:=0;
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.FM1001].outVal_Max:=306;
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.FM1001].outVal_Min:=0;
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.FM1001].outOffset:=0;
+	
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.FM1002].rawVal_Max:=10000;
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.FM1002].rawVal_Min:=0;
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.FM1002].outVal_Max:=306;
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.FM1002].outVal_Min:=0;
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.FM1002].outOffset:=0;
+	
+	////conductivity sensors
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.CT1101].rawVal_Max:=14150;
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.CT1101].rawVal_Min:=305;
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.CT1101].outVal_Max:=14560;
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.CT1101].outVal_Min:=346;
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.CT1101].outOffset:=0;
+	
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.CT3101].rawVal_Max:=14150;
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.CT3101].rawVal_Min:=305;
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.CT3101].outVal_Max:=14560;
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.CT3101].outVal_Min:=346;
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.CT3101].outOffset:=0;
+	
+	//Temperature sensor
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.TT1001].rawVal_Max:=7470;
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.TT1001].rawVal_Min:=6400;
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.TT1001].outVal_Max:=26;
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.TT1001].outVal_Min:=20.9;
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.TT1001].outOffset:=0;
+	
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.TT1002].rawVal_Max:=7470;
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.TT1002].rawVal_Min:=6400;
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.TT1002].outVal_Max:=26;
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.TT1002].outVal_Min:=20.9;
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.TT1002].outOffset:=0;
+	
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.TT1003].rawVal_Max:=7470;
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.TT1003].rawVal_Min:=6400;
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.TT1003].outVal_Max:=26;
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.TT1003].outVal_Min:=20.9;
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.TT1003].outOffset:=0;
+	
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.TT1004].rawVal_Max:=7470;
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.TT1004].rawVal_Min:=6400;
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.TT1004].outVal_Max:=26;
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.TT1004].outVal_Min:=20.9;
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.TT1004].outOffset:=0;
+	
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.TT1101].rawVal_Max:=7470;
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.TT1101].rawVal_Min:=6400;
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.TT1101].outVal_Max:=26;
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.TT1101].outVal_Min:=20.9;
+	g_AnalogSensor.stAnalogSensor[E_ASense_Name.TT1101].outOffset:=0;
+
+	bTesting:=TRUE;
+END_IF]]></ST>
+      </Implementation>
+    </Action>
     <Action Name="act_SetValves" Id="{606bb271-252e-407f-8120-3b3f040d1b23}">
       <Implementation>
         <ST><![CDATA[//Production tank
@@ -12343,7 +12438,10 @@ END_CASE]]></ST>
       </Implementation>
     </Action>
     <LineIds Name="MAIN">
-      <LineId Id="88" Count="9" />
+      <LineId Id="88" Count="2" />
+      <LineId Id="118" Count="0" />
+      <LineId Id="117" Count="0" />
+      <LineId Id="91" Count="6" />
       <LineId Id="108" Count="1" />
       <LineId Id="99" Count="8" />
       <LineId Id="16" Count="0" />
@@ -12357,6 +12455,46 @@ END_CASE]]></ST>
       <LineId Id="13" Count="1" />
       <LineId Id="18" Count="0" />
       <LineId Id="3" Count="0" />
+    </LineIds>
+    <LineIds Name="MAIN.act_SetAnalogSens_Test">
+      <LineId Id="1" Count="1" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="4" Count="0" />
+      <LineId Id="9" Count="3" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="14" Count="4" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="20" Count="4" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="26" Count="4" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="35" Count="3" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="40" Count="4" />
+      <LineId Id="39" Count="0" />
+      <LineId Id="46" Count="0" />
+      <LineId Id="45" Count="0" />
+      <LineId Id="49" Count="3" />
+      <LineId Id="48" Count="0" />
+      <LineId Id="54" Count="4" />
+      <LineId Id="53" Count="0" />
+      <LineId Id="60" Count="0" />
+      <LineId Id="59" Count="0" />
+      <LineId Id="62" Count="3" />
+      <LineId Id="61" Count="0" />
+      <LineId Id="67" Count="4" />
+      <LineId Id="66" Count="0" />
+      <LineId Id="73" Count="4" />
+      <LineId Id="72" Count="0" />
+      <LineId Id="79" Count="4" />
+      <LineId Id="78" Count="0" />
+      <LineId Id="85" Count="4" />
+      <LineId Id="84" Count="0" />
+      <LineId Id="91" Count="0" />
+      <LineId Id="90" Count="0" />
+      <LineId Id="47" Count="0" />
     </LineIds>
     <LineIds Name="MAIN.act_SetValves">
       <LineId Id="1" Count="0" />
