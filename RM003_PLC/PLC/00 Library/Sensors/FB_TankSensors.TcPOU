@@ -6,6 +6,7 @@ VAR_IN_OUT
 	stTankLevel	:	ST_Tank_Level	;
 END_VAR
 VAR_INPUT
+	volume: REAL:=100; //litr
 	//Level
 	senHL				:	BOOL	;
 	senLL				:	BOOL	;
@@ -45,7 +46,11 @@ ELSIF stTankLevel.bIn_LL_signal=FALSE AND stTankLevel.bIn_HL_signal=TRUE THEN
 	stTankLevel.e_state:=E_Tank_Level.eERROR;
 END_IF
 
-stTankLevel.rTankLevel:=stASensLvl.Value;]]></ST>
+stTankLevel.rTankLevel:=stASensLvl.Value;
+stTankLevel.rTankLevelPercentage:=stTankLevel.rTankLevel/volume*100;
+stTankLevel.bIn_HL_signal:=senHL;
+stTankLevel.bIn_LL_signal:=senLL;
+]]></ST>
       </Implementation>
     </Action>
     <LineIds Name="FB_TankSensors">
@@ -56,6 +61,9 @@ stTankLevel.rTankLevel:=stASensLvl.Value;]]></ST>
     <LineIds Name="FB_TankSensors.act_TankLvl">
       <LineId Id="2" Count="11" />
       <LineId Id="1" Count="0" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="16" Count="1" />
+      <LineId Id="15" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>

@@ -1008,15 +1008,26 @@
 				<Task Id="3" CreateSymbols="true" Priority="20" CycleTime="100000" AmsPort="350" AdtTasks="true">
 					<Name>PlcTask</Name>
 				</Task>
+				<Task Id="4" Priority="14" CycleTime="3000000" AmsPort="351" AdtTasks="true">
+					<Name>PlcTask_Recipe</Name>
+				</Task>
 			</Tasks>
 		</System>
 		<Plc>
 			<Project GUID="{AD98C8E8-1161-4C5F-BAB4-CA4317288767}" Name="PLC" PrjFilePath="PLC\PLC.plcproj" TmcFilePath="PLC\PLC.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="PLC\PLC.tmc" TmcHash="{FB8BC0B2-192D-170F-D129-EC16AFA484E1}">
+				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="PLC\PLC.tmc" TmcHash="{574055C6-157E-E761-DB86-2744D9BFDA4F}">
 					<Name>PLC Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
-					<Vars VarGrpType="1">
+					<Vars VarGrpType="1" ContextId="1" AreaNo="16">
 						<Name>PlcTask Inputs</Name>
+						<Var>
+							<Name>gIO.i_EL</Name>
+							<Type GUID="{8A36090C-BBFB-2AFA-9B94-75DD83ABB676}">ARRAY [1..7] OF ST_EL18x9</Type>
+						</Var>
+						<Var>
+							<Name>gIO.ai_EL</Name>
+							<Type GUID="{4D77766C-E1E9-CFB4-C001-D75FB898231C}">ARRAY [1..2] OF ST_EL3xx8</Type>
+						</Var>
 						<Var>
 							<Name>gIO.Nidec[0].StatusWord</Name>
 							<Comment><![CDATA[ Input from Receive PDO Mapping 6]]></Comment>
@@ -1108,14 +1119,6 @@
 							<Type>INT</Type>
 						</Var>
 						<Var>
-							<Name>gIO.i_EL</Name>
-							<Type GUID="{8A36090C-BBFB-2AFA-9B94-75DD83ABB676}">ARRAY [1..7] OF ST_EL18x9</Type>
-						</Var>
-						<Var>
-							<Name>gIO.ai_EL</Name>
-							<Type GUID="{4D77766C-E1E9-CFB4-C001-D75FB898231C}">ARRAY [1..2] OF ST_EL3xx8</Type>
-						</Var>
-						<Var>
 							<Name>gIO.arSafe[1].TSafeIn</Name>
 							<Type GUID="{43DBAE36-F52B-B81C-07B3-1EA511043F86}">TwinSafeOut_PlcIn</Type>
 						</Var>
@@ -1124,8 +1127,16 @@
 							<Type GUID="{8A37FEC1-4584-6318-CCB3-6C1CAA64F117}">ST_SafeOut_PlcIn</Type>
 						</Var>
 					</Vars>
-					<Vars VarGrpType="2" AreaNo="1">
+					<Vars VarGrpType="2" ContextId="1" AreaNo="17">
 						<Name>PlcTask Outputs</Name>
+						<Var>
+							<Name>gIO.q_EL</Name>
+							<Type GUID="{071CAD80-BA94-47F6-311C-AFDA6AE34224}">ARRAY [1..1] OF ST_EL28x9</Type>
+						</Var>
+						<Var>
+							<Name>gIO.q_Manifold1</Name>
+							<Type GUID="{0BF2D286-D3B7-C0D2-7A90-EA7C2007271E}">ARRAY [1..24] OF ST_VTUG</Type>
+						</Var>
 						<Var>
 							<Name>gIO.Nidec[0].ControlWord</Name>
 							<Comment><![CDATA[ Output to Transmit PDO Mapping 6]]></Comment>
@@ -1217,14 +1228,6 @@
 							<Type>INT</Type>
 						</Var>
 						<Var>
-							<Name>gIO.q_EL</Name>
-							<Type GUID="{071CAD80-BA94-47F6-311C-AFDA6AE34224}">ARRAY [1..1] OF ST_EL28x9</Type>
-						</Var>
-						<Var>
-							<Name>gIO.q_Manifold1</Name>
-							<Type GUID="{0BF2D286-D3B7-C0D2-7A90-EA7C2007271E}">ARRAY [1..24] OF ST_VTUG</Type>
-						</Var>
-						<Var>
 							<Name>gIO.arSafe[1].TSafeOut</Name>
 							<Type GUID="{AF4A2308-F63C-4493-A7C7-C68A2BFD146B}">TwinSafeIn_PlcOut</Type>
 						</Var>
@@ -1248,6 +1251,15 @@
 					<Contexts>
 						<Context>
 							<Id>0</Id>
+							<Name>PlcTask_Recipe</Name>
+							<ManualConfig>
+								<OTCID>#x02010040</OTCID>
+							</ManualConfig>
+							<Priority>14</Priority>
+							<CycleTime>300000000</CycleTime>
+						</Context>
+						<Context>
+							<Id>1</Id>
 							<Name>PlcTask</Name>
 							<ManualConfig>
 								<OTCID>#x02010030</OTCID>
@@ -1257,6 +1269,7 @@
 						</Context>
 					</Contexts>
 					<TaskPouOids>
+						<TaskPouOid Prio="14" OTCID="#x08502002"/>
 						<TaskPouOid Prio="20" OTCID="#x08502001"/>
 					</TaskPouOids>
 				</Instance>
@@ -1393,7 +1406,7 @@
 								<Entry Name="Standard In Var 2" Index="#x6000" Sub="#x02">
 									<Type>BIT</Type>
 								</Entry>
-								<Entry Name="Standard In Var 12" Index="#x6000" Sub="#x03">
+								<Entry Name="Standard In Var 28" Index="#x6000" Sub="#x03">
 									<Type>BIT</Type>
 								</Entry>
 								<Entry>
@@ -3395,8 +3408,8 @@ Bit1: Value bigger/equal Limit2]]></Comment>
 		</Io>
 	</Project>
 	<Mappings>
-		<MappingInfo Identifier="{00000000-2001-0850-0020-500810000403}" Id="#x02030010"/>
-		<MappingInfo Identifier="{00000000-2001-0850-0020-500840000403}" Id="#x02030020"/>
+		<MappingInfo Identifier="{00000000-2001-0850-0120-500810000403}" Id="#x02030010"/>
+		<MappingInfo Identifier="{00000000-2001-0850-0120-500840000403}" Id="#x02030020"/>
 		<MappingInfo Identifier="{03040010-0010-0304-1000-040310000403}" Id="#x02030030" Watchdog="04000000040000000400000004000000"/>
 		<OwnerA Name="TIID^Device 1 (EtherCAT)">
 			<OwnerB Name="TIID^Device 1 (EtherCAT)^Term 1 (EK1200)^SDO_01 (EL2904)">
@@ -3588,7 +3601,7 @@ Bit1: Value bigger/equal Limit2]]></Comment>
 				<Link VarA="PlcTask Inputs^gIO.arSafe[1].stSafetyIn^TankLocked_CIP_T94" VarB="StandardInputs^Standard Out Var 16"/>
 				<Link VarA="PlcTask Outputs^gIO.arSafe[1].TSafeOut^ErrACK" VarB="StandardOutputs^Standard In Var 1"/>
 				<Link VarA="PlcTask Outputs^gIO.arSafe[1].TSafeOut^RUN" VarB="StandardOutputs^Standard In Var 2"/>
-				<Link VarA="PlcTask Outputs^gIO.arSafe[1].stSafetyOut^bEstopRestart" VarB="StandardOutputs^Standard In Var 12"/>
+				<Link VarA="PlcTask Outputs^gIO.arSafe[1].stSafetyOut^bEstopRestart" VarB="StandardOutputs^Standard In Var 28"/>
 			</OwnerB>
 			<OwnerB Name="TIID^Device 4 (EtherCAT)^Box 16 (CTEU-EtherCAT Modular)">
 				<Link VarA="PlcTask Outputs^gIO.q_Manifold1[10]^sol_12" VarB="Module 1 (VAEM-L1-S-24-PT [48DO])^Outputs^C3 Output[3]"/>

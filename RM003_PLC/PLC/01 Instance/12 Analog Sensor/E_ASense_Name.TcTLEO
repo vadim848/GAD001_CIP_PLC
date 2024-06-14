@@ -3,16 +3,32 @@
   <EnumerationTextList Name="E_ASense_Name" Id="{58e6c96c-1337-4953-b9cd-57c742ebe203}">
     <Declaration><![CDATA[{attribute 'qualified_only'}
 {attribute 'strict'}
+{attribute 'to_string'}
 TYPE E_ASense_Name :
 (
 	enum_member := 0,
+	//level sensors CIP	
+	LT1004,	
+	LT1003,	
+	LT1002,
+	LT1001,
+	//Flow  sensors
+	FT1001,
+	FT1002,
+	
+	//conductivity sensors
+	CT1101,
+	//CT3101,	
+	
 	//temperature sensors
 	TT1001,
 	TT1002,
 	TT1003,
 	TT1004,
-	TT1005,
 	TT1101,
+	TT1105,
+	CT1101_2,
+	CT1101_3,
 	TT2001,
 	TT3001,
 	TT3002,
@@ -20,10 +36,8 @@ TYPE E_ASense_Name :
 	TT4002,
 	
 	//level sensors
-	LT1001,
-	LT1002,
-	LT1003,
-	LT1004,
+
+
 	LT1061,
 	LT1071,
 	LT3001,
@@ -40,16 +54,10 @@ TYPE E_ASense_Name :
 	PT9001,
 	PT9002,
 	
-	//conductivity sensors
-	CT1101,
-	CT3101,
-	
-	//Flow
-	FM1001,
-	FM1002,
+
 	
 	//virtual list
-	last
+	last:=30
 );
 END_TYPE
 ]]></Declaration>
@@ -60,6 +68,41 @@ END_TYPE
             <o>
               <v n="TextID">"enum_member"</v>
               <v n="TextDefault">"0"</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"LT1004"</v>
+              <v n="TextDefault">""</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"LT1003"</v>
+              <v n="TextDefault">""</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"LT1002"</v>
+              <v n="TextDefault">""</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"LT1001"</v>
+              <v n="TextDefault">""</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"FT1001"</v>
+              <v n="TextDefault">""</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"FT1002"</v>
+              <v n="TextDefault">""</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"CT1101"</v>
+              <v n="TextDefault">""</v>
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>
@@ -83,12 +126,22 @@ END_TYPE
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>
-              <v n="TextID">"TT1005"</v>
+              <v n="TextID">"TT1101"</v>
               <v n="TextDefault">""</v>
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>
-              <v n="TextID">"TT1101"</v>
+              <v n="TextID">"TT1105"</v>
+              <v n="TextDefault">""</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"CT1101_2"</v>
+              <v n="TextDefault">""</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"CT1101_3"</v>
               <v n="TextDefault">""</v>
               <l n="LanguageTexts" t="ArrayList" />
             </o>
@@ -114,26 +167,6 @@ END_TYPE
             </o>
             <o>
               <v n="TextID">"TT4002"</v>
-              <v n="TextDefault">""</v>
-              <l n="LanguageTexts" t="ArrayList" />
-            </o>
-            <o>
-              <v n="TextID">"LT1001"</v>
-              <v n="TextDefault">""</v>
-              <l n="LanguageTexts" t="ArrayList" />
-            </o>
-            <o>
-              <v n="TextID">"LT1002"</v>
-              <v n="TextDefault">""</v>
-              <l n="LanguageTexts" t="ArrayList" />
-            </o>
-            <o>
-              <v n="TextID">"LT1003"</v>
-              <v n="TextDefault">""</v>
-              <l n="LanguageTexts" t="ArrayList" />
-            </o>
-            <o>
-              <v n="TextID">"LT1004"</v>
               <v n="TextDefault">""</v>
               <l n="LanguageTexts" t="ArrayList" />
             </o>
@@ -203,28 +236,8 @@ END_TYPE
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>
-              <v n="TextID">"CT1101"</v>
-              <v n="TextDefault">""</v>
-              <l n="LanguageTexts" t="ArrayList" />
-            </o>
-            <o>
-              <v n="TextID">"CT3101"</v>
-              <v n="TextDefault">""</v>
-              <l n="LanguageTexts" t="ArrayList" />
-            </o>
-            <o>
-              <v n="TextID">"FM1001"</v>
-              <v n="TextDefault">""</v>
-              <l n="LanguageTexts" t="ArrayList" />
-            </o>
-            <o>
-              <v n="TextID">"FM1002"</v>
-              <v n="TextDefault">""</v>
-              <l n="LanguageTexts" t="ArrayList" />
-            </o>
-            <o>
               <v n="TextID">"last"</v>
-              <v n="TextDefault">""</v>
+              <v n="TextDefault">"30"</v>
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>
