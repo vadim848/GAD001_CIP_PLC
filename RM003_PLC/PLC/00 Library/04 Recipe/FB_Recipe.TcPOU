@@ -1,0 +1,386 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_Recipe" Id="{63aafca7-f761-4915-bd75-9a94b86d59ef}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Recipe
+VAR_INPUT
+	pstRecipe				:POINTER TO ST_Recipe;
+	bMemoRecipeUpdated		:BOOL:=FALSE;
+	sRecipeDef				:STRING; (* current recipe definition *)
+	bLoadDefault			:BOOL;
+	sRecipesStoragePath		:STRING;
+	bHMI_FrameActive		:BOOL;
+
+END_VAR
+
+VAR
+	i						:INT;	
+	RecipeManCommands 		:RecipeManCommands; (* Recipe Manager *)
+	k						:INT;
+	t1						:TON;
+	check					:DWORD;
+	INDEX					:INT:= 0;
+	bReloadRecipes			:BOOL;
+	rt_LoadDefault: R_TRIG;
+	MessageBox			:MessageBox_Struct;
+	arrLastReturn		: ARRAY[0..15] OF DWORD;
+	LastReturn			:  DWORD;
+	ton_RecipeUpdated: TON;
+	sMessage: STRING;
+	ton_SetStoragePath_Delay: TON;
+	bSetStoragePath: BOOL:=TRUE;
+	ton_SetStoragePathTimeOut: TON;
+	bReturn: BOOL;
+	
+	ton_MessClear: TON;
+	rt_Init: R_TRIG;
+	sLastMessage: STRING;
+	rt_Saved: R_TRIG;
+	rt_FrameAvtive: R_TRIG;
+	rt_LoadDefault1: R_TRIG;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[act_SetStoragePath();
+act_Disp();
+
+IF pstRecipe^.bValidSelected THEN
+	pstRecipe^.sSelectedReceipe:= pstRecipe^.arrRecipeNames[pstRecipe^.iRecipeIndex];
+	pstRecipe^.bValidSelected:=FALSE;
+END_IF
+
+rt_FrameAvtive(CLK:=bHMI_FrameActive);
+rt_LoadDefault1(CLK:=bLoadDefault);
+IF pstRecipe^.bReInit OR rt_LoadDefault1.Q OR rt_FrameAvtive.Q THEN;
+	pstRecipe^.bReInit:=FALSE;
+	pstRecipe^.bInit:=FALSE;
+	bSetStoragePath:=TRUE;
+END_IF
+
+t1(IN:=NOT pstRecipe^.bInit , PT:=T#0.5S);
+IF (NOT pstRecipe^.bInit AND t1.Q) THEN
+	
+	IF NOT bSetStoragePath THEN;
+		arrLastReturn[3]:=RecipeManCommands.ResetLastInfo();
+		arrLastReturn[4]:=RecipeManCommands.ReloadRecipes(RecipeDefinitionName:=sRecipeDef);
+		pstRecipe^.iRecipeCount:=RecipeManCommands.GetRecipeCount(sRecipeDef);
+		FOR i := 0 TO GVL_Recipe.C_Max_RecipeFileNum DO
+			pstRecipe^.arrRecipeNames[i] := '';
+		END_FOR
+		FOR i := 0 TO 1200 DO
+			pstRecipe^.arrVariableNamesValue[i] := '';
+			pstRecipe^.arrVariableValue[i] := '';
+		END_FOR	
+		(* save all recipe names of one recipe definition in an array *)
+		arrLastReturn[0]:=RecipeManCommands.GetRecipeNames(sRecipeDef, ADR(pstRecipe^.arrRecipeNames),GVL_Recipe.C_Max_RecipeFileNum, 0);
+		pstRecipe^.iRecipeIndex:=0;
+		pstRecipe^.sLastSelectedReceipe:=pstRecipe^.sSelectedReceipe:=pstRecipe^.arrRecipeNames[0];
+		pstRecipe^.bInit:=TRUE;
+		pstRecipe^.bReInit:=FALSE;		
+	END_IF
+
+END_IF
+
+
+rt_Init(CLK:=pstRecipe^.bInit);
+IF pstRecipe^.bInit THEN
+
+	IF pstRecipe^.sSelectedReceipe <> pstRecipe^.sLastSelectedReceipe 
+	OR rt_Init.Q 
+	OR rt_Saved.Q
+	THEN;
+				 
+		arrLastReturn[1]:=RecipeManCommands.GetRecipeValues
+			(
+			RecipeDefinitionName:= sRecipeDef,
+			RecipeName:= pstRecipe^.sSelectedReceipe, 
+			pStrings:= ADR(pstRecipe^.arrVariableValue), 
+			iSize:= 1200, 
+			iStartIndex:= 0, 
+			iStringLength:=80
+			 );		
+					
+		arrLastReturn[2]:=RecipeManCommands.GetRecipeVariableNames
+			(
+			RecipeDefinitionName:=sRecipeDef,
+			RecipeName:=pstRecipe^.sSelectedReceipe, 
+			pStrings:= ADR(pstRecipe^.arrVariableNamesValue), 
+			iSize:= 1200, 
+			iStartIndex:= 0
+			);
+				
+			pstRecipe^.bShowFile:=FALSE;
+	END_IF
+	pstRecipe^.sLastSelectedReceipe:=pstRecipe^.sSelectedReceipe;
+END_IF
+
+
+FOR i:=0 TO 15 DO
+	IF arrLastReturn[i]<>0 THEN
+		LastReturn:=arrLastReturn[i];
+		EXIT;
+	END_IF
+	IF i=15 AND arrLastReturn[i]=0 THEN
+		LastReturn:=0;
+	END_IF
+END_FOR
+
+act_Cmd_List();
+
+]]></ST>
+    </Implementation>
+    <Action Name="act_Cmd_List" Id="{6128ec74-fb63-4c1f-b6c7-01c4524738f9}">
+      <Implementation>
+        <ST><![CDATA[rt_LoadDefault(CLK:=bLoadDefault AND NOT bSetStoragePath);
+IF rt_LoadDefault.Q THEN;
+	pstRecipe^.sSelectedReceipe:='Default';
+	pstRecipe^.bWriteToPLC_Cmd:=TRUE;
+END_IF
+
+
+IF pstRecipe^.bReloadRecipes THEN
+	arrLastReturn[3]:=RecipeManCommands.ResetLastInfo();
+	arrLastReturn[4]:=RecipeManCommands.ReloadRecipes(RecipeDefinitionName:=sRecipeDef);
+	pstRecipe^.bReloadRecipes:=FALSE;
+END_IF
+
+
+IF pstRecipe^.bGetLastError THEN
+	arrLastReturn[5]:=RecipeManCommands.GetLastError();
+	pstRecipe^.bGetLastError:=FALSE;
+END_IF
+
+
+IF pstRecipe^.bResetLastError THEN
+	arrLastReturn[6]:=RecipeManCommands.ResetLastError();
+	pstRecipe^.bResetLastError:=FALSE;
+	sMessage:='';
+	FOR i:=0 TO 15 DO
+		arrLastReturn[i]:=0;
+	END_FOR	
+END_IF
+
+rt_Saved(CLK:=NOT pstRecipe^.bSaveFileCmd);
+IF pstRecipe^.bSaveFileCmd  THEN
+	sMessage:='cmd Save Recipe';
+	IF  METH_Search(pstRecipe:=pstRecipe , sSearchRecipe:=pstRecipe^.sSelectedReceipe ) THEN
+		//arrLastReturn[7]:=RecipeManCommands.ReadAndSaveRecipeAs(RecipeDefinitionName:=sRecipeDef,
+		arrLastReturn[7]:=RecipeManCommands.ReadAndSaveRecipe(RecipeDefinitionName:=sRecipeDef,
+			RecipeName:=pstRecipe^.sSelectedReceipe);// ,
+			//FileName:='.txtrecipe' );
+		sMessage:='cmd Save Recipe - Done';
+		pstRecipe^.bSaveFileCmd:=FALSE;
+	ELSE;
+		sMessage:='cmd Save Recipe - Failed';
+	END_IF
+END_IF
+
+
+IF pstRecipe^.bWriteToPLC_Cmd  THEN
+	sMessage:='cmd Load Recipe';
+	bMemoRecipeUpdated:=FALSE;
+	IF  METH_Search(pstRecipe:=pstRecipe , sSearchRecipe:=pstRecipe^.sSelectedReceipe ) THEN
+		arrLastReturn[8]:=RecipeManCommands.LoadRecipe(RecipeDefinitionName:= sRecipeDef, RecipeName:= pstRecipe^.sSelectedReceipe);
+		arrLastReturn[9]:=RecipeManCommands.WriteRecipe(RecipeDefinitionName:= sRecipeDef, RecipeName:= pstRecipe^.sSelectedReceipe);
+		sMessage:='cmd Load Recipe - Done';
+		pstRecipe^.bWriteToPLC_Cmd:=FALSE;
+		ton_RecipeUpdated.IN:=TRUE;
+	ELSE;
+		sMessage:='cmd Load Recipe - Failed';
+	END_IF
+END_IF
+ton_RecipeUpdated(PT:=T#1S);
+IF ton_RecipeUpdated.Q THEN;
+	bMemoRecipeUpdated:=TRUE;	
+	ton_RecipeUpdated.IN:=FALSE;
+END_IF
+
+
+IF pstRecipe^.bCreateRecipe AND pstRecipe^.sNewRecipeName <> '' THEN
+	arrLastReturn[10]:=RecipeManCommands.CreateRecipe(sRecipeDef ,pstRecipe^.sNewRecipeName);
+	sMessage:='cmd Create Recipe - Done';
+	pstRecipe^.bCreateRecipe:=FALSE;
+	pstRecipe^.bReInit:=TRUE;
+END_IF
+
+
+IF pstRecipe^.bDeleteRecipe THEN
+	sMessage:='cmd Delete Recipe';
+	IF  METH_Search(pstRecipe:=pstRecipe , sSearchRecipe:=pstRecipe^.sSelectedReceipe ) THEN
+		arrLastReturn[11]:=RecipeManCommands.DeleteRecipe(sRecipeDef ,pstRecipe^.sSelectedReceipe);
+		sMessage:='cmd Delete Recipe - Done';
+		pstRecipe^.bDeleteRecipe:=FALSE;
+		pstRecipe^.bReInit:=TRUE;
+	ELSE;
+		sMessage:='cmd Delete Recipe - Failed';
+	END_IF
+END_IF
+
+ton_MessClear(PT:=T#30S);
+IF sMessage<>sLastMessage THEN;
+	ton_MessClear(IN:=FALSE);
+	sLastMessage:=sMessage;
+ELSIF sMessage<>'' THEN;
+	ton_MessClear.IN:=TRUE;
+ELSE;
+	ton_MessClear.IN:=FALSE;
+END_IF
+IF ton_MessClear.Q THEN;
+	sMessage:='';
+END_IF
+
+
+
+
+]]></ST>
+      </Implementation>
+    </Action>
+    <Action Name="act_Disp" Id="{c0550086-68e6-4b05-93cc-ce9cbc221459}">
+      <Implementation>
+        <ST><![CDATA[
+IF pstRecipe^.iDispSel<0 THEN; pstRecipe^.iDispSel:=0; END_IF
+IF pstRecipe^.iDispSel>1180 THEN; pstRecipe^.iDispSel:=1180; END_IF
+
+//FOR k:=iDispSel TO iDispSel+19 DO;
+FOR k:=0 TO 20 DO;
+	pstRecipe^.arrVariableDisp[0,k]:= INT_TO_STRING(pstRecipe^.iDispSel+k);
+	pstRecipe^.arrVariableDisp[1,k]:=pstRecipe^.arrVariableNamesValue[pstRecipe^.iDispSel+k];
+	pstRecipe^.arrVariableDisp[2,k]:=pstRecipe^.arrVariableValue[pstRecipe^.iDispSel+k];
+END_FOR
+
+
+]]></ST>
+      </Implementation>
+    </Action>
+    <Action Name="act_SetStoragePath" Id="{69a5cd38-f127-4f75-bbaf-37404ec242ac}">
+      <Implementation>
+        <ST><![CDATA[ton_SetStoragePath_Delay(PT:=T#0.5S,IN:=bSetStoragePath);
+ton_SetStoragePathTimeOut(PT:=T#2S);
+
+IF ton_SetStoragePath_Delay.Q THEN;
+	bReturn:=RecipeManCommands.SetStoragePath(stPath:=sRecipesStoragePath);
+	//sMessage:='cmd Set Storage Path';
+	IF bReturn THEN;
+		bSetStoragePath:=FALSE;
+		ton_SetStoragePathTimeOut.IN:=FALSE;
+		//sMessage:='cmd Set Storage Path - Done';
+	ELSE
+		ton_SetStoragePathTimeOut.IN:=TRUE;
+	END_IF
+	
+	IF ton_SetStoragePathTimeOut.Q THEN;
+		bSetStoragePath:=FALSE;
+		ton_SetStoragePathTimeOut.IN:=FALSE;
+		//sMessage:='cmd Set Storage Path - Failed';		
+	END_IF
+END_IF]]></ST>
+      </Implementation>
+    </Action>
+    <Method Name="METH_Search" Id="{007bd1bf-2c8b-4e7b-bd55-b9334aa3e650}">
+      <Declaration><![CDATA[METHOD METH_Search : BOOL
+VAR_INPUT
+	pstRecipe :POINTER TO ST_Recipe;
+	sSearchRecipe	:STRING(30);
+END_VAR
+
+VAR
+	i: INT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[METH_Search:=FALSE;
+FOR i:= 0 TO GVL_Recipe.C_Max_RecipeFileNum DO
+	IF sSearchRecipe = pstRecipe^.arrRecipeNames[i] THEN
+		METH_Search:=TRUE;
+		EXIT;
+	END_IF
+END_FOR]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_Recipe">
+      <LineId Id="680" Count="1" />
+      <LineId Id="804" Count="0" />
+      <LineId Id="684" Count="3" />
+      <LineId Id="805" Count="1" />
+      <LineId Id="689" Count="10" />
+      <LineId Id="759" Count="1" />
+      <LineId Id="700" Count="16" />
+      <LineId Id="765" Count="0" />
+      <LineId Id="717" Count="4" />
+      <LineId Id="761" Count="0" />
+      <LineId Id="763" Count="0" />
+      <LineId Id="762" Count="0" />
+      <LineId Id="722" Count="25" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="748" Count="0" />
+      <LineId Id="750" Count="0" />
+      <LineId Id="752" Count="0" />
+      <LineId Id="751" Count="0" />
+      <LineId Id="756" Count="2" />
+      <LineId Id="749" Count="0" />
+      <LineId Id="810" Count="0" />
+      <LineId Id="754" Count="1" />
+      <LineId Id="753" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Recipe.act_Cmd_List">
+      <LineId Id="2" Count="17" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="20" Count="3" />
+      <LineId Id="85" Count="0" />
+      <LineId Id="109" Count="0" />
+      <LineId Id="116" Count="0" />
+      <LineId Id="108" Count="0" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="32" Count="3" />
+      <LineId Id="117" Count="1" />
+      <LineId Id="37" Count="7" />
+      <LineId Id="64" Count="0" />
+      <LineId Id="45" Count="12" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="60" Count="3" />
+      <LineId Id="59" Count="0" />
+      <LineId Id="84" Count="0" />
+      <LineId Id="66" Count="2" />
+      <LineId Id="88" Count="0" />
+      <LineId Id="69" Count="2" />
+      <LineId Id="83" Count="0" />
+      <LineId Id="72" Count="10" />
+      <LineId Id="65" Count="0" />
+      <LineId Id="90" Count="0" />
+      <LineId Id="89" Count="0" />
+      <LineId Id="94" Count="1" />
+      <LineId Id="103" Count="0" />
+      <LineId Id="102" Count="0" />
+      <LineId Id="104" Count="2" />
+      <LineId Id="96" Count="0" />
+      <LineId Id="91" Count="2" />
+      <LineId Id="98" Count="3" />
+      <LineId Id="97" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Recipe.act_Disp">
+      <LineId Id="2" Count="7" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="1" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="12" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Recipe.act_SetStoragePath">
+      <LineId Id="26" Count="0" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="8" Count="2" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="11" Count="6" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="1" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Recipe.METH_Search">
+      <LineId Id="13" Count="5" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

@@ -67,7 +67,10 @@ END_VAR
       <Declaration><![CDATA[METHOD m_SFC_Handle : BOOL
 VAR_INPUT
 END_VAR
-]]></Declaration>
+
+VAR
+	tonResetCycle: TON;
+END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[
 
@@ -138,6 +141,16 @@ IF bResume THEN;
 	bResume:=FALSE;
 END_IF
 
+tonResetCycle(PT:=T#0.5S);
+IF bResetCycle THEN;
+	refSFC.SFCReset:=TRUE;
+	tonResetCycle.IN:=TRUE;
+END_IF
+IF tonResetCycle.Q THEN;
+	bResetCycle:=FALSE;
+	refSFC.SFCReset:=FALSE;
+END_IF
+
 StepByStep();
 
 
@@ -178,7 +191,11 @@ END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[bRun:=TRUE;
-bDone:=FALSE;]]></ST>
+bDone:=FALSE;
+
+IF rtDone.Q THEN;
+	mRun:=TRUE;	
+END_IF]]></ST>
       </Implementation>
     </Method>
     <Method Name="mToBe_Done" Id="{eb188846-1ae0-496f-bc27-e382d11bf47b}">
@@ -264,6 +281,15 @@ END_IF]]></ST>
       <LineId Id="103" Count="0" />
       <LineId Id="105" Count="2" />
       <LineId Id="100" Count="1" />
+      <LineId Id="116" Count="0" />
+      <LineId Id="112" Count="0" />
+      <LineId Id="111" Count="0" />
+      <LineId Id="113" Count="0" />
+      <LineId Id="115" Count="0" />
+      <LineId Id="114" Count="0" />
+      <LineId Id="120" Count="1" />
+      <LineId Id="123" Count="0" />
+      <LineId Id="122" Count="0" />
       <LineId Id="69" Count="0" />
       <LineId Id="73" Count="1" />
       <LineId Id="70" Count="0" />
@@ -282,6 +308,8 @@ END_IF]]></ST>
     <LineIds Name="FB_SFC_Cycle.mRun">
       <LineId Id="5" Count="0" />
       <LineId Id="9" Count="0" />
+      <LineId Id="14" Count="2" />
+      <LineId Id="13" Count="0" />
     </LineIds>
     <LineIds Name="FB_SFC_Cycle.mToBe_Done">
       <LineId Id="13" Count="0" />

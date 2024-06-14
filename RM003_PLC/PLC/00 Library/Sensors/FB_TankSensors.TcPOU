@@ -3,24 +3,67 @@
   <POU Name="FB_TankSensors" Id="{3b995b33-c693-4ceb-8bd6-f0dd6e1df1dc}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_TankSensors
 VAR_IN_OUT
-	stTankSensors	:	ST_TankSensors	;
+	stTankLevel	:	ST_Tank_Level	;
 END_VAR
 VAR_INPUT
+	volume: REAL:=100; //litr
+	//Level
+	senHL				:	BOOL	;
+	senLL				:	BOOL	;
+	nSensorLvl_ID		: 	E_ASense_Name	;
+	nSensorLvl_Raw		:	INT		;
+	//Temperature
+	nSensorTemp_ID		: 	E_ASense_Name	;
+	nSensorTemp_Raw		:	INT		;
 END_VAR
 VAR_OUTPUT
 END_VAR
 VAR
-	Call_TanlLevel	:	FB_TankLevel	;
-	Call_TankTemp	:	FB_AnalogSignal	;
+	stASensLvl			:	REFERENCE TO ST_AnalogSensor	;
+	
+	stASensTemp			:	REFERENCE TO ST_AnalogSensor	;
+	
+	Call_TankLevel			:	FB_AnalogSensor	;
+	Call_TankTemp			:	FB_AnalogSensor	;
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[Call_TanlLevel(stTank_Level:=stTankSensors.stTank_Level , stAnalogSignal:=stTankSensors.stAnalogLvl );
-Call_TankTemp(AnalogSignal:=stTankSensors.stAnalogTemp );]]></ST>
+      <ST><![CDATA[Call_TankLevel(nSensorID:=nSensorLvl_ID, nRawSensor:=nSensorLvl_Raw );
+Call_TankTemp(nSensorID:=nSensorTemp_ID, nRawSensor:=nSensorTemp_Raw );
+act_TankLvl();]]></ST>
     </Implementation>
+    <Action Name="act_TankLvl" Id="{97fbc1d5-579a-4896-bb72-4b1494685121}">
+      <Implementation>
+        <ST><![CDATA[stASensLvl REF=g_AnalogSensor.stAnalogSensor[nSensorLvl_ID];
+
+IF stTankLevel.bIn_LL_signal=FALSE AND stTankLevel.bIn_HL_signal=FALSE THEN
+	stTankLevel.e_state:=E_Tank_Level.eEmpty;
+ELSIF stTankLevel.bIn_LL_signal=TRUE AND stTankLevel.bIn_HL_signal=FALSE THEN
+	stTankLevel.e_state:=E_Tank_Level.eLL;
+ELSIF stTankLevel.bIn_LL_signal=TRUE AND stTankLevel.bIn_HL_signal=TRUE THEN
+	stTankLevel.e_state:=E_Tank_Level.eHL;
+ELSIF stTankLevel.bIn_LL_signal=FALSE AND stTankLevel.bIn_HL_signal=TRUE THEN
+	stTankLevel.e_state:=E_Tank_Level.eERROR;
+END_IF
+
+stTankLevel.rTankLevel:=stASensLvl.Value;
+stTankLevel.rTankLevelPercentage:=stTankLevel.rTankLevel/volume*100;
+stTankLevel.bIn_HL_signal:=senHL;
+stTankLevel.bIn_LL_signal:=senLL;
+]]></ST>
+      </Implementation>
+    </Action>
     <LineIds Name="FB_TankSensors">
-      <LineId Id="9" Count="0" />
-      <LineId Id="16" Count="0" />
+      <LineId Id="50" Count="0" />
+      <LineId Id="54" Count="0" />
+      <LineId Id="56" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_TankSensors.act_TankLvl">
+      <LineId Id="2" Count="11" />
+      <LineId Id="1" Count="0" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="16" Count="1" />
+      <LineId Id="15" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>

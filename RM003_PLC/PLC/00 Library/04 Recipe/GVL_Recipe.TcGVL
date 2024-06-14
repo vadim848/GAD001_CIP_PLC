@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <GVL Name="GVL_Recipe" Id="{00815d2c-fef9-49f6-bfde-c8baa04f5493}">
+    <Declaration><![CDATA[//{attribute 'qualified_only'}
+VAR_GLOBAL CONSTANT	
+	C_Max_RecipeFileNum				: INT:=100;
+	C_Max_Recipe_List				: INT:=E_Recipe_Name.R_Piston_Settings;
+
+END_VAR
+
+VAR_GLOBAL 
+	fbRecipe					: ARRAY [1..C_Max_Recipe_List] OF FB_Recipe;
+	stRecipe					: ARRAY [1..C_Max_Recipe_List] OF ST_Recipe;
+
+	ar_RecipesLoadDefault			: ARRAY [1..E_Recipe_Name.R_Piston_Settings] OF BOOL;
+	ar_RecipesStoragePath			: ARRAY [1..E_Recipe_Name.R_Piston_Settings] OF STRING(80);;	
+	
+END_VAR
+
+VAR_GLOBAL PERSISTENT
+	eRecipeRootFolder: E_Recipe_Root_Folder:=E_Recipe_Root_Folder.PLC;
+	ar_RecipesStoragePath_Root			: ARRAY [0..4] OF STRING:=[	
+	(*PLC*)			'C:\Recipe',
+	(*Develop_1*)	'C:\Users\admin\Source\Repos\RM003_PLC\Recipes',
+	(*Develop_2*)	'C:\Users\admin\Source\Repos\RM003_PLC\Recipes',
+	(*Develop_3*)	'C:\Users\dell\source\repos\KFM001_Hyper\Recipes',
+	(*Develop_4*)	'\Hard Disk\ftp\Recipe'
+	];		
+	
+	ar_RecipesStoragePath_Folder			: ARRAY [1..C_Max_Recipe_List] OF STRING;			
+	
+END_VAR]]></Declaration>
+  </GVL>
+</TcPlcObject>

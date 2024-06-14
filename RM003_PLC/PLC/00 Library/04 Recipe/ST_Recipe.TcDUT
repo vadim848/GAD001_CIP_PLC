@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="ST_Recipe" Id="{d8b28d86-7f99-4611-86c7-14ea7f34ca28}">
+    <Declaration><![CDATA[TYPE ST_Recipe :
+STRUCT
+	arrRecipeNames 			:ARRAY[0..GVL_Recipe.C_Max_RecipeFileNum] OF STRING;//(20);
+	arrVariableNamesValue 	:ARRAY[0..1200] OF STRING;//(40);
+	arrVariableValue 		:ARRAY[0..1200] OF STRING;//(40);
+	arrVariableDisp 		:ARRAY[0..2,0..20] OF STRING;//(40);
+
+
+	sSelectedReceipe		:STRING(30);
+	sLastSelectedReceipe	:STRING(30);
+	sNewRecipeName			:STRING(30);
+	//sRecipeDef				:STRING := 'Recipe'; (* current recipe definition *)
+	iRecipeIndex 			:INT;
+	iRecipeCount			:INT;
+	bSaveFileCmd			:BOOL;
+	bWriteToPLC_Cmd			:BOOL;
+	bValidSelected			:BOOL;
+	bCreateRecipe			:BOOL;
+	bDeleteRecipe			:BOOL;
+	bReloadRecipes			:BOOL:=TRUE;
+	bInit					:BOOL:=FALSE;;
+	bReInit					:BOOL;
+	bShowFile				:BOOL;
+	bGetLastError			:BOOL;
+	bResetLastError			:BOOL;
+	iDispSel				:INT; // 0..1180 --- 1200-20=1180 - Scrollbar fot HMI Table name & value
+	info					:InfoValues;
+	
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

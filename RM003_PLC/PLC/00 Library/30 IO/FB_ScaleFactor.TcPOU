@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_ScaleFactor" Id="{2d2d597b-4964-458b-9213-df7af1369234}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_ScaleFactor
+VAR_INPUT
+	rVal: REAL;
+	rInValHigh: REAL;
+	rInValLow: REAL;
+	rOutValHigh: REAL;
+	rOutValLow: REAL;
+	rOutOffset: REAL:=0;
+END_VAR
+
+VAR
+	rOfset: REAL;
+	a: REAL;
+	b: REAL;
+END_VAR
+VAR_OUTPUT
+	rValOut: REAL;
+	diValOut: DINT;
+	iValOut: INT;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IF rInValHigh-rInValLow<>0 THEN;
+	a:=(rOutValHigh-rOutValLow)/(rInValHigh-rInValLow);
+ELSE;
+	a:=0;
+END_IF
+b:=rOutValHigh-(a*rInValHigh);
+rValOut:=(a*rVal+b)+rOutOffset;
+diValOut:=TRUNC(rValOut);
+iValOut:=DINT_TO_INT(diValOut);]]></ST>
+    </Implementation>
+    <LineIds Name="FB_ScaleFactor">
+      <LineId Id="3" Count="7" />
+      <LineId Id="2" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>
