@@ -2,9 +2,12 @@
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="FB_ProcessControl" Id="{a1972051-d534-4d79-bd7a-71cd1b516897}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_ProcessControl
-VAR_INPUT
-	value			: REAL;
-	SetPoint		: REAL;
+VAR_IN_OUT
+	stProcessControl	:	ST_ProcessControl	;
+END_VAR
+(*VAR_INPUT
+	rValue			: REAL;
+	rSetPoint		: REAL;
 	ToleravceLow	: REAL:=0;  // min=0
 	ToleranceHigh	: REAL:=0;  // min=0
 END_VAR
@@ -13,41 +16,94 @@ VAR_OUTPUT
 	Control_Value	: REAL;  // min=0 , max=1
 	Control_ON		: BOOL;
 	OverFlow		: BOOL;	
-END_VAR
+	
+	bDone			:	BOOL	;
+END_VAR*)
 VAR
-
-	Deviation		: REAL;
-
-
+	bRun		:	BOOL	;
+	Deviation	: 	REAL	;
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[Deviation:=SetPoint-value;
-Control_ON:=FALSE;
-OverFlow:=FALSE;
-
-IF Deviation >= ToleravceLow THEN;
-	Control_ON:=TRUE;
-ELSIF Deviation <= -ToleranceHigh THEN;
-	OverFlow:=TRUE;
-	//message
-ELSE;
-	// Done, value in tolerace
+      <ST><![CDATA[IF bRun THEN
+	Deviation:=stProcessControl.rSetPoint-stProcessControl.rValue;
+	stProcessControl.Control_ON:=FALSE;
+	stProcessControl.OverFlow:=FALSE;
+	stProcessControl.bDone:=FALSE;
+	
+	IF Deviation >= stProcessControl.ToleravceLow THEN;
+		//Value too low needs to be increased
+		stProcessControl.Control_ON:=TRUE;
+		stProcessControl.OverFlow:=FALSE;
+		stProcessControl.bDone:=FALSE;
+	ELSIF Deviation <= -stProcessControl.ToleranceHigh THEN;
+		//value too high need to be decreased
+		stProcessControl.OverFlow:=TRUE;
+		stProcessControl.Control_ON:=FALSE;
+		stProcessControl.bDone:=FALSE;
+		//message
+	ELSE;
+		// Done, value in tolerace
+		stProcessControl.OverFlow:=FALSE;
+		stProcessControl.Control_ON:=FALSE;
+		stProcessControl.bDone:=TRUE;
+	END_IF
+	bRun:=FALSE;
 END_IF]]></ST>
     </Implementation>
+    <Method Name="mReset" Id="{b49576d6-978e-47f7-ae59-752a1612df43}">
+      <Declaration><![CDATA[METHOD mReset : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[stProcessControl.Control_ON:=FALSE;
+stProcessControl.OverFlow:=FALSE;
+stProcessControl.bDone:=FALSE;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="mRun" Id="{9603e267-93ce-4898-8d8d-2a4ace5f7fdf}">
+      <Declaration><![CDATA[METHOD mRun : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[bRun:=TRUE;]]></ST>
+      </Implementation>
+    </Method>
     <LineIds Name="FB_ProcessControl">
+      <LineId Id="66" Count="0" />
       <LineId Id="9" Count="0" />
       <LineId Id="28" Count="0" />
       <LineId Id="19" Count="0" />
+      <LineId Id="55" Count="0" />
       <LineId Id="29" Count="0" />
       <LineId Id="18" Count="0" />
+      <LineId Id="53" Count="0" />
       <LineId Id="20" Count="0" />
+      <LineId Id="51" Count="0" />
+      <LineId Id="50" Count="0" />
       <LineId Id="22" Count="0" />
+      <LineId Id="54" Count="0" />
       <LineId Id="27" Count="0" />
+      <LineId Id="49" Count="0" />
+      <LineId Id="47" Count="0" />
       <LineId Id="40" Count="0" />
       <LineId Id="26" Count="0" />
       <LineId Id="30" Count="0" />
+      <LineId Id="44" Count="0" />
+      <LineId Id="46" Count="0" />
+      <LineId Id="43" Count="0" />
       <LineId Id="21" Count="0" />
+      <LineId Id="69" Count="0" />
+      <LineId Id="68" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ProcessControl.mReset">
+      <LineId Id="6" Count="1" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ProcessControl.mRun">
+      <LineId Id="5" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>
