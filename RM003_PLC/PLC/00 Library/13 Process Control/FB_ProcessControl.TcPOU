@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_ProcessControl" Id="{a1972051-d534-4d79-bd7a-71cd1b516897}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_ProcessControl
+VAR_INPUT
+	value			: REAL;
+	SetPoint		: REAL;
+	ToleravceLow	: REAL:=0;  // min=0
+	ToleranceHigh	: REAL:=0;  // min=0
+END_VAR
+
+VAR_OUTPUT
+	Control_Value	: REAL;  // min=0 , max=1
+	Control_ON		: BOOL;
+	OverFlow		: BOOL;	
+END_VAR
+VAR
+
+	Deviation		: REAL;
+
+
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[Deviation:=SetPoint-value;
+Control_ON:=FALSE;
+OverFlow:=FALSE;
+
+IF Deviation >= ToleravceLow THEN;
+	Control_ON:=TRUE;
+ELSIF Deviation <= -ToleranceHigh THEN;
+	OverFlow:=TRUE;
+	//message
+ELSE;
+	// Done, value in tolerace
+END_IF]]></ST>
+    </Implementation>
+    <LineIds Name="FB_ProcessControl">
+      <LineId Id="9" Count="0" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="40" Count="0" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="21" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>
