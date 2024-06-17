@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="ST_ProcessControl" Id="{605fc618-bf0d-4beb-8cbb-bff86f34391d}">
+    <Declaration><![CDATA[TYPE ST_ProcessControl :
+STRUCT
+	rValue			: REAL;
+	rSetPoint		: REAL;
+	ToleravceLow	: REAL:=0;  // min=0
+	ToleranceHigh	: REAL:=0;  // min=0
+
+	Control_Value	: REAL;  // min=0 , max=1
+	Control_ON		: BOOL;
+	OverFlow		: BOOL;	
+	
+	bDone			:	BOOL	;
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

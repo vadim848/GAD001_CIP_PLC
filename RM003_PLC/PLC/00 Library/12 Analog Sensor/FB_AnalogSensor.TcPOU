@@ -77,7 +77,7 @@ stASens.ID:=TO_STRING(nSensorID);
 //stASens.rawVal_Actual:=nRawSensor;
 
 fbScaleFactor(
-	rVal:=nRawSensor,//stASens.rawVal_Actual , 
+	rVal:=rTempRawVal,//stASens.rawVal_Actual , 
 	rInValHigh:=stASens.rawVal_Max , 
 	rInValLow:=stASens.rawVal_Min , 
 	rOutValHigh:=stASens.outVal_Max , 
@@ -112,7 +112,7 @@ FOR nI:=nTimeInCycles TO 1 BY -1 DO
 	nRawSumm:=nRawSumm+arrRawVal_Actual[nI];
 END_FOR
 
-arrRawVal_Actual[0]:=rawVal_Actual;
+arrRawVal_Actual[0]:=TO_INT(nRawSensor);
 nRawSumm:=nRawSumm+arrRawVal_Actual[0];
 
 rTempRawVal:=TO_REAL(nRawSumm/nTicks);]]></ST>
