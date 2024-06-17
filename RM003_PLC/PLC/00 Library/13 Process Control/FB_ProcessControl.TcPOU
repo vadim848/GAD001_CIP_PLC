@@ -21,22 +21,23 @@ VAR_OUTPUT
 END_VAR*)
 VAR
 	bRun		:	BOOL	;
-	Deviation	: 	REAL	;
+	//Deviation	: 	REAL	;
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[IF bRun THEN
-	Deviation:=stProcessControl.rSetPoint-stProcessControl.rValue;
+      <ST><![CDATA[
+IF bRun THEN
+	stProcessControl.Deviation:=stProcessControl.rSetPoint-stProcessControl.rValue;
 	stProcessControl.Control_ON:=FALSE;
 	stProcessControl.OverFlow:=FALSE;
 	stProcessControl.bDone:=FALSE;
 	
-	IF Deviation >= stProcessControl.ToleravceLow THEN;
+	IF stProcessControl.Deviation >= stProcessControl.ToleravceLow THEN;
 		//Value too low needs to be increased
 		stProcessControl.Control_ON:=TRUE;
 		stProcessControl.OverFlow:=FALSE;
 		stProcessControl.bDone:=FALSE;
-	ELSIF Deviation <= -stProcessControl.ToleranceHigh THEN;
+	ELSIF stProcessControl.Deviation <= -stProcessControl.ToleranceHigh THEN;
 		//value too high need to be decreased
 		stProcessControl.OverFlow:=TRUE;
 		stProcessControl.Control_ON:=FALSE;
@@ -72,6 +73,7 @@ END_VAR
       </Implementation>
     </Method>
     <LineIds Name="FB_ProcessControl">
+      <LineId Id="92" Count="0" />
       <LineId Id="66" Count="0" />
       <LineId Id="9" Count="0" />
       <LineId Id="28" Count="0" />
