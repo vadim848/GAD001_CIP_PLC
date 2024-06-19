@@ -95,11 +95,19 @@ END_IF
     <Method Name="m_Auto" Id="{80bcb1da-caaf-4610-b5db-3ec5b0ee5d69}">
       <Declaration><![CDATA[METHOD m_Auto : BOOL
 VAR_INPUT
+	control: LREAL; // RPM
 END_VAR
+
+VAR
+	RPM: INT;
+END_VAR
+
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[//ST_Pump.bRun_Auto:=TRUE;
 m_Auto:=TRUE;
+RPM:=DINT_TO_INT(TRUNC(control));
+nRPM_Auto:=RPM;
 bRun_Auto:=TRUE;
 //need to be set up an set point so the pump could keep the needed value in automatic mode]]></ST>
       </Implementation>
@@ -301,6 +309,8 @@ m_Stop:=TRUE;]]></ST>
     </LineIds>
     <LineIds Name="FB_Pump.m_Auto">
       <LineId Id="18" Count="1" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="27" Count="0" />
       <LineId Id="23" Count="0" />
       <LineId Id="14" Count="0" />
     </LineIds>
