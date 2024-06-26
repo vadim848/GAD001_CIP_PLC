@@ -107,7 +107,14 @@ END_VAR
         <ST><![CDATA[//ST_Pump.bRun_Auto:=TRUE;
 m_Auto:=TRUE;
 RPM:=DINT_TO_INT(TRUNC(control));
-nRPM_Auto:=RPM;
+IF RPM>3000 THEN;
+	nRPM_Auto:=3000;
+ELSIF RPM<200 THEN;
+	nRPM_Auto:=200;
+ELSE;
+	nRPM_Auto:=RPM;
+END_IF
+
 bRun_Auto:=TRUE;
 //need to be set up an set point so the pump could keep the needed value in automatic mode]]></ST>
       </Implementation>
@@ -310,6 +317,10 @@ m_Stop:=TRUE;]]></ST>
     <LineIds Name="FB_Pump.m_Auto">
       <LineId Id="18" Count="1" />
       <LineId Id="36" Count="0" />
+      <LineId Id="46" Count="1" />
+      <LineId Id="51" Count="1" />
+      <LineId Id="49" Count="1" />
+      <LineId Id="48" Count="0" />
       <LineId Id="27" Count="0" />
       <LineId Id="23" Count="0" />
       <LineId Id="14" Count="0" />

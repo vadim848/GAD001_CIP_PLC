@@ -94,6 +94,7 @@ VAR
 	memo_T93_Level_start: REAL;
 	memo_T94_Level_start: REAL;	
 	
+	bTestPID: BOOL;
 END_VAR
 VAR_IN_OUT
 	fbCIP_Source	: FB_CIP_Source	;
@@ -3425,11 +3426,24 @@ fb_PumpClient.m_Stop();]]></ST>
 // Flow_Rate
 	stFlow_Rate.rValue:=g_AnalogSensor.stAnalogSensor[E_ASense_Name.FT1001].Value;
 	stFlow_Rate.ToleranceHigh:=10;
-	stFlow_Rate.ToleravceLow:=0.5;
+	stFlow_Rate.ToleravceLow:=10;
 	//stFlow_Rate.rSetPoint:=150;
 	pcFlow_Rate(stProcessControl:=stFlow_Rate );
 	
-	//fb_PumpCIP.m_Auto(control:=stFlow_Rate.fCtrlOutput);
+	
+	IF bTestPID THEN;
+		pcFlow_Rate.mRun();
+		fb_PumpCIP.m_Auto(control:=stFlow_Rate.fCtrlOutput);
+		
+		IF fb_PumpCIP.modeAuto THEN;
+			stFlow_Rate.bReset:=FALSE;
+		ELSE;
+			stFlow_Rate.bReset:=TRUE;
+			stFlow_Rate.fCtrlOutput:=fb_PumpCIP.nRPM;
+		END_IF
+		
+	END_IF
+
 	
 
 	]]></ST>
@@ -32069,7 +32083,16 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="94" Count="1" />
       <LineId Id="97" Count="3" />
       <LineId Id="96" Count="0" />
-      <LineId Id="103" Count="2" />
+      <LineId Id="106" Count="1" />
+      <LineId Id="103" Count="0" />
+      <LineId Id="120" Count="0" />
+      <LineId Id="108" Count="0" />
+      <LineId Id="111" Count="2" />
+      <LineId Id="116" Count="1" />
+      <LineId Id="119" Count="0" />
+      <LineId Id="114" Count="1" />
+      <LineId Id="109" Count="0" />
+      <LineId Id="104" Count="1" />
       <LineId Id="102" Count="0" />
       <LineId Id="101" Count="0" />
     </LineIds>
