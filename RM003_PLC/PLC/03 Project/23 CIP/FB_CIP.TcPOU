@@ -2099,12 +2099,12 @@ THEN;//need something in case there are error in level sensor, should jump into 
 
 	IF eReq.eClient=E_CIP_Usage.eLocal 
 	AND lvlTank_T94.e_state=E_Tank_Level.eLL
-	AND lvlTank_T94.rTankLevel>200 // Client requered Level
+	AND lvlTank_T94.rTankLevel>300 // Client requered Level
 	THEN;	
 		bStepDone:=TRUE;
 		fbPis.m_SetByRecipe(stPis:=stPis_FillWater_T94, req:=E_Piston_Recipe_State.Release);
 	ELSIF lvlTank_T94.e_state=E_Tank_Level.eLL
-	AND lvlTank_T94.rTankLevel>250 // Client requered Level
+	AND lvlTank_T94.rTankLevel>350 // Client requered Level
 	THEN;
 		//Level OK
 		bStepDone:=TRUE;
@@ -3050,8 +3050,8 @@ bCIP_Condition_Done:=FALSE;
     <Action Name="_aStartPump_CIP3_02_active" Id="{f64d81b7-93d0-4d81-9b19-fca829dbaa54}">
       <Implementation>
         <ST><![CDATA[IF TRUE 
-AND stAnalogSensor[E_ASense_Name.FT1001].Value>=200 // 
-AND stAnalogSensor[E_ASense_Name.FT1002].Value>=200 // 
+AND stAnalogSensor[E_ASense_Name.FT1001].Value>=180 // 
+AND stAnalogSensor[E_ASense_Name.FT1002].Value>=180 // 
 AND stAnalogSensor[E_ASense_Name.PT1001].Value>=0.5 // 
 THEN;
 	bStepDone:=TRUE;
@@ -3436,10 +3436,10 @@ fb_PumpClient.m_Stop();]]></ST>
 		fb_PumpCIP.m_Auto(control:=stFlow_Rate.fCtrlOutput);
 		
 		IF fb_PumpCIP.modeAuto THEN;
-			stFlow_Rate.bReset:=FALSE;
+			stFlow_Rate.bManual:=FALSE;
 		ELSE;
-			stFlow_Rate.bReset:=TRUE;
-			stFlow_Rate.fCtrlOutput:=fb_PumpCIP.nRPM;
+			stFlow_Rate.bManual:=TRUE;
+			stFlow_Rate.fCtrlOutput_Manual:=fb_PumpCIP.nRPM;
 		END_IF
 		
 	END_IF
