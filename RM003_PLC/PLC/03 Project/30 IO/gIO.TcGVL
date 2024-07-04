@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <GVL Name="gIO" Id="{d074f1fc-f55a-4f30-b093-dc5be34740ab}">
-    <Declaration><![CDATA[{attribute 'qualified_only'}
+    <Declaration><![CDATA[//{attribute 'qualified_only'}
 VAR_GLOBAL
 	i_EL			AT %I*	: ARRAY[1..16] 		OF ST_EL18x9;
 	q_EL			AT %Q*	: ARRAY[1..5] 		OF ST_EL28x9;
@@ -14,7 +14,8 @@ VAR_GLOBAL
 	Nidec					: ARRAY[0..E_Pump_List.last] 		OF ST_Nidec;
 
 	
-	arSafe: ARRAY[1..1] OF ST_TwinSAFE;
+	arSafe			: ARRAY[1..1] OF ST_TwinSAFE;
+	bStateSafe		: BOOL;
 	
 	fbScaleFactor: ARRAY[0..E_ASense_Name.last] 		OF FB_ScaleFactor;
 

@@ -11,12 +11,17 @@ VAR
 	ton_TSafe_Err_Reset_OFF: TON;
 	*)
 	fbTwinSAFE: ARRAY[1..1] OF FB_TwinSAFE;
-
 	HMI_Restart: BOOL;
+	rtStateSafe: R_TRIG;
+	ftStateSafe: F_TRIG;
 END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[act_Call_TSs();
+bStateSafe:=arSafe[1].TSafeIn.ES_State;
+rtStateSafe(CLK:=bStateSafe);
+ftStateSafe(CLK:=bStateSafe);
+
 (*
 ton_TSafe_OK(IN:=g_IO.TSafeIn.InRun AND NOT g_IO.TSafeIn.COM_Err, PT:=T#1S );
 IF ton_TSafe_OK.Q THEN;
@@ -379,6 +384,9 @@ Buffer_Act_History[1].sErrorMessage:=CONCAT(Buffer_Act_History[1].sErrorMessage,
     </Method>
     <LineIds Name="prg_Safety">
       <LineId Id="73" Count="0" />
+      <LineId Id="89" Count="0" />
+      <LineId Id="93" Count="1" />
+      <LineId Id="91" Count="0" />
       <LineId Id="72" Count="0" />
       <LineId Id="8" Count="0" />
       <LineId Id="59" Count="3" />

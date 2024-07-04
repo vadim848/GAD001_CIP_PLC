@@ -53,6 +53,14 @@ END_VAR
 	
 END_IF
 
+IF prg_Safety.ftStateSafe.Q
+AND NOT stPis.st_Deafult
+THEN;
+	stPis.req_DefaultPos:=TRUE;
+	stPis.req_Close:=FALSE;
+	stPis.req_Open:=FALSE;	
+END_IF
+
 act_Get_Reference();
 act_State_Machine();
 act_StateDeafult();
@@ -60,6 +68,17 @@ act_StateDeafult();
 IF iFB_Num = E_Pis_Name.e0_not_in_use THEN;
 	//stPis.st_Deafult:=TRUE;
 END_IF
+
+IF prg_Safety.rtStateSafe.Q THEN;
+	
+	IF NOT stPis.st_Deafult THEN;
+		stPis.req_DefaultPos:=TRUE;
+	END_IF	
+	stPis.b_Resume:=TRUE;
+	//stPis.b_Reset:=TRUE;	
+END_IF
+
+
 ]]></ST>
     </Implementation>
     <Action Name="act_Close" Id="{1d06fffa-a52d-4208-941d-d3aedaa130ae}">
@@ -541,12 +560,25 @@ END_IF
       <LineId Id="249" Count="0" />
       <LineId Id="299" Count="0" />
       <LineId Id="250" Count="0" />
+      <LineId Id="354" Count="0" />
+      <LineId Id="356" Count="2" />
+      <LineId Id="362" Count="2" />
+      <LineId Id="355" Count="0" />
       <LineId Id="301" Count="0" />
       <LineId Id="297" Count="1" />
       <LineId Id="110" Count="0" />
       <LineId Id="300" Count="0" />
       <LineId Id="65" Count="0" />
       <LineId Id="201" Count="1" />
+      <LineId Id="366" Count="0" />
+      <LineId Id="365" Count="0" />
+      <LineId Id="378" Count="0" />
+      <LineId Id="376" Count="1" />
+      <LineId Id="372" Count="0" />
+      <LineId Id="370" Count="1" />
+      <LineId Id="368" Count="0" />
+      <LineId Id="349" Count="0" />
+      <LineId Id="351" Count="0" />
       <LineId Id="66" Count="0" />
     </LineIds>
     <LineIds Name="FB_Piston.act_Close">
