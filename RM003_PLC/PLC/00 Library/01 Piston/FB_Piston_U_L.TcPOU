@@ -4,12 +4,17 @@
     <Declaration><![CDATA[FUNCTION_BLOCK PUBLIC FB_Piston_U_L// EXTENDS FB_Piston
 VAR_INPUT
 	enable: BOOL;
+	sen_Upper: BOOL;
+	sen_Lower: BOOL;
+
 END_VAR
 VAR_OUTPUT
 	valve_Upper		:BOOL;
 	valve_Lower		:BOOL;	
 END_VAR
 VAR
+	tOn: TIME:=T#1S;
+	tOff: TIME:=T#1S;
 END_VAR
 VAR_IN_OUT
 	st_Piston_U_L	:	ST_Piston_U_L	;
@@ -42,52 +47,7 @@ act_SetOutputs();
 ELSE;
 	valve_Upper:=FALSE;
 	valve_Lower:=FALSE;
-END_IF
-
-
-(*
-IF st_Piston_U_L.str_Piston.st_Open AND st_Piston_U_L.req_Lower THEN
-	st_Piston_U_L.out_Lower:=TRUE;
-	st_Piston_U_L.out_Upper:=FALSE;
-	
-	st_Piston_U_L.st_OpenLower:=TRUE;
-	st_Piston_U_L.st_OpenUpper:=FALSE;
-	st_Piston_U_L.st_CloseLower:=FALSE;
-	st_Piston_U_L.st_CloseUpper:=FALSE;
-	
-	st_Piston_U_L.req_Lower:=FALSE;
-ELSIF st_Piston_U_L.str_Piston.st_Open AND st_Piston_U_L.req_Upper THEN
-	st_Piston_U_L.out_Lower:=FALSE;
-	st_Piston_U_L.out_Upper:=TRUE;
-	
-	st_Piston_U_L.st_OpenLower:=FALSE;
-	st_Piston_U_L.st_OpenUpper:=TRUE;
-	st_Piston_U_L.st_CloseLower:=FALSE;
-	st_Piston_U_L.st_CloseUpper:=FALSE;
-	
-	st_Piston_U_L.req_Upper:=FALSE;
-ELSIF st_Piston_U_L.str_Piston.st_Close AND st_Piston_U_L.req_Upper THEN
-	st_Piston_U_L.out_Lower:=FALSE;
-	st_Piston_U_L.out_Upper:=TRUE;
-	
-	st_Piston_U_L.st_OpenLower:=FALSE;
-	st_Piston_U_L.st_OpenUpper:=FALSE;
-	st_Piston_U_L.st_CloseLower:=FALSE;
-	st_Piston_U_L.st_CloseUpper:=TRUE;
-	
-	st_Piston_U_L.req_Upper:=FALSE;
-ELSIF st_Piston_U_L.str_Piston.st_Close AND st_Piston_U_L.req_Lower THEN
-	st_Piston_U_L.out_Lower:=TRUE;
-	st_Piston_U_L.out_Upper:=FALSE;
-	
-	st_Piston_U_L.st_OpenLower:=FALSE;
-	st_Piston_U_L.st_OpenUpper:=FALSE;
-	st_Piston_U_L.st_CloseLower:=TRUE;
-	st_Piston_U_L.st_CloseUpper:=FALSE;
-	
-	st_Piston_U_L.req_Lower:=FALSE;
-END_IF
-*)]]></ST>
+END_IF]]></ST>
       </Implementation>
     </Action>
     <LineIds Name="FB_Piston_U_L">
@@ -110,25 +70,6 @@ END_IF
       <LineId Id="53" Count="0" />
       <LineId Id="48" Count="1" />
       <LineId Id="45" Count="0" />
-      <LineId Id="51" Count="0" />
-      <LineId Id="50" Count="0" />
-      <LineId Id="46" Count="0" />
-      <LineId Id="1" Count="1" />
-      <LineId Id="10" Count="0" />
-      <LineId Id="13" Count="0" />
-      <LineId Id="11" Count="1" />
-      <LineId Id="17" Count="1" />
-      <LineId Id="20" Count="0" />
-      <LineId Id="19" Count="0" />
-      <LineId Id="4" Count="0" />
-      <LineId Id="21" Count="7" />
-      <LineId Id="5" Count="1" />
-      <LineId Id="29" Count="7" />
-      <LineId Id="7" Count="1" />
-      <LineId Id="37" Count="7" />
-      <LineId Id="9" Count="0" />
-      <LineId Id="3" Count="0" />
-      <LineId Id="65" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>

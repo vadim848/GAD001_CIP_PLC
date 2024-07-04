@@ -12,6 +12,8 @@ VAR_INPUT
 	lvlTank_T92			: ST_Tank_Level	;
 	lvlTank_T93			: ST_Tank_Level	;
 	lvlTank_T94			: ST_Tank_Level	;
+	
+	st_CIP_Param		:	str_CIP_Param	;	
 END_VAR
 VAR_OUTPUT
 END_VAR
@@ -453,9 +455,9 @@ END_IF]]></ST>
       <Implementation>
         <ST><![CDATA[
 IF TRUE 
-AND stAnalogSensor[E_ASense_Name.FT1001].Value>=200 // 
-AND stAnalogSensor[E_ASense_Name.FT1002].Value>=200 // 
-AND stAnalogSensor[E_ASense_Name.PT1001].Value>=0.5 // 
+AND stAnalogSensor[E_ASense_Name.FT1001].Value>=st_CIP_Param.st_Deter_Client.r_Flow_Pmp1_1 // 
+AND stAnalogSensor[E_ASense_Name.FT1002].Value>=st_CIP_Param.st_Deter_Client.r_Flow_Pmp1_2 // 
+AND stAnalogSensor[E_ASense_Name.PT1001].Value>=st_CIP_Param.st_Deter_Client.r_Pressure_Pmp1_1 // 
 THEN;
 	//
 ELSE;
@@ -512,9 +514,9 @@ END_IF
       <Implementation>
         <ST><![CDATA[
 IF TRUE 
-AND stAnalogSensor[E_ASense_Name.FT1001].Value>=200 // 
-AND stAnalogSensor[E_ASense_Name.FT1002].Value>=200 // 
-AND stAnalogSensor[E_ASense_Name.PT1001].Value>=0.5 // 
+AND stAnalogSensor[E_ASense_Name.FT1001].Value>=st_CIP_Param.st_Deter_Local.r_Flow_Pmp1_1 // 
+AND stAnalogSensor[E_ASense_Name.FT1002].Value>=st_CIP_Param.st_Deter_Local.r_Flow_Pmp1_2 // 
+AND stAnalogSensor[E_ASense_Name.PT1001].Value>=st_CIP_Param.st_Deter_Local.r_Pressure_Pmp1_1 // 
 THEN;
 	//
 ELSE;
@@ -570,10 +572,10 @@ END_IF
     <Action Name="_aCondition_CIP3_Client_active" Id="{c8b10d3e-d2df-4479-877a-926158cbaf79}">
       <Implementation>
         <ST><![CDATA[
-IF TRUE 
-AND stAnalogSensor[E_ASense_Name.FT1001].Value>=180 // 
-AND stAnalogSensor[E_ASense_Name.FT1002].Value>=180 // 
-AND stAnalogSensor[E_ASense_Name.PT1001].Value>=0.5 // 
+IF TRUE  
+AND stAnalogSensor[E_ASense_Name.FT1001].Value>=st_CIP_Param.st_DisInf_Client.r_Flow_Pmp1_1 // 
+AND stAnalogSensor[E_ASense_Name.FT1002].Value>=st_CIP_Param.st_DisInf_Client.r_Flow_Pmp1_2 // 
+AND stAnalogSensor[E_ASense_Name.PT1001].Value>=st_CIP_Param.st_DisInf_Client.r_Pressure_Pmp1_1 // 
 THEN;
 	//
 ELSE;
@@ -630,9 +632,9 @@ END_IF
       <Implementation>
         <ST><![CDATA[
 IF TRUE 
-AND stAnalogSensor[E_ASense_Name.FT1001].Value>=180 // 
-AND stAnalogSensor[E_ASense_Name.FT1002].Value>=180 // 
-AND stAnalogSensor[E_ASense_Name.PT1001].Value>=0.5 // 
+AND stAnalogSensor[E_ASense_Name.FT1001].Value>=st_CIP_Param.st_DisInf_Local.r_Flow_Pmp1_1 // 
+AND stAnalogSensor[E_ASense_Name.FT1002].Value>=st_CIP_Param.st_DisInf_Local.r_Flow_Pmp1_2 // 
+AND stAnalogSensor[E_ASense_Name.PT1001].Value>=st_CIP_Param.st_DisInf_Local.r_Pressure_Pmp1_1 // 
 THEN;
 	//
 ELSE;
@@ -1977,12 +1979,12 @@ AND fbCIP_Return.m_CheckStatus(eReqStatus:=E_CIP_Return.eDrain)
 THEN;
 	IF eReq.eClient=E_CIP_Usage.eLocal 
 	AND lvlTank_T92.e_state=E_Tank_Level.eLL
-	AND lvlTank_T92.rTankLevel>250 // Local requered Level
+	AND lvlTank_T92.rTankLevel>st_CIP_Param.r_Deter_92_TankLvl_1 // Local requered Level
 	THEN;	
 		bStepDone:=TRUE;
 		fbPis.m_SetByRecipe(stPis:=stPis_FillWater_T92, req:=E_Piston_Recipe_State.Release);
 	ELSIF lvlTank_T92.e_state=E_Tank_Level.eLL
-	AND lvlTank_T92.rTankLevel>300 // Client requered Level
+	AND lvlTank_T92.rTankLevel>st_CIP_Param.r_Deter_92_TankLvl_2 // Client requered Level
 	THEN;
 		//Level OK
 		bStepDone:=TRUE;
@@ -2099,12 +2101,12 @@ THEN;//need something in case there are error in level sensor, should jump into 
 
 	IF eReq.eClient=E_CIP_Usage.eLocal 
 	AND lvlTank_T94.e_state=E_Tank_Level.eLL
-	AND lvlTank_T94.rTankLevel>300 // Client requered Level
+	AND lvlTank_T94.rTankLevel>st_CIP_Param.r_Water_TankLvl_Lcl_1 // Client requered Level
 	THEN;	
 		bStepDone:=TRUE;
 		fbPis.m_SetByRecipe(stPis:=stPis_FillWater_T94, req:=E_Piston_Recipe_State.Release);
 	ELSIF lvlTank_T94.e_state=E_Tank_Level.eLL
-	AND lvlTank_T94.rTankLevel>350 // Client requered Level
+	AND lvlTank_T94.rTankLevel>st_CIP_Param.r_Water_TankLvl_Client_1 // Client requered Level
 	THEN;
 		//Level OK
 		bStepDone:=TRUE;
@@ -2428,7 +2430,7 @@ _aGet_Client_active();
     <Action Name="_ameasure_Deterg_2_entry" Id="{8a1d759a-766c-4d33-b6c8-6f1618cb0831}">
       <Implementation>
         <ST><![CDATA[pcDetergent.mRun();
-stDetergent.rSetPoint:=0.3;//need an external set point value maybe from recipe]]></ST>
+stDetergent.rSetPoint:=st_CIP_Param.st_Deter_Client.r_Concentration_1;//need an external set point value maybe from recipe]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -2501,7 +2503,7 @@ stDetergent.rSetPoint:=0.3;//need an external set point value maybe from recipe]
     <Action Name="_ameasureDelay_CIP2_1_active" Id="{eee92c62-884a-44e9-a331-0195a641ce83}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
-IF measureDelay_CIP2_1.t>T#1M THEN;
+IF measureDelay_CIP2_1.t>TO_TIME(st_CIP_Param.st_Deter_Local.t_Measure_Delay_1*1000) THEN;
 	bStepDone:=TRUE;
 END_IF
 
@@ -2526,7 +2528,7 @@ END_IF]]></ST>
     <Action Name="_ameasureDelay_CIP2_1_entry" Id="{5e93bd05-4f42-41e5-8f40-cb8225034977}">
       <Implementation>
         <ST><![CDATA[pcDetergent.mReset();
-stDetergent.rSetPoint:=0.3;//need an external set point value maybe from recipe]]></ST>
+stDetergent.rSetPoint:=st_CIP_Param.st_Deter_Client.r_Concentration_1;//need an external set point value maybe from recipe]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -2545,7 +2547,7 @@ stDetergent.rSetPoint:=0.3;//need an external set point value maybe from recipe]
     <Action Name="_ameasureDelay_CIP2_2_active" Id="{e6c27ce5-3263-4596-8180-705d3553666d}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
-IF measureDelay_CIP2_2.t>T#1M THEN;
+IF measureDelay_CIP2_2.t>TO_TIME(st_CIP_Param.st_Deter_Client.t_Measure_Delay_1) THEN;
 	bStepDone:=TRUE;
 END_IF
 
@@ -2588,7 +2590,7 @@ END_IF]]></ST>
     <Action Name="_ameasureDelay_CIP3_1_active" Id="{95864345-55ce-4583-98e3-3f17b2ed667c}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
-IF measureDelay_CIP3_1.t>T#1M THEN;
+IF measureDelay_CIP3_1.t>TO_TIME(st_CIP_Param.st_DisInf_Local.t_Measure_Delay_1) THEN;
 	bStepDone:=TRUE;
 END_IF
 
@@ -2613,7 +2615,7 @@ END_IF]]></ST>
     <Action Name="_ameasureDelay_CIP3_1_entry" Id="{f75d6eb0-4cd0-4c37-882c-ed7e1e2ef51d}">
       <Implementation>
         <ST><![CDATA[pcDisinfectant.mReset();
-stDisinfectant.rSetPoint:=0.3;//need an external set point value maybe from recipe]]></ST>
+stDisinfectant.rSetPoint:=st_CIP_Param.st_DisInf_Local.r_Concentration_1;//need an external set point value maybe from recipe]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -2632,7 +2634,7 @@ stDisinfectant.rSetPoint:=0.3;//need an external set point value maybe from reci
     <Action Name="_ameasureDelay_CIP3_2_active" Id="{79294f20-9c9f-4055-ae02-c5c9b94196a4}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
-IF measureDelay_CIP3_2.t>T#1M THEN;
+IF measureDelay_CIP3_2.t>TO_TIME(st_CIP_Param.st_DisInf_Client.t_Measure_Delay_1) THEN;
 	bStepDone:=TRUE;
 END_IF
 
@@ -2657,7 +2659,7 @@ END_IF]]></ST>
     <Action Name="_ameasureDelay_CIP3_2_entry" Id="{1aae7665-6957-419b-a173-2f6ea3b229a4}">
       <Implementation>
         <ST><![CDATA[pcDisinfectant.mReset();
-stDisinfectant.rSetPoint:=0.3;//need an external set point value maybe from recipe]]></ST>
+stDisinfectant.rSetPoint:=st_CIP_Param.st_DisInf_Client.r_Concentration_1;//need an external set point value maybe from recipe]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -2846,8 +2848,8 @@ fbPis.m_SetByRecipe(stPis:=stPis_FillWater_T94, req:=E_Piston_Recipe_State.Relea
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
 
-IF StartPump_CIP1_01.t>T#30s 
-OR lvlTank_T93.rTankLevel<150
+IF StartPump_CIP1_01.t>TO_TIME(st_CIP_Param.t_RWater_Pump_01*1000) 
+OR lvlTank_T93.rTankLevel<st_CIP_Param.r_RWater_93_TankLvl
 THEN//Time+flow+water volume
 	bStepDone:=TRUE;
 END_IF]]></ST>
@@ -2888,9 +2890,9 @@ fb_PumpClient.m_Run(RPM:=1000);]]></ST>
     <Action Name="_aStartPump_CIP2_01_active" Id="{c1fce140-5edc-4740-a154-cfbe59a57483}">
       <Implementation>
         <ST><![CDATA[IF TRUE 
-AND stAnalogSensor[E_ASense_Name.FT1001].Value>=200 // 
-AND stAnalogSensor[E_ASense_Name.FT1002].Value>=200 // 
-AND stAnalogSensor[E_ASense_Name.PT1001].Value>=0.5 // 
+AND stAnalogSensor[E_ASense_Name.FT1001].Value>=st_CIP_Param.r_Deter_Flow_Pmp1_1 // 
+AND stAnalogSensor[E_ASense_Name.FT1002].Value>=st_CIP_Param.r_Deter_Flow_Pmp1_2 // 
+AND stAnalogSensor[E_ASense_Name.PT1001].Value>=st_CIP_Param.r_Deter_Pressure_Pmp1_1 // 
 THEN;
 	bStepDone:=TRUE;
 ELSE;
@@ -2936,9 +2938,9 @@ bCIP_Condition_Done:=FALSE;]]></ST>
     <Action Name="_aStartPump_CIP2_02_active" Id="{9ff178c2-f56d-4862-8c8e-bee0c2bafa4c}">
       <Implementation>
         <ST><![CDATA[IF TRUE 
-AND stAnalogSensor[E_ASense_Name.FT1001].Value>=200 // 
-AND stAnalogSensor[E_ASense_Name.FT1002].Value>=200 // 
-AND stAnalogSensor[E_ASense_Name.PT1001].Value>=0.5 // 
+AND stAnalogSensor[E_ASense_Name.FT1001].Value>=st_CIP_Param.r_Deter_Flow_Pmp1_1 // 
+AND stAnalogSensor[E_ASense_Name.FT1002].Value>=st_CIP_Param.r_Deter_Flow_Pmp1_2 // 
+AND stAnalogSensor[E_ASense_Name.PT1001].Value>=st_CIP_Param.r_Deter_Pressure_Pmp1_1 // 
 THEN;
 	bStepDone:=TRUE;
 ELSE;
@@ -2961,8 +2963,8 @@ END_IF]]></ST>
     </Action>
     <Action Name="_aStartPump_CIP2_02_entry" Id="{68002631-498d-4301-be5a-4191a97bd16a}">
       <Implementation>
-        <ST><![CDATA[fb_PumpCIP.m_Run(RPM:=1500);
-fb_PumpClient.m_Run(RPM:=1500);
+        <ST><![CDATA[fb_PumpCIP.m_Run(RPM:=st_CIP_Param.n_Deter_PumpCIP_RPM);
+fb_PumpClient.m_Run(RPM:=st_CIP_Param.n_Deter_PumpClient_RPM);
 fb_HeatExchenger.m_Auto();]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -2981,8 +2983,8 @@ fb_HeatExchenger.m_Auto();]]></ST>
     </Action>
     <Action Name="_aStartPump_CIP2_03_entry" Id="{d62af2fc-ec02-4514-bb41-1f2ef8535a97}">
       <Implementation>
-        <ST><![CDATA[fb_PumpCIP.m_Run(RPM:=1000);
-fb_PumpClient.m_Run(RPM:=1000);]]></ST>
+        <ST><![CDATA[fb_PumpCIP.m_Run(RPM:=st_CIP_Param.n_Deter_PumpCIP_RPM_1);
+fb_PumpClient.m_Run(RPM:=st_CIP_Param.n_Deter_PumpClient_RPM_1);]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -3026,7 +3028,7 @@ END_IF]]></ST>
     </Action>
     <Action Name="_aStartPump_CIP3_01_entry" Id="{b0df1b3d-bbd7-422e-b23e-87cbef7af745}">
       <Implementation>
-        <ST><![CDATA[fb_PumpCIP.m_Run(RPM:=1500);
+        <ST><![CDATA[fb_PumpCIP.m_Run(RPM:=st_CIP_Param.r_DisInf_PumpCIP_RPM_1);
 fb_HeatExchenger.m_Auto();
 
 bCIP_Condition_Failed:=FALSE;
@@ -3075,8 +3077,8 @@ END_IF]]></ST>
     </Action>
     <Action Name="_aStartPump_CIP3_02_entry" Id="{b59301f9-93ed-4442-a828-b3f5bc9893a8}">
       <Implementation>
-        <ST><![CDATA[fb_PumpCIP.m_Run(RPM:=1500);
-fb_PumpClient.m_Run(RPM:=1500);
+        <ST><![CDATA[fb_PumpCIP.m_Run(RPM:=st_CIP_Param.r_DisInf_PumpCIP_RPM_2);
+fb_PumpClient.m_Run(RPM:=st_CIP_Param.r_DisInf_PumpClient_RPM_2);
 //fb_PumpDisinfection.m_Auto();
 	
 //Heat Exchenger	
@@ -3101,7 +3103,7 @@ bCIP_Condition_Done:=FALSE;]]></ST>
     </Action>
     <Action Name="_aStartPump_CIP3_04_entry" Id="{81d3754d-4291-4c7d-b99c-2fc1e82b6fc9}">
       <Implementation>
-        <ST><![CDATA[fb_PumpCIP.m_Run(RPM:=1000);
+        <ST><![CDATA[fb_PumpCIP.m_Run(RPM:=st_CIP_Param.r_DisInf_PumpCIP_RPM_3);
 
 
 CASE eReq.eClient OF
@@ -3109,7 +3111,7 @@ CASE eReq.eClient OF
 	E_CIP_Usage.eTank_2,
 	E_CIP_Usage.eTank_3,
 	E_CIP_Usage.eTank_4:;
-			fb_PumpClient.m_Run(RPM:=1000);
+			fb_PumpClient.m_Run(RPM:=st_CIP_Param.r_DisInf_PumpClient_RPM_3);
 ELSE;
 	//the client do is not have a pump
 END_CASE]]></ST>
@@ -3153,8 +3155,8 @@ bStepDone:=TRUE;]]></ST>
     <Action Name="_aStartPump_CIP4_entry" Id="{ce3107e7-d7e1-46a5-b32d-249da89f4251}">
       <Implementation>
         <ST><![CDATA[fbPis.m_SetByRecipe(stPis:=stPis_FillWater_T94, 	req:=E_Piston_Recipe_State.NoChanges);
-fb_PumpCIP.m_Run(RPM:=1000);
-fb_PumpClient.m_Run(RPM:=1000);
+fb_PumpCIP.m_Run(RPM:=st_CIP_Param.r_Water_PumpCIP_1);
+fb_PumpClient.m_Run(RPM:=st_CIP_Param.r_Water_PumpClient_1);
 
 mVolumeReset_All();]]></ST>
       </Implementation>
@@ -31985,9 +31987,7 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aStartPump_CIP3_01_entry">
-      <LineId Id="1" Count="1" />
-      <LineId Id="4" Count="0" />
-      <LineId Id="6" Count="1" />
+      <LineId Id="8" Count="4" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aStartPump_CIP3_02_active">
@@ -31995,10 +31995,7 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aStartPump_CIP3_02_entry">
-      <LineId Id="2" Count="1" />
-      <LineId Id="5" Count="2" />
-      <LineId Id="1" Count="0" />
-      <LineId Id="9" Count="1" />
+      <LineId Id="11" Count="7" />
       <LineId Id="8" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aStartPump_CIP3_04_entry">
@@ -32013,10 +32010,7 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aStartPump_CIP4_entry">
-      <LineId Id="1" Count="0" />
-      <LineId Id="3" Count="0" />
-      <LineId Id="2" Count="0" />
-      <LineId Id="10" Count="0" />
+      <LineId Id="11" Count="3" />
       <LineId Id="6" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aStop_Pump_entry">
