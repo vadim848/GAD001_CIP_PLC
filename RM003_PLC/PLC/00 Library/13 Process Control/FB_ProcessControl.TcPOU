@@ -6,13 +6,14 @@ VAR_IN_OUT
 	stProcessControl	:	ST_ProcessControl	;
 END_VAR
 VAR
-	bRun		:	BOOL	;
+	bRun			: BOOL	;
 	//fbPID	: 	FB_BasicPID	;
 	fbPID	: 	PID	;
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[IF bRun THEN
+      <ST><![CDATA[stProcessControl.bManual:=TRUE;
+IF bRun THEN
 	stProcessControl.Deviation:=stProcessControl.rSetPoint-stProcessControl.rValue;
 	stProcessControl.Control_ON:=FALSE;
 	stProcessControl.OverFlow:=FALSE;
@@ -38,7 +39,9 @@ END_VAR
 	bRun:=FALSE;
 END_IF
 
-act_Call_PID();]]></ST>
+act_Call_PID();
+
+]]></ST>
     </Implementation>
     <Action Name="act_Call_PID" Id="{839fbd4c-e468-439d-b2e8-fa15b4ee659a}">
       <Implementation>
@@ -486,9 +489,25 @@ END_VAR
 mRun:=stProcessControl.bDone;]]></ST>
       </Implementation>
     </Method>
+    <Method Name="mRun_PID" Id="{4a3f5dec-9850-4133-86e5-b2ae6f3c1d56}">
+      <Declaration><![CDATA[METHOD mRun_PID : REAL
+VAR_INPUT
+	Set_Point: REAL;
+
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[
+stProcessControl.bManual:=FALSE;
+mRun_PID:=stProcessControl.fCtrlOutput;]]></ST>
+      </Implementation>
+    </Method>
     <LineIds Name="FB_ProcessControl">
+      <LineId Id="185" Count="0" />
       <LineId Id="147" Count="25" />
       <LineId Id="101" Count="0" />
+      <LineId Id="184" Count="0" />
+      <LineId Id="183" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProcessControl.act_Call_PID_old">
       <LineId Id="1" Count="0" />
@@ -504,6 +523,10 @@ mRun:=stProcessControl.bDone;]]></ST>
     <LineIds Name="FB_ProcessControl.mRun">
       <LineId Id="5" Count="0" />
       <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ProcessControl.mRun_PID">
+      <LineId Id="8" Count="1" />
+      <LineId Id="5" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>

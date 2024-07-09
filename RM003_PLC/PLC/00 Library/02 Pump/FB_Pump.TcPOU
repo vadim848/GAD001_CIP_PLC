@@ -20,8 +20,8 @@ VAR
 	bRun_Auto	:	BOOL	;
 	bRun_Man	:	BOOL	;
 
-	nRPM_Auto	:	INT		;//Pump RPM 
-	nRPM_Man	:	INT		;//Pump RPM 
+	//nRPM_Auto	:	REAL		;//Pump RPM 
+	//nRPM_Man	:	REAL		;//Pump RPM 
 	//feedback
 	nRPM_fdbk	:	INT	;	
 	rtManual: R_TRIG;
@@ -32,16 +32,17 @@ END_VAR
 VAR_OUTPUT
 	DriveReady	:   BOOL;
 	bRun		: 	BOOL;
-	nRPM		:	INT		;//Pump RPM 
+	nRPM		:	REAL		;//Pump RPM 
 	
 END_VAR
 VAR_IN_OUT
-	ST_Pump	:	st_Pump	;
+	stPump	:	ST_Pump	;
 END_VAR
 
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[stNidec REF= gIO.Nidec[Pump_ID];
+nRPM:=stPump.nRPM;
 IF __ISVALIDREF(stNidec) THEN;
 	//run
 	status_word:=stNidec.StatusWord;
@@ -50,7 +51,7 @@ IF __ISVALIDREF(stNidec) THEN;
 	control_word:=m_Map_ControlWord(cwStruct:=ControlWord);
 	StatusWord:=m_Map_StatusWord(wordInput:=status_word);
 	
-	stNidec.targetVelocity:=nRPM;	
+	stNidec.targetVelocity:=DINT_TO_INT(TRUNC(stPump.nRPM));	
 	nRPM_fdbk:=stNidec.actVelocity;	
 	
 	m_Nidec_Init();
@@ -68,23 +69,22 @@ ELSE;
 	//RETURN;
 END_IF
 
-
 IF modeAuto THEN;
 	bRun:=bRun_Auto;
-	nRPM:=nRPM_Auto;
+	stPump.nRPM:=stPump.nRPM_Auto;
 ELSE;
 	bRun:=bRun_Man;
-	nRPM:=nRPM_Man;
+	stPump.nRPM:=stPump.nRPM_Man;
 END_IF
 
 rtManual(CLK:=NOT modeAuto);
 IF rtManual.Q THEN;
 	bRun:=bRun_Man:=bRun_Auto;
-	nRPM:=nRPM_Man:=nRPM_Auto;
+	stPump.nRPM:=stPump.nRPM_Man:=stPump.nRPM_Auto;
 END_IF
 
-IF nRPM>3000 THEN;
-	nRPM:=3000;
+IF stPump.nRPM>3000 THEN;
+	stPump.nRPM:=3000;
 END_IF
 
 
@@ -108,11 +108,11 @@ END_VAR
 m_Auto:=TRUE;
 RPM:=DINT_TO_INT(TRUNC(control));
 IF RPM>3000 THEN;
-	nRPM_Auto:=3000;
+	stPump.nRPM_Auto:=3000;
 ELSIF RPM<200 THEN;
-	nRPM_Auto:=200;
+	stPump.nRPM_Auto:=200;
 ELSE;
-	nRPM_Auto:=RPM;
+	stPump.nRPM_Auto:=RPM;
 END_IF
 
 bRun_Auto:=TRUE;
@@ -254,12 +254,12 @@ END_CASE]]></ST>
     <Method Name="m_Run" Id="{c021bce4-07f3-44e5-a920-e4b2f00640f2}">
       <Declaration><![CDATA[METHOD m_Run : BOOL
 VAR_INPUT
-	RPM: INT;
+	RPM: REAL;
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[bRun_Auto:=TRUE;
-nRPM_Auto:=RPM;
+stPump.nRPM_Auto:=RPM;
 m_Run:=TRUE;]]></ST>
       </Implementation>
     </Method>
@@ -276,6 +276,7 @@ m_Stop:=TRUE;]]></ST>
     </Method>
     <LineIds Name="FB_Pump">
       <LineId Id="157" Count="0" />
+      <LineId Id="398" Count="0" />
       <LineId Id="160" Count="1" />
       <LineId Id="178" Count="6" />
       <LineId Id="177" Count="0" />
@@ -291,7 +292,6 @@ m_Stop:=TRUE;]]></ST>
       <LineId Id="187" Count="0" />
       <LineId Id="163" Count="1" />
       <LineId Id="162" Count="0" />
-      <LineId Id="168" Count="0" />
       <LineId Id="171" Count="0" />
       <LineId Id="9" Count="0" />
       <LineId Id="42" Count="0" />
