@@ -40,6 +40,7 @@ IF fTotalCIP_Volume >=1200 THEN;
 	fbPis[E_Pis_Name.V1011].m_SetByRecipe(stPis:=stPis[E_Pis_Name.V1011], req:=E_Piston_Recipe_State.Release);
 END_IF
 
+mAnalogSensor_SetName();
 ]]></ST>
     </Implementation>
     <Action Name="act_Call_CIP" Id="{23177538-beef-46ee-b17f-61590a7b02ee}">
@@ -15457,6 +15458,20 @@ END_IF]]></ST>
 	]]></ST>
       </Implementation>
     </Action>
+    <Method Name="mAnalogSensor_SetName" Id="{fee97784-09c9-4c65-955f-9f389d44d720}">
+      <Declaration><![CDATA[METHOD mAnalogSensor_SetName : BOOL
+VAR_INPUT
+END_VAR
+
+VAR
+	i: E_ASense_Name;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[FOR i:=0 TO E_ASense_Name.last DO
+	arAnalogSensorNameList[i]:=TO_STRING(i);
+END_FOR]]></ST>
+      </Implementation>
+    </Method>
     <LineIds Name="MAIN">
       <LineId Id="88" Count="2" />
       <LineId Id="118" Count="0" />
@@ -15472,6 +15487,7 @@ END_IF]]></ST>
       <LineId Id="143" Count="0" />
       <LineId Id="148" Count="3" />
       <LineId Id="147" Count="0" />
+      <LineId Id="159" Count="0" />
       <LineId Id="107" Count="0" />
       <LineId Id="16" Count="0" />
     </LineIds>
@@ -15621,6 +15637,9 @@ END_IF]]></ST>
       <LineId Id="87" Count="2" />
       <LineId Id="86" Count="0" />
       <LineId Id="10" Count="0" />
+    </LineIds>
+    <LineIds Name="MAIN.mAnalogSensor_SetName">
+      <LineId Id="5" Count="2" />
     </LineIds>
   </POU>
 </TcPlcObject>
