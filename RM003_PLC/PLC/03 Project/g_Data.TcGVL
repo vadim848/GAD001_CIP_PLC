@@ -3,10 +3,29 @@
   <GVL Name="g_Data" Id="{d323a574-dba5-4513-95f5-99a87722cf92}">
     <Declaration><![CDATA[//{attribute 'qualified_only'}
 VAR_GLOBAL PERSISTENT
+	gCIP_ValvUL			:	ARRAY [1..8,1..6] OF E_Pis_Name	:=[
+																E_Pis_Name.V3004,E_Pis_Name.V3017,E_Pis_Name.V3023,E_Pis_Name.e0_not_in_use,E_Pis_Name.e0_not_in_use,E_Pis_Name.e0_not_in_use,
+																E_Pis_Name.V3010,E_Pis_Name.V3027,E_Pis_Name.V3028,E_Pis_Name.e0_not_in_use,E_Pis_Name.e0_not_in_use,E_Pis_Name.e0_not_in_use,
+																E_Pis_Name.V4034,E_Pis_Name.V4004,E_Pis_Name.V4017,E_Pis_Name.v4023,E_Pis_Name.e0_not_in_use,E_Pis_Name.e0_not_in_use,
+																E_Pis_Name.V4033,E_Pis_Name.V4010,E_Pis_Name.V4027,E_Pis_Name.V4028,E_Pis_Name.e0_not_in_use,E_Pis_Name.e0_not_in_use,
+																
+																E_Pis_Name.V3113,E_Pis_Name.V3004,E_Pis_Name.V3010,E_Pis_Name.V3023,E_Pis_Name.V3028,E_Pis_Name.e0_not_in_use,
+																E_Pis_Name.v2114,E_Pis_Name.V4004,E_Pis_Name.V4010,E_Pis_Name.V2116,E_Pis_Name.V4023,E_Pis_Name.V4028,
+																E_Pis_Name.V3017,E_Pis_Name.V3027,E_Pis_Name.e0_not_in_use,E_Pis_Name.e0_not_in_use,E_Pis_Name.e0_not_in_use,E_Pis_Name.e0_not_in_use,
+																E_Pis_Name.V4017,E_Pis_Name.v4027,E_Pis_Name.V2115,E_Pis_Name.V4034,E_Pis_Name.V4033,E_Pis_Name.e0_not_in_use														
+															];	
+	gCIP_ValvUL_Seat	:	ARRAY [1..8,1..6] OF BOOL :=[
+															0,1,1,0,0,0, // Client 1 eTank_1,
+															0,1,1,0,0,0, // Client 2 eTank_2,
+															0,0,1,1,0,0, // Client 3 eTank_3,
+															0,0,1,1,0,0, // Client 4 eTank_4,
+															0,1,1,0,0,0, // Client 5
+															0,1,1,0,0,0, // Client 6
+															0,0,0,0,0,0, // Client 7
+															0,0,0,1,1,0 // Client 8 
+														]	;	//0-Low, 1-Up
+
 	fbElement: ARRAY[1..8] OF FB_Element;
-	
-	gCIP_ValvUL			:	ARRAY [1..8,1..5] OF E_Pis_Name	;	
-	gCIP_ValvUL_Seat	:	ARRAY [1..8,1..5] OF BOOL	;	//0-Low, 1-Up
 	
 	fbIntCon_TriB_T1_Marin	: FB_InterConnection;
 	fbIntCon_TriB_T2_Marin	: FB_InterConnection;
