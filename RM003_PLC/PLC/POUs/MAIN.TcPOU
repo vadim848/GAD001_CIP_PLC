@@ -5,7 +5,7 @@
 VAR
 
 	fTotalCIP_Volume: REAL;
-	
+	fbWritePersistent: FB_WritePersistentData;
 	bTesting	:	BOOL:=FALSE	;
 END_VAR
 ]]></Declaration>
@@ -42,6 +42,16 @@ IF fTotalCIP_Volume >=1200 THEN;
 END_IF
 
 mAnalogSensor_SetName();
+
+fbWritePersistent(
+	NETID:= , 
+	PORT:= 851, 
+	START:= , 
+	TMOUT:= T#3S, 
+	MODE:= , 
+	BUSY=> , 
+	ERR=> , 
+	ERRID=> );
 ]]></ST>
     </Implementation>
     <Action Name="act_Call_CIP" Id="{23177538-beef-46ee-b17f-61590a7b02ee}">
@@ -13565,7 +13575,7 @@ g_HMI.stT94_Sens:=g_Data.stTanksSens[E_Tank_Name.T94];
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
-                              <v n="Operand">"gIO.ai_EL[3].ch7"</v>
+                              <v n="Operand">"gIO.ai_EL[3].ch4"</v>
                               <v n="Type">"INT"</v>
                               <v n="Comment">""</v>
                               <v n="SymbolComment">""</v>
@@ -13990,7 +14000,7 @@ g_HMI.stT94_Sens:=g_Data.stTanksSens[E_Tank_Name.T94];
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
-                              <v n="Operand">"gIO.ai_EL[3].ch4"</v>
+                              <v n="Operand">"gIO.ai_EL[3].ch7"</v>
                               <v n="Type">"INT"</v>
                               <v n="Comment">""</v>
                               <v n="SymbolComment">""</v>
@@ -14093,7 +14103,7 @@ g_HMI.stT94_Sens:=g_Data.stTanksSens[E_Tank_Name.T94];
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
-                              <v n="Operand">"gIO.ai_EL[3].ch5"</v>
+                              <v n="Operand">"gIO.ai_EL[3].ch2"</v>
                               <v n="Type">"INT"</v>
                               <v n="Comment">""</v>
                               <v n="SymbolComment">""</v>
@@ -14415,7 +14425,7 @@ g_HMI.stT94_Sens:=g_Data.stTanksSens[E_Tank_Name.T94];
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
-                              <v n="Operand">"gIO.ai_EL[3].ch2"</v>
+                              <v n="Operand">"gIO.ai_EL[3].ch3"</v>
                               <v n="Type">"INT"</v>
                               <v n="Comment">""</v>
                               <v n="SymbolComment">""</v>
@@ -14518,7 +14528,7 @@ g_HMI.stT94_Sens:=g_Data.stTanksSens[E_Tank_Name.T94];
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
-                              <v n="Operand">"gIO.ai_EL[3].ch3"</v>
+                              <v n="Operand">"gIO.ai_EL[3].ch5"</v>
                               <v n="Type">"INT"</v>
                               <v n="Comment">""</v>
                               <v n="SymbolComment">""</v>
@@ -14664,6 +14674,122 @@ g_HMI.stT94_Sens:=g_Data.stTanksSens[E_Tank_Name.T94];
                     </l2>
                     <l2 n="Connectors" />
                     <v n="Id">258L</v>
+                  </o>
+                  <o>
+                    <v n="ILActive">false</v>
+                    <v n="FBDValid">false</v>
+                    <v n="ILValid">false</v>
+                    <l2 n="ILLines" />
+                    <v n="Comment">""</v>
+                    <v n="Title">""</v>
+                    <v n="Label">""</v>
+                    <v n="OutCommented">false</v>
+                    <l2 n="NetworkItems" />
+                    <l2 n="Connectors" />
+                    <v n="Id">330L</v>
+                  </o>
+                  <o>
+                    <v n="ILActive">false</v>
+                    <v n="FBDValid">false</v>
+                    <v n="ILValid">false</v>
+                    <l2 n="ILLines" />
+                    <v n="Comment">""</v>
+                    <v n="Title">""</v>
+                    <v n="Label">""</v>
+                    <v n="OutCommented">false</v>
+                    <l2 n="NetworkItems" cet="BoxTreeBox">
+                      <o>
+                        <v n="BoxType">"FB_AnalogSensor"</v>
+                        <o n="Instance" t="Operand">
+                          <v n="Operand">"g_AnalogSensor.fbAnalogSensor[E_ASense_Name.FT4002]"</v>
+                          <v n="Type">"FB_AnalogSensor"</v>
+                          <v n="Comment">""</v>
+                          <v n="SymbolComment">""</v>
+                          <v n="Address">""</v>
+                          <o n="Flags" t="Flags">
+                            <v n="Flags">0</v>
+                            <v n="Fixed">false</v>
+                            <v n="Extensible">false</v>
+                          </o>
+                          <v n="LValue">false</v>
+                          <v n="Boolean">false</v>
+                          <v n="IsInstance">true</v>
+                          <v n="Id">323L</v>
+                        </o>
+                        <o n="OutputItems" t="OutputItemList">
+                          <l2 n="OutputItems" />
+                        </o>
+                        <o n="Flags" t="Flags">
+                          <v n="Flags">0</v>
+                          <v n="Fixed">true</v>
+                          <v n="Extensible">false</v>
+                        </o>
+                        <n n="InputFlags" />
+                        <l2 n="InputItems" cet="BoxTreeOperand">
+                          <o>
+                            <o n="Operand" t="Operand">
+                              <v n="Operand">"E_ASense_Name.FT4002"</v>
+                              <v n="Type">"E_ASENSE_NAME"</v>
+                              <v n="Comment">""</v>
+                              <v n="SymbolComment">""</v>
+                              <v n="Address">""</v>
+                              <o n="Flags" t="Flags">
+                                <v n="Flags">0</v>
+                                <v n="Fixed">false</v>
+                                <v n="Extensible">false</v>
+                              </o>
+                              <v n="LValue">false</v>
+                              <v n="Boolean">false</v>
+                              <v n="IsInstance">false</v>
+                              <v n="Id">326L</v>
+                            </o>
+                            <v n="Id">325L</v>
+                          </o>
+                          <o>
+                            <o n="Operand" t="Operand">
+                              <v n="Operand">"gIO.ai_EL[4].ch1"</v>
+                              <v n="Type">"INT"</v>
+                              <v n="Comment">""</v>
+                              <v n="SymbolComment">""</v>
+                              <v n="Address">""</v>
+                              <o n="Flags" t="Flags">
+                                <v n="Flags">0</v>
+                                <v n="Fixed">false</v>
+                                <v n="Extensible">false</v>
+                              </o>
+                              <v n="LValue">false</v>
+                              <v n="Boolean">false</v>
+                              <v n="IsInstance">false</v>
+                              <v n="Id">328L</v>
+                            </o>
+                            <v n="Id">327L</v>
+                          </o>
+                        </l2>
+                        <o n="InputParam" t="ParamList">
+                          <l2 n="Names" cet="String">
+                            <v>nSensorID</v>
+                            <v>nRawSensor</v>
+                          </l2>
+                          <l2 n="Types" cet="String">
+                            <v>E_ASense_Name</v>
+                            <v>INT</v>
+                          </l2>
+                        </o>
+                        <o n="OutputParam" t="ParamList">
+                          <l2 n="Names" />
+                          <l2 n="Types" />
+                        </o>
+                        <v n="CallType" t="Operator">FunctionBlock</v>
+                        <v n="EN">false</v>
+                        <v n="ENO">false</v>
+                        <n n="STSnippet" />
+                        <v n="ContainsExtensibleInputs">false</v>
+                        <v n="ProvidesSTSnippet">false</v>
+                        <v n="Id">324L</v>
+                      </o>
+                    </l2>
+                    <l2 n="Connectors" />
+                    <v n="Id">322L</v>
                   </o>
                   <o>
                     <v n="ILActive">false</v>
@@ -16293,7 +16419,7 @@ END_CASE]]></ST>
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
-                              <v n="Operand">"gIO.ai_EL[3].ch6"</v>
+                              <v n="Operand">"gIO.ai_EL[3].ch4"</v>
                               <v n="Type">"INT"</v>
                               <v n="Comment">""</v>
                               <v n="SymbolComment">""</v>
@@ -16501,7 +16627,7 @@ END_CASE]]></ST>
                           </o>
                           <o>
                             <o n="Operand" t="Operand">
-                              <v n="Operand">"gIO.ai_EL[3].ch7"</v>
+                              <v n="Operand">"gIO.ai_EL[3].ch6"</v>
                               <v n="Type">"INT"</v>
                               <v n="Comment">""</v>
                               <v n="SymbolComment">""</v>
@@ -16870,6 +16996,24 @@ END_IF]]></ST>
 	]]></ST>
       </Implementation>
     </Action>
+    <Method Name="m_TankConus_Level_Calculation" Id="{a2410655-ac45-4982-beae-77afb1d1db8e}">
+      <Declaration><![CDATA[METHOD m_TankConus_Level_Calculation : REAL
+VAR_INPUT
+	raw: REAL;
+
+END_VAR
+VAR
+	kConus: REAL:=0.00000002149 ;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF raw<1230 THEN;
+	//m_TankConus_Level_Calculation:=kConus*raw^3;
+ELSE;
+	m_TankConus_Level_Calculation:=raw;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="mAnalogSensor_SetName" Id="{fee97784-09c9-4c65-955f-9f389d44d720}">
       <Declaration><![CDATA[METHOD mAnalogSensor_SetName : BOOL
 VAR_INPUT
@@ -16902,6 +17046,8 @@ END_FOR]]></ST>
       <LineId Id="147" Count="0" />
       <LineId Id="159" Count="0" />
       <LineId Id="107" Count="0" />
+      <LineId Id="177" Count="8" />
+      <LineId Id="176" Count="0" />
       <LineId Id="16" Count="0" />
     </LineIds>
     <LineIds Name="MAIN.act_Call_For_HMI">
@@ -17050,6 +17196,12 @@ END_FOR]]></ST>
       <LineId Id="87" Count="2" />
       <LineId Id="86" Count="0" />
       <LineId Id="10" Count="0" />
+    </LineIds>
+    <LineIds Name="MAIN.m_TankConus_Level_Calculation">
+      <LineId Id="5" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="14" Count="1" />
+      <LineId Id="13" Count="0" />
     </LineIds>
     <LineIds Name="MAIN.mAnalogSensor_SetName">
       <LineId Id="5" Count="2" />

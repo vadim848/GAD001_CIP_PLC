@@ -51,6 +51,7 @@ VAR
 	fbScale: REFERENCE TO FB_ScaleFactor;
 	fbMovingAverage: FB_MovingAverage;
 
+	bSetFromTempCallibration: BOOL;
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -95,7 +96,7 @@ fbScaleFactor(
 	
 ton_set_DATA(PT:=T#20S, IN:=TRUE);
 rt_set_DATE(CLK:=ton_set_DATA.Q);
-IF rt_set_DATE.Q THEN;
+IF rt_set_DATE.Q AND bSetFromTempCallibration THEN;
 	set_Data(ID_reference:=nSensorID);
 END_IF]]></ST>
       </Implementation>
