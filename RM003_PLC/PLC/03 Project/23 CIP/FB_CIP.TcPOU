@@ -119,7 +119,7 @@ VAR
 	tOn				:	TON			;
 	tOff			:	TON			;
 	
-	nMaxValves		:	INT:=5		;
+	nMaxValves		:	INT:=6		;
 END_VAR
 
 VAR_IN_OUT
@@ -157,6 +157,7 @@ END_VAR
 act_GetReference();
 act_CallProcessControl();
 act_HeatExchng();
+act_ValveUpLow_Cntrl();
 //SUPER^();
 
 //Selecting client for CIP parameters
@@ -30924,6 +30925,122 @@ END_IF
       <Implementation>
         <ST><![CDATA[tOn(IN:= , PT:=T#1S , Q=> , ET=> );
 tOff(IN:= , PT:=T#1S , Q=> , ET=> );
+nClient:=eCIP_Usage;
+
+//To be deleted just for testing
+//***************************************************************************************
+gCIP_ValvUL[1,1]:=E_Pis_Name.V3004;
+gCIP_ValvUL[1,2]:=E_Pis_Name.V3017;
+gCIP_ValvUL[1,3]:=E_Pis_Name.V3023;
+gCIP_ValvUL[1,4]:=E_Pis_Name.e0_not_in_use;
+gCIP_ValvUL[1,5]:=E_Pis_Name.e0_not_in_use;
+gCIP_ValvUL[1,6]:=E_Pis_Name.e0_not_in_use;
+																
+gCIP_ValvUL[2,1]:=E_Pis_Name.V3010;
+gCIP_ValvUL[2,2]:=E_Pis_Name.V3027;
+gCIP_ValvUL[2,3]:=E_Pis_Name.V3028;
+gCIP_ValvUL[2,4]:=E_Pis_Name.e0_not_in_use;
+gCIP_ValvUL[2,5]:=E_Pis_Name.e0_not_in_use;
+gCIP_ValvUL[2,6]:=E_Pis_Name.e0_not_in_use;
+																
+gCIP_ValvUL[3,1]:=E_Pis_Name.V4034;
+gCIP_ValvUL[3,2]:=E_Pis_Name.V4004;
+gCIP_ValvUL[3,3]:=E_Pis_Name.V4017;
+gCIP_ValvUL[3,4]:=E_Pis_Name.v4023;
+gCIP_ValvUL[3,5]:=E_Pis_Name.e0_not_in_use;
+gCIP_ValvUL[3,6]:=E_Pis_Name.e0_not_in_use;
+																
+gCIP_ValvUL[4,1]:=E_Pis_Name.V4033;
+gCIP_ValvUL[4,2]:=E_Pis_Name.V4010;
+gCIP_ValvUL[4,3]:=E_Pis_Name.V4027;
+gCIP_ValvUL[4,4]:=E_Pis_Name.V4028;
+gCIP_ValvUL[4,5]:=E_Pis_Name.e0_not_in_use;
+gCIP_ValvUL[4,6]:=E_Pis_Name.e0_not_in_use;
+																
+gCIP_ValvUL[5,1]:=E_Pis_Name.V3113;
+gCIP_ValvUL[5,2]:=E_Pis_Name.V3004;
+gCIP_ValvUL[5,3]:=E_Pis_Name.V3010;
+gCIP_ValvUL[5,4]:=E_Pis_Name.V3023;
+gCIP_ValvUL[5,5]:=E_Pis_Name.V3028;
+gCIP_ValvUL[5,6]:=E_Pis_Name.e0_not_in_use;
+																
+gCIP_ValvUL[6,1]:=E_Pis_Name.v2114;
+gCIP_ValvUL[6,2]:=E_Pis_Name.V4004;
+gCIP_ValvUL[6,3]:=E_Pis_Name.V4010;
+gCIP_ValvUL[6,4]:=E_Pis_Name.V2116;
+gCIP_ValvUL[6,5]:=E_Pis_Name.V4023;
+gCIP_ValvUL[6,6]:=E_Pis_Name.V4028;
+																
+gCIP_ValvUL[7,1]:=E_Pis_Name.V3017;
+gCIP_ValvUL[7,2]:=E_Pis_Name.V3027;
+gCIP_ValvUL[7,3]:=E_Pis_Name.e0_not_in_use;
+gCIP_ValvUL[7,4]:=E_Pis_Name.e0_not_in_use;
+gCIP_ValvUL[7,5]:=E_Pis_Name.e0_not_in_use;
+gCIP_ValvUL[7,6]:=E_Pis_Name.e0_not_in_use;
+
+gCIP_ValvUL[8,1]:=E_Pis_Name.V4017;
+gCIP_ValvUL[8,2]:=E_Pis_Name.v4027;
+gCIP_ValvUL[8,3]:=E_Pis_Name.V2115;
+gCIP_ValvUL[8,4]:=E_Pis_Name.V4034;
+gCIP_ValvUL[8,5]:=E_Pis_Name.V4033;
+gCIP_ValvUL[8,6]:=E_Pis_Name.e0_not_in_use;	
+
+gCIP_ValvUL_Seat[1,1]:=0;
+gCIP_ValvUL_Seat[1,2]:=1;
+gCIP_ValvUL_Seat[1,3]:=1;
+gCIP_ValvUL_Seat[1,4]:=0;
+gCIP_ValvUL_Seat[1,5]:=0;
+gCIP_ValvUL_Seat[1,6]:=0;
+
+gCIP_ValvUL_Seat[2,1]:=0;
+gCIP_ValvUL_Seat[2,2]:=1;
+gCIP_ValvUL_Seat[2,3]:=1;
+gCIP_ValvUL_Seat[2,4]:=0;
+gCIP_ValvUL_Seat[2,5]:=0;
+gCIP_ValvUL_Seat[2,6]:=0; // Client 2 eTank_2,
+															
+gCIP_ValvUL_Seat[3,1]:=0;
+gCIP_ValvUL_Seat[3,2]:=0;
+gCIP_ValvUL_Seat[3,3]:=1;
+gCIP_ValvUL_Seat[3,4]:=1;
+gCIP_ValvUL_Seat[3,5]:=0;
+gCIP_ValvUL_Seat[3,6]:=0; // Client 3 eTank_3,
+															
+gCIP_ValvUL_Seat[4,1]:=0;
+gCIP_ValvUL_Seat[4,2]:=0;
+gCIP_ValvUL_Seat[4,3]:=1;
+gCIP_ValvUL_Seat[4,4]:=1;
+gCIP_ValvUL_Seat[4,5]:=0;
+gCIP_ValvUL_Seat[4,6]:=0; // Client 4 eTank_4,
+															
+gCIP_ValvUL_Seat[5,1]:=0;
+gCIP_ValvUL_Seat[5,2]:=1;
+gCIP_ValvUL_Seat[5,3]:=1;
+gCIP_ValvUL_Seat[5,4]:=0;
+gCIP_ValvUL_Seat[5,5]:=0;
+gCIP_ValvUL_Seat[5,6]:=0; // Client 5
+															
+gCIP_ValvUL_Seat[6,1]:=0;
+gCIP_ValvUL_Seat[6,2]:=1;
+gCIP_ValvUL_Seat[6,3]:=1;
+gCIP_ValvUL_Seat[6,4]:=0;
+gCIP_ValvUL_Seat[6,5]:=0;
+gCIP_ValvUL_Seat[6,6]:=0; // Client 6
+															
+gCIP_ValvUL_Seat[7,1]:=0;
+gCIP_ValvUL_Seat[7,2]:=0;
+gCIP_ValvUL_Seat[7,3]:=0;
+gCIP_ValvUL_Seat[7,4]:=0;
+gCIP_ValvUL_Seat[7,5]:=0;
+gCIP_ValvUL_Seat[7,6]:=0; // Client 7
+									
+gCIP_ValvUL_Seat[8,1]:=0;
+gCIP_ValvUL_Seat[8,2]:=0;
+gCIP_ValvUL_Seat[8,3]:=0;
+gCIP_ValvUL_Seat[8,4]:=1;
+gCIP_ValvUL_Seat[8,5]:=1;
+gCIP_ValvUL_Seat[8,6]:=0; // Client 8 	
+//***************************************************************************************											
 
 CASE nStep_Vlv OF
 	0:
@@ -30944,7 +31061,7 @@ CASE nStep_Vlv OF
 		bClean:=FALSE;
 		nI_3:=0;
 
-		IF gCIP_ValvUL[nClient,nI_1]<E_Pis_Name.last AND nI_1<=nMaxValves THEN
+		IF gCIP_ValvUL[nClient,nI_1]<E_Pis_Name.last AND nI_1<=nMaxValves AND gCIP_ValvUL[nClient,nI_1]>E_Pis_Name.e0_not_in_use THEN
 			//existing step
 			nStep_Vlv:=2;
 		ELSE
@@ -31466,6 +31583,7 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="256" Count="0" />
       <LineId Id="437" Count="0" />
       <LineId Id="562" Count="0" />
+      <LineId Id="723" Count="0" />
       <LineId Id="25" Count="0" />
       <LineId Id="572" Count="0" />
       <LineId Id="571" Count="0" />
@@ -32407,6 +32525,48 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="75" Count="0" />
       <LineId Id="162" Count="0" />
       <LineId Id="77" Count="0" />
+      <LineId Id="321" Count="0" />
+      <LineId Id="186" Count="0" />
+      <LineId Id="322" Count="0" />
+      <LineId Id="191" Count="0" />
+      <LineId Id="206" Count="0" />
+      <LineId Id="215" Count="3" />
+      <LineId Id="207" Count="0" />
+      <LineId Id="219" Count="0" />
+      <LineId Id="222" Count="4" />
+      <LineId Id="208" Count="0" />
+      <LineId Id="220" Count="0" />
+      <LineId Id="227" Count="4" />
+      <LineId Id="209" Count="0" />
+      <LineId Id="232" Count="5" />
+      <LineId Id="210" Count="1" />
+      <LineId Id="240" Count="2" />
+      <LineId Id="244" Count="1" />
+      <LineId Id="212" Count="0" />
+      <LineId Id="238" Count="0" />
+      <LineId Id="246" Count="4" />
+      <LineId Id="213" Count="0" />
+      <LineId Id="251" Count="6" />
+      <LineId Id="214" Count="0" />
+      <LineId Id="258" Count="4" />
+      <LineId Id="264" Count="1" />
+      <LineId Id="274" Count="5" />
+      <LineId Id="267" Count="0" />
+      <LineId Id="280" Count="4" />
+      <LineId Id="268" Count="0" />
+      <LineId Id="285" Count="5" />
+      <LineId Id="269" Count="0" />
+      <LineId Id="291" Count="5" />
+      <LineId Id="270" Count="0" />
+      <LineId Id="297" Count="5" />
+      <LineId Id="271" Count="0" />
+      <LineId Id="303" Count="5" />
+      <LineId Id="272" Count="0" />
+      <LineId Id="309" Count="5" />
+      <LineId Id="273" Count="0" />
+      <LineId Id="315" Count="5" />
+      <LineId Id="323" Count="0" />
+      <LineId Id="185" Count="0" />
       <LineId Id="1" Count="2" />
       <LineId Id="8" Count="0" />
       <LineId Id="21" Count="0" />
