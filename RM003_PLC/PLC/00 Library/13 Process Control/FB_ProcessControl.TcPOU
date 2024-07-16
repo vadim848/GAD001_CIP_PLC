@@ -12,7 +12,7 @@ VAR
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[stProcessControl.bManual:=TRUE;
+      <ST><![CDATA[//stProcessControl.bManual:=TRUE;
 IF bRun THEN
 	stProcessControl.Deviation:=stProcessControl.rSetPoint-stProcessControl.rValue;
 	stProcessControl.Control_ON:=FALSE;
@@ -499,6 +499,7 @@ END_VAR
       <Implementation>
         <ST><![CDATA[
 stProcessControl.bManual:=FALSE;
+//stProcessControl.rSetPoint:=Set_Point;
 mRun_PID:=stProcessControl.fCtrlOutput;]]></ST>
       </Implementation>
     </Method>
@@ -526,6 +527,7 @@ mRun_PID:=stProcessControl.fCtrlOutput;]]></ST>
     </LineIds>
     <LineIds Name="FB_ProcessControl.mRun_PID">
       <LineId Id="8" Count="1" />
+      <LineId Id="15" Count="0" />
       <LineId Id="5" Count="0" />
     </LineIds>
   </POU>
