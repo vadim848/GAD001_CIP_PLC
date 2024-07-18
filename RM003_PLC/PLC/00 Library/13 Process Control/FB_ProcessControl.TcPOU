@@ -2,6 +2,7 @@
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="FB_ProcessControl" Id="{a1972051-d534-4d79-bd7a-71cd1b516897}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_ProcessControl
+
 VAR_IN_OUT
 	stProcessControl	:	ST_ProcessControl	;
 END_VAR
@@ -13,6 +14,7 @@ END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[//stProcessControl.bManual:=TRUE;
+
 IF bRun THEN
 	stProcessControl.Deviation:=stProcessControl.rSetPoint-stProcessControl.rValue;
 	stProcessControl.Control_ON:=FALSE;
@@ -505,6 +507,7 @@ mRun_PID:=stProcessControl.fCtrlOutput;]]></ST>
     </Method>
     <LineIds Name="FB_ProcessControl">
       <LineId Id="185" Count="0" />
+      <LineId Id="195" Count="0" />
       <LineId Id="147" Count="25" />
       <LineId Id="101" Count="0" />
       <LineId Id="184" Count="0" />
