@@ -111,6 +111,9 @@ VAR
 	
 	bTestPID: BOOL;
 	st_CIP_Param		:	str_CIP_Param	;
+	hystCIP_SetPoint: FB_Hysteresis_REAL;
+	a: REAL := 0.8;
+	b: REAL := 1.2;
 END_VAR
 //upper lower control
 VAR
@@ -3540,7 +3543,19 @@ fb_PumpClient.m_Stop();]]></ST>
 		//fb_PumpCIP.m_Auto(control:=stFlow_Rate.fCtrlOutput);
 		fb_PumpCIP.m_Auto(control:=pcFlow_Rate.mRun_PID(Set_Point:=180));
 		//fb_PumpClient.m_Auto(control:=pcFlow_Rate_2.mRun_PID(Set_Point:=180));
-		g_Pump.fbPump[E_Pump_List.P4002].m_Auto(control:=pcColor_Level.mRun_PID(Set_Point:=180));
+		
+		/// PID Control 
+		//g_Pump.fbPump[E_Pump_List.P4002].m_Auto(control:=pcColor_Level.mRun_PID(Set_Point:=180));
+		
+		//by CIP Pump RPM control
+		IF hystCIP_SetPoint.bOut THEN;
+			//g_Pump.fbPump[E_Pump_List.P4002].m_Auto(control:=fb_PumpCIP.nRPM*a);
+			g_Pump.fbPump[E_Pump_List.P4002].m_Auto(control:=1200);
+		ELSE;
+			//g_Pump.fbPump[E_Pump_List.P4002].m_Auto(control:=fb_PumpCIP.nRPM*b);
+			g_Pump.fbPump[E_Pump_List.P4002].m_Auto(control:=2500);
+		END_IF		
+		
 		
 		IF fb_PumpCIP.modeAuto THEN;
 			stFlow_Rate.bManual:=FALSE;
@@ -3556,6 +3571,19 @@ fb_PumpClient.m_Stop();]]></ST>
 			stColor_Level.fCtrlOutput_Manual:=g_Pump.fbPump[E_Pump_List.P4002].nRPM;//fb_PumpClient.nRPM;
 		END_IF
 		
+		hystCIP_SetPoint(
+			fIn:=g_HMI.stT4_Sens.rTankLevel,
+			fHigh:=40,
+			fLow:=-10,
+			iDigitsAfterDot:=,
+			bOut=>);
+			
+		IF hystCIP_SetPoint.bOut THEN;
+			stColor_Level.rSetPoint:=stFlow_Rate.rSetPoint*a;
+		ELSE;
+			stColor_Level.rSetPoint:=stFlow_Rate.rSetPoint*b;
+		END_IF
+			
 	END_IF
 
 	
@@ -32527,7 +32555,16 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="153" Count="1" />
       <LineId Id="149" Count="0" />
       <LineId Id="151" Count="0" />
-      <LineId Id="165" Count="1" />
+      <LineId Id="165" Count="0" />
+      <LineId Id="195" Count="0" />
+      <LineId Id="190" Count="1" />
+      <LineId Id="193" Count="1" />
+      <LineId Id="197" Count="0" />
+      <LineId Id="203" Count="1" />
+      <LineId Id="199" Count="0" />
+      <LineId Id="205" Count="1" />
+      <LineId Id="196" Count="0" />
+      <LineId Id="192" Count="0" />
       <LineId Id="111" Count="1" />
       <LineId Id="155" Count="0" />
       <LineId Id="116" Count="1" />
@@ -32536,7 +32573,13 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="157" Count="0" />
       <LineId Id="159" Count="4" />
       <LineId Id="158" Count="0" />
-      <LineId Id="115" Count="0" />
+      <LineId Id="175" Count="1" />
+      <LineId Id="178" Count="4" />
+      <LineId Id="189" Count="0" />
+      <LineId Id="184" Count="1" />
+      <LineId Id="187" Count="1" />
+      <LineId Id="186" Count="0" />
+      <LineId Id="183" Count="0" />
       <LineId Id="109" Count="0" />
       <LineId Id="104" Count="1" />
       <LineId Id="102" Count="0" />
