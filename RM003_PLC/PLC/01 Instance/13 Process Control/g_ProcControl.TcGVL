@@ -4,7 +4,7 @@
     <Declaration><![CDATA[//{attribute 'qualified_only'}
 VAR_GLOBAL
 	//concentration
-	stDetergent					:	ST_ProcessControl	;
+	(*stDetergent					:	ST_ProcessControl	;
 	pcDetergent					: 	FB_ProcessControl	;	//detergent local
 	stDisinfectant				:	ST_ProcessControl	;
 	pcDisinfectant				: 	FB_ProcessControl	;	//detergent local
@@ -24,6 +24,14 @@ VAR_GLOBAL
 	//pressure
 	stPressure						:	ST_ProcessControl	;
 	pcPressure						: 	FB_ProcessControl	;//CIP //Client	
+	*)
+	
+	///////////////////ARRAYS///////////////////
+	arr_stProcCntrl			:	ARRAY [0..E_ProcessControl_Name.eProcCntrl_Last] OF ST_ProcessControl	;
+	arr_fbProcCntrl			:	ARRAY [0..E_ProcessControl_Name.eProcCntrl_Last] OF FB_ProcessControl	;
+	arr_ProcCntrl_NameList	:	ARRAY [0..E_ProcessControl_Name.eProcCntrl_Last] OF STRING	;
+	eProcCntrl_Name			: E_ProcessControl_Name;
+
 END_VAR]]></Declaration>
   </GVL>
 </TcPlcObject>
