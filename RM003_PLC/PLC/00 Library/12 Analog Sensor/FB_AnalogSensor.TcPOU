@@ -52,6 +52,8 @@ VAR
 	fbMovingAverage: FB_MovingAverage;
 
 	bSetFromTempCallibration: BOOL;
+	bTypeTankConus: BOOL:=FALSE;
+	rawTest: REAL;
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -81,16 +83,30 @@ stASens.ID:=TO_STRING(nSensorID);
 //stASens.rawVal_Actual:=g_AnalogSensor.arAnalogSensorRawValue[nSensorID];
 //stASens.rawVal_Actual:=nRawSensor;
 
-fbScaleFactor(
-	rVal:=rTempRawVal,//stASens.rawVal_Actual , 
-	rInValHigh:=stASens.rawVal_Max , 
-	rInValLow:=stASens.rawVal_Min , 
-	rOutValHigh:=stASens.outVal_Max , 
-	rOutValLow:=stASens.outVal_Min ,
-	rOutOffset:=stASens.outOffset , 
-	rValOut=>stASens.Value , 
-	diValOut=>, 
-	iValOut=> );
+//rTempRawVal:=rawTest;
+CASE nSensorID OF 
+	E_ASense_Name.LT3001,E_ASense_Name.LT3002,E_ASense_Name.LT4001,E_ASense_Name.LT4002:;
+		bTypeTankConus:=TRUE;
+ELSE;
+		bTypeTankConus:=FALSE;
+END_CASE
+IF bTypeTankConus 
+AND rTempRawVal<=stASens.rawVal_Min
+THEN;
+	stASens.Value:=mConus(rawValue:=rTempRawVal,baseIncriments:=stASens.rawVal_Min);
+ELSE;
+	fbScaleFactor(
+		rVal:=rTempRawVal,//stASens.rawVal_Actual , 
+		rInValHigh:=stASens.rawVal_Max , 
+		rInValLow:=stASens.rawVal_Min , 
+		rOutValHigh:=stASens.outVal_Max , 
+		rOutValLow:=stASens.outVal_Min ,
+		rOutOffset:=stASens.outOffset , 
+		rValOut=>stASens.Value , 
+		diValOut=>, 
+		iValOut=> );	
+END_IF
+
 	
 	
 	
@@ -133,6 +149,44 @@ rTempRawVal:=TO_REAL(nRawSumm/nTicks);
 meth_SetRawValue(bSetValue:=bCopyRawTo_Min , nValToSet:=stASens.rawVal_Min , nRawValue:=rawVal_Actual );]]></ST>
       </Implementation>
     </Action>
+    <Method Name="mConus" Id="{2dd1b0c0-6a3e-4030-88db-ac0921aee314}">
+      <Declaration><![CDATA[METHOD mConus : REAL
+VAR_INPUT
+	rawValue: REAL;
+	baseIncriments: REAL;
+END_VAR
+
+
+
+VAR
+	hFactor: REAL;
+	baseIncriment: REAL := 1050;
+	h: REAL := 140;
+	ConusConstant: REAL := 0.00000002165;
+	pi: REAL:=3.1415926535;
+	k: REAL:=3000000; // convert mm^3 to liters
+
+
+	radius: REAL := 525;
+	vConus: REAL;
+END_VAR
+
+VAR
+	
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[
+
+//hFactor:=baseIncriment*h;
+
+vConus:=pi*radius*radius*h/k;
+IF baseIncriments=0 THEN;
+	RETURN;
+END_IF
+ConusConstant:=vConus/(baseIncriments * baseIncriments * baseIncriments);
+mConus:=ConusConstant*rawValue*rawValue*rawValue;]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="meth_SetRawValue" Id="{9a7a01d2-f381-460b-bac2-ead7a5008be7}">
       <Declaration><![CDATA[METHOD INTERNAL meth_SetRawValue : BOOL
 VAR_IN_OUT
@@ -148,6 +202,15 @@ END_VAR
 	nValToSet:=nRawValue;
 	bSetValue:=FALSE;
 END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="mSetAsConus" Id="{3eaee7e9-c949-49cf-939c-9e8a87c08ffc}">
+      <Declaration><![CDATA[METHOD mSetAsConus : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[bTypeTankConus:=TRUE;]]></ST>
       </Implementation>
     </Method>
     <Method Name="set_Data" Id="{ce08728b-f0bd-4a94-ae65-6b0253b241c9}">
@@ -187,7 +250,11 @@ stASens.outOffset:=fbScale.rOutOffset;
       <LineId Id="12" Count="2" />
     </LineIds>
     <LineIds Name="FB_AnalogSensor.act_Get_Reference">
-      <LineId Id="71" Count="24" />
+      <LineId Id="138" Count="9" />
+      <LineId Id="172" Count="0" />
+      <LineId Id="174" Count="2" />
+      <LineId Id="173" Count="0" />
+      <LineId Id="148" Count="23" />
       <LineId Id="45" Count="0" />
     </LineIds>
     <LineIds Name="FB_AnalogSensor.act_MA">
@@ -201,11 +268,23 @@ stASens.outOffset:=fbScale.rOutOffset;
     <LineIds Name="FB_AnalogSensor.act_SetValues">
       <LineId Id="1" Count="1" />
     </LineIds>
+    <LineIds Name="FB_AnalogSensor.mConus">
+      <LineId Id="8" Count="1" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="38" Count="2" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="10" Count="0" />
+    </LineIds>
     <LineIds Name="FB_AnalogSensor.meth_SetRawValue">
       <LineId Id="5" Count="0" />
       <LineId Id="8" Count="0" />
       <LineId Id="14" Count="0" />
       <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_AnalogSensor.mSetAsConus">
+      <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_AnalogSensor.set_Data">
       <LineId Id="15" Count="11" />
