@@ -3545,17 +3545,10 @@ fb_PumpClient.m_Stop();]]></ST>
 		//fb_PumpClient.m_Auto(control:=pcFlow_Rate_2.mRun_PID(Set_Point:=180));
 		
 		/// PID Control 
-		//g_Pump.fbPump[E_Pump_List.P4002].m_Auto(control:=pcColor_Level.mRun_PID(Set_Point:=180));
+		//g_Pump.fbPump[E_Pump_List.P4002].m_Auto(control:=pcColor_Level.mRun_PID(Set_Point:=180)
 		
-		//by CIP Pump RPM control
-		IF hystCIP_SetPoint.bOut THEN;
-			//g_Pump.fbPump[E_Pump_List.P4002].m_Auto(control:=fb_PumpCIP.nRPM*a);
-			g_Pump.fbPump[E_Pump_List.P4002].m_Auto(control:=1200);
-		ELSE;
-			//g_Pump.fbPump[E_Pump_List.P4002].m_Auto(control:=fb_PumpCIP.nRPM*b);
-			g_Pump.fbPump[E_Pump_List.P4002].m_Auto(control:=2500);
-		END_IF		
-		
+		//by CIP Pump RPM control		
+		g_Pump.fbPump[E_Pump_List.P4002].m_Auto(control:=pcColor_Level.mRun_Hyst());
 		
 		IF fb_PumpCIP.modeAuto THEN;
 			stFlow_Rate.bManual:=FALSE;
@@ -3571,7 +3564,7 @@ fb_PumpClient.m_Stop();]]></ST>
 			stColor_Level.fCtrlOutput_Manual:=g_Pump.fbPump[E_Pump_List.P4002].nRPM;//fb_PumpClient.nRPM;
 		END_IF
 		
-		hystCIP_SetPoint(
+		(*hystCIP_SetPoint(
 			fIn:=g_HMI.stT4_Sens.rTankLevel,
 			fHigh:=40,
 			fLow:=-10,
@@ -3582,7 +3575,7 @@ fb_PumpClient.m_Stop();]]></ST>
 			stColor_Level.rSetPoint:=stFlow_Rate.rSetPoint*a;
 		ELSE;
 			stColor_Level.rSetPoint:=stFlow_Rate.rSetPoint*b;
-		END_IF
+		END_IF*)
 			
 	END_IF
 
@@ -32559,11 +32552,6 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="195" Count="0" />
       <LineId Id="190" Count="1" />
       <LineId Id="193" Count="1" />
-      <LineId Id="197" Count="0" />
-      <LineId Id="203" Count="1" />
-      <LineId Id="199" Count="0" />
-      <LineId Id="205" Count="1" />
-      <LineId Id="196" Count="0" />
       <LineId Id="192" Count="0" />
       <LineId Id="111" Count="1" />
       <LineId Id="155" Count="0" />
