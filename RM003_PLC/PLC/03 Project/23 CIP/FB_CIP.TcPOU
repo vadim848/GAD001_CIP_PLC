@@ -110,10 +110,11 @@ VAR
 	nStepHeat	:	INT		;
 	
 	bTestPID: BOOL;
-	st_CIP_Param		:	str_CIP_Param	;
+	st_CIP_Param		:	ST_CIP_Param	;
 	hystCIP_SetPoint: FB_Hysteresis_REAL;
 	a: REAL := 0.8;
 	b: REAL := 1.2;
+	i: E_CIP_Usage;
 END_VAR
 //upper lower control
 VAR
@@ -175,6 +176,9 @@ act_ValveUpLow_Cntrl();
 
 //Selecting client for CIP parameters
 st_CIP_Param:=g_Data.arr_CIP_Param[eReq.eClient];
+FOR i:=1 TO E_CIP_Usage.eLocal DO
+	g_Data.arr_CIP_Param[i].sName:=TO_STRING(i);
+END_FOR
 
 act_Oper();
 act_ReqBuffer();
@@ -31673,6 +31677,7 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="572" Count="0" />
       <LineId Id="571" Count="0" />
       <LineId Id="570" Count="0" />
+      <LineId Id="1050" Count="2" />
       <LineId Id="26" Count="0" />
       <LineId Id="9" Count="0" />
       <LineId Id="31" Count="0" />
