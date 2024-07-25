@@ -498,10 +498,12 @@ stProcessControl.bDone:=FALSE;]]></ST>
     <Method Name="mRun" Id="{9603e267-93ce-4898-8d8d-2a4ace5f7fdf}">
       <Declaration><![CDATA[METHOD mRun : BOOL
 VAR_INPUT
+	Set_Point: REAL;
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[bRun:=TRUE;
+//stProcessControl.rSetPoint:=Set_Point;
 mRun:=stProcessControl.bDone;]]></ST>
       </Implementation>
     </Method>
@@ -523,11 +525,10 @@ END_IF]]></ST>
       <Declaration><![CDATA[METHOD mRun_PID : REAL
 VAR_INPUT
 	Set_Point: REAL;
-
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[
+        <ST><![CDATA[mRun(Set_Point:=Set_Point);
 stProcessControl.bManual:=FALSE;
 //stProcessControl.rSetPoint:=Set_Point;
 mRun_PID:=stProcessControl.fCtrlOutput;]]></ST>
@@ -560,6 +561,7 @@ mRun_PID:=stProcessControl.fCtrlOutput;]]></ST>
     </LineIds>
     <LineIds Name="FB_ProcessControl.mRun">
       <LineId Id="5" Count="0" />
+      <LineId Id="13" Count="0" />
       <LineId Id="9" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProcessControl.mRun_Hyst">

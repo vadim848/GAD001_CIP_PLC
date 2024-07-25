@@ -60,8 +60,8 @@ VAR
 	//concentration
 	stDetergent					:	REFERENCE TO ST_ProcessControl	;
 	pcDetergent					: 	REFERENCE TO FB_ProcessControl	;	//detergent local
-	stDisinfectant				:	REFERENCE TO ST_ProcessControl	;
-	pcDisinfectant				: 	REFERENCE TO FB_ProcessControl	;	//detergent local
+	stDisInfectant				:	REFERENCE TO ST_ProcessControl	;
+	pcDisInfectant				: 	REFERENCE TO FB_ProcessControl	;	//detergent local
     //temperature
 	stTemperature_Deterg			:	REFERENCE TO ST_ProcessControl	;
 	pcTemperature_Deterg			: 	REFERENCE TO FB_ProcessControl	;	//detergent Client	
@@ -332,7 +332,7 @@ END_CASE]]></ST>
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
 IF TRUE 
-AND delta_T94_Volume < -st_CIP_Param.r_memo_ClientPipeVolume
+AND delta_T94_Volume < -st_CIP_Param.r_Volume_Collect_Detergent
 THEN
 	bStepDone:=TRUE;
 END_IF
@@ -407,7 +407,7 @@ END_CASE]]></ST>
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
 IF fbCIP_Return.m_CheckStatus(eReqStatus:=E_CIP_Return.eDrain)  
-AND delta_T94_Volume < -st_CIP_Param.r_memo_ClientPipeVolume
+AND delta_T94_Volume < -st_CIP_Param.r_Volume_Collect_Detergent
 THEN;
 	bStepDone:=TRUE;
 END_IF]]></ST>
@@ -518,13 +518,13 @@ END_IF
 
 
 IF Deterg_Conc_Client_Done.x 
-AND NOT pcDetergent.mRun()
+AND NOT pcDetergent.mRun(Set_Point:=st_CIP_Param.r_DetergentConcentration)
 THEN;
 	bCIP_Condition_Failed:=TRUE;
 END_IF
 
 IF Temperature_2_Done.x 
-AND NOT pcTemperature_Deterg.mRun()
+AND NOT pcTemperature_Deterg.mRun(Set_Point:=st_CIP_Param.r_Temper_Detergent)
 THEN;
 	bCIP_Condition_Failed:=TRUE;
 END_IF
@@ -567,9 +567,12 @@ END_IF
         <ST><![CDATA[fb_PumpCIP.m_Run(RPM:=pcFlow1_Rate.mRun_PID(Set_Point:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_1));
 
 IF TRUE 
-AND stAnalogSensor[E_ASense_Name.FT1001].Value>=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_1 // 
-AND stAnalogSensor[E_ASense_Name.FT1002].Value>=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_2//st_CIP_Param.st_Deter_Local.r_Flow_Pmp1_2 // 
-AND stAnalogSensor[E_ASense_Name.PT1001].Value>=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Pressure//st_CIP_Param.st_Deter_Local.r_Pressure_Pmp1_1 // 
+//AND stAnalogSensor[E_ASense_Name.FT1001].Value>=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_1 // 
+//AND stAnalogSensor[E_ASense_Name.FT1002].Value>=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_2 // 
+//AND stAnalogSensor[E_ASense_Name.PT1001].Value>=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Pressure // 
+AND stFlow1_Rate.bDone
+AND stFlow2_Rate.bDone
+AND stTemperature_Deterg.bDone
 THEN;
 	//
 ELSE;
@@ -577,14 +580,15 @@ ELSE;
 END_IF
 
 
+
 IF Deterg_Conc_Local_Done.x 
-AND NOT pcDetergent.mRun()
+AND NOT pcDetergent.mRun(Set_Point:=st_CIP_Param.r_DetergentConcentration)
 THEN;
 	bCIP_Condition_Failed:=TRUE;
 END_IF
 
 IF Temperature_1_Done.x 
-AND NOT pcTemperature_Deterg.mRun()
+AND NOT pcTemperature_Deterg.mRun(Set_Point:=st_CIP_Param.r_DetergentConcentration)
 THEN;
 	bCIP_Condition_Failed:=TRUE;
 END_IF
@@ -637,13 +641,13 @@ END_IF
 
 
 IF Disinfct_Conc_Client_Done.x 
-AND NOT pcDisinfectant.mRun()
+AND NOT pcDisInfectant.mRun(Set_Point:=st_CIP_Param.r_DisInfectionConcentration)
 THEN;
 	bCIP_Condition_Failed:=TRUE;
 END_IF
 
 IF Temperature_Dis_2_Done.x 
-AND NOT pcTemperature_Dis.mRun()
+AND NOT pcTemperature_Dis.mRun(Set_Point:=st_CIP_Param.r_Temper_DisInfection)
 THEN;
 	bCIP_Condition_Failed:=TRUE;
 END_IF
@@ -696,13 +700,13 @@ END_IF
 
 
 IF Disinfct_Conc_Local_Done.x 
-AND NOT pcDisinfectant.mRun()
+AND NOT pcDisInfectant.mRun(Set_Point:=st_CIP_Param.r_DetergentConcentration)
 THEN;
 	bCIP_Condition_Failed:=TRUE;
 END_IF
 
 IF Temperature_Dis_1_Done.x 
-AND NOT pcTemperature_Dis.mRun()
+AND NOT pcTemperature_Dis.mRun(Set_Point:=st_CIP_Param.r_Temper_DisInfection)
 THEN;
 	bCIP_Condition_Failed:=TRUE;
 END_IF
@@ -1364,7 +1368,7 @@ END_CASE
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
 IF fbCIP_Return.m_CheckStatus(eReqStatus:=E_CIP_Return.eT93_R_Water)  
-AND delta_T94_Volume < -st_CIP_Param.r_memo_ClientPipeVolume
+AND delta_T94_Volume < -st_CIP_Param.r_Volume_Collect_Detergent
 THEN;
 	bStepDone:=TRUE;
 END_IF]]></ST>
@@ -1789,7 +1793,7 @@ mCIP_Clients_command(command:=E_CIP_Client_Command.eDrain);
     <Action Name="_aDisinfct_Dose_1_active" Id="{13f0b073-1394-4ea7-a7b7-4f151e56d9d5}">
       <Implementation>
         <ST><![CDATA[
-bStepDone:=fb_PumpDisinfection.m_RunVolume(Volume:=0.9*(lvlTank_T91.rTankLevel*stDisinfectant.Deviation*10)); // 10= 1Litr*1000cc/100%]]></ST>
+bStepDone:=fb_PumpDisinfection.m_RunVolume(Volume:=0.9*(lvlTank_T91.rTankLevel*stDisInfectant.Deviation*10)); // 10= 1Litr*1000cc/100%]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -1808,7 +1812,7 @@ bStepDone:=fb_PumpDisinfection.m_RunVolume(Volume:=0.9*(lvlTank_T91.rTankLevel*s
     <Action Name="_aDisinfct_Dose_2_active" Id="{70662d8d-9a1e-471d-ac18-b200f397466b}">
       <Implementation>
         <ST><![CDATA[
-bStepDone:=fb_PumpDisinfection.m_RunVolume(Volume:=0.9*(lvlTank_T91.rTankLevel*stDisinfectant.Deviation*10)); // 10= 1Litr*1000cc/100%]]></ST>
+bStepDone:=fb_PumpDisinfection.m_RunVolume(Volume:=0.9*(lvlTank_T91.rTankLevel*stDisInfectant.Deviation*10)); // 10= 1Litr*1000cc/100%]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -2350,9 +2354,9 @@ END_IF
     </Action>
     <Action Name="_aGet_Temperature_CIP2_01_active" Id="{ae1b3062-e97c-440a-bc43-9003b0d2518d}">
       <Implementation>
-        <ST><![CDATA[pcTemperature_Deterg.mRun();
+        <ST><![CDATA[pcTemperature_Deterg.mRun(Set_Point:=st_CIP_Param.r_Temper_Detergent);
 
-IF stTemperature_Deterg.rValue=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Temper_1 THEN
+IF stTemperature_Deterg.rValue=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Temper_Detergent THEN
 	;
 END_IF
 
@@ -2378,7 +2382,7 @@ END_IF]]></ST>
       <Implementation>
         <ST><![CDATA[
 
-pcTemperature_Deterg.mRun();
+pcTemperature_Deterg.mRun(Set_Point:=st_CIP_Param.r_Temper_Detergent);
 
 IF stTemperature_Deterg.bDone THEN;
 	//
@@ -2402,7 +2406,7 @@ END_IF]]></ST>
       <Implementation>
         <ST><![CDATA[
 
-pcTemperature_Dis.mRun();
+pcTemperature_Dis.mRun(Set_Point:=st_CIP_Param.r_Temper_DisInfection);
 
 IF stTemperature_Dis.bDone THEN;
 	//
@@ -2426,7 +2430,7 @@ END_IF]]></ST>
       <Implementation>
         <ST><![CDATA[
 
-pcTemperature_Deterg.mRun();
+pcTemperature_Deterg.mRun(Set_Point:=st_CIP_Param.r_Temper_Detergent);
 
 IF stTemperature_Deterg.bDone THEN;
 	//
@@ -2489,8 +2493,8 @@ _aGet_Client_active();
     </Action>
     <Action Name="_ameasure_Deterg_2_entry" Id="{8a1d759a-766c-4d33-b6c8-6f1618cb0831}">
       <Implementation>
-        <ST><![CDATA[pcDetergent.mRun();
-stDetergent.rSetPoint:=st_CIP_Param.r_DetergentConcentration_1;//need an external set point value maybe from recipe]]></ST>
+        <ST><![CDATA[pcDetergent.mRun(Set_Point:=st_CIP_Param.r_Temper_Detergent);
+stDetergent.rSetPoint:=st_CIP_Param.r_DetergentConcentration;//need an external set point value maybe from recipe]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -2508,7 +2512,7 @@ stDetergent.rSetPoint:=st_CIP_Param.r_DetergentConcentration_1;//need an externa
     </Action>
     <Action Name="_ameasure_Deterg_entry" Id="{df7887c8-4ad6-4e6c-b983-e3ae2c7e154e}">
       <Implementation>
-        <ST><![CDATA[pcDetergent.mRun();]]></ST>
+        <ST><![CDATA[pcDetergent.mRun(Set_Point:=st_CIP_Param.r_Temper_Detergent);]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -2526,7 +2530,7 @@ stDetergent.rSetPoint:=st_CIP_Param.r_DetergentConcentration_1;//need an externa
     </Action>
     <Action Name="_ameasure_Dis_2_entry" Id="{b36a37a1-e86d-4445-8cc2-dd54cbe7c377}">
       <Implementation>
-        <ST><![CDATA[pcDisinfectant.mRun();]]></ST>
+        <ST><![CDATA[pcDisInfectant.mRun(Set_Point:=st_CIP_Param.r_Temper_DisInfection);]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -2544,7 +2548,7 @@ stDetergent.rSetPoint:=st_CIP_Param.r_DetergentConcentration_1;//need an externa
     </Action>
     <Action Name="_ameasure_Dis_entry" Id="{95440eff-6878-474d-ab1b-c6c7efd756a8}">
       <Implementation>
-        <ST><![CDATA[pcDisinfectant.mRun();]]></ST>
+        <ST><![CDATA[pcDisInfectant.mRun(Set_Point:=st_CIP_Param.r_Temper_DisInfection);]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -2563,7 +2567,7 @@ stDetergent.rSetPoint:=st_CIP_Param.r_DetergentConcentration_1;//need an externa
     <Action Name="_ameasureDelay_CIP2_1_active" Id="{eee92c62-884a-44e9-a331-0195a641ce83}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
-IF measureDelay_CIP2_1.t>TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_Measure_Delay_1*1000) THEN;
+IF measureDelay_CIP2_1.t>TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_Measure_Delay*1000) THEN;
 	bStepDone:=TRUE;
 END_IF
 
@@ -2588,7 +2592,7 @@ END_IF]]></ST>
     <Action Name="_ameasureDelay_CIP2_1_entry" Id="{5e93bd05-4f42-41e5-8f40-cb8225034977}">
       <Implementation>
         <ST><![CDATA[pcDetergent.mReset();
-stDetergent.rSetPoint:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_DetergentConcentration_1;//st_CIP_Param.st_Deter_Client.r_Concentration_1;//need an external set point value maybe from recipe]]></ST>
+stDetergent.rSetPoint:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_DetergentConcentration;//st_CIP_Param.st_Deter_Client.r_Concentration_1;//need an external set point value maybe from recipe]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -2607,7 +2611,7 @@ stDetergent.rSetPoint:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_DetergentConce
     <Action Name="_ameasureDelay_CIP2_2_active" Id="{e6c27ce5-3263-4596-8180-705d3553666d}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
-IF measureDelay_CIP2_2.t>TO_TIME(st_CIP_Param.t_Measure_Delay_1*1000) THEN;
+IF measureDelay_CIP2_2.t>TO_TIME(st_CIP_Param.t_Measure_Delay*1000) THEN;
 	bStepDone:=TRUE;
 END_IF
 
@@ -2650,7 +2654,7 @@ END_IF]]></ST>
     <Action Name="_ameasureDelay_CIP3_1_active" Id="{95864345-55ce-4583-98e3-3f17b2ed667c}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
-IF measureDelay_CIP3_1.t>TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_Measure_Delay_1*1000) THEN;
+IF measureDelay_CIP3_1.t>TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_Measure_Delay*1000) THEN;
 	bStepDone:=TRUE;
 END_IF
 
@@ -2674,8 +2678,8 @@ END_IF]]></ST>
     </Action>
     <Action Name="_ameasureDelay_CIP3_1_entry" Id="{f75d6eb0-4cd0-4c37-882c-ed7e1e2ef51d}">
       <Implementation>
-        <ST><![CDATA[pcDisinfectant.mReset();
-stDisinfectant.rSetPoint:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_DisinfectionConcentration_1;//st_CIP_Param.st_DisInf_Local.r_Concentration_1;//need an external set point value maybe from recipe]]></ST>
+        <ST><![CDATA[pcDisInfectant.mReset();
+stDisInfectant.rSetPoint:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_DisInfectionConcentration;//st_CIP_Param.st_DisInf_Local.r_Concentration_1;//need an external set point value maybe from recipe]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -2694,7 +2698,7 @@ stDisinfectant.rSetPoint:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Disinfectio
     <Action Name="_ameasureDelay_CIP3_2_active" Id="{79294f20-9c9f-4055-ae02-c5c9b94196a4}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
-IF measureDelay_CIP3_2.t>TO_TIME(st_CIP_Param.t_Measure_Delay_1*1000) THEN;
+IF measureDelay_CIP3_2.t>TO_TIME(st_CIP_Param.t_Measure_Delay*1000) THEN;
 	bStepDone:=TRUE;
 END_IF
 
@@ -2718,8 +2722,8 @@ END_IF]]></ST>
     </Action>
     <Action Name="_ameasureDelay_CIP3_2_entry" Id="{1aae7665-6957-419b-a173-2f6ea3b229a4}">
       <Implementation>
-        <ST><![CDATA[pcDisinfectant.mReset();
-stDisinfectant.rSetPoint:=st_CIP_Param.r_DisinfectionConcentration_1;//st_CIP_Param.st_DisInf_Client.r_Concentration_1;//need an external set point value maybe from recipe]]></ST>
+        <ST><![CDATA[pcDisInfectant.mReset();
+stDisInfectant.rSetPoint:=st_CIP_Param.r_DisInfectionConcentration;//st_CIP_Param.st_DisInf_Client.r_Concentration_1;//need an external set point value maybe from recipe]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -2951,9 +2955,12 @@ fb_PumpClient.m_Run(RPM:=st_CIP_Param.r_CIP_Client_Pmp_1);]]></ST>
     <Action Name="_aStartPump_CIP2_01_active" Id="{c1fce140-5edc-4740-a154-cfbe59a57483}">
       <Implementation>
         <ST><![CDATA[IF TRUE 
-AND stAnalogSensor[E_ASense_Name.FT1001].Value>=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_1 // 
-AND stAnalogSensor[E_ASense_Name.FT1002].Value>=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_2 // 
-AND stAnalogSensor[E_ASense_Name.PT1001].Value>=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Pressure // 
+//AND stAnalogSensor[E_ASense_Name.FT1001].Value>=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_1 // 
+//AND stAnalogSensor[E_ASense_Name.FT1002].Value>=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_2 // 
+//AND stAnalogSensor[E_ASense_Name.PT1001].Value>=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Pressure // 
+AND stFlow1_Rate.bDone
+AND stFlow2_Rate.bDone
+AND stTemperature_Deterg.bDone
 
 THEN;
 	bStepDone:=TRUE;
@@ -2961,7 +2968,9 @@ ELSE;
 	bStepDone:=FALSE;
 END_IF
 
+pcFlow2_Rate.mRun_PID(Set_Point:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_2);
 fb_PumpCIP.m_Run(RPM:=pcFlow1_Rate.mRun_PID(Set_Point:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_1));
+
 (*
 IF TRUE //Future condition
 AND StartPump_CIP2_01.t>TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_PumpStartTime*1000) 
@@ -3555,51 +3564,46 @@ fb_PumpClient.m_Stop();]]></ST>
 	stDetergent.rValue:=g_AnalogSensor.stAnalogSensor[E_ASense_Name.CT1101_3].Value;
 	stDetergent.ToleranceHigh:=0.05;
 	stDetergent.ToleravceLow:=0.05;
-	stDetergent.rSetPoint:=st_CIP_Param.r_DetergentConcentration_1;//0.3;
+	stDetergent.rSetPoint:=st_CIP_Param.r_DetergentConcentration;//0.3;
 	pcDetergent(stProcessControl:=stDetergent );
 		
 	//Temperature
-	//stTemperature.rValue:=g_AnalogSensor.stAnalogSensor[E_ASense_Name.TT1001].Value;
-	stTemperature_Deterg.rValue:=testTemperature;
-	(*IF nStepHeat=1 THEN
-		stTemperature_Deterg.rSetPoint:=st_CIP_Param.r_Temper_1;
-	ELSIF nStepHeat=10 THEN
-		stTemperature_Deterg.rSetPoint:=st_CIP_Param.r_Temper_1;
-	END_IF*)
-	stTemperature_Deterg.rSetPoint:=st_CIP_Param.r_Temper_1;
+	//stTemperature_Deterg.rValue:=testTemperature;
+	stTemperature_Deterg.rValue:=g_AnalogSensor.stAnalogSensor[E_ASense_Name.TT1001].Value;
 	stTemperature_Deterg.ToleranceHigh:=0.5;
 	stTemperature_Deterg.ToleravceLow:=0.5;
+	stTemperature_Deterg.rSetPoint:=st_CIP_Param.r_Temper_Detergent;
 	pcTemperature_Deterg(stProcessControl:=stTemperature_Deterg );
 
 
 //Disinfectant
 	//Concentration
-	stDisinfectant.rValue:=g_AnalogSensor.stAnalogSensor[E_ASense_Name.CT1101_4].Value;
-	stDisinfectant.ToleranceHigh:=0.05;
-	stDisinfectant.ToleravceLow:=0.05;
-	stDisinfectant.rSetPoint:=st_CIP_Param.r_DisinfectionConcentration_1;//0.3;
-	pcDisinfectant(stProcessControl:=stDisinfectant );
+	stDisInfectant.rValue:=g_AnalogSensor.stAnalogSensor[E_ASense_Name.CT1101_4].Value;
+	stDisInfectant.ToleranceHigh:=0.05;
+	stDisInfectant.ToleravceLow:=0.05;
+	stDisInfectant.rSetPoint:=st_CIP_Param.r_DisInfectionConcentration;//0.3;
+	pcDisInfectant(stProcessControl:=stDisInfectant );
 		
-	//Temperature
-	//stTemperature_Dis.rValue:=g_AnalogSensor.stAnalogSensor[E_ASense_Name.TT1001].Value;
-	stTemperature_Dis.rValue:=testTemperature;
+	//Temperature	
+	//stTemperature_Dis.rValue:=testTemperature;
+	stTemperature_Dis.rValue:=g_AnalogSensor.stAnalogSensor[E_ASense_Name.TT1001].Value;
 	stTemperature_Dis.ToleranceHigh:=0.5;//0.5
 	stTemperature_Dis.ToleravceLow:=0.5;//0.5
-	stTemperature_Dis.rSetPoint:=st_CIP_Param.r_Temper_1;//65;
-	pcTemperature_Dis(stProcessControl:=stTemperature_Dis );
+	stTemperature_Dis.rSetPoint:=st_CIP_Param.r_Temper_DisInfection;//65;
+	pcTemperature_Dis(stProcessControl:=stTemperature_Dis );	
 	
 // Flow_Rate
 	//CIP Pump
 		stFlow1_Rate.rValue:=g_AnalogSensor.stAnalogSensor[E_ASense_Name.FT1001].Value;
 		stFlow1_Rate.ToleranceHigh:=10;
 		stFlow1_Rate.ToleravceLow:=10;
-		stFlow1_Rate.rSetPoint;//:=150
+		stFlow1_Rate.rSetPoint:=st_CIP_Param.r_Flow_1;//:=150
 		pcFlow1_Rate(stProcessControl:=stFlow1_Rate );
 
 		stFlow2_Rate.rValue:=g_AnalogSensor.stAnalogSensor[E_ASense_Name.FT1002].Value;
 		stFlow2_Rate.ToleranceHigh:=10;
 		stFlow2_Rate.ToleravceLow:=10;
-		stFlow2_Rate.rSetPoint;//:=150
+		stFlow2_Rate.rSetPoint:=st_CIP_Param.r_Flow_2;//:=150
 		pcFlow2_Rate(stProcessControl:=stFlow2_Rate );		
 		
 	//CIP Client Color pump
@@ -3619,8 +3623,8 @@ fb_PumpClient.m_Stop();]]></ST>
 //selecting set point based on user
 	
 	IF bTestPID THEN;
-		pcFlow1_Rate.mRun();
-		pcColor_Level.mRun();
+		pcFlow1_Rate.mRun(Set_Point:=st_CIP_Param.r_Flow_1);
+		pcColor_Level.mRun(Set_Point:=50);
 
 		fb_PumpCIP.m_Auto(control:=pcFlow1_Rate.mRun_PID(Set_Point:=180));
 		
@@ -3658,7 +3662,7 @@ stPis_FillWater_T94 REF= stPis[valFillWater_T94];
 //Structure
 	//concentration
 stDetergent 	REF=g_ProcControl.arr_stProcCntrl[E_ProcessControl_Name.eDetergentConc];
-stDisinfectant 	REF=g_ProcControl.arr_stProcCntrl[E_ProcessControl_Name.eDisinfectionConc];
+stDisInfectant 	REF=g_ProcControl.arr_stProcCntrl[E_ProcessControl_Name.eDisinfectionConc];
 	//Temperature
 stTemperature_Deterg REF=g_ProcControl.arr_stProcCntrl[E_ProcessControl_Name.eDeterTemp];
 stTemperature_Dis 	 REF=g_ProcControl.arr_stProcCntrl[E_ProcessControl_Name.eDisTemp];
@@ -3675,7 +3679,7 @@ stPressure 	REF=g_ProcControl.arr_stProcCntrl[E_ProcessControl_Name.eCIP_Pressur
 //Function block
 	//concentration
 pcDetergent 	REF=g_ProcControl.arr_fbProcCntrl[E_ProcessControl_Name.eDetergentConc];
-pcDisinfectant 	REF=g_ProcControl.arr_fbProcCntrl[E_ProcessControl_Name.eDisinfectionConc];
+pcDisInfectant 	REF=g_ProcControl.arr_fbProcCntrl[E_ProcessControl_Name.eDisinfectionConc];
 	//Temperature
 pcTemperature_Deterg REF=g_ProcControl.arr_fbProcCntrl[E_ProcessControl_Name.eDeterTemp];
 pcTemperature_Dis 	 REF=g_ProcControl.arr_fbProcCntrl[E_ProcessControl_Name.eDisTemp];
@@ -18587,7 +18591,7 @@ END_CASE]]></ST>
                                                                       <o>
                                                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                                         <o n="Value" t="StringValue">
-                                                                          <v n="Value">"stDisinfectant.bDone"</v>
+                                                                          <v n="Value">"stDisInfectant.bDone"</v>
                                                                           <v n="DefaultValue">""</v>
                                                                         </o>
                                                                         <v n="Id">4214L</v>
@@ -18691,7 +18695,7 @@ END_CASE]]></ST>
                                                                       <o>
                                                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                                         <o n="Value" t="StringValue">
-                                                                          <v n="Value">"stDisinfectant.Control_ON"</v>
+                                                                          <v n="Value">"stDisInfectant.Control_ON"</v>
                                                                           <v n="DefaultValue">""</v>
                                                                         </o>
                                                                         <v n="Id">4259L</v>
@@ -19011,7 +19015,7 @@ END_CASE]]></ST>
                                                                       <o>
                                                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                                         <o n="Value" t="StringValue">
-                                                                          <v n="Value">"stDisinfectant.OverFlow"</v>
+                                                                          <v n="Value">"stDisInfectant.OverFlow"</v>
                                                                           <v n="DefaultValue">""</v>
                                                                         </o>
                                                                         <v n="Id">4225L</v>
@@ -22229,7 +22233,7 @@ END_CASE]]></ST>
                                                                                   <o>
                                                                                     <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                                                     <o n="Value" t="StringValue">
-                                                                                      <v n="Value">"stDisinfectant.bDone"</v>
+                                                                                      <v n="Value">"stDisInfectant.bDone"</v>
                                                                                       <v n="DefaultValue">""</v>
                                                                                     </o>
                                                                                     <v n="Id">5075L</v>
@@ -22333,7 +22337,7 @@ END_CASE]]></ST>
                                                                                   <o>
                                                                                     <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                                                     <o n="Value" t="StringValue">
-                                                                                      <v n="Value">"stDisinfectant.Control_ON"</v>
+                                                                                      <v n="Value">"stDisInfectant.Control_ON"</v>
                                                                                       <v n="DefaultValue">""</v>
                                                                                     </o>
                                                                                     <v n="Id">5120L</v>
@@ -22653,7 +22657,7 @@ END_CASE]]></ST>
                                                                                   <o>
                                                                                     <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                                                     <o n="Value" t="StringValue">
-                                                                                      <v n="Value">"stDisinfectant.OverFlow"</v>
+                                                                                      <v n="Value">"stDisInfectant.OverFlow"</v>
                                                                                       <v n="DefaultValue">""</v>
                                                                                     </o>
                                                                                     <v n="Id">5541L</v>
@@ -24391,7 +24395,7 @@ END_CASE]]></ST>
                                                                       <o>
                                                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                                         <o n="Value" t="StringValue">
-                                                                          <v n="Value">"stDisinfectant.bDone"</v>
+                                                                          <v n="Value">"stDisInfectant.bDone"</v>
                                                                           <v n="DefaultValue">""</v>
                                                                         </o>
                                                                         <v n="Id">2837L</v>
@@ -32165,7 +32169,7 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aCIP4_Collect_active">
-      <LineId Id="10" Count="5" />
+      <LineId Id="22" Count="5" />
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aCIP4_Collect_entry">
@@ -32211,8 +32215,11 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
     <LineIds Name="FB_CIP._aCondition_CIP2_Local_active">
       <LineId Id="40" Count="0" />
       <LineId Id="44" Count="0" />
-      <LineId Id="2" Count="7" />
+      <LineId Id="2" Count="0" />
+      <LineId Id="51" Count="4" />
+      <LineId Id="5" Count="4" />
       <LineId Id="1" Count="0" />
+      <LineId Id="45" Count="0" />
       <LineId Id="25" Count="0" />
       <LineId Id="28" Count="1" />
       <LineId Id="33" Count="0" />
@@ -32726,11 +32733,8 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._ameasureDelay_CIP2_1_active">
-      <LineId Id="4" Count="0" />
-      <LineId Id="1" Count="2" />
-      <LineId Id="6" Count="0" />
-      <LineId Id="5" Count="0" />
-      <LineId Id="7" Count="1" />
+      <LineId Id="9" Count="6" />
+      <LineId Id="8" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._ameasureDelay_CIP2_1_entry">
       <LineId Id="3" Count="0" />
@@ -32827,13 +32831,19 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
     <LineIds Name="FB_CIP._aStartPump_CIP2_01_active">
       <LineId Id="1" Count="0" />
       <LineId Id="6" Count="0" />
-      <LineId Id="9" Count="1" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="30" Count="1" />
       <LineId Id="22" Count="0" />
       <LineId Id="4" Count="0" />
       <LineId Id="2" Count="0" />
       <LineId Id="11" Count="1" />
       <LineId Id="3" Count="0" />
-      <LineId Id="14" Count="1" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="33" Count="0" />
       <LineId Id="23" Count="0" />
       <LineId Id="13" Count="0" />
       <LineId Id="20" Count="1" />
@@ -32976,11 +32986,17 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP.act_CallProcessControl">
-      <LineId Id="198" Count="34" />
-      <LineId Id="238" Count="9" />
-      <LineId Id="293" Count="4" />
-      <LineId Id="291" Count="1" />
-      <LineId Id="248" Count="42" />
+      <LineId Id="488" Count="8" />
+      <LineId Id="591" Count="0" />
+      <LineId Id="497" Count="0" />
+      <LineId Id="505" Count="1" />
+      <LineId Id="583" Count="0" />
+      <LineId Id="507" Count="11" />
+      <LineId Id="593" Count="0" />
+      <LineId Id="586" Count="0" />
+      <LineId Id="588" Count="2" />
+      <LineId Id="585" Count="0" />
+      <LineId Id="525" Count="57" />
       <LineId Id="101" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP.act_GetReference">
