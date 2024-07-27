@@ -11,10 +11,18 @@ VAR
 	//fbPID	: 	FB_BasicPID	;
 	fbPID	: 	PID	;
 	hystCIP_SetPoint: FB_Hysteresis_REAL;
+	Call_ActDelayTON	: TON	;
 END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[//stProcessControl.bManual:=TRUE;
+IF bRun THEN 
+	stProcessControl.bActiveCntr:=TRUE; 
+ELSIF NOT bRun AND Call_ActDelayTON.Q THEN
+	stProcessControl.bActiveCntr:=FALSE;
+END_IF
+
+Call_ActDelayTON(IN:=stProcessControl.bActiveCntr , PT:=T#1S , Q=> , ET=> );
 
 IF bRun THEN
 	stProcessControl.Deviation:=stProcessControl.rSetPoint-stProcessControl.rValue;
@@ -498,7 +506,7 @@ stProcessControl.bDone:=FALSE;]]></ST>
     <Method Name="mRun" Id="{9603e267-93ce-4898-8d8d-2a4ace5f7fdf}">
       <Declaration><![CDATA[METHOD mRun : BOOL
 VAR_INPUT
-	Set_Point: REAL;
+	//Set_Point: REAL;
 END_VAR
 ]]></Declaration>
       <Implementation>
@@ -528,7 +536,7 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[mRun(Set_Point:=Set_Point);
+        <ST><![CDATA[mRun();//mRun(Set_Point:=Set_Point);
 stProcessControl.bManual:=FALSE;
 //stProcessControl.rSetPoint:=Set_Point;
 mRun_PID:=stProcessControl.fCtrlOutput;]]></ST>
@@ -536,7 +544,12 @@ mRun_PID:=stProcessControl.fCtrlOutput;]]></ST>
     </Method>
     <LineIds Name="FB_ProcessControl">
       <LineId Id="185" Count="0" />
+      <LineId Id="221" Count="1" />
+      <LineId Id="226" Count="1" />
+      <LineId Id="223" Count="0" />
+      <LineId Id="225" Count="0" />
       <LineId Id="195" Count="0" />
+      <LineId Id="224" Count="0" />
       <LineId Id="147" Count="25" />
       <LineId Id="101" Count="0" />
       <LineId Id="207" Count="0" />

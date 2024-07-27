@@ -6,13 +6,18 @@ VAR
 
 	fTotalCIP_Volume: REAL;
 	fbWritePersistent: FB_WritePersistentData;
-	bTesting	:	BOOL:=FALSE	;
+	bTesting		:	BOOL:=FALSE	;
+	nI_1			: 	INT		;
+	ftg_EStop_Fall	: 	F_TRIG	;
+	rs_EStopFall	: 	RS	;
+	bTestEstop		:	BOOL:=TRUE	;
 END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[prg_RealClock();
 prg_Piston();
 prg_Safety();
+act_ResetPumps();
 
 //act_SetAnalogSens_Test();//To be deleted, for testing purposes
 act_Call_Sensors_Analog();//To be deleted, for testing purposes
@@ -15363,6 +15368,19 @@ END_CASE]]></ST>
         </NWL>
       </Implementation>
     </Action>
+    <Action Name="act_ResetPumps" Id="{d6d5f25f-7520-4a69-86f1-bc96d10af8f9}">
+      <Implementation>
+        <ST><![CDATA[ftg_EStop_Fall(CLK:=prg_Safety.ftStateSafe.Q , Q=> );//EStop falling signal
+rs_EStopFall(SET:=ftg_EStop_Fall.Q , RESET1:= , Q1=> );
+IF rs_EStopFall.Q1 THEN
+	FOR nI_1:=1 TO E_Pump_List.last BY 1 DO
+		g_Pump.arr_st_Pump[nI_1].bRun_Auto:=FALSE;
+	END_FOR
+	rs_EStopFall.RESET1:=TRUE;
+END_IF
+rs_EStopFall.RESET1:=FALSE;]]></ST>
+      </Implementation>
+    </Action>
     <Action Name="act_Sensors" Id="{8d3d0c01-4d42-45d2-a1c2-ec56cd1d1464}">
       <Implementation>
         <NWL>
@@ -17520,7 +17538,9 @@ END_FOR]]></ST>
       </Implementation>
     </Method>
     <LineIds Name="MAIN">
-      <LineId Id="193" Count="41" />
+      <LineId Id="193" Count="2" />
+      <LineId Id="245" Count="0" />
+      <LineId Id="196" Count="38" />
       <LineId Id="16" Count="0" />
     </LineIds>
     <LineIds Name="MAIN.act_Call_For_HMI">
@@ -17537,6 +17557,14 @@ END_FOR]]></ST>
       <LineId Id="13" Count="1" />
       <LineId Id="18" Count="0" />
       <LineId Id="3" Count="0" />
+    </LineIds>
+    <LineIds Name="MAIN.act_ResetPumps">
+      <LineId Id="7" Count="1" />
+      <LineId Id="1" Count="1" />
+      <LineId Id="4" Count="1" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="3" Count="0" />
+      <LineId Id="10" Count="0" />
     </LineIds>
     <LineIds Name="MAIN.act_SetAnalogSens_Test">
       <LineId Id="1" Count="1" />
