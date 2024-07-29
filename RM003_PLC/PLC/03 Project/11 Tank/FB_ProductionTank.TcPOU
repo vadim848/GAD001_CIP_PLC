@@ -22,6 +22,11 @@ VAR_INPUT
 	valFillWaterDrain		: E_Pis_Name;
 	valDrainTapWater		: E_Pis_Name;
 	
+	sens_TankTemp			: E_ASense_Name	;//Tenk temperature sensor ID
+	
+	valCW_In				:	E_Pis_Name	;//Valve to control tank temperature In
+	valCW_Out				:	E_Pis_Name	;//Valve to control tank temperature Out (always at 100 open)
+	
 	//pumpEnum			:	E_Pump_List	;
 	
 END_VAR
@@ -36,9 +41,12 @@ VAR
 	
 	fbPis				: FB_Piston;	
 	
-	stPis_FillWater				: REFERENCE TO ST_Piston;
-	stPis_FillWaterDrain		: REFERENCE TO ST_Piston;
-	stPis_DrainTapWater			: REFERENCE TO ST_Piston;
+	stPis_FillWater			: REFERENCE TO ST_Piston;
+	stPis_FillWaterDrain	: REFERENCE TO ST_Piston;
+	stPis_DrainTapWater		: REFERENCE TO ST_Piston;
+	
+	stPis_CWIn				: REFERENCE TO ST_Piston;
+	stPis_CWOut				: REFERENCE TO ST_Piston;
 	
 	bTestingMode	:	BOOL	;//For testing purposes, to be deleted 
 	bMoveStep		:	BOOL	;//For testing purposes, to be deleted 
@@ -46,6 +54,10 @@ VAR
 	Call_TON	:	TON	;//Call ton for double request same object
 	bTON_Active	:	BOOL	;
 	
+	// Temperature process control
+	pc_TempCntrl	: REFERENCE TO FB_ProcessControl	;
+	st_TempCntrl	: REFERENCE TO ST_ProcessControl	;
+	bCntrlTemp: BOOL;
 END_VAR
 VAR_IN_OUT
 
@@ -62,6 +74,7 @@ END_VAR]]></Declaration>
       <ST><![CDATA[act_GetReference();
 act_Oper();
 act_Call_Interface(); //There is no need to Call block if it comes from the outside
+act_TempCntrl();
 
 IF bTestingMode THEN;
 	IF bMoveStep THEN;
@@ -1069,6 +1082,7 @@ END_IF]]></ST>
       <Implementation>
         <ST><![CDATA[eProcess:=E_Element_Process.eNone;
 eReq:=E_Request_List.eNone;
+bCntrlTemp:=FALSE;
 ]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -1654,7 +1668,9 @@ END_CASE
     <Action Name="_aReady_exit" Id="{eda65358-fc89-414b-b675-7c61604a5bed}">
       <Implementation>
         <ST><![CDATA[bRun:=TRUE;
-bDone:=FALSE;]]></ST>
+bDone:=FALSE;
+bCntrlTemp:=TRUE;
+]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -3319,6 +3335,9 @@ refState_Long REF= fbElement[eElementID].eState_Long;
 stPis_FillWater REF= stPis[valFillWater];
 stPis_FillWaterDrain REF= stPis[valFillWaterDrain];
 stPis_DrainTapWater REF= stPis[valDrainTapWater];
+
+stPis_CWIn REF= stPis[valCW_In];
+stPis_CWOut	 REF= stPis[valCW_Out];
 
 eStatus:=refState_Long;
 (*
@@ -18403,6 +18422,51 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
         </XmlArchive>
       </ObjectProperties>
     </Action>
+    <Action Name="act_TempCntrl" Id="{fa8d9f6d-7d99-4287-8414-2085c4b68d07}" FolderPath="Manage\">
+      <Implementation>
+        <ST><![CDATA[CASE eElementID OF 
+	E_Element_List.eTank_1:
+		//Marinada Tank 1
+		st_TempCntrl 	REF=g_ProcControl.arr_stProcCntrl[E_ProcessControl_Name.eMarinTank1_Temp];
+		pc_TempCntrl 	REF= g_ProcControl.arr_fbProcCntrl[E_ProcessControl_Name.eMarinTank1_Temp];
+		st_TempCntrl.rSetPoint:=-10;//value from recipe
+		//tolerance
+	E_Element_List.eTank_2:
+		//Marinada Tank 2
+		st_TempCntrl 	REF=g_ProcControl.arr_stProcCntrl[E_ProcessControl_Name.eMarinTank2_Temp];
+		pc_TempCntrl 	REF= g_ProcControl.arr_fbProcCntrl[E_ProcessControl_Name.eMarinTank2_Temp];
+		st_TempCntrl.rSetPoint:=-10;//value from recipe
+	E_Element_List.eTank_3:
+		//Color Tank 1
+		st_TempCntrl 	REF=g_ProcControl.arr_stProcCntrl[E_ProcessControl_Name.eColorTank1_Temp];
+		pc_TempCntrl 	REF= g_ProcControl.arr_fbProcCntrl[E_ProcessControl_Name.eColorTank1_Temp];
+		st_TempCntrl.rSetPoint:=-10;//value from recipe
+	E_Element_List.eTank_4:
+		//Color Tank 2
+		st_TempCntrl 	REF=g_ProcControl.arr_stProcCntrl[E_ProcessControl_Name.eColorTank2_Temp];
+		pc_TempCntrl 	REF= g_ProcControl.arr_fbProcCntrl[E_ProcessControl_Name.eColorTank2_Temp];
+		st_TempCntrl.rSetPoint:=-10;//value from recipe
+END_CASE
+st_TempCntrl.rValue:=g_AnalogSensor.stAnalogSensor[sens_TankTemp].Value;//sensor
+st_TempCntrl.fHystLow:=-10;
+st_TempCntrl.fHystHigh:=30;
+st_TempCntrl.ToleranceHigh:=5;
+st_TempCntrl.ToleravceLow:=-55;
+
+IF bCntrlTemp THEN
+ pc_TempCntrl.mRun_Hyst();
+END_IF	
+
+IF st_TempCntrl.bHystOut THEN
+	stPis_CWOut.req_Close:=FALSE;
+	stPis_CWOut.req_Open:=TRUE;
+ELSE
+	stPis_CWOut.req_Close:=TRUE;
+	stPis_CWOut.req_Open:=FALSE;
+END_IF
+]]></ST>
+      </Implementation>
+    </Action>
     <Action Name="Drain_TapWater_01_active" Id="{30b94932-29a4-4643-a735-a63304d5897d}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
@@ -18486,6 +18550,7 @@ m_SFC_Handle();]]></ST>
     <LineIds Name="FB_ProductionTank">
       <LineId Id="9" Count="1" />
       <LineId Id="32" Count="0" />
+      <LineId Id="204" Count="0" />
       <LineId Id="139" Count="0" />
       <LineId Id="81" Count="0" />
       <LineId Id="144" Count="1" />
@@ -18681,7 +18746,7 @@ m_SFC_Handle();]]></ST>
     </LineIds>
     <LineIds Name="FB_ProductionTank._aInit_Tank_exit">
       <LineId Id="1" Count="0" />
-      <LineId Id="3" Count="0" />
+      <LineId Id="3" Count="1" />
       <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank._aLine_Drain_Time_active">
@@ -18802,6 +18867,8 @@ m_SFC_Handle();]]></ST>
     <LineIds Name="FB_ProductionTank._aReady_exit">
       <LineId Id="2" Count="0" />
       <LineId Id="1" Count="0" />
+      <LineId Id="4" Count="0" />
+      <LineId Id="3" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank._aStart_TriPump_1_active">
       <LineId Id="4" Count="0" />
@@ -18892,11 +18959,50 @@ m_SFC_Handle();]]></ST>
       <LineId Id="1" Count="2" />
       <LineId Id="11" Count="0" />
       <LineId Id="14" Count="1" />
+      <LineId Id="17" Count="1" />
+      <LineId Id="16" Count="0" />
       <LineId Id="13" Count="0" />
       <LineId Id="12" Count="0" />
       <LineId Id="5" Count="4" />
       <LineId Id="4" Count="0" />
       <LineId Id="10" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ProductionTank.act_TempCntrl">
+      <LineId Id="3" Count="0" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="8" Count="1" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="10" Count="1" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="12" Count="1" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="6" Count="0" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="46" Count="0" />
+      <LineId Id="45" Count="0" />
+      <LineId Id="47" Count="1" />
+      <LineId Id="52" Count="0" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="50" Count="0" />
+      <LineId Id="53" Count="0" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="39" Count="0" />
+      <LineId Id="37" Count="0" />
+      <LineId Id="40" Count="2" />
+      <LineId Id="38" Count="0" />
+      <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank.Drain_TapWater_01_active">
       <LineId Id="2" Count="4" />
