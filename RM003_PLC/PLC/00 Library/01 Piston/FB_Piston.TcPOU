@@ -21,6 +21,7 @@ VAR_IN_OUT
 END_VAR
 VAR
 	stPis			:	REFERENCE TO ST_Piston;
+	stPis_UpLow		:	REFERENCE TO ST_Piston_U_L;
 	state: E_Piston_State;
 	state_Close,state_Open: (Ready, CheckState, ValveUpdate, Busy, Delay, Done, Error);
 
@@ -46,13 +47,16 @@ VAR
 	rt_CloseMan		: R_TRIG;
 	rt_DefaultPos	: R_TRIG;
 	rt_ResumeMaster: R_TRIG;
+	b_memo_OpenFDBKExist: BOOL;
+	b_memo_CloseFDBKExist: BOOL;
+	Call_FTrig_ReqUp: F_TRIG;
+	Call_FTrig_ReqLow: F_TRIG;
 END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[IF iFB_Num <> E_Pis_Name.e0_not_in_use THEN;
 	
 END_IF
-
 (* case to acception at PLC Restart ...TBD
 IF prg_Safety.ftStateSafe.Q
 AND NOT stPis.st_Deafult
@@ -66,6 +70,10 @@ END_IF
 act_Get_Reference();
 act_State_Machine();
 act_StateDeafult();
+act_MemFdbkExist();
+
+stPis_UpLow.bError:=stPis.b_Error;
+stPis_UpLow.iFB_Num:=iFB_Num;
 	
 IF iFB_Num = E_Pis_Name.e0_not_in_use THEN;
 	//stPis.st_Deafult:=TRUE;
@@ -165,6 +173,7 @@ END_CASE]]></ST>
     <Action Name="act_Get_Reference" Id="{5587b6ef-4983-4751-a3fb-a1c5a80691d6}">
       <Implementation>
         <ST><![CDATA[stPis REF= g_Piston.stPis[iFB_Num];
+stPis_UpLow REF= g_Piston.stPis_U_L[iFB_Num];
 //stPis.description:=description;
 stPis.b_Exist:=TRUE;
 stPis.sName:=TO_STRING(iFB_Num);
@@ -211,6 +220,50 @@ IF rt_ResumeMaster.Q THEN;
 	stPis.b_Resume:=TRUE;
 END_IF
 ]]></ST>
+      </Implementation>
+    </Action>
+    <Action Name="act_MemFdbkExist" Id="{a0b17f23-d2da-40b6-b232-4b9995f30b7b}">
+      <Implementation>
+        <ST><![CDATA[IF stPis.st_Close THEN
+	//Fetching signals
+	IF TRUE THEN
+		Call_FTrig_ReqUp(CLK:=stPis_UpLow.req_Upper , Q=> );
+	ELSE
+		Call_FTrig_ReqUp(CLK:=stPis_UpLow.st_Upper , Q=> );
+	END_IF
+	
+	Call_FTrig_ReqLow(CLK:=stPis_UpLow.st_Lower , Q=> );
+	
+	//setting memmory
+	IF stPis_UpLow.req_Lower AND stPis.sen_Close_Exist THEN
+		b_memo_CloseFDBKExist:=stPis.sen_Close_Exist;
+		stPis.sen_Close_Exist:=FALSE;
+	ELSIF stPis_UpLow.req_Lower AND b_memo_CloseFDBKExist THEN
+		stPis.sen_Close_Exist:=FALSE;
+	END_IF
+	
+	IF stPis_UpLow.req_Upper AND stPis.sen_Open_Exist THEN
+		b_memo_OpenFDBKExist:=stPis.sen_Open_Exist;
+		stPis.sen_Open_Exist:=FALSE;
+	ELSIF stPis_UpLow.req_Upper AND b_memo_OpenFDBKExist THEN
+		stPis.sen_Open_Exist:=FALSE;
+	END_IF
+	//resseting memmory
+	IF Call_FTrig_ReqUp.Q AND b_memo_OpenFDBKExist THEN
+		stPis.sen_Open_Exist:=b_memo_OpenFDBKExist;
+		b_memo_OpenFDBKExist:=FALSE;
+	END_IF
+	
+	IF Call_FTrig_ReqLow.Q AND b_memo_CloseFDBKExist THEN
+		stPis.sen_Close_Exist:=b_memo_CloseFDBKExist;
+		b_memo_CloseFDBKExist:=FALSE;
+	END_IF
+ELSE
+	b_memo_CloseFDBKExist:=FALSE;
+	b_memo_OpenFDBKExist:=FALSE;
+	stPis_UpLow.req_Lower:=FALSE;
+	stPis_UpLow.st_Lower:=FALSE;
+END_IF]]></ST>
       </Implementation>
     </Action>
     <Action Name="act_New_CMD" Id="{41187a43-fa92-4bd7-bb88-cf8db79fe6ff}">
@@ -302,6 +355,7 @@ CASE state_Open OF
 			IF ton_MaxTime.Q THEN;
 				//Error to print
 				state_Open:=Error;
+				;
 			END_IF				
 		END_IF
 	
@@ -562,7 +616,6 @@ END_IF
       <LineId Id="249" Count="0" />
       <LineId Id="299" Count="0" />
       <LineId Id="250" Count="0" />
-      <LineId Id="425" Count="0" />
       <LineId Id="356" Count="0" />
       <LineId Id="426" Count="0" />
       <LineId Id="357" Count="1" />
@@ -572,6 +625,10 @@ END_IF
       <LineId Id="301" Count="0" />
       <LineId Id="297" Count="1" />
       <LineId Id="110" Count="0" />
+      <LineId Id="480" Count="0" />
+      <LineId Id="476" Count="0" />
+      <LineId Id="475" Count="0" />
+      <LineId Id="483" Count="0" />
       <LineId Id="300" Count="0" />
       <LineId Id="65" Count="0" />
       <LineId Id="201" Count="1" />
@@ -648,8 +705,44 @@ END_IF
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_Piston.act_Get_Reference">
-      <LineId Id="147" Count="45" />
+      <LineId Id="147" Count="0" />
+      <LineId Id="193" Count="0" />
+      <LineId Id="148" Count="44" />
       <LineId Id="15" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Piston.act_MemFdbkExist">
+      <LineId Id="31" Count="0" />
+      <LineId Id="43" Count="0" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="41" Count="0" />
+      <LineId Id="3" Count="0" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="37" Count="1" />
+      <LineId Id="6" Count="0" />
+      <LineId Id="9" Count="3" />
+      <LineId Id="39" Count="1" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="33" Count="2" />
+      <LineId Id="44" Count="1" />
+      <LineId Id="32" Count="0" />
     </LineIds>
     <LineIds Name="FB_Piston.act_New_CMD">
       <LineId Id="25" Count="1" />
@@ -709,6 +802,7 @@ END_IF
       <LineId Id="98" Count="3" />
       <LineId Id="53" Count="0" />
       <LineId Id="74" Count="3" />
+      <LineId Id="103" Count="0" />
       <LineId Id="73" Count="0" />
       <LineId Id="48" Count="0" />
       <LineId Id="45" Count="0" />
