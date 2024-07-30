@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
   <POU Name="FB_ProductionTank" Id="{7ce7ab69-2020-4b39-9932-dc5de2cb0022}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_ProductionTank EXTENDS FB_SFC_Cycle IMPLEMENTS ITF_FB_SFC_Cycle
 VAR_INPUT
@@ -18454,16 +18454,21 @@ st_TempCntrl.ToleranceHigh:=5;
 st_TempCntrl.ToleravceLow:=-55;
 
 IF bCntrlTemp THEN
- pc_TempCntrl.mRun_Hyst();
+	pc_TempCntrl.mRun_Hyst();
+	
+ 	IF TRUE 
+	AND st_TempCntrl.bHystOut
+	AND  stPis_CWOut.st_Close
+	THEN
+		stPis_CWOut.req_Open:=TRUE;
+		//stPis_CWOut.req_Close:=FALSE;
+	ELSIF stPis_CWOut.st_Open THEN;
+		stPis_CWOut.req_Close:=TRUE;
+		//stPis_CWOut.req_Open:=FALSE;
+	END_IF
 END_IF	
 
-IF st_TempCntrl.bHystOut THEN
-	stPis_CWOut.req_Close:=FALSE;
-	stPis_CWOut.req_Open:=TRUE;
-ELSE
-	stPis_CWOut.req_Close:=TRUE;
-	stPis_CWOut.req_Open:=FALSE;
-END_IF
+
 ]]></ST>
       </Implementation>
     </Action>
@@ -18995,12 +19000,16 @@ m_SFC_Handle();]]></ST>
       <LineId Id="52" Count="0" />
       <LineId Id="36" Count="0" />
       <LineId Id="50" Count="0" />
+      <LineId Id="67" Count="0" />
+      <LineId Id="59" Count="1" />
+      <LineId Id="69" Count="0" />
+      <LineId Id="61" Count="0" />
+      <LineId Id="68" Count="0" />
+      <LineId Id="62" Count="0" />
+      <LineId Id="64" Count="2" />
+      <LineId Id="58" Count="0" />
       <LineId Id="53" Count="0" />
       <LineId Id="35" Count="0" />
-      <LineId Id="19" Count="0" />
-      <LineId Id="39" Count="0" />
-      <LineId Id="37" Count="0" />
-      <LineId Id="40" Count="2" />
       <LineId Id="38" Count="0" />
       <LineId Id="2" Count="0" />
     </LineIds>
