@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
   <POU Name="FB_CIP" Id="{14cc32b0-9432-4cf7-99d2-9b696d5c02b0}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_CIP EXTENDS FB_SFC_Cycle IMPLEMENTS ITF_FB_SFC_Cycle
 VAR_INPUT
@@ -118,6 +118,7 @@ VAR
 	a: REAL := 0.8;
 	b: REAL := 1.2;
 	i: E_CIP_Usage;
+	setTime: TIME;
 END_VAR
 //upper lower control
 VAR
@@ -505,7 +506,7 @@ END_IF]]></ST>
     </Action>
     <Action Name="_aCondition_CIP2_Client_active" Id="{4c374eda-5cab-4d42-be48-b4cc4764cc7c}">
       <Implementation>
-        <ST><![CDATA[fb_PumpCIP.m_Run(RPM:=pcFlow1_Rate.mRun_PID(Set_Point:=st_CIP_Param.r_Flow_1));
+        <ST><![CDATA[fb_PumpCIP.m_Run(RPM:=pcFlow1_Rate.mRun_PID(Set_Point:=st_CIP_Param.r_Flow_1,controlManual:=NOT(fb_PumpCIP.modeAuto)));
 
 IF TRUE 
 (*AND stAnalogSensor[E_ASense_Name.FT1001].Value>=st_CIP_Param.r_Flow_1 // 
@@ -534,7 +535,8 @@ THEN;
 END_IF
 
 
-ton_CIP_Condition(PT:=T#30S);
+//ton_CIP_Condition(PT:=T#30S);
+ton_CIP_Condition(PT:=TO_TIME(st_CIP_Param.t_ConditionDetergent));
 IF TRUE 
 AND Deterg_Conc_Client_Done.x
 AND Temperature_2_Done.x
@@ -568,7 +570,7 @@ END_IF
     </Action>
     <Action Name="_aCondition_CIP2_Local_active" Id="{e5e07d09-44e8-4297-94d3-a998af75e5e0}">
       <Implementation>
-        <ST><![CDATA[fb_PumpCIP.m_Run(RPM:=pcFlow1_Rate.mRun_PID(Set_Point:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_1));
+        <ST><![CDATA[fb_PumpCIP.m_Run(RPM:=pcFlow1_Rate.mRun_PID(Set_Point:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_1,controlManual:=NOT(fb_PumpCIP.modeAuto)));
 
 IF TRUE 
 //AND stAnalogSensor[E_ASense_Name.FT1001].Value>=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_1 // 
@@ -597,8 +599,8 @@ THEN;
 	bCIP_Condition_Failed:=TRUE;
 END_IF
 
-
-ton_CIP_Condition(PT:=T#30S);
+//ton_CIP_Condition(PT:=T#30S);
+ton_CIP_Condition(PT:=SECOND_TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_ConditionDetergent));
 IF TRUE 
 AND Deterg_Conc_Local_Done.x
 AND Temperature_1_Done.x
@@ -660,7 +662,8 @@ THEN;
 END_IF
 
 
-ton_CIP_Condition(PT:=T#30S);
+//ton_CIP_Condition(PT:=T#30S);
+ton_CIP_Condition(PT:=TO_TIME(st_CIP_Param.t_ConditionDisInfection));
 IF TRUE 
 AND Disinfct_Conc_Client_Done.x
 AND Temperature_Dis_2_Done.x
@@ -722,7 +725,8 @@ THEN;
 END_IF
 
 
-ton_CIP_Condition(PT:=T#30S);
+//ton_CIP_Condition(PT:=T#30S);
+ton_CIP_Condition(PT:=SECOND_TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_DisInfectionConcentration));
 IF TRUE 
 AND Disinfct_Conc_Local_Done.x
 AND Temperature_Dis_1_Done.x
@@ -2578,7 +2582,8 @@ stDetergent.rSetPoint:=st_CIP_Param.r_DetergentConcentration;//need an external 
     <Action Name="_ameasureDelay_CIP2_1_active" Id="{eee92c62-884a-44e9-a331-0195a641ce83}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
-IF measureDelay_CIP2_1.t>TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_Measure_Delay*1000) THEN;
+setTime:=SECOND_TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_Measure_Delay);
+IF measureDelay_CIP2_1.t>setTime THEN;
 	bStepDone:=TRUE;
 END_IF
 
@@ -2665,7 +2670,7 @@ END_IF]]></ST>
     <Action Name="_ameasureDelay_CIP3_1_active" Id="{95864345-55ce-4583-98e3-3f17b2ed667c}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
-IF measureDelay_CIP3_1.t>TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_Measure_Delay*1000) THEN;
+IF measureDelay_CIP3_1.t>SECOND_TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_Measure_Delay) THEN;
 	bStepDone:=TRUE;
 END_IF
 
@@ -2979,11 +2984,11 @@ ELSE;
 END_IF
 
 //pcFlow2_Rate.mRun_PID(Set_Point:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_2);//to run, just to check
-fb_PumpCIP.m_Run(RPM:=pcFlow1_Rate.mRun_PID(Set_Point:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_1));
+fb_PumpCIP.m_Run(RPM:=pcFlow1_Rate.mRun_PID(Set_Point:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_1,controlManual:=NOT(fb_PumpCIP.modeAuto)));
 
 (*
 IF TRUE //Future condition
-AND StartPump_CIP2_01.t>TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_PumpStartTime*1000) 
+AND StartPump_CIP2_01.t>SECOND_TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_PumpStartTime) 
 THEN;
 	fb_PumpCIP.m_Run(RPM:=pcFlow1_Rate.mRun_PID(Set_Point:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_1));
 END_IF
@@ -3042,7 +3047,7 @@ ELSE;
 	bStepDone:=FALSE;
 END_IF
 
-fb_PumpCIP.m_Run(RPM:=pcFlow1_Rate.mRun_PID(Set_Point:=st_CIP_Param.r_Flow_1));
+fb_PumpCIP.m_Run(RPM:=pcFlow1_Rate.mRun_PID(Set_Point:=st_CIP_Param.r_Flow_1,controlManual:=NOT(fb_PumpCIP.modeAuto)));
 //fb_PumpClient.m_Run(RPM:=st_CIP_Param.r_CIP_Client_Pmp_1);
 (*
 IF TRUE //Future condition
@@ -3113,7 +3118,8 @@ fb_PumpClient.m_Run(RPM:=st_CIP_Param.r_CIP_Client_Pmp_1);]]></ST>
 fb_PumpCIP.m_Run(RPM:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_CIP_Pmp_1);//1500
 
 IF TRUE //Future condition
-AND StartPump_CIP2_RPM_01.t>TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_PumpStartTime*1000) 
+AND StartPump_CIP2_RPM_01.t>SECOND_TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_PumpStartTime) 
+AND fb_PumpCIP.nRPM=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_CIP_Pmp_1
 THEN;
 	bStepDone:=TRUE;
 END_IF
@@ -3145,7 +3151,7 @@ fb_PumpClient.m_Run(RPM:=st_CIP_Param.r_CIP_Client_Pmp_1);
 //fb_PumpCIP.m_Run(RPM:=st_CIP_Param.r_CIP_Pmp_1);
 
 IF TRUE //Future condition
-AND StartPump_CIP2_RPM_02.t>TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_PumpStartTime*1000) 
+AND StartPump_CIP2_RPM_02.t>SECOND_TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_PumpStartTime) 
 THEN;
 	bStepDone:=TRUE;
 END_IF
@@ -3172,7 +3178,7 @@ END_IF
 fb_PumpCIP.m_Run(RPM:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_CIP_Pmp_1);
 
 IF TRUE //Future condition
-AND StartPump_CIP2_RPM_03.t>TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_PumpStartTime*1000) 
+AND StartPump_CIP2_RPM_03.t>SECOND_TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_PumpStartTime) 
 THEN;
 	bStepDone:=TRUE;
 END_IF
@@ -3195,8 +3201,8 @@ END_IF
     <Action Name="_aStartPump_CIP2_RPM_04_active" Id="{6541b9b3-a926-41a5-a2dd-43356cfd7a84}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
-fb_PumpCIP.m_Run(RPM:=pcFlow1_Rate.mRun_PID(Set_Point:=st_CIP_Param.r_CIP_Pmp_1));
-fb_PumpClient.m_Run(RPM:=pcFlow1_Rate.mRun_PID(Set_Point:=st_CIP_Param.r_CIP_Client_Pmp_1));
+fb_PumpCIP.m_Run(RPM:=pcFlow1_Rate.mRun_PID(Set_Point:=st_CIP_Param.r_CIP_Pmp_1,controlManual:=NOT(fb_PumpCIP.modeAuto)));
+fb_PumpClient.m_Run(RPM:=pcFlow1_Rate.mRun_Hyst(mRun_Hyst=>));
 
 IF TRUE //Future condition
 AND StartPump_CIP2_RPM_04.t>TO_TIME(st_CIP_Param.t_PumpStartTime*1000) 
@@ -3235,8 +3241,8 @@ ELSE;
 END_IF
 
 IF TRUE //Future condition
-AND StartPump_CIP3_01.t>TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_PumpStartTime*1000) THEN;
-	fb_PumpCIP.m_Run(RPM:=pcFlow1_Rate.mRun_PID(Set_Point:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_1));
+AND StartPump_CIP3_01.t>SECOND_TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_PumpStartTime) THEN;
+	fb_PumpCIP.m_Run(RPM:=pcFlow1_Rate.mRun_PID(Set_Point:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_1,controlManual:=NOT(fb_PumpCIP.modeAuto)));
 END_IF]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -3294,8 +3300,8 @@ END_IF
 
 IF TRUE //Future condition
 AND StartPump_CIP3_02.t>TO_TIME(st_CIP_Param.t_PumpStartTime*1000) THEN;
-	fb_PumpCIP.m_Run(RPM:=pcFlow1_Rate.mRun_PID(Set_Point:=st_CIP_Param.r_Flow_1));
-	fb_PumpClient.m_Run(RPM:=pcColor_Level.mRun_PID(Set_Point:=st_CIP_Param.r_Flow_2));
+	fb_PumpCIP.m_Run(RPM:=pcFlow1_Rate.mRun_PID(Set_Point:=st_CIP_Param.r_Flow_1,controlManual:=NOT(fb_PumpCIP.modeAuto)));
+	fb_PumpClient.m_Run(RPM:=pcColor_Level.mRun_Hyst(mRun_Hyst=>));
 END_IF]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -3641,9 +3647,9 @@ fb_PumpClient.m_Stop();]]></ST>
 		
 	//Temperature
 	//stTemperature_Deterg.rValue:=testTemperature;
-	stTemperature_Deterg.rValue:=g_AnalogSensor.stAnalogSensor[E_ASense_Name.TT1001].Value;
-	stTemperature_Deterg.ToleranceHigh:=0.5;
-	stTemperature_Deterg.ToleravceLow:=0.5;
+	stTemperature_Deterg.rValue:=g_AnalogSensor.stAnalogSensor[E_ASense_Name.TT1003].Value;
+	stTemperature_Deterg.ToleranceHigh:=1;
+	stTemperature_Deterg.ToleravceLow:=1;
 	stTemperature_Deterg.rSetPoint:=st_CIP_Param.r_Temper_Detergent;
 	pcTemperature_Deterg(stProcessControl:=stTemperature_Deterg );
 
@@ -3658,9 +3664,9 @@ fb_PumpClient.m_Stop();]]></ST>
 		
 	//Temperature	
 	//stTemperature_Dis.rValue:=testTemperature;
-	stTemperature_Dis.rValue:=g_AnalogSensor.stAnalogSensor[E_ASense_Name.TT1001].Value;
-	stTemperature_Dis.ToleranceHigh:=0.5;//0.5
-	stTemperature_Dis.ToleravceLow:=0.5;//0.5
+	stTemperature_Dis.rValue:=g_AnalogSensor.stAnalogSensor[E_ASense_Name.TT1004].Value;
+	stTemperature_Dis.ToleranceHigh:=1;//0.5
+	stTemperature_Dis.ToleravceLow:=1;//0.5
 	stTemperature_Dis.rSetPoint:=st_CIP_Param.r_Temper_DisInfection;//65;
 	pcTemperature_Dis(stProcessControl:=stTemperature_Dis );	
 	
@@ -3670,7 +3676,8 @@ fb_PumpClient.m_Stop();]]></ST>
 		stFlow1_Rate.ToleranceHigh:=10;
 		stFlow1_Rate.ToleravceLow:=10;
 		stFlow1_Rate.rSetPoint:=st_CIP_Param.r_Flow_1;//:=150
-		pcFlow1_Rate(stProcessControl:=stFlow1_Rate );
+		stFlow1_Rate.fCtrlOutput_Manual:=fb_PumpCIP.nRPM;
+		pcFlow1_Rate(stProcessControl:=stFlow1_Rate, );
 
 		stFlow2_Rate.rValue:=g_AnalogSensor.stAnalogSensor[E_ASense_Name.FT1002].Value;
 		stFlow2_Rate.ToleranceHigh:=10;
@@ -3692,13 +3699,20 @@ fb_PumpClient.m_Stop();]]></ST>
 		//stFlow_Rate.rSetPoint:=150;
 		pcMarinada_Level(stProcessControl:=stMarinada_Level );
 		
+//Presure
+		stPressure.rValue:=g_AnalogSensor.stAnalogSensor[E_ASense_Name.PT1001].Value;
+		stPressure.ToleranceHigh:=1;
+		stPressure.ToleravceLow:=1;
+		//stFlow_Rate.rSetPoint:=150;
+		pcPressure(stProcessControl:=stPressure );
+		
 //selecting set point based on user
 	
 	IF bTestPID THEN;
 		pcFlow1_Rate.mRun();
 		pcColor_Level.mRun();
 
-		fb_PumpCIP.m_Auto(control:=pcFlow1_Rate.mRun_PID(Set_Point:=180));
+		fb_PumpCIP.m_Auto(control:=pcFlow1_Rate.mRun_PID(Set_Point:=180,controlManual:=NOT(fb_PumpCIP.modeAuto)));
 		
 		//by CIP Pump RPM control		
 		g_Pump.fbPump[E_Pump_List.P4002].m_Auto(control:=pcColor_Level.mRun_Hyst());
@@ -32563,7 +32577,7 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="186" Count="0" />
       <LineId Id="185" Count="0" />
       <LineId Id="187" Count="1" />
-      <LineId Id="342" Count="0" />
+      <LineId Id="1222" Count="0" />
       <LineId Id="341" Count="0" />
       <LineId Id="131" Count="0" />
       <LineId Id="130" Count="0" />
@@ -32649,7 +32663,9 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="2" Count="3" />
       <LineId Id="45" Count="1" />
       <LineId Id="44" Count="0" />
-      <LineId Id="6" Count="32" />
+      <LineId Id="6" Count="20" />
+      <LineId Id="47" Count="0" />
+      <LineId Id="27" Count="11" />
       <LineId Id="41" Count="1" />
       <LineId Id="1" Count="0" />
       <LineId Id="40" Count="0" />
@@ -32671,7 +32687,7 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="35" Count="4" />
       <LineId Id="34" Count="0" />
       <LineId Id="26" Count="0" />
-      <LineId Id="11" Count="1" />
+      <LineId Id="59" Count="1" />
       <LineId Id="10" Count="0" />
       <LineId Id="23" Count="1" />
       <LineId Id="27" Count="0" />
@@ -32691,14 +32707,18 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="2" Count="4" />
       <LineId Id="44" Count="1" />
       <LineId Id="43" Count="0" />
-      <LineId Id="7" Count="35" />
+      <LineId Id="7" Count="20" />
+      <LineId Id="46" Count="0" />
+      <LineId Id="28" Count="14" />
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aCondition_CIP3_Local_active">
       <LineId Id="2" Count="4" />
       <LineId Id="44" Count="1" />
       <LineId Id="43" Count="0" />
-      <LineId Id="7" Count="35" />
+      <LineId Id="7" Count="19" />
+      <LineId Id="47" Count="1" />
+      <LineId Id="28" Count="14" />
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aConnect_CIP1_Drain_active">
@@ -33182,7 +33202,9 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._ameasureDelay_CIP2_1_active">
-      <LineId Id="9" Count="6" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="10" Count="5" />
       <LineId Id="8" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._ameasureDelay_CIP2_1_entry">
@@ -33334,7 +33356,9 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="8" Count="0" />
       <LineId Id="1" Count="0" />
       <LineId Id="10" Count="0" />
-      <LineId Id="4" Count="2" />
+      <LineId Id="4" Count="1" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="6" Count="0" />
       <LineId Id="9" Count="0" />
       <LineId Id="3" Count="0" />
       <LineId Id="2" Count="0" />
@@ -33473,7 +33497,13 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="586" Count="0" />
       <LineId Id="588" Count="2" />
       <LineId Id="585" Count="0" />
-      <LineId Id="525" Count="57" />
+      <LineId Id="525" Count="6" />
+      <LineId Id="594" Count="0" />
+      <LineId Id="532" Count="20" />
+      <LineId Id="595" Count="1" />
+      <LineId Id="598" Count="3" />
+      <LineId Id="597" Count="0" />
+      <LineId Id="553" Count="29" />
       <LineId Id="101" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP.act_GetReference">

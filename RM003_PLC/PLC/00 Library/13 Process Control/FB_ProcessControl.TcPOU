@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
   <POU Name="FB_ProcessControl" Id="{a1972051-d534-4d79-bd7a-71cd1b516897}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_ProcessControl
 
@@ -12,6 +12,9 @@ VAR
 	fbPID	: 	PID	;
 	hystCIP_SetPoint: FB_Hysteresis_REAL;
 	Call_ActDelayTON	: TON	;
+	
+	hendelingPID_Manual: TON;
+
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -52,6 +55,13 @@ END_IF
 
 act_Call_PID();
 act_CallHyst();
+
+hendelingPID_Manual(PT:=T#0.5S, IN:=TRUE);
+IF hendelingPID_Manual.Q THEN;
+	stProcessControl.bManual:=TRUE;
+ELSE;
+	stProcessControl.bManual:=FALSE;
+END_IF
 
 ]]></ST>
     </Implementation>
@@ -533,27 +543,23 @@ END_IF]]></ST>
       <Declaration><![CDATA[METHOD mRun_PID : REAL
 VAR_INPUT
 	Set_Point: REAL;
+	controlManual: BOOL;
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[mRun();//mRun(Set_Point:=Set_Point);
-stProcessControl.bManual:=FALSE;
+//stProcessControl.bManual:=controlManual;
 //stProcessControl.rSetPoint:=Set_Point;
+hendelingPID_Manual(IN:=controlManual);
 mRun_PID:=stProcessControl.fCtrlOutput;]]></ST>
       </Implementation>
     </Method>
     <LineIds Name="FB_ProcessControl">
-      <LineId Id="185" Count="0" />
-      <LineId Id="221" Count="1" />
-      <LineId Id="226" Count="1" />
-      <LineId Id="223" Count="0" />
-      <LineId Id="225" Count="0" />
-      <LineId Id="195" Count="0" />
-      <LineId Id="224" Count="0" />
-      <LineId Id="147" Count="25" />
-      <LineId Id="101" Count="0" />
-      <LineId Id="207" Count="0" />
-      <LineId Id="184" Count="0" />
+      <LineId Id="262" Count="38" />
+      <LineId Id="302" Count="1" />
+      <LineId Id="305" Count="1" />
+      <LineId Id="304" Count="0" />
+      <LineId Id="301" Count="0" />
       <LineId Id="183" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProcessControl.act_Call_PID_old">
@@ -585,6 +591,7 @@ mRun_PID:=stProcessControl.fCtrlOutput;]]></ST>
     <LineIds Name="FB_ProcessControl.mRun_PID">
       <LineId Id="8" Count="1" />
       <LineId Id="15" Count="0" />
+      <LineId Id="22" Count="0" />
       <LineId Id="5" Count="0" />
     </LineIds>
   </POU>
