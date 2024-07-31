@@ -727,7 +727,7 @@ END_IF
 
 
 //ton_CIP_Condition(PT:=T#30S);
-ton_CIP_Condition(PT:=SECOND_TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_DisInfectionConcentration));
+ton_CIP_Condition(PT:=SECOND_TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_ConditionDisInfection));
 IF TRUE 
 AND Disinfct_Conc_Local_Done.x
 AND Temperature_Dis_1_Done.x
@@ -2977,7 +2977,7 @@ fb_PumpClient.m_Run(RPM:=st_CIP_Param.r_CIP_Client_Pmp_1);]]></ST>
 //AND stAnalogSensor[E_ASense_Name.PT1001].Value>=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Pressure // 
 AND pcFlow1_Rate.mRun()
 AND pcFlow2_Rate.mRun()
-AND pcTemperature_Deterg.mRun()
+AND pcPressure.mRun()
 THEN;
 	bStepDone:=TRUE;
 ELSE;
