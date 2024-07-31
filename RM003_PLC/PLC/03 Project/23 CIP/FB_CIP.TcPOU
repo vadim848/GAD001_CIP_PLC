@@ -507,7 +507,7 @@ END_IF]]></ST>
     </Action>
     <Action Name="_aCondition_CIP2_Client_active" Id="{4c374eda-5cab-4d42-be48-b4cc4764cc7c}">
       <Implementation>
-        <ST><![CDATA[fb_PumpCIP.m_Run(RPM:=pcFlow1_Rate.mRun_PID(Set_Point:=st_CIP_Param.r_Flow_1,controlManual:=NOT(fb_PumpCIP.modeAuto)));
+        <ST><![CDATA[fb_PumpCIP.m_Run(RPM:=pcFlow1_Rate.mRun_PID(Set_Point:=st_CIP_Param.r_Flow_Pipe,controlManual:=NOT(fb_PumpCIP.modeAuto)));
 
 IF TRUE 
 (*AND stAnalogSensor[E_ASense_Name.FT1001].Value>=st_CIP_Param.r_Flow_1 // 
@@ -571,7 +571,7 @@ END_IF
     </Action>
     <Action Name="_aCondition_CIP2_Local_active" Id="{e5e07d09-44e8-4297-94d3-a998af75e5e0}">
       <Implementation>
-        <ST><![CDATA[fb_PumpCIP.m_Run(RPM:=pcFlow1_Rate.mRun_PID(Set_Point:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_1,controlManual:=NOT(fb_PumpCIP.modeAuto)));
+        <ST><![CDATA[fb_PumpCIP.m_Run(RPM:=pcFlow1_Rate.mRun_PID(Set_Point:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_Pipe,controlManual:=NOT(fb_PumpCIP.modeAuto)));
 
 IF TRUE 
 //AND stAnalogSensor[E_ASense_Name.FT1001].Value>=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_1 // 
@@ -2985,7 +2985,7 @@ ELSE;
 END_IF
 
 //pcFlow2_Rate.mRun_PID(Set_Point:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_2);//to run, just to check
-fb_PumpCIP.m_Run(RPM:=pcFlow1_Rate.mRun_PID(Set_Point:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_1,controlManual:=NOT(fb_PumpCIP.modeAuto)));
+fb_PumpCIP.m_Run(RPM:=pcFlow1_Rate.mRun_PID(Set_Point:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_Pipe,controlManual:=NOT(fb_PumpCIP.modeAuto)));
 
 (*
 IF TRUE //Future condition
@@ -3048,7 +3048,7 @@ ELSE;
 	bStepDone:=FALSE;
 END_IF
 
-fb_PumpCIP.m_Run(RPM:=pcFlow1_Rate.mRun_PID(Set_Point:=st_CIP_Param.r_Flow_1,controlManual:=NOT(fb_PumpCIP.modeAuto)));
+fb_PumpCIP.m_Run(RPM:=pcFlow1_Rate.mRun_PID(Set_Point:=st_CIP_Param.r_Flow_Pipe,controlManual:=NOT(fb_PumpCIP.modeAuto)));
 //fb_PumpClient.m_Run(RPM:=st_CIP_Param.r_CIP_Client_Pmp_1);
 (*
 IF TRUE //Future condition
@@ -3243,7 +3243,7 @@ END_IF
 
 IF TRUE //Future condition
 AND StartPump_CIP3_01.t>SECOND_TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_PumpStartTime) THEN;
-	fb_PumpCIP.m_Run(RPM:=pcFlow1_Rate.mRun_PID(Set_Point:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_1,controlManual:=NOT(fb_PumpCIP.modeAuto)));
+	fb_PumpCIP.m_Run(RPM:=pcFlow1_Rate.mRun_PID(Set_Point:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_Pipe,controlManual:=NOT(fb_PumpCIP.modeAuto)));
 END_IF]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -3301,7 +3301,7 @@ END_IF
 
 IF TRUE //Future condition
 AND StartPump_CIP3_02.t>SECOND_TO_TIME(st_CIP_Param.t_PumpStartTime) THEN;
-	fb_PumpCIP.m_Run(RPM:=pcFlow1_Rate.mRun_PID(Set_Point:=st_CIP_Param.r_Flow_1,controlManual:=NOT(fb_PumpCIP.modeAuto)));
+	fb_PumpCIP.m_Run(RPM:=pcFlow1_Rate.mRun_PID(Set_Point:=st_CIP_Param.r_Flow_Pipe,controlManual:=NOT(fb_PumpCIP.modeAuto)));
 	fb_PumpClient.m_Run(RPM:=pcColor_Level.mRun_Hyst(mRun_Hyst=>));
 END_IF]]></ST>
       </Implementation>
@@ -3676,14 +3676,14 @@ fb_PumpClient.m_Stop();]]></ST>
 		stFlow1_Rate.rValue:=g_AnalogSensor.stAnalogSensor[E_ASense_Name.FT1001].Value;
 		//###stFlow1_Rate.ToleranceHigh:=10;
 		//###stFlow1_Rate.ToleravceLow:=10;
-		stFlow1_Rate.rSetPoint:=st_CIP_Param.r_Flow_1;//:=150
+		stFlow1_Rate.rSetPoint:=st_CIP_Param.r_Flow_Pipe;//:=150
 		stFlow1_Rate.fCtrlOutput_Manual:=fb_PumpCIP.nRPM;
 		pcFlow1_Rate(stProcessControl:=stFlow1_Rate, );
 
 		stFlow2_Rate.rValue:=g_AnalogSensor.stAnalogSensor[E_ASense_Name.FT1002].Value;
 		//###stFlow2_Rate.ToleranceHigh:=10;
 		//###stFlow2_Rate.ToleravceLow:=10;
-		stFlow2_Rate.rSetPoint:=st_CIP_Param.r_Flow_2;//:=150
+		stFlow2_Rate.rSetPoint:=st_CIP_Param.r_Flow_Sprinkler;//:=150
 		pcFlow2_Rate(stProcessControl:=stFlow2_Rate );		
 		
 	//CIP Client Color pump
@@ -33523,32 +33523,7 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP.act_CallProcessControl">
-      <LineId Id="488" Count="8" />
-      <LineId Id="591" Count="0" />
-      <LineId Id="497" Count="0" />
-      <LineId Id="505" Count="1" />
-      <LineId Id="583" Count="0" />
-      <LineId Id="507" Count="11" />
-      <LineId Id="593" Count="0" />
-      <LineId Id="586" Count="0" />
-      <LineId Id="588" Count="2" />
-      <LineId Id="585" Count="0" />
-      <LineId Id="525" Count="6" />
-      <LineId Id="594" Count="0" />
-      <LineId Id="532" Count="20" />
-      <LineId Id="595" Count="1" />
-      <LineId Id="598" Count="3" />
-      <LineId Id="597" Count="0" />
-      <LineId Id="604" Count="1" />
-      <LineId Id="553" Count="0" />
-      <LineId Id="606" Count="0" />
-      <LineId Id="608" Count="0" />
-      <LineId Id="610" Count="0" />
-      <LineId Id="609" Count="0" />
-      <LineId Id="607" Count="0" />
-      <LineId Id="554" Count="0" />
-      <LineId Id="603" Count="0" />
-      <LineId Id="556" Count="26" />
+      <LineId Id="716" Count="104" />
       <LineId Id="101" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP.act_GetReference">
