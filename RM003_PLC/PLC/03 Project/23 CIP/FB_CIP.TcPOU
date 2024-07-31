@@ -119,6 +119,7 @@ VAR
 	b: REAL := 1.2;
 	i: E_CIP_Usage;
 	setTime: TIME;
+	bLoadDefSetPoints: BOOL;
 END_VAR
 //upper lower control
 VAR
@@ -3640,16 +3641,16 @@ fb_PumpClient.m_Stop();]]></ST>
         <ST><![CDATA[//Detergent
 	//Concentration
 	stDetergent.rValue:=g_AnalogSensor.stAnalogSensor[E_ASense_Name.CT1101_3].Value;
-	stDetergent.ToleranceHigh:=0.05;
-	stDetergent.ToleravceLow:=0.05;
+	//###stDetergent.ToleranceHigh:=0.05;
+	//###stDetergent.ToleravceLow:=0.05;
 	stDetergent.rSetPoint:=st_CIP_Param.r_DetergentConcentration;//0.3;
 	pcDetergent(stProcessControl:=stDetergent );
 		
 	//Temperature
 	//stTemperature_Deterg.rValue:=testTemperature;
 	stTemperature_Deterg.rValue:=g_AnalogSensor.stAnalogSensor[E_ASense_Name.TT1003].Value;
-	stTemperature_Deterg.ToleranceHigh:=1;
-	stTemperature_Deterg.ToleravceLow:=1;
+	//###stTemperature_Deterg.ToleranceHigh:=1;
+	//###stTemperature_Deterg.ToleravceLow:=1;
 	stTemperature_Deterg.rSetPoint:=st_CIP_Param.r_Temper_Detergent;
 	pcTemperature_Deterg(stProcessControl:=stTemperature_Deterg );
 
@@ -3657,54 +3658,61 @@ fb_PumpClient.m_Stop();]]></ST>
 //Disinfectant
 	//Concentration
 	stDisInfectant.rValue:=g_AnalogSensor.stAnalogSensor[E_ASense_Name.CT1101_4].Value;
-	stDisInfectant.ToleranceHigh:=0.05;
-	stDisInfectant.ToleravceLow:=0.05;
+	//###stDisInfectant.ToleranceHigh:=0.05;
+	//###stDisInfectant.ToleravceLow:=0.05;
 	stDisInfectant.rSetPoint:=st_CIP_Param.r_DisInfectionConcentration;//0.3;
 	pcDisInfectant(stProcessControl:=stDisInfectant );
 		
 	//Temperature	
 	//stTemperature_Dis.rValue:=testTemperature;
 	stTemperature_Dis.rValue:=g_AnalogSensor.stAnalogSensor[E_ASense_Name.TT1004].Value;
-	stTemperature_Dis.ToleranceHigh:=1;//0.5
-	stTemperature_Dis.ToleravceLow:=1;//0.5
+	//###stTemperature_Dis.ToleranceHigh:=1;//0.5
+	//###stTemperature_Dis.ToleravceLow:=1;//0.5
 	stTemperature_Dis.rSetPoint:=st_CIP_Param.r_Temper_DisInfection;//65;
 	pcTemperature_Dis(stProcessControl:=stTemperature_Dis );	
 	
 // Flow_Rate
 	//CIP Pump
 		stFlow1_Rate.rValue:=g_AnalogSensor.stAnalogSensor[E_ASense_Name.FT1001].Value;
-		stFlow1_Rate.ToleranceHigh:=10;
-		stFlow1_Rate.ToleravceLow:=10;
+		//###stFlow1_Rate.ToleranceHigh:=10;
+		//###stFlow1_Rate.ToleravceLow:=10;
 		stFlow1_Rate.rSetPoint:=st_CIP_Param.r_Flow_1;//:=150
 		stFlow1_Rate.fCtrlOutput_Manual:=fb_PumpCIP.nRPM;
 		pcFlow1_Rate(stProcessControl:=stFlow1_Rate, );
 
 		stFlow2_Rate.rValue:=g_AnalogSensor.stAnalogSensor[E_ASense_Name.FT1002].Value;
-		stFlow2_Rate.ToleranceHigh:=10;
-		stFlow2_Rate.ToleravceLow:=10;
+		//###stFlow2_Rate.ToleranceHigh:=10;
+		//###stFlow2_Rate.ToleravceLow:=10;
 		stFlow2_Rate.rSetPoint:=st_CIP_Param.r_Flow_2;//:=150
 		pcFlow2_Rate(stProcessControl:=stFlow2_Rate );		
 		
 	//CIP Client Color pump
 		//stColor_Level.rValue:=g_AnalogSensor.stAnalogSensor[E_ASense_Name.LT4002].Value;
 		stColor_Level.rValue:=g_AnalogSensor.stAnalogSensor[E_ASense_Name.LT4001].Value;
-		stColor_Level.ToleranceHigh:=10;
-		stColor_Level.ToleravceLow:=10;
+		//###stColor_Level.ToleranceHigh:=10;
+		//###stColor_Level.ToleravceLow:=10;
 		//stFlow_Rate.rSetPoint:=150;
 		pcColor_Level(stProcessControl:=stColor_Level );
 	//CIP Client Marinada pump
 		stMarinada_Level.rValue:=g_AnalogSensor.stAnalogSensor[E_ASense_Name.LT3002].Value;
-		stMarinada_Level.ToleranceHigh:=10;
-		stMarinada_Level.ToleravceLow:=10;
+		//###stMarinada_Level.ToleranceHigh:=10;
+		//###stMarinada_Level.ToleravceLow:=10;
 		//stFlow_Rate.rSetPoint:=150;
 		pcMarinada_Level(stProcessControl:=stMarinada_Level );
 		
 //Presure
 		stPressure.rValue:=g_AnalogSensor.stAnalogSensor[E_ASense_Name.PT1001].Value;
-		stPressure.ToleranceHigh:=1;
-		stPressure.ToleravceLow:=1;
+		//###stPressure.ToleranceHigh:=1;
+		//###stPressure.ToleravceLow:=1;
 		//stFlow_Rate.rSetPoint:=150;
 		pcPressure(stProcessControl:=stPressure );
+
+
+//Load def set points
+IF bLoadDefSetPoints THEN
+	bLoadDefSetPoints:=FALSE;
+	mLoadDefProcessSetPoints();
+END_IF
 		
 //selecting set point based on user
 	
@@ -32515,6 +32523,34 @@ END_IF
 ]]></ST>
       </Implementation>
     </Method>
+    <Method Name="mLoadDefProcessSetPoints" Id="{6622ea5b-b543-4ab8-8397-ed9f64ee15e5}">
+      <Declaration><![CDATA[METHOD mLoadDefProcessSetPoints : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[
+	stDetergent.ToleranceHigh:=0.05;
+	stDetergent.ToleravceLow:=0.05;
+	stTemperature_Deterg.ToleranceHigh:=1;
+	stTemperature_Deterg.ToleravceLow:=1;
+	stDisInfectant.ToleranceHigh:=0.05;
+	stDisInfectant.ToleravceLow:=0.05;
+	stTemperature_Dis.ToleranceHigh:=1;//0.5
+	stTemperature_Dis.ToleravceLow:=1;//0.5
+	stFlow1_Rate.ToleranceHigh:=10;
+	stFlow1_Rate.ToleravceLow:=10;
+	stFlow2_Rate.ToleranceHigh:=10;
+	stFlow2_Rate.ToleravceLow:=10;
+	stColor_Level.ToleranceHigh:=10;
+	stColor_Level.ToleravceLow:=10;
+	stMarinada_Level.ToleranceHigh:=10;
+	stMarinada_Level.ToleravceLow:=10;
+	stPressure.ToleranceHigh:=1;
+	stPressure.ToleravceLow:=1;
+	]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="mProcessDeviation" Id="{7347b3a8-56cd-4c5d-bbbb-7da59378f31e}" FolderPath="Meth\">
       <Declaration><![CDATA[METHOD mProcessDeviation : REAL
 VAR_INPUT
@@ -33503,7 +33539,16 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="595" Count="1" />
       <LineId Id="598" Count="3" />
       <LineId Id="597" Count="0" />
-      <LineId Id="553" Count="29" />
+      <LineId Id="604" Count="1" />
+      <LineId Id="553" Count="0" />
+      <LineId Id="606" Count="0" />
+      <LineId Id="608" Count="0" />
+      <LineId Id="610" Count="0" />
+      <LineId Id="609" Count="0" />
+      <LineId Id="607" Count="0" />
+      <LineId Id="554" Count="0" />
+      <LineId Id="603" Count="0" />
+      <LineId Id="556" Count="26" />
       <LineId Id="101" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP.act_GetReference">
@@ -33816,6 +33861,11 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="39" Count="0" />
       <LineId Id="37" Count="0" />
       <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_CIP.mLoadDefProcessSetPoints">
+      <LineId Id="6" Count="1" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="8" Count="16" />
     </LineIds>
     <LineIds Name="FB_CIP.mProcessDeviation">
       <LineId Id="5" Count="0" />
