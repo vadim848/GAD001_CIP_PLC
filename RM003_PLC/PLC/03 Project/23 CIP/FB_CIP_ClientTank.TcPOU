@@ -54,7 +54,7 @@ END_IF
 ]]></ST>
     </Implementation>
     <Folder Name="Manage" Id="{75407563-912d-4908-b651-2f1b671d8753}" />
-    <Action Name="_aClose_active" Id="{3171e88b-b524-4a10-bcd5-81f3db41fee7}">
+    <Action Name="_aClose_active_1" Id="{92f6b6d1-b589-4a20-bcda-89bf8146bb5b}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
 IF TRUE 
@@ -78,7 +78,7 @@ END_IF
         </XmlArchive>
       </ObjectProperties>
     </Action>
-    <Action Name="_aClose_entry" Id="{8619d677-b2eb-4497-b935-436030e1de55}">
+    <Action Name="_aClose_entry_1" Id="{e7dae316-3ace-4522-92c2-0cffa79ad812}">
       <Implementation>
         <ST><![CDATA[fbPis.m_SetByRecipe(stPis:=stPis_Tank_A, 				req:=E_Piston_Recipe_State.Release);
 fbPis.m_SetByRecipe(stPis:=stPis_Tank_A_Sprinkler, 		req:=E_Piston_Recipe_State.Release);
@@ -124,7 +124,7 @@ bDone:=TRUE;
         </XmlArchive>
       </ObjectProperties>
     </Action>
-    <Action Name="_aDrain_active" Id="{3b843679-a89f-4044-a262-c59f683d3c7d}">
+    <Action Name="_aDrain_active_1" Id="{f6cebb11-b4ad-49db-9d93-c21a8948919a}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
 IF TRUE 
@@ -147,7 +147,7 @@ END_IF]]></ST>
         </XmlArchive>
       </ObjectProperties>
     </Action>
-    <Action Name="_aDrain_entry" Id="{0238cb7c-07f4-45cc-b709-8534e94eab3e}">
+    <Action Name="_aDrain_entry_1" Id="{9d6fa881-c60b-4a07-bb86-a9b166160530}">
       <Implementation>
         <ST><![CDATA[fbPis.m_SetByRecipe(stPis:=stPis_Tank_A, 				req:=E_Piston_Recipe_State.Release);
 fbPis.m_SetByRecipe(stPis:=stPis_Tank_A_Sprinkler, 		req:=E_Piston_Recipe_State.Release);
@@ -224,9 +224,19 @@ CASE eReq OF
 				eProcess:=E_CIP_ClientTank.eTank_A;
 			END_IF	
 			
+	E_CIP_ClientTank.eTank_A_Sprinkler:;
+			IF TRUE THEN;
+				eProcess:=E_CIP_ClientTank.eTank_A_Sprinkler;
+			END_IF
+			
 	E_CIP_ClientTank.eTank_B:;
 			IF TRUE THEN;
 				eProcess:=E_CIP_ClientTank.eTank_B;
+			END_IF	
+	
+	E_CIP_ClientTank.eTank_B_Sprinkler:;
+			IF TRUE THEN;
+				eProcess:=E_CIP_ClientTank.eTank_B_Sprinkler;
 			END_IF	
 
 	E_CIP_ClientTank.eDrain:;
@@ -272,7 +282,7 @@ bDone:=FALSE;]]></ST>
         </XmlArchive>
       </ObjectProperties>
     </Action>
-    <Action Name="_aTank_A_active" Id="{9d442d9c-ca47-472d-85c8-d8a402fa59fd}">
+    <Action Name="_aTank_A_active_1" Id="{86ddce0d-560e-43e6-8013-13a99078bfa4}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
 IF TRUE 
@@ -295,10 +305,10 @@ END_IF]]></ST>
         </XmlArchive>
       </ObjectProperties>
     </Action>
-    <Action Name="_aTank_A_entry" Id="{a4fca9c1-9f41-465f-a869-1d7403393086}">
+    <Action Name="_aTank_A_entry_1" Id="{951a57df-a15c-4fee-b116-bcded9db2564}">
       <Implementation>
         <ST><![CDATA[fbPis.m_SetByRecipe(stPis:=stPis_Tank_A, 				req:=E_Piston_Recipe_State.Act);
-fbPis.m_SetByRecipe(stPis:=stPis_Tank_A_Sprinkler, 		req:=E_Piston_Recipe_State.Act);
+fbPis.m_SetByRecipe(stPis:=stPis_Tank_A_Sprinkler, 		req:=E_Piston_Recipe_State.Release);
 fbPis.m_SetByRecipe(stPis:=stPis_Tank_A_Main, 			req:=E_Piston_Recipe_State.Act);
 fbPis.m_SetByRecipe(stPis:=stPis_Tank_B, 				req:=E_Piston_Recipe_State.Release);
 fbPis.m_SetByRecipe(stPis:=stPis_Tank_B_Sprinkler, 		req:=E_Piston_Recipe_State.Release);
@@ -319,7 +329,54 @@ fbPis.m_SetByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release);
         </XmlArchive>
       </ObjectProperties>
     </Action>
-    <Action Name="_aTank_B_active" Id="{1abaf1e1-0575-4370-9be8-e7d3c748a607}">
+    <Action Name="_aTank_A_Sprinkler_active" Id="{2c65f399-d21d-479b-899d-841f0928a544}">
+      <Implementation>
+        <ST><![CDATA[bStepDone:=FALSE;
+IF TRUE 
+AND eStatus=E_CIP_ClientTank.eTank_A_Sprinkler
+THEN;
+	bStepDone:=TRUE;
+END_IF]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
+    <Action Name="_aTank_A_Sprinkler_entry" Id="{ed5047a0-51f6-49a8-939a-5f79d7c9f6ce}">
+      <Implementation>
+        <ST><![CDATA[fbPis.m_SetByRecipe(stPis:=stPis_Tank_A, 				req:=E_Piston_Recipe_State.Act);
+fbPis.m_SetByRecipe(stPis:=stPis_Tank_A_Sprinkler, 		req:=E_Piston_Recipe_State.Act);
+fbPis.m_SetByRecipe(stPis:=stPis_Tank_A_Main, 			req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_Tank_B, 				req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_Tank_B_Sprinkler, 		req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_Tank_B_Main, 			req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release);]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
+    <Action Name="_aTank_B_active_1" Id="{6b4bc092-8ce6-4648-a8ff-ad164d214ca2}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
 IF TRUE 
@@ -342,14 +399,61 @@ END_IF]]></ST>
         </XmlArchive>
       </ObjectProperties>
     </Action>
-    <Action Name="_aTank_B_entry" Id="{04b76d05-7ece-4a81-9f4e-edb31918bbdb}">
+    <Action Name="_aTank_B_entry_1" Id="{117ef39d-0a17-4a6d-aa08-2189f1a3d8a8}">
+      <Implementation>
+        <ST><![CDATA[fbPis.m_SetByRecipe(stPis:=stPis_Tank_A, 				req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_Tank_A_Sprinkler, 		req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_Tank_A_Main, 			req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_Tank_B, 				req:=E_Piston_Recipe_State.Act);
+fbPis.m_SetByRecipe(stPis:=stPis_Tank_B_Sprinkler, 		req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_Tank_B_Main, 			req:=E_Piston_Recipe_State.Act);
+fbPis.m_SetByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release);]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
+    <Action Name="_aTank_B_Sprinkler_active" Id="{56c82813-2539-44fc-8a4c-1ad71d2afce5}">
+      <Implementation>
+        <ST><![CDATA[bStepDone:=FALSE;
+IF TRUE 
+AND eStatus=E_CIP_ClientTank.eTank_B_Sprinkler
+THEN;
+	bStepDone:=TRUE;
+END_IF]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
+    <Action Name="_aTank_B_Sprinkler_entry" Id="{1df2f61b-c379-4645-855b-7a9b92b02674}">
       <Implementation>
         <ST><![CDATA[fbPis.m_SetByRecipe(stPis:=stPis_Tank_A, 				req:=E_Piston_Recipe_State.Release);
 fbPis.m_SetByRecipe(stPis:=stPis_Tank_A_Sprinkler, 		req:=E_Piston_Recipe_State.Release);
 fbPis.m_SetByRecipe(stPis:=stPis_Tank_A_Main, 			req:=E_Piston_Recipe_State.Release);
 fbPis.m_SetByRecipe(stPis:=stPis_Tank_B, 				req:=E_Piston_Recipe_State.Act);
 fbPis.m_SetByRecipe(stPis:=stPis_Tank_B_Sprinkler, 		req:=E_Piston_Recipe_State.Act);
-fbPis.m_SetByRecipe(stPis:=stPis_Tank_B_Main, 			req:=E_Piston_Recipe_State.Act);
+fbPis.m_SetByRecipe(stPis:=stPis_Tank_B_Main, 			req:=E_Piston_Recipe_State.Release);
 fbPis.m_SetByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release);]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -887,8 +991,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"eProcess=E_CIP_ClientTank.eClose"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
-                                        <v n="Id">744L</v>
-                                        <v n="IdParent">743L</v>
+                                        <v n="Id">1213L</v>
+                                        <v n="IdParent">1212L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{7d894980-aeea-405c-a0f6-e2b26429c58f}</v>
@@ -896,8 +1000,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">""</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
-                                        <v n="Id">745L</v>
-                                        <v n="IdParent">743L</v>
+                                        <v n="Id">1214L</v>
+                                        <v n="IdParent">1212L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{01580b27-6378-448b-8ecb-0e4b795b58d6}</v>
@@ -905,8 +1009,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"FALSE"</v>
                                           <v n="DefaultValue">"FALSE"</v>
                                         </o>
-                                        <v n="Id">746L</v>
-                                        <v n="IdParent">743L</v>
+                                        <v n="Id">1215L</v>
+                                        <v n="IdParent">1212L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{bc882c11-1e91-4dd8-a6b8-2075724ed18b}</v>
@@ -916,8 +1020,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"0"</v>
                                           <v n="DefaultValue">"0"</v>
                                         </o>
-                                        <v n="Id">747L</v>
-                                        <v n="IdParent">743L</v>
+                                        <v n="Id">1216L</v>
+                                        <v n="IdParent">1212L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{62e1754b-7629-4e63-9cec-10ae0c536f1f}</v>
@@ -925,8 +1029,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"FALSE"</v>
                                           <v n="DefaultValue">"FALSE"</v>
                                         </o>
-                                        <v n="Id">748L</v>
-                                        <v n="IdParent">743L</v>
+                                        <v n="Id">1217L</v>
+                                        <v n="IdParent">1212L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{8294df19-5962-4dee-a874-1051dabb0e3e}</v>
@@ -936,12 +1040,12 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"0"</v>
                                           <v n="DefaultValue">"0"</v>
                                         </o>
-                                        <v n="Id">749L</v>
-                                        <v n="IdParent">743L</v>
+                                        <v n="Id">1218L</v>
+                                        <v n="IdParent">1212L</v>
                                       </o>
                                     </l2>
-                                    <v n="Id">743L</v>
-                                    <v n="IdParent">739L</v>
+                                    <v n="Id">1212L</v>
+                                    <v n="IdParent">1255L</v>
                                   </o>
                                   <o t="SFCStep">
                                     <n n="EmbeddedMainAction" />
@@ -960,8 +1064,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"Close"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
-                                        <v n="Id">751L</v>
-                                        <v n="IdParent">750L</v>
+                                        <v n="Id">1429L</v>
+                                        <v n="IdParent">1428L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{7d894980-aeea-405c-a0f6-e2b26429c58f}</v>
@@ -969,8 +1073,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">""</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
-                                        <v n="Id">752L</v>
-                                        <v n="IdParent">750L</v>
+                                        <v n="Id">1430L</v>
+                                        <v n="IdParent">1428L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{01580b27-6378-448b-8ecb-0e4b795b58d6}</v>
@@ -978,8 +1082,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"FALSE"</v>
                                           <v n="DefaultValue">"FALSE"</v>
                                         </o>
-                                        <v n="Id">753L</v>
-                                        <v n="IdParent">750L</v>
+                                        <v n="Id">1431L</v>
+                                        <v n="IdParent">1428L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{bc882c11-1e91-4dd8-a6b8-2075724ed18b}</v>
@@ -989,8 +1093,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"0"</v>
                                           <v n="DefaultValue">"0"</v>
                                         </o>
-                                        <v n="Id">754L</v>
-                                        <v n="IdParent">750L</v>
+                                        <v n="Id">1432L</v>
+                                        <v n="IdParent">1428L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{6844a48e-46c2-4cc8-a185-a478f3b99cc0}</v>
@@ -998,8 +1102,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"FALSE"</v>
                                           <v n="DefaultValue">"FALSE"</v>
                                         </o>
-                                        <v n="Id">755L</v>
-                                        <v n="IdParent">750L</v>
+                                        <v n="Id">1433L</v>
+                                        <v n="IdParent">1428L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{62e1754b-7629-4e63-9cec-10ae0c536f1f}</v>
@@ -1007,8 +1111,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"FALSE"</v>
                                           <v n="DefaultValue">"FALSE"</v>
                                         </o>
-                                        <v n="Id">756L</v>
-                                        <v n="IdParent">750L</v>
+                                        <v n="Id">1434L</v>
+                                        <v n="IdParent">1428L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{cacf1a68-236e-47c2-b7b1-1cf9199718cb}</v>
@@ -1016,8 +1120,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">""</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
-                                        <v n="Id">757L</v>
-                                        <v n="IdParent">750L</v>
+                                        <v n="Id">1435L</v>
+                                        <v n="IdParent">1428L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{b693554c-1b01-4a8d-afde-9e3a46f7465d}</v>
@@ -1025,26 +1129,26 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">""</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
-                                        <v n="Id">758L</v>
-                                        <v n="IdParent">750L</v>
+                                        <v n="Id">1436L</v>
+                                        <v n="IdParent">1428L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{700a583f-b4d4-43e4-8c14-629c7cd3bec8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"_aClose_active"</v>
+                                          <v n="Value">"_aClose_active_1"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
-                                        <v n="Id">759L</v>
-                                        <v n="IdParent">750L</v>
+                                        <v n="Id">1437L</v>
+                                        <v n="IdParent">1428L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{a6b08bd8-b696-47e3-9cbf-7408b61c9ff8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"_aClose_entry"</v>
+                                          <v n="Value">"_aClose_entry_1"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
-                                        <v n="Id">760L</v>
-                                        <v n="IdParent">750L</v>
+                                        <v n="Id">1438L</v>
+                                        <v n="IdParent">1428L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{a2621e18-7de3-4ea6-ae6d-89e9e0b7befd}</v>
@@ -1052,12 +1156,12 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">""</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
-                                        <v n="Id">761L</v>
-                                        <v n="IdParent">750L</v>
+                                        <v n="Id">1439L</v>
+                                        <v n="IdParent">1428L</v>
                                       </o>
                                     </l2>
-                                    <v n="Id">750L</v>
-                                    <v n="IdParent">739L</v>
+                                    <v n="Id">1428L</v>
+                                    <v n="IdParent">1255L</v>
                                   </o>
                                   <o t="SFCTransition">
                                     <v n="VariableName">"Close__to__Done"</v>
@@ -1070,8 +1174,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"bStepDone"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
-                                        <v n="Id">763L</v>
-                                        <v n="IdParent">762L</v>
+                                        <v n="Id">1422L</v>
+                                        <v n="IdParent">1421L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{7d894980-aeea-405c-a0f6-e2b26429c58f}</v>
@@ -1079,8 +1183,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">""</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
-                                        <v n="Id">764L</v>
-                                        <v n="IdParent">762L</v>
+                                        <v n="Id">1423L</v>
+                                        <v n="IdParent">1421L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{01580b27-6378-448b-8ecb-0e4b795b58d6}</v>
@@ -1088,8 +1192,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"FALSE"</v>
                                           <v n="DefaultValue">"FALSE"</v>
                                         </o>
-                                        <v n="Id">765L</v>
-                                        <v n="IdParent">762L</v>
+                                        <v n="Id">1424L</v>
+                                        <v n="IdParent">1421L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{bc882c11-1e91-4dd8-a6b8-2075724ed18b}</v>
@@ -1099,8 +1203,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"0"</v>
                                           <v n="DefaultValue">"0"</v>
                                         </o>
-                                        <v n="Id">766L</v>
-                                        <v n="IdParent">762L</v>
+                                        <v n="Id">1425L</v>
+                                        <v n="IdParent">1421L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{62e1754b-7629-4e63-9cec-10ae0c536f1f}</v>
@@ -1108,8 +1212,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"FALSE"</v>
                                           <v n="DefaultValue">"FALSE"</v>
                                         </o>
-                                        <v n="Id">767L</v>
-                                        <v n="IdParent">762L</v>
+                                        <v n="Id">1426L</v>
+                                        <v n="IdParent">1421L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{8294df19-5962-4dee-a874-1051dabb0e3e}</v>
@@ -1119,12 +1223,12 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"0"</v>
                                           <v n="DefaultValue">"0"</v>
                                         </o>
-                                        <v n="Id">768L</v>
-                                        <v n="IdParent">762L</v>
+                                        <v n="Id">1427L</v>
+                                        <v n="IdParent">1421L</v>
                                       </o>
                                     </l2>
-                                    <v n="Id">762L</v>
-                                    <v n="IdParent">739L</v>
+                                    <v n="Id">1421L</v>
+                                    <v n="IdParent">1255L</v>
                                   </o>
                                 </l2>
                               </o>
@@ -1135,8 +1239,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                     <v n="Value">""</v>
                                     <v n="DefaultValue">""</v>
                                   </o>
-                                  <v n="Id">740L</v>
-                                  <v n="IdParent">739L</v>
+                                  <v n="Id">1256L</v>
+                                  <v n="IdParent">1255L</v>
                                 </o>
                                 <o>
                                   <v n="AttributeId">{7d894980-aeea-405c-a0f6-e2b26429c58f}</v>
@@ -1144,8 +1248,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                     <v n="Value">""</v>
                                     <v n="DefaultValue">""</v>
                                   </o>
-                                  <v n="Id">741L</v>
-                                  <v n="IdParent">739L</v>
+                                  <v n="Id">1257L</v>
+                                  <v n="IdParent">1255L</v>
                                 </o>
                                 <o>
                                   <v n="AttributeId">{01580b27-6378-448b-8ecb-0e4b795b58d6}</v>
@@ -1153,12 +1257,12 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                     <v n="Value">"FALSE"</v>
                                     <v n="DefaultValue">"FALSE"</v>
                                   </o>
-                                  <v n="Id">742L</v>
-                                  <v n="IdParent">739L</v>
+                                  <v n="Id">1258L</v>
+                                  <v n="IdParent">1255L</v>
                                 </o>
                               </l2>
-                              <v n="Id">739L</v>
-                              <v n="IdParent">730L</v>
+                              <v n="Id">1255L</v>
+                              <v n="IdParent">1250L</v>
                             </o>
                             <o>
                               <o n="ElementList" t="SFCElementList">
@@ -1174,8 +1278,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"eProcess=E_CIP_ClientTank.eTank_A"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
-                                        <v n="Id">774L</v>
-                                        <v n="IdParent">773L</v>
+                                        <v n="Id">1384L</v>
+                                        <v n="IdParent">1383L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{7d894980-aeea-405c-a0f6-e2b26429c58f}</v>
@@ -1183,8 +1287,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">""</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
-                                        <v n="Id">775L</v>
-                                        <v n="IdParent">773L</v>
+                                        <v n="Id">1385L</v>
+                                        <v n="IdParent">1383L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{01580b27-6378-448b-8ecb-0e4b795b58d6}</v>
@@ -1192,8 +1296,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"FALSE"</v>
                                           <v n="DefaultValue">"FALSE"</v>
                                         </o>
-                                        <v n="Id">776L</v>
-                                        <v n="IdParent">773L</v>
+                                        <v n="Id">1386L</v>
+                                        <v n="IdParent">1383L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{bc882c11-1e91-4dd8-a6b8-2075724ed18b}</v>
@@ -1203,8 +1307,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"0"</v>
                                           <v n="DefaultValue">"0"</v>
                                         </o>
-                                        <v n="Id">777L</v>
-                                        <v n="IdParent">773L</v>
+                                        <v n="Id">1387L</v>
+                                        <v n="IdParent">1383L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{62e1754b-7629-4e63-9cec-10ae0c536f1f}</v>
@@ -1212,8 +1316,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"FALSE"</v>
                                           <v n="DefaultValue">"FALSE"</v>
                                         </o>
-                                        <v n="Id">778L</v>
-                                        <v n="IdParent">773L</v>
+                                        <v n="Id">1388L</v>
+                                        <v n="IdParent">1383L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{8294df19-5962-4dee-a874-1051dabb0e3e}</v>
@@ -1223,12 +1327,12 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"0"</v>
                                           <v n="DefaultValue">"0"</v>
                                         </o>
-                                        <v n="Id">779L</v>
-                                        <v n="IdParent">773L</v>
+                                        <v n="Id">1389L</v>
+                                        <v n="IdParent">1383L</v>
                                       </o>
                                     </l2>
-                                    <v n="Id">773L</v>
-                                    <v n="IdParent">769L</v>
+                                    <v n="Id">1383L</v>
+                                    <v n="IdParent">1379L</v>
                                   </o>
                                   <o t="SFCStep">
                                     <n n="EmbeddedMainAction" />
@@ -1247,8 +1351,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"Tank_A"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
-                                        <v n="Id">781L</v>
-                                        <v n="IdParent">780L</v>
+                                        <v n="Id">1441L</v>
+                                        <v n="IdParent">1440L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{7d894980-aeea-405c-a0f6-e2b26429c58f}</v>
@@ -1256,8 +1360,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">""</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
-                                        <v n="Id">782L</v>
-                                        <v n="IdParent">780L</v>
+                                        <v n="Id">1442L</v>
+                                        <v n="IdParent">1440L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{01580b27-6378-448b-8ecb-0e4b795b58d6}</v>
@@ -1265,8 +1369,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"FALSE"</v>
                                           <v n="DefaultValue">"FALSE"</v>
                                         </o>
-                                        <v n="Id">783L</v>
-                                        <v n="IdParent">780L</v>
+                                        <v n="Id">1443L</v>
+                                        <v n="IdParent">1440L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{bc882c11-1e91-4dd8-a6b8-2075724ed18b}</v>
@@ -1276,8 +1380,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"0"</v>
                                           <v n="DefaultValue">"0"</v>
                                         </o>
-                                        <v n="Id">784L</v>
-                                        <v n="IdParent">780L</v>
+                                        <v n="Id">1444L</v>
+                                        <v n="IdParent">1440L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{6844a48e-46c2-4cc8-a185-a478f3b99cc0}</v>
@@ -1285,8 +1389,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"FALSE"</v>
                                           <v n="DefaultValue">"FALSE"</v>
                                         </o>
-                                        <v n="Id">785L</v>
-                                        <v n="IdParent">780L</v>
+                                        <v n="Id">1445L</v>
+                                        <v n="IdParent">1440L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{62e1754b-7629-4e63-9cec-10ae0c536f1f}</v>
@@ -1294,8 +1398,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"FALSE"</v>
                                           <v n="DefaultValue">"FALSE"</v>
                                         </o>
-                                        <v n="Id">786L</v>
-                                        <v n="IdParent">780L</v>
+                                        <v n="Id">1446L</v>
+                                        <v n="IdParent">1440L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{cacf1a68-236e-47c2-b7b1-1cf9199718cb}</v>
@@ -1303,8 +1407,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">""</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
-                                        <v n="Id">787L</v>
-                                        <v n="IdParent">780L</v>
+                                        <v n="Id">1447L</v>
+                                        <v n="IdParent">1440L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{b693554c-1b01-4a8d-afde-9e3a46f7465d}</v>
@@ -1312,26 +1416,26 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">""</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
-                                        <v n="Id">788L</v>
-                                        <v n="IdParent">780L</v>
+                                        <v n="Id">1448L</v>
+                                        <v n="IdParent">1440L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{700a583f-b4d4-43e4-8c14-629c7cd3bec8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"_aTank_A_active"</v>
+                                          <v n="Value">"_aTank_A_active_1"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
-                                        <v n="Id">789L</v>
-                                        <v n="IdParent">780L</v>
+                                        <v n="Id">1449L</v>
+                                        <v n="IdParent">1440L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{a6b08bd8-b696-47e3-9cbf-7408b61c9ff8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"_aTank_A_entry"</v>
+                                          <v n="Value">"_aTank_A_entry_1"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
-                                        <v n="Id">790L</v>
-                                        <v n="IdParent">780L</v>
+                                        <v n="Id">1450L</v>
+                                        <v n="IdParent">1440L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{a2621e18-7de3-4ea6-ae6d-89e9e0b7befd}</v>
@@ -1339,12 +1443,12 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">""</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
-                                        <v n="Id">791L</v>
-                                        <v n="IdParent">780L</v>
+                                        <v n="Id">1451L</v>
+                                        <v n="IdParent">1440L</v>
                                       </o>
                                     </l2>
-                                    <v n="Id">780L</v>
-                                    <v n="IdParent">769L</v>
+                                    <v n="Id">1440L</v>
+                                    <v n="IdParent">1379L</v>
                                   </o>
                                   <o t="SFCTransition">
                                     <v n="VariableName">"Tank_A__to__Done"</v>
@@ -1357,8 +1461,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"bStepDone"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
-                                        <v n="Id">793L</v>
-                                        <v n="IdParent">792L</v>
+                                        <v n="Id">1403L</v>
+                                        <v n="IdParent">1402L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{7d894980-aeea-405c-a0f6-e2b26429c58f}</v>
@@ -1366,8 +1470,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">""</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
-                                        <v n="Id">794L</v>
-                                        <v n="IdParent">792L</v>
+                                        <v n="Id">1404L</v>
+                                        <v n="IdParent">1402L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{01580b27-6378-448b-8ecb-0e4b795b58d6}</v>
@@ -1375,8 +1479,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"FALSE"</v>
                                           <v n="DefaultValue">"FALSE"</v>
                                         </o>
-                                        <v n="Id">795L</v>
-                                        <v n="IdParent">792L</v>
+                                        <v n="Id">1405L</v>
+                                        <v n="IdParent">1402L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{bc882c11-1e91-4dd8-a6b8-2075724ed18b}</v>
@@ -1386,8 +1490,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"0"</v>
                                           <v n="DefaultValue">"0"</v>
                                         </o>
-                                        <v n="Id">796L</v>
-                                        <v n="IdParent">792L</v>
+                                        <v n="Id">1406L</v>
+                                        <v n="IdParent">1402L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{62e1754b-7629-4e63-9cec-10ae0c536f1f}</v>
@@ -1395,8 +1499,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"FALSE"</v>
                                           <v n="DefaultValue">"FALSE"</v>
                                         </o>
-                                        <v n="Id">797L</v>
-                                        <v n="IdParent">792L</v>
+                                        <v n="Id">1407L</v>
+                                        <v n="IdParent">1402L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{8294df19-5962-4dee-a874-1051dabb0e3e}</v>
@@ -1406,12 +1510,12 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"0"</v>
                                           <v n="DefaultValue">"0"</v>
                                         </o>
-                                        <v n="Id">798L</v>
-                                        <v n="IdParent">792L</v>
+                                        <v n="Id">1408L</v>
+                                        <v n="IdParent">1402L</v>
                                       </o>
                                     </l2>
-                                    <v n="Id">792L</v>
-                                    <v n="IdParent">769L</v>
+                                    <v n="Id">1402L</v>
+                                    <v n="IdParent">1379L</v>
                                   </o>
                                 </l2>
                               </o>
@@ -1422,8 +1526,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                     <v n="Value">""</v>
                                     <v n="DefaultValue">""</v>
                                   </o>
-                                  <v n="Id">770L</v>
-                                  <v n="IdParent">769L</v>
+                                  <v n="Id">1380L</v>
+                                  <v n="IdParent">1379L</v>
                                 </o>
                                 <o>
                                   <v n="AttributeId">{7d894980-aeea-405c-a0f6-e2b26429c58f}</v>
@@ -1431,8 +1535,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                     <v n="Value">""</v>
                                     <v n="DefaultValue">""</v>
                                   </o>
-                                  <v n="Id">771L</v>
-                                  <v n="IdParent">769L</v>
+                                  <v n="Id">1381L</v>
+                                  <v n="IdParent">1379L</v>
                                 </o>
                                 <o>
                                   <v n="AttributeId">{01580b27-6378-448b-8ecb-0e4b795b58d6}</v>
@@ -1440,29 +1544,29 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                     <v n="Value">"FALSE"</v>
                                     <v n="DefaultValue">"FALSE"</v>
                                   </o>
-                                  <v n="Id">772L</v>
-                                  <v n="IdParent">769L</v>
+                                  <v n="Id">1382L</v>
+                                  <v n="IdParent">1379L</v>
                                 </o>
                               </l2>
-                              <v n="Id">769L</v>
-                              <v n="IdParent">730L</v>
+                              <v n="Id">1379L</v>
+                              <v n="IdParent">1250L</v>
                             </o>
                             <o>
                               <o n="ElementList" t="SFCElementList">
                                 <l2 n="InnerList">
                                   <o t="SFCTransition">
-                                    <v n="VariableName">"Branch2__Ready__to__Tank_B"</v>
+                                    <v n="VariableName">"Branch2__Ready__to__Tank_A_Sprinkler"</v>
                                     <n n="EmbeddedTransition" />
                                     <l2 n="EmbeddedTransitionProperties" />
                                     <l2 n="Attributes" cet="SFCAttribute">
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"eProcess=E_CIP_ClientTank.eTank_B"</v>
+                                          <v n="Value">"eProcess=E_CIP_ClientTank.eTank_A_Sprinkler"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
-                                        <v n="Id">804L</v>
-                                        <v n="IdParent">803L</v>
+                                        <v n="Id">1354L</v>
+                                        <v n="IdParent">1353L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{7d894980-aeea-405c-a0f6-e2b26429c58f}</v>
@@ -1470,8 +1574,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">""</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
-                                        <v n="Id">805L</v>
-                                        <v n="IdParent">803L</v>
+                                        <v n="Id">1355L</v>
+                                        <v n="IdParent">1353L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{01580b27-6378-448b-8ecb-0e4b795b58d6}</v>
@@ -1479,8 +1583,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"FALSE"</v>
                                           <v n="DefaultValue">"FALSE"</v>
                                         </o>
-                                        <v n="Id">806L</v>
-                                        <v n="IdParent">803L</v>
+                                        <v n="Id">1356L</v>
+                                        <v n="IdParent">1353L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{bc882c11-1e91-4dd8-a6b8-2075724ed18b}</v>
@@ -1490,8 +1594,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"0"</v>
                                           <v n="DefaultValue">"0"</v>
                                         </o>
-                                        <v n="Id">807L</v>
-                                        <v n="IdParent">803L</v>
+                                        <v n="Id">1357L</v>
+                                        <v n="IdParent">1353L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{62e1754b-7629-4e63-9cec-10ae0c536f1f}</v>
@@ -1499,8 +1603,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"FALSE"</v>
                                           <v n="DefaultValue">"FALSE"</v>
                                         </o>
-                                        <v n="Id">808L</v>
-                                        <v n="IdParent">803L</v>
+                                        <v n="Id">1358L</v>
+                                        <v n="IdParent">1353L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{8294df19-5962-4dee-a874-1051dabb0e3e}</v>
@@ -1510,12 +1614,299 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"0"</v>
                                           <v n="DefaultValue">"0"</v>
                                         </o>
-                                        <v n="Id">809L</v>
-                                        <v n="IdParent">803L</v>
+                                        <v n="Id">1359L</v>
+                                        <v n="IdParent">1353L</v>
                                       </o>
                                     </l2>
-                                    <v n="Id">803L</v>
-                                    <v n="IdParent">799L</v>
+                                    <v n="Id">1353L</v>
+                                    <v n="IdParent">1349L</v>
+                                  </o>
+                                  <o t="SFCStep">
+                                    <n n="EmbeddedMainAction" />
+                                    <n n="EmbeddedEntryAction" />
+                                    <n n="EmbeddedExitAction" />
+                                    <l2 n="EmbeddedMainActionProperties" />
+                                    <l2 n="EmbeddedEntryActionProperties" />
+                                    <l2 n="EmbeddedExitActionProperties" />
+                                    <o n="ElementList" t="SFCElementList">
+                                      <l2 n="InnerList" />
+                                    </o>
+                                    <l2 n="Attributes" cet="SFCAttribute">
+                                      <o>
+                                        <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
+                                        <o n="Value" t="StringValue">
+                                          <v n="Value">"Tank_A_Sprinkler"</v>
+                                          <v n="DefaultValue">""</v>
+                                        </o>
+                                        <v n="Id">1361L</v>
+                                        <v n="IdParent">1360L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{7d894980-aeea-405c-a0f6-e2b26429c58f}</v>
+                                        <o n="Value" t="StringValue">
+                                          <v n="Value">""</v>
+                                          <v n="DefaultValue">""</v>
+                                        </o>
+                                        <v n="Id">1362L</v>
+                                        <v n="IdParent">1360L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{01580b27-6378-448b-8ecb-0e4b795b58d6}</v>
+                                        <o n="Value" t="BoolValue">
+                                          <v n="Value">"FALSE"</v>
+                                          <v n="DefaultValue">"FALSE"</v>
+                                        </o>
+                                        <v n="Id">1363L</v>
+                                        <v n="IdParent">1360L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{bc882c11-1e91-4dd8-a6b8-2075724ed18b}</v>
+                                        <o n="Value" t="EnumValue">
+                                          <v n="TemplateGuid">{79a4fdd5-c859-4de4-aa8d-c03372c880c2}</v>
+                                          <n n="BaseType" />
+                                          <v n="Value">"0"</v>
+                                          <v n="DefaultValue">"0"</v>
+                                        </o>
+                                        <v n="Id">1364L</v>
+                                        <v n="IdParent">1360L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{6844a48e-46c2-4cc8-a185-a478f3b99cc0}</v>
+                                        <o n="Value" t="BoolValue">
+                                          <v n="Value">"FALSE"</v>
+                                          <v n="DefaultValue">"FALSE"</v>
+                                        </o>
+                                        <v n="Id">1365L</v>
+                                        <v n="IdParent">1360L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{62e1754b-7629-4e63-9cec-10ae0c536f1f}</v>
+                                        <o n="Value" t="BoolValue">
+                                          <v n="Value">"FALSE"</v>
+                                          <v n="DefaultValue">"FALSE"</v>
+                                        </o>
+                                        <v n="Id">1366L</v>
+                                        <v n="IdParent">1360L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{cacf1a68-236e-47c2-b7b1-1cf9199718cb}</v>
+                                        <o n="Value" t="StringValue">
+                                          <v n="Value">""</v>
+                                          <v n="DefaultValue">""</v>
+                                        </o>
+                                        <v n="Id">1367L</v>
+                                        <v n="IdParent">1360L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{b693554c-1b01-4a8d-afde-9e3a46f7465d}</v>
+                                        <o n="Value" t="StringValue">
+                                          <v n="Value">""</v>
+                                          <v n="DefaultValue">""</v>
+                                        </o>
+                                        <v n="Id">1368L</v>
+                                        <v n="IdParent">1360L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{700a583f-b4d4-43e4-8c14-629c7cd3bec8}</v>
+                                        <o n="Value" t="StringValue">
+                                          <v n="Value">"_aTank_A_Sprinkler_active"</v>
+                                          <v n="DefaultValue">""</v>
+                                        </o>
+                                        <v n="Id">1369L</v>
+                                        <v n="IdParent">1360L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{a6b08bd8-b696-47e3-9cbf-7408b61c9ff8}</v>
+                                        <o n="Value" t="StringValue">
+                                          <v n="Value">"_aTank_A_Sprinkler_entry"</v>
+                                          <v n="DefaultValue">""</v>
+                                        </o>
+                                        <v n="Id">1370L</v>
+                                        <v n="IdParent">1360L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{a2621e18-7de3-4ea6-ae6d-89e9e0b7befd}</v>
+                                        <o n="Value" t="StringValue">
+                                          <v n="Value">""</v>
+                                          <v n="DefaultValue">""</v>
+                                        </o>
+                                        <v n="Id">1371L</v>
+                                        <v n="IdParent">1360L</v>
+                                      </o>
+                                    </l2>
+                                    <v n="Id">1360L</v>
+                                    <v n="IdParent">1349L</v>
+                                  </o>
+                                  <o t="SFCTransition">
+                                    <v n="VariableName">"Tank_A_Sprinkler__to__Done"</v>
+                                    <n n="EmbeddedTransition" />
+                                    <l2 n="EmbeddedTransitionProperties" />
+                                    <l2 n="Attributes" cet="SFCAttribute">
+                                      <o>
+                                        <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
+                                        <o n="Value" t="StringValue">
+                                          <v n="Value">"bStepDone"</v>
+                                          <v n="DefaultValue">""</v>
+                                        </o>
+                                        <v n="Id">1373L</v>
+                                        <v n="IdParent">1372L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{7d894980-aeea-405c-a0f6-e2b26429c58f}</v>
+                                        <o n="Value" t="StringValue">
+                                          <v n="Value">""</v>
+                                          <v n="DefaultValue">""</v>
+                                        </o>
+                                        <v n="Id">1374L</v>
+                                        <v n="IdParent">1372L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{01580b27-6378-448b-8ecb-0e4b795b58d6}</v>
+                                        <o n="Value" t="BoolValue">
+                                          <v n="Value">"FALSE"</v>
+                                          <v n="DefaultValue">"FALSE"</v>
+                                        </o>
+                                        <v n="Id">1375L</v>
+                                        <v n="IdParent">1372L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{bc882c11-1e91-4dd8-a6b8-2075724ed18b}</v>
+                                        <o n="Value" t="EnumValue">
+                                          <v n="TemplateGuid">{79a4fdd5-c859-4de4-aa8d-c03372c880c2}</v>
+                                          <n n="BaseType" />
+                                          <v n="Value">"0"</v>
+                                          <v n="DefaultValue">"0"</v>
+                                        </o>
+                                        <v n="Id">1376L</v>
+                                        <v n="IdParent">1372L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{62e1754b-7629-4e63-9cec-10ae0c536f1f}</v>
+                                        <o n="Value" t="BoolValue">
+                                          <v n="Value">"FALSE"</v>
+                                          <v n="DefaultValue">"FALSE"</v>
+                                        </o>
+                                        <v n="Id">1377L</v>
+                                        <v n="IdParent">1372L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{8294df19-5962-4dee-a874-1051dabb0e3e}</v>
+                                        <o n="Value" t="EnumValue">
+                                          <v n="TemplateGuid">{6ecff51c-9b8f-4338-aab0-67c2b31b07e9}</v>
+                                          <n n="BaseType" />
+                                          <v n="Value">"0"</v>
+                                          <v n="DefaultValue">"0"</v>
+                                        </o>
+                                        <v n="Id">1378L</v>
+                                        <v n="IdParent">1372L</v>
+                                      </o>
+                                    </l2>
+                                    <v n="Id">1372L</v>
+                                    <v n="IdParent">1349L</v>
+                                  </o>
+                                </l2>
+                              </o>
+                              <l2 n="Attributes" cet="SFCAttribute">
+                                <o>
+                                  <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
+                                  <o n="Value" t="StringValue">
+                                    <v n="Value">""</v>
+                                    <v n="DefaultValue">""</v>
+                                  </o>
+                                  <v n="Id">1350L</v>
+                                  <v n="IdParent">1349L</v>
+                                </o>
+                                <o>
+                                  <v n="AttributeId">{7d894980-aeea-405c-a0f6-e2b26429c58f}</v>
+                                  <o n="Value" t="StringValue">
+                                    <v n="Value">""</v>
+                                    <v n="DefaultValue">""</v>
+                                  </o>
+                                  <v n="Id">1351L</v>
+                                  <v n="IdParent">1349L</v>
+                                </o>
+                                <o>
+                                  <v n="AttributeId">{01580b27-6378-448b-8ecb-0e4b795b58d6}</v>
+                                  <o n="Value" t="BoolValue">
+                                    <v n="Value">"FALSE"</v>
+                                    <v n="DefaultValue">"FALSE"</v>
+                                  </o>
+                                  <v n="Id">1352L</v>
+                                  <v n="IdParent">1349L</v>
+                                </o>
+                              </l2>
+                              <v n="Id">1349L</v>
+                              <v n="IdParent">1250L</v>
+                            </o>
+                            <o>
+                              <o n="ElementList" t="SFCElementList">
+                                <l2 n="InnerList">
+                                  <o t="SFCTransition">
+                                    <v n="VariableName">"Branch3__Ready__to__Tank_B"</v>
+                                    <n n="EmbeddedTransition" />
+                                    <l2 n="EmbeddedTransitionProperties" />
+                                    <l2 n="Attributes" cet="SFCAttribute">
+                                      <o>
+                                        <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
+                                        <o n="Value" t="StringValue">
+                                          <v n="Value">"eProcess=E_CIP_ClientTank.eTank_B"</v>
+                                          <v n="DefaultValue">""</v>
+                                        </o>
+                                        <v n="Id">1324L</v>
+                                        <v n="IdParent">1323L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{7d894980-aeea-405c-a0f6-e2b26429c58f}</v>
+                                        <o n="Value" t="StringValue">
+                                          <v n="Value">""</v>
+                                          <v n="DefaultValue">""</v>
+                                        </o>
+                                        <v n="Id">1325L</v>
+                                        <v n="IdParent">1323L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{01580b27-6378-448b-8ecb-0e4b795b58d6}</v>
+                                        <o n="Value" t="BoolValue">
+                                          <v n="Value">"FALSE"</v>
+                                          <v n="DefaultValue">"FALSE"</v>
+                                        </o>
+                                        <v n="Id">1326L</v>
+                                        <v n="IdParent">1323L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{bc882c11-1e91-4dd8-a6b8-2075724ed18b}</v>
+                                        <o n="Value" t="EnumValue">
+                                          <v n="TemplateGuid">{79a4fdd5-c859-4de4-aa8d-c03372c880c2}</v>
+                                          <n n="BaseType" />
+                                          <v n="Value">"0"</v>
+                                          <v n="DefaultValue">"0"</v>
+                                        </o>
+                                        <v n="Id">1327L</v>
+                                        <v n="IdParent">1323L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{62e1754b-7629-4e63-9cec-10ae0c536f1f}</v>
+                                        <o n="Value" t="BoolValue">
+                                          <v n="Value">"FALSE"</v>
+                                          <v n="DefaultValue">"FALSE"</v>
+                                        </o>
+                                        <v n="Id">1328L</v>
+                                        <v n="IdParent">1323L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{8294df19-5962-4dee-a874-1051dabb0e3e}</v>
+                                        <o n="Value" t="EnumValue">
+                                          <v n="TemplateGuid">{6ecff51c-9b8f-4338-aab0-67c2b31b07e9}</v>
+                                          <n n="BaseType" />
+                                          <v n="Value">"0"</v>
+                                          <v n="DefaultValue">"0"</v>
+                                        </o>
+                                        <v n="Id">1329L</v>
+                                        <v n="IdParent">1323L</v>
+                                      </o>
+                                    </l2>
+                                    <v n="Id">1323L</v>
+                                    <v n="IdParent">1319L</v>
                                   </o>
                                   <o t="SFCStep">
                                     <n n="EmbeddedMainAction" />
@@ -1534,8 +1925,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"Tank_B"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
-                                        <v n="Id">811L</v>
-                                        <v n="IdParent">810L</v>
+                                        <v n="Id">1453L</v>
+                                        <v n="IdParent">1452L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{7d894980-aeea-405c-a0f6-e2b26429c58f}</v>
@@ -1543,8 +1934,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">""</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
-                                        <v n="Id">812L</v>
-                                        <v n="IdParent">810L</v>
+                                        <v n="Id">1454L</v>
+                                        <v n="IdParent">1452L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{01580b27-6378-448b-8ecb-0e4b795b58d6}</v>
@@ -1552,8 +1943,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"FALSE"</v>
                                           <v n="DefaultValue">"FALSE"</v>
                                         </o>
-                                        <v n="Id">813L</v>
-                                        <v n="IdParent">810L</v>
+                                        <v n="Id">1455L</v>
+                                        <v n="IdParent">1452L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{bc882c11-1e91-4dd8-a6b8-2075724ed18b}</v>
@@ -1563,8 +1954,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"0"</v>
                                           <v n="DefaultValue">"0"</v>
                                         </o>
-                                        <v n="Id">814L</v>
-                                        <v n="IdParent">810L</v>
+                                        <v n="Id">1456L</v>
+                                        <v n="IdParent">1452L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{6844a48e-46c2-4cc8-a185-a478f3b99cc0}</v>
@@ -1572,8 +1963,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"FALSE"</v>
                                           <v n="DefaultValue">"FALSE"</v>
                                         </o>
-                                        <v n="Id">815L</v>
-                                        <v n="IdParent">810L</v>
+                                        <v n="Id">1457L</v>
+                                        <v n="IdParent">1452L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{62e1754b-7629-4e63-9cec-10ae0c536f1f}</v>
@@ -1581,8 +1972,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"FALSE"</v>
                                           <v n="DefaultValue">"FALSE"</v>
                                         </o>
-                                        <v n="Id">816L</v>
-                                        <v n="IdParent">810L</v>
+                                        <v n="Id">1458L</v>
+                                        <v n="IdParent">1452L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{cacf1a68-236e-47c2-b7b1-1cf9199718cb}</v>
@@ -1590,8 +1981,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">""</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
-                                        <v n="Id">817L</v>
-                                        <v n="IdParent">810L</v>
+                                        <v n="Id">1459L</v>
+                                        <v n="IdParent">1452L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{b693554c-1b01-4a8d-afde-9e3a46f7465d}</v>
@@ -1599,26 +1990,26 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">""</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
-                                        <v n="Id">818L</v>
-                                        <v n="IdParent">810L</v>
+                                        <v n="Id">1460L</v>
+                                        <v n="IdParent">1452L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{700a583f-b4d4-43e4-8c14-629c7cd3bec8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"_aTank_B_active"</v>
+                                          <v n="Value">"_aTank_B_active_1"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
-                                        <v n="Id">819L</v>
-                                        <v n="IdParent">810L</v>
+                                        <v n="Id">1461L</v>
+                                        <v n="IdParent">1452L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{a6b08bd8-b696-47e3-9cbf-7408b61c9ff8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"_aTank_B_entry"</v>
+                                          <v n="Value">"_aTank_B_entry_1"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
-                                        <v n="Id">820L</v>
-                                        <v n="IdParent">810L</v>
+                                        <v n="Id">1462L</v>
+                                        <v n="IdParent">1452L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{a2621e18-7de3-4ea6-ae6d-89e9e0b7befd}</v>
@@ -1626,12 +2017,12 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">""</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
-                                        <v n="Id">821L</v>
-                                        <v n="IdParent">810L</v>
+                                        <v n="Id">1463L</v>
+                                        <v n="IdParent">1452L</v>
                                       </o>
                                     </l2>
-                                    <v n="Id">810L</v>
-                                    <v n="IdParent">799L</v>
+                                    <v n="Id">1452L</v>
+                                    <v n="IdParent">1319L</v>
                                   </o>
                                   <o t="SFCTransition">
                                     <v n="VariableName">"Tank_B__to__Done"</v>
@@ -1644,8 +2035,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"bStepDone"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
-                                        <v n="Id">823L</v>
-                                        <v n="IdParent">822L</v>
+                                        <v n="Id">1343L</v>
+                                        <v n="IdParent">1342L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{7d894980-aeea-405c-a0f6-e2b26429c58f}</v>
@@ -1653,8 +2044,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">""</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
-                                        <v n="Id">824L</v>
-                                        <v n="IdParent">822L</v>
+                                        <v n="Id">1344L</v>
+                                        <v n="IdParent">1342L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{01580b27-6378-448b-8ecb-0e4b795b58d6}</v>
@@ -1662,8 +2053,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"FALSE"</v>
                                           <v n="DefaultValue">"FALSE"</v>
                                         </o>
-                                        <v n="Id">825L</v>
-                                        <v n="IdParent">822L</v>
+                                        <v n="Id">1345L</v>
+                                        <v n="IdParent">1342L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{bc882c11-1e91-4dd8-a6b8-2075724ed18b}</v>
@@ -1673,8 +2064,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"0"</v>
                                           <v n="DefaultValue">"0"</v>
                                         </o>
-                                        <v n="Id">826L</v>
-                                        <v n="IdParent">822L</v>
+                                        <v n="Id">1346L</v>
+                                        <v n="IdParent">1342L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{62e1754b-7629-4e63-9cec-10ae0c536f1f}</v>
@@ -1682,8 +2073,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"FALSE"</v>
                                           <v n="DefaultValue">"FALSE"</v>
                                         </o>
-                                        <v n="Id">827L</v>
-                                        <v n="IdParent">822L</v>
+                                        <v n="Id">1347L</v>
+                                        <v n="IdParent">1342L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{8294df19-5962-4dee-a874-1051dabb0e3e}</v>
@@ -1693,12 +2084,12 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"0"</v>
                                           <v n="DefaultValue">"0"</v>
                                         </o>
-                                        <v n="Id">828L</v>
-                                        <v n="IdParent">822L</v>
+                                        <v n="Id">1348L</v>
+                                        <v n="IdParent">1342L</v>
                                       </o>
                                     </l2>
-                                    <v n="Id">822L</v>
-                                    <v n="IdParent">799L</v>
+                                    <v n="Id">1342L</v>
+                                    <v n="IdParent">1319L</v>
                                   </o>
                                 </l2>
                               </o>
@@ -1709,8 +2100,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                     <v n="Value">""</v>
                                     <v n="DefaultValue">""</v>
                                   </o>
-                                  <v n="Id">800L</v>
-                                  <v n="IdParent">799L</v>
+                                  <v n="Id">1320L</v>
+                                  <v n="IdParent">1319L</v>
                                 </o>
                                 <o>
                                   <v n="AttributeId">{7d894980-aeea-405c-a0f6-e2b26429c58f}</v>
@@ -1718,8 +2109,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                     <v n="Value">""</v>
                                     <v n="DefaultValue">""</v>
                                   </o>
-                                  <v n="Id">801L</v>
-                                  <v n="IdParent">799L</v>
+                                  <v n="Id">1321L</v>
+                                  <v n="IdParent">1319L</v>
                                 </o>
                                 <o>
                                   <v n="AttributeId">{01580b27-6378-448b-8ecb-0e4b795b58d6}</v>
@@ -1727,29 +2118,29 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                     <v n="Value">"FALSE"</v>
                                     <v n="DefaultValue">"FALSE"</v>
                                   </o>
-                                  <v n="Id">802L</v>
-                                  <v n="IdParent">799L</v>
+                                  <v n="Id">1322L</v>
+                                  <v n="IdParent">1319L</v>
                                 </o>
                               </l2>
-                              <v n="Id">799L</v>
-                              <v n="IdParent">730L</v>
+                              <v n="Id">1319L</v>
+                              <v n="IdParent">1250L</v>
                             </o>
                             <o>
                               <o n="ElementList" t="SFCElementList">
                                 <l2 n="InnerList">
                                   <o t="SFCTransition">
-                                    <v n="VariableName">"Branch3__Ready__to__Drain"</v>
+                                    <v n="VariableName">"Branch4__Ready__to__Tank_B_Sprinkler"</v>
                                     <n n="EmbeddedTransition" />
                                     <l2 n="EmbeddedTransitionProperties" />
                                     <l2 n="Attributes" cet="SFCAttribute">
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"eProcess=E_CIP_ClientTank.eDrain"</v>
+                                          <v n="Value">"eProcess=E_CIP_ClientTank.eTank_B_Sprinkler"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
-                                        <v n="Id">834L</v>
-                                        <v n="IdParent">833L</v>
+                                        <v n="Id">1294L</v>
+                                        <v n="IdParent">1293L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{7d894980-aeea-405c-a0f6-e2b26429c58f}</v>
@@ -1757,8 +2148,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">""</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
-                                        <v n="Id">835L</v>
-                                        <v n="IdParent">833L</v>
+                                        <v n="Id">1295L</v>
+                                        <v n="IdParent">1293L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{01580b27-6378-448b-8ecb-0e4b795b58d6}</v>
@@ -1766,8 +2157,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"FALSE"</v>
                                           <v n="DefaultValue">"FALSE"</v>
                                         </o>
-                                        <v n="Id">836L</v>
-                                        <v n="IdParent">833L</v>
+                                        <v n="Id">1296L</v>
+                                        <v n="IdParent">1293L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{bc882c11-1e91-4dd8-a6b8-2075724ed18b}</v>
@@ -1777,8 +2168,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"0"</v>
                                           <v n="DefaultValue">"0"</v>
                                         </o>
-                                        <v n="Id">837L</v>
-                                        <v n="IdParent">833L</v>
+                                        <v n="Id">1297L</v>
+                                        <v n="IdParent">1293L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{62e1754b-7629-4e63-9cec-10ae0c536f1f}</v>
@@ -1786,8 +2177,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"FALSE"</v>
                                           <v n="DefaultValue">"FALSE"</v>
                                         </o>
-                                        <v n="Id">838L</v>
-                                        <v n="IdParent">833L</v>
+                                        <v n="Id">1298L</v>
+                                        <v n="IdParent">1293L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{8294df19-5962-4dee-a874-1051dabb0e3e}</v>
@@ -1797,12 +2188,299 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"0"</v>
                                           <v n="DefaultValue">"0"</v>
                                         </o>
-                                        <v n="Id">839L</v>
-                                        <v n="IdParent">833L</v>
+                                        <v n="Id">1299L</v>
+                                        <v n="IdParent">1293L</v>
                                       </o>
                                     </l2>
-                                    <v n="Id">833L</v>
-                                    <v n="IdParent">829L</v>
+                                    <v n="Id">1293L</v>
+                                    <v n="IdParent">1289L</v>
+                                  </o>
+                                  <o t="SFCStep">
+                                    <n n="EmbeddedMainAction" />
+                                    <n n="EmbeddedEntryAction" />
+                                    <n n="EmbeddedExitAction" />
+                                    <l2 n="EmbeddedMainActionProperties" />
+                                    <l2 n="EmbeddedEntryActionProperties" />
+                                    <l2 n="EmbeddedExitActionProperties" />
+                                    <o n="ElementList" t="SFCElementList">
+                                      <l2 n="InnerList" />
+                                    </o>
+                                    <l2 n="Attributes" cet="SFCAttribute">
+                                      <o>
+                                        <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
+                                        <o n="Value" t="StringValue">
+                                          <v n="Value">"Tank_B_Sprinkler"</v>
+                                          <v n="DefaultValue">""</v>
+                                        </o>
+                                        <v n="Id">1301L</v>
+                                        <v n="IdParent">1300L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{7d894980-aeea-405c-a0f6-e2b26429c58f}</v>
+                                        <o n="Value" t="StringValue">
+                                          <v n="Value">""</v>
+                                          <v n="DefaultValue">""</v>
+                                        </o>
+                                        <v n="Id">1302L</v>
+                                        <v n="IdParent">1300L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{01580b27-6378-448b-8ecb-0e4b795b58d6}</v>
+                                        <o n="Value" t="BoolValue">
+                                          <v n="Value">"FALSE"</v>
+                                          <v n="DefaultValue">"FALSE"</v>
+                                        </o>
+                                        <v n="Id">1303L</v>
+                                        <v n="IdParent">1300L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{bc882c11-1e91-4dd8-a6b8-2075724ed18b}</v>
+                                        <o n="Value" t="EnumValue">
+                                          <v n="TemplateGuid">{79a4fdd5-c859-4de4-aa8d-c03372c880c2}</v>
+                                          <n n="BaseType" />
+                                          <v n="Value">"0"</v>
+                                          <v n="DefaultValue">"0"</v>
+                                        </o>
+                                        <v n="Id">1304L</v>
+                                        <v n="IdParent">1300L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{6844a48e-46c2-4cc8-a185-a478f3b99cc0}</v>
+                                        <o n="Value" t="BoolValue">
+                                          <v n="Value">"FALSE"</v>
+                                          <v n="DefaultValue">"FALSE"</v>
+                                        </o>
+                                        <v n="Id">1305L</v>
+                                        <v n="IdParent">1300L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{62e1754b-7629-4e63-9cec-10ae0c536f1f}</v>
+                                        <o n="Value" t="BoolValue">
+                                          <v n="Value">"FALSE"</v>
+                                          <v n="DefaultValue">"FALSE"</v>
+                                        </o>
+                                        <v n="Id">1306L</v>
+                                        <v n="IdParent">1300L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{cacf1a68-236e-47c2-b7b1-1cf9199718cb}</v>
+                                        <o n="Value" t="StringValue">
+                                          <v n="Value">""</v>
+                                          <v n="DefaultValue">""</v>
+                                        </o>
+                                        <v n="Id">1307L</v>
+                                        <v n="IdParent">1300L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{b693554c-1b01-4a8d-afde-9e3a46f7465d}</v>
+                                        <o n="Value" t="StringValue">
+                                          <v n="Value">""</v>
+                                          <v n="DefaultValue">""</v>
+                                        </o>
+                                        <v n="Id">1308L</v>
+                                        <v n="IdParent">1300L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{700a583f-b4d4-43e4-8c14-629c7cd3bec8}</v>
+                                        <o n="Value" t="StringValue">
+                                          <v n="Value">"_aTank_B_Sprinkler_active"</v>
+                                          <v n="DefaultValue">""</v>
+                                        </o>
+                                        <v n="Id">1309L</v>
+                                        <v n="IdParent">1300L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{a6b08bd8-b696-47e3-9cbf-7408b61c9ff8}</v>
+                                        <o n="Value" t="StringValue">
+                                          <v n="Value">"_aTank_B_Sprinkler_entry"</v>
+                                          <v n="DefaultValue">""</v>
+                                        </o>
+                                        <v n="Id">1310L</v>
+                                        <v n="IdParent">1300L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{a2621e18-7de3-4ea6-ae6d-89e9e0b7befd}</v>
+                                        <o n="Value" t="StringValue">
+                                          <v n="Value">""</v>
+                                          <v n="DefaultValue">""</v>
+                                        </o>
+                                        <v n="Id">1311L</v>
+                                        <v n="IdParent">1300L</v>
+                                      </o>
+                                    </l2>
+                                    <v n="Id">1300L</v>
+                                    <v n="IdParent">1289L</v>
+                                  </o>
+                                  <o t="SFCTransition">
+                                    <v n="VariableName">"Tank_B_Sprinkler__to__Done"</v>
+                                    <n n="EmbeddedTransition" />
+                                    <l2 n="EmbeddedTransitionProperties" />
+                                    <l2 n="Attributes" cet="SFCAttribute">
+                                      <o>
+                                        <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
+                                        <o n="Value" t="StringValue">
+                                          <v n="Value">"bStepDone"</v>
+                                          <v n="DefaultValue">""</v>
+                                        </o>
+                                        <v n="Id">1313L</v>
+                                        <v n="IdParent">1312L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{7d894980-aeea-405c-a0f6-e2b26429c58f}</v>
+                                        <o n="Value" t="StringValue">
+                                          <v n="Value">""</v>
+                                          <v n="DefaultValue">""</v>
+                                        </o>
+                                        <v n="Id">1314L</v>
+                                        <v n="IdParent">1312L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{01580b27-6378-448b-8ecb-0e4b795b58d6}</v>
+                                        <o n="Value" t="BoolValue">
+                                          <v n="Value">"FALSE"</v>
+                                          <v n="DefaultValue">"FALSE"</v>
+                                        </o>
+                                        <v n="Id">1315L</v>
+                                        <v n="IdParent">1312L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{bc882c11-1e91-4dd8-a6b8-2075724ed18b}</v>
+                                        <o n="Value" t="EnumValue">
+                                          <v n="TemplateGuid">{79a4fdd5-c859-4de4-aa8d-c03372c880c2}</v>
+                                          <n n="BaseType" />
+                                          <v n="Value">"0"</v>
+                                          <v n="DefaultValue">"0"</v>
+                                        </o>
+                                        <v n="Id">1316L</v>
+                                        <v n="IdParent">1312L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{62e1754b-7629-4e63-9cec-10ae0c536f1f}</v>
+                                        <o n="Value" t="BoolValue">
+                                          <v n="Value">"FALSE"</v>
+                                          <v n="DefaultValue">"FALSE"</v>
+                                        </o>
+                                        <v n="Id">1317L</v>
+                                        <v n="IdParent">1312L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{8294df19-5962-4dee-a874-1051dabb0e3e}</v>
+                                        <o n="Value" t="EnumValue">
+                                          <v n="TemplateGuid">{6ecff51c-9b8f-4338-aab0-67c2b31b07e9}</v>
+                                          <n n="BaseType" />
+                                          <v n="Value">"0"</v>
+                                          <v n="DefaultValue">"0"</v>
+                                        </o>
+                                        <v n="Id">1318L</v>
+                                        <v n="IdParent">1312L</v>
+                                      </o>
+                                    </l2>
+                                    <v n="Id">1312L</v>
+                                    <v n="IdParent">1289L</v>
+                                  </o>
+                                </l2>
+                              </o>
+                              <l2 n="Attributes" cet="SFCAttribute">
+                                <o>
+                                  <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
+                                  <o n="Value" t="StringValue">
+                                    <v n="Value">""</v>
+                                    <v n="DefaultValue">""</v>
+                                  </o>
+                                  <v n="Id">1290L</v>
+                                  <v n="IdParent">1289L</v>
+                                </o>
+                                <o>
+                                  <v n="AttributeId">{7d894980-aeea-405c-a0f6-e2b26429c58f}</v>
+                                  <o n="Value" t="StringValue">
+                                    <v n="Value">""</v>
+                                    <v n="DefaultValue">""</v>
+                                  </o>
+                                  <v n="Id">1291L</v>
+                                  <v n="IdParent">1289L</v>
+                                </o>
+                                <o>
+                                  <v n="AttributeId">{01580b27-6378-448b-8ecb-0e4b795b58d6}</v>
+                                  <o n="Value" t="BoolValue">
+                                    <v n="Value">"FALSE"</v>
+                                    <v n="DefaultValue">"FALSE"</v>
+                                  </o>
+                                  <v n="Id">1292L</v>
+                                  <v n="IdParent">1289L</v>
+                                </o>
+                              </l2>
+                              <v n="Id">1289L</v>
+                              <v n="IdParent">1250L</v>
+                            </o>
+                            <o>
+                              <o n="ElementList" t="SFCElementList">
+                                <l2 n="InnerList">
+                                  <o t="SFCTransition">
+                                    <v n="VariableName">"Branch5__Ready__to__Drain"</v>
+                                    <n n="EmbeddedTransition" />
+                                    <l2 n="EmbeddedTransitionProperties" />
+                                    <l2 n="Attributes" cet="SFCAttribute">
+                                      <o>
+                                        <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
+                                        <o n="Value" t="StringValue">
+                                          <v n="Value">"eProcess=E_CIP_ClientTank.eDrain"</v>
+                                          <v n="DefaultValue">""</v>
+                                        </o>
+                                        <v n="Id">1264L</v>
+                                        <v n="IdParent">1263L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{7d894980-aeea-405c-a0f6-e2b26429c58f}</v>
+                                        <o n="Value" t="StringValue">
+                                          <v n="Value">""</v>
+                                          <v n="DefaultValue">""</v>
+                                        </o>
+                                        <v n="Id">1265L</v>
+                                        <v n="IdParent">1263L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{01580b27-6378-448b-8ecb-0e4b795b58d6}</v>
+                                        <o n="Value" t="BoolValue">
+                                          <v n="Value">"FALSE"</v>
+                                          <v n="DefaultValue">"FALSE"</v>
+                                        </o>
+                                        <v n="Id">1266L</v>
+                                        <v n="IdParent">1263L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{bc882c11-1e91-4dd8-a6b8-2075724ed18b}</v>
+                                        <o n="Value" t="EnumValue">
+                                          <v n="TemplateGuid">{79a4fdd5-c859-4de4-aa8d-c03372c880c2}</v>
+                                          <n n="BaseType" />
+                                          <v n="Value">"0"</v>
+                                          <v n="DefaultValue">"0"</v>
+                                        </o>
+                                        <v n="Id">1267L</v>
+                                        <v n="IdParent">1263L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{62e1754b-7629-4e63-9cec-10ae0c536f1f}</v>
+                                        <o n="Value" t="BoolValue">
+                                          <v n="Value">"FALSE"</v>
+                                          <v n="DefaultValue">"FALSE"</v>
+                                        </o>
+                                        <v n="Id">1268L</v>
+                                        <v n="IdParent">1263L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{8294df19-5962-4dee-a874-1051dabb0e3e}</v>
+                                        <o n="Value" t="EnumValue">
+                                          <v n="TemplateGuid">{6ecff51c-9b8f-4338-aab0-67c2b31b07e9}</v>
+                                          <n n="BaseType" />
+                                          <v n="Value">"0"</v>
+                                          <v n="DefaultValue">"0"</v>
+                                        </o>
+                                        <v n="Id">1269L</v>
+                                        <v n="IdParent">1263L</v>
+                                      </o>
+                                    </l2>
+                                    <v n="Id">1263L</v>
+                                    <v n="IdParent">1259L</v>
                                   </o>
                                   <o t="SFCStep">
                                     <n n="EmbeddedMainAction" />
@@ -1821,8 +2499,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"Drain"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
-                                        <v n="Id">841L</v>
-                                        <v n="IdParent">840L</v>
+                                        <v n="Id">1465L</v>
+                                        <v n="IdParent">1464L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{7d894980-aeea-405c-a0f6-e2b26429c58f}</v>
@@ -1830,8 +2508,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">""</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
-                                        <v n="Id">842L</v>
-                                        <v n="IdParent">840L</v>
+                                        <v n="Id">1466L</v>
+                                        <v n="IdParent">1464L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{01580b27-6378-448b-8ecb-0e4b795b58d6}</v>
@@ -1839,8 +2517,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"FALSE"</v>
                                           <v n="DefaultValue">"FALSE"</v>
                                         </o>
-                                        <v n="Id">843L</v>
-                                        <v n="IdParent">840L</v>
+                                        <v n="Id">1467L</v>
+                                        <v n="IdParent">1464L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{bc882c11-1e91-4dd8-a6b8-2075724ed18b}</v>
@@ -1850,8 +2528,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"0"</v>
                                           <v n="DefaultValue">"0"</v>
                                         </o>
-                                        <v n="Id">844L</v>
-                                        <v n="IdParent">840L</v>
+                                        <v n="Id">1468L</v>
+                                        <v n="IdParent">1464L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{6844a48e-46c2-4cc8-a185-a478f3b99cc0}</v>
@@ -1859,8 +2537,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"FALSE"</v>
                                           <v n="DefaultValue">"FALSE"</v>
                                         </o>
-                                        <v n="Id">845L</v>
-                                        <v n="IdParent">840L</v>
+                                        <v n="Id">1469L</v>
+                                        <v n="IdParent">1464L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{62e1754b-7629-4e63-9cec-10ae0c536f1f}</v>
@@ -1868,8 +2546,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"FALSE"</v>
                                           <v n="DefaultValue">"FALSE"</v>
                                         </o>
-                                        <v n="Id">846L</v>
-                                        <v n="IdParent">840L</v>
+                                        <v n="Id">1470L</v>
+                                        <v n="IdParent">1464L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{cacf1a68-236e-47c2-b7b1-1cf9199718cb}</v>
@@ -1877,8 +2555,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">""</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
-                                        <v n="Id">847L</v>
-                                        <v n="IdParent">840L</v>
+                                        <v n="Id">1471L</v>
+                                        <v n="IdParent">1464L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{b693554c-1b01-4a8d-afde-9e3a46f7465d}</v>
@@ -1886,26 +2564,26 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">""</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
-                                        <v n="Id">848L</v>
-                                        <v n="IdParent">840L</v>
+                                        <v n="Id">1472L</v>
+                                        <v n="IdParent">1464L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{700a583f-b4d4-43e4-8c14-629c7cd3bec8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"_aDrain_active"</v>
+                                          <v n="Value">"_aDrain_active_1"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
-                                        <v n="Id">849L</v>
-                                        <v n="IdParent">840L</v>
+                                        <v n="Id">1473L</v>
+                                        <v n="IdParent">1464L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{a6b08bd8-b696-47e3-9cbf-7408b61c9ff8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"_aDrain_entry"</v>
+                                          <v n="Value">"_aDrain_entry_1"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
-                                        <v n="Id">850L</v>
-                                        <v n="IdParent">840L</v>
+                                        <v n="Id">1474L</v>
+                                        <v n="IdParent">1464L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{a2621e18-7de3-4ea6-ae6d-89e9e0b7befd}</v>
@@ -1913,12 +2591,12 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">""</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
-                                        <v n="Id">851L</v>
-                                        <v n="IdParent">840L</v>
+                                        <v n="Id">1475L</v>
+                                        <v n="IdParent">1464L</v>
                                       </o>
                                     </l2>
-                                    <v n="Id">840L</v>
-                                    <v n="IdParent">829L</v>
+                                    <v n="Id">1464L</v>
+                                    <v n="IdParent">1259L</v>
                                   </o>
                                   <o t="SFCTransition">
                                     <v n="VariableName">"Drain__to__Done"</v>
@@ -1931,8 +2609,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"bStepDone"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
-                                        <v n="Id">853L</v>
-                                        <v n="IdParent">852L</v>
+                                        <v n="Id">1283L</v>
+                                        <v n="IdParent">1282L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{7d894980-aeea-405c-a0f6-e2b26429c58f}</v>
@@ -1940,8 +2618,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">""</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
-                                        <v n="Id">854L</v>
-                                        <v n="IdParent">852L</v>
+                                        <v n="Id">1284L</v>
+                                        <v n="IdParent">1282L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{01580b27-6378-448b-8ecb-0e4b795b58d6}</v>
@@ -1949,8 +2627,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"FALSE"</v>
                                           <v n="DefaultValue">"FALSE"</v>
                                         </o>
-                                        <v n="Id">855L</v>
-                                        <v n="IdParent">852L</v>
+                                        <v n="Id">1285L</v>
+                                        <v n="IdParent">1282L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{bc882c11-1e91-4dd8-a6b8-2075724ed18b}</v>
@@ -1960,8 +2638,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"0"</v>
                                           <v n="DefaultValue">"0"</v>
                                         </o>
-                                        <v n="Id">856L</v>
-                                        <v n="IdParent">852L</v>
+                                        <v n="Id">1286L</v>
+                                        <v n="IdParent">1282L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{62e1754b-7629-4e63-9cec-10ae0c536f1f}</v>
@@ -1969,8 +2647,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"FALSE"</v>
                                           <v n="DefaultValue">"FALSE"</v>
                                         </o>
-                                        <v n="Id">857L</v>
-                                        <v n="IdParent">852L</v>
+                                        <v n="Id">1287L</v>
+                                        <v n="IdParent">1282L</v>
                                       </o>
                                       <o>
                                         <v n="AttributeId">{8294df19-5962-4dee-a874-1051dabb0e3e}</v>
@@ -1980,12 +2658,12 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                           <v n="Value">"0"</v>
                                           <v n="DefaultValue">"0"</v>
                                         </o>
-                                        <v n="Id">858L</v>
-                                        <v n="IdParent">852L</v>
+                                        <v n="Id">1288L</v>
+                                        <v n="IdParent">1282L</v>
                                       </o>
                                     </l2>
-                                    <v n="Id">852L</v>
-                                    <v n="IdParent">829L</v>
+                                    <v n="Id">1282L</v>
+                                    <v n="IdParent">1259L</v>
                                   </o>
                                 </l2>
                               </o>
@@ -1996,8 +2674,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                     <v n="Value">""</v>
                                     <v n="DefaultValue">""</v>
                                   </o>
-                                  <v n="Id">830L</v>
-                                  <v n="IdParent">829L</v>
+                                  <v n="Id">1260L</v>
+                                  <v n="IdParent">1259L</v>
                                 </o>
                                 <o>
                                   <v n="AttributeId">{7d894980-aeea-405c-a0f6-e2b26429c58f}</v>
@@ -2005,8 +2683,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                     <v n="Value">""</v>
                                     <v n="DefaultValue">""</v>
                                   </o>
-                                  <v n="Id">831L</v>
-                                  <v n="IdParent">829L</v>
+                                  <v n="Id">1261L</v>
+                                  <v n="IdParent">1259L</v>
                                 </o>
                                 <o>
                                   <v n="AttributeId">{01580b27-6378-448b-8ecb-0e4b795b58d6}</v>
@@ -2014,12 +2692,12 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                     <v n="Value">"FALSE"</v>
                                     <v n="DefaultValue">"FALSE"</v>
                                   </o>
-                                  <v n="Id">832L</v>
-                                  <v n="IdParent">829L</v>
+                                  <v n="Id">1262L</v>
+                                  <v n="IdParent">1259L</v>
                                 </o>
                               </l2>
-                              <v n="Id">829L</v>
-                              <v n="IdParent">730L</v>
+                              <v n="Id">1259L</v>
+                              <v n="IdParent">1250L</v>
                             </o>
                           </l2>
                         </o>
@@ -2027,11 +2705,11 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                           <o>
                             <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                             <o n="Value" t="StringValue">
-                              <v n="Value">"Branch1_act_Oper"</v>
+                              <v n="Value">"Branch2_act_Oper"</v>
                               <v n="DefaultValue">""</v>
                             </o>
-                            <v n="Id">731L</v>
-                            <v n="IdParent">730L</v>
+                            <v n="Id">1251L</v>
+                            <v n="IdParent">1250L</v>
                           </o>
                           <o>
                             <v n="AttributeId">{7d894980-aeea-405c-a0f6-e2b26429c58f}</v>
@@ -2039,8 +2717,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                               <v n="Value">""</v>
                               <v n="DefaultValue">""</v>
                             </o>
-                            <v n="Id">732L</v>
-                            <v n="IdParent">730L</v>
+                            <v n="Id">1252L</v>
+                            <v n="IdParent">1250L</v>
                           </o>
                           <o>
                             <v n="AttributeId">{01580b27-6378-448b-8ecb-0e4b795b58d6}</v>
@@ -2048,8 +2726,8 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                               <v n="Value">"FALSE"</v>
                               <v n="DefaultValue">"FALSE"</v>
                             </o>
-                            <v n="Id">733L</v>
-                            <v n="IdParent">730L</v>
+                            <v n="Id">1253L</v>
+                            <v n="IdParent">1250L</v>
                           </o>
                           <o>
                             <v n="AttributeId">{23bdaa98-72ec-41f7-817b-9dede5697086}</v>
@@ -2057,11 +2735,11 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                               <v n="Value">"FALSE"</v>
                               <v n="DefaultValue">"FALSE"</v>
                             </o>
-                            <v n="Id">734L</v>
-                            <v n="IdParent">730L</v>
+                            <v n="Id">1254L</v>
+                            <v n="IdParent">1250L</v>
                           </o>
                         </l2>
-                        <v n="Id">730L</v>
+                        <v n="Id">1250L</v>
                         <v n="IdParent">1L</v>
                       </o>
                       <o t="SFCStep">
@@ -2710,10 +3388,10 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release)
 	THEN;
 		eStatus:=E_CIP_ClientTank.eClose;
-	
+		
 	ELSIF TRUE 
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_A, 				req:=E_Piston_Recipe_State.Act)
-	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_A_Sprinkler, 	req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_A_Sprinkler, 	req:=E_Piston_Recipe_State.Release)
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_A_Main, 		req:=E_Piston_Recipe_State.Act)
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_B, 				req:=E_Piston_Recipe_State.Release)
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_B_Sprinkler, 	req:=E_Piston_Recipe_State.Release)
@@ -2721,6 +3399,28 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release)
 	THEN;
 		eStatus:=E_CIP_ClientTank.eTank_A;
+	
+	ELSIF TRUE 
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_A, 				req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_A_Sprinkler, 	req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_A_Main, 		req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_B, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_B_Sprinkler, 	req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_B_Main, 		req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release)
+	THEN;
+		eStatus:=E_CIP_ClientTank.eTank_A_Sprinkler;
+		
+	ELSIF TRUE 
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_A, 				req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_A_Sprinkler, 	req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_A_Main, 		req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_B, 				req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_B_Sprinkler, 	req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_B_Main, 		req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release)
+	THEN;
+		eStatus:=E_CIP_ClientTank.eTank_B;	
 		
 	ELSIF TRUE 
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_A, 				req:=E_Piston_Recipe_State.Release)
@@ -2728,10 +3428,10 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_A_Main, 		req:=E_Piston_Recipe_State.Release)
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_B, 				req:=E_Piston_Recipe_State.Act)
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_B_Sprinkler, 	req:=E_Piston_Recipe_State.Act)
-	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_B_Main, 		req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_B_Main, 		req:=E_Piston_Recipe_State.Release)
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release)
 	THEN;
-		eStatus:=E_CIP_ClientTank.eTank_B;
+		eStatus:=E_CIP_ClientTank.eTank_B_Sprinkler;
 		
 	ELSIF TRUE 	
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_A, 				req:=E_Piston_Recipe_State.Release)
@@ -2816,11 +3516,11 @@ m_SFC_Handle();]]></ST>
       <LineId Id="97" Count="0" />
       <LineId Id="55" Count="0" />
     </LineIds>
-    <LineIds Name="FB_CIP_ClientTank._aClose_active">
+    <LineIds Name="FB_CIP_ClientTank._aClose_active_1">
       <LineId Id="2" Count="5" />
       <LineId Id="1" Count="0" />
     </LineIds>
-    <LineIds Name="FB_CIP_ClientTank._aClose_entry">
+    <LineIds Name="FB_CIP_ClientTank._aClose_entry_1">
       <LineId Id="2" Count="0" />
       <LineId Id="6" Count="1" />
       <LineId Id="4" Count="0" />
@@ -2833,11 +3533,11 @@ m_SFC_Handle();]]></ST>
       <LineId Id="6" Count="1" />
       <LineId Id="2" Count="0" />
     </LineIds>
-    <LineIds Name="FB_CIP_ClientTank._aDrain_active">
+    <LineIds Name="FB_CIP_ClientTank._aDrain_active_1">
       <LineId Id="6" Count="4" />
       <LineId Id="1" Count="0" />
     </LineIds>
-    <LineIds Name="FB_CIP_ClientTank._aDrain_entry">
+    <LineIds Name="FB_CIP_ClientTank._aDrain_entry_1">
       <LineId Id="10" Count="5" />
       <LineId Id="1" Count="0" />
     </LineIds>
@@ -2856,9 +3556,15 @@ m_SFC_Handle();]]></ST>
       <LineId Id="10" Count="2" />
       <LineId Id="14" Count="3" />
       <LineId Id="9" Count="0" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="35" Count="2" />
+      <LineId Id="34" Count="0" />
       <LineId Id="18" Count="0" />
       <LineId Id="20" Count="2" />
       <LineId Id="19" Count="0" />
+      <LineId Id="38" Count="0" />
+      <LineId Id="40" Count="2" />
+      <LineId Id="39" Count="0" />
       <LineId Id="24" Count="3" />
       <LineId Id="23" Count="0" />
       <LineId Id="32" Count="0" />
@@ -2871,20 +3577,36 @@ m_SFC_Handle();]]></ST>
       <LineId Id="2" Count="0" />
       <LineId Id="1" Count="0" />
     </LineIds>
-    <LineIds Name="FB_CIP_ClientTank._aTank_A_active">
+    <LineIds Name="FB_CIP_ClientTank._aTank_A_active_1">
       <LineId Id="2" Count="4" />
       <LineId Id="1" Count="0" />
     </LineIds>
-    <LineIds Name="FB_CIP_ClientTank._aTank_A_entry">
+    <LineIds Name="FB_CIP_ClientTank._aTank_A_entry_1">
       <LineId Id="10" Count="5" />
       <LineId Id="1" Count="0" />
     </LineIds>
-    <LineIds Name="FB_CIP_ClientTank._aTank_B_active">
+    <LineIds Name="FB_CIP_ClientTank._aTank_A_Sprinkler_active">
       <LineId Id="2" Count="4" />
       <LineId Id="1" Count="0" />
     </LineIds>
-    <LineIds Name="FB_CIP_ClientTank._aTank_B_entry">
+    <LineIds Name="FB_CIP_ClientTank._aTank_A_Sprinkler_entry">
+      <LineId Id="2" Count="5" />
+      <LineId Id="1" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_CIP_ClientTank._aTank_B_active_1">
+      <LineId Id="2" Count="4" />
+      <LineId Id="1" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_CIP_ClientTank._aTank_B_entry_1">
       <LineId Id="10" Count="5" />
+      <LineId Id="1" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_CIP_ClientTank._aTank_B_Sprinkler_active">
+      <LineId Id="2" Count="4" />
+      <LineId Id="1" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_CIP_ClientTank._aTank_B_Sprinkler_entry">
+      <LineId Id="2" Count="5" />
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP_ClientTank.act_GetReference">
@@ -2905,12 +3627,17 @@ m_SFC_Handle();]]></ST>
       <LineId Id="7" Count="0" />
       <LineId Id="6" Count="0" />
       <LineId Id="9" Count="0" />
+      <LineId Id="132" Count="0" />
+      <LineId Id="134" Count="8" />
+      <LineId Id="133" Count="0" />
       <LineId Id="22" Count="0" />
       <LineId Id="10" Count="0" />
       <LineId Id="114" Count="5" />
       <LineId Id="50" Count="1" />
       <LineId Id="12" Count="0" />
       <LineId Id="23" Count="0" />
+      <LineId Id="145" Count="8" />
+      <LineId Id="143" Count="1" />
       <LineId Id="13" Count="0" />
       <LineId Id="120" Count="5" />
       <LineId Id="56" Count="1" />

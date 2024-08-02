@@ -224,7 +224,7 @@ END_IF
     </Action>
     <Action Name="act_MemFdbkExist" Id="{a0b17f23-d2da-40b6-b232-4b9995f30b7b}">
       <Implementation>
-        <ST><![CDATA[IF stPis.st_Close THEN
+        <ST><![CDATA[IF stPis.st_Close AND stPis_UpLow.exist THEN
 	//Fetching signals
 	IF TRUE THEN
 		Call_FTrig_ReqUp(CLK:=stPis_UpLow.req_Upper , Q=> );
@@ -259,10 +259,38 @@ END_IF
 		b_memo_CloseFDBKExist:=FALSE;
 	END_IF
 ELSE
-	b_memo_CloseFDBKExist:=FALSE;
-	b_memo_OpenFDBKExist:=FALSE;
-	stPis_UpLow.req_Lower:=FALSE;
-	stPis_UpLow.st_Lower:=FALSE;
+	IF stPis_UpLow.exist THEN
+		b_memo_CloseFDBKExist:=FALSE;
+		b_memo_OpenFDBKExist:=FALSE;
+		stPis_UpLow.req_Lower:=FALSE;
+		stPis_UpLow.st_Lower:=FALSE;
+	ELSE
+		;
+	END_IF
+	
+END_IF
+
+IF stPis.req_Open AND NOT stPis_UpLow.exist  THEN
+	IF stPis.sen_Close_Exist THEN
+		b_memo_CloseFDBKExist:=TRUE;
+		stPis.sen_Close_Exist:=FALSE;
+	END_IF
+	
+	IF stPis.sen_Open_Exist THEN
+		b_memo_OpenFDBKExist:=TRUE;
+		stPis.sen_Open_Exist:=FALSE;
+	END_IF
+ELSIF stPis.req_Close AND NOT stPis_UpLow.exist THEN
+	IF b_memo_CloseFDBKExist THEN
+		stPis.sen_Close_Exist:=TRUE;
+		b_memo_CloseFDBKExist:=FALSE;
+	END_IF
+	
+	IF b_memo_OpenFDBKExist THEN
+		stPis.sen_Open_Exist:=TRUE;
+		b_memo_OpenFDBKExist:=FALSE;
+	END_IF
+	
 END_IF]]></ST>
       </Implementation>
     </Action>
@@ -740,9 +768,30 @@ END_IF
       <LineId Id="23" Count="0" />
       <LineId Id="25" Count="0" />
       <LineId Id="24" Count="0" />
-      <LineId Id="33" Count="2" />
-      <LineId Id="44" Count="1" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="46" Count="0" />
+      <LineId Id="51" Count="2" />
+      <LineId Id="50" Count="0" />
+      <LineId Id="47" Count="0" />
+      <LineId Id="49" Count="0" />
+      <LineId Id="48" Count="0" />
+      <LineId Id="45" Count="0" />
       <LineId Id="32" Count="0" />
+      <LineId Id="55" Count="0" />
+      <LineId Id="54" Count="0" />
+      <LineId Id="63" Count="0" />
+      <LineId Id="56" Count="0" />
+      <LineId Id="58" Count="0" />
+      <LineId Id="64" Count="3" />
+      <LineId Id="69" Count="0" />
+      <LineId Id="68" Count="0" />
+      <LineId Id="59" Count="0" />
+      <LineId Id="70" Count="0" />
+      <LineId Id="61" Count="1" />
+      <LineId Id="71" Count="2" />
+      <LineId Id="77" Count="0" />
+      <LineId Id="74" Count="2" />
+      <LineId Id="57" Count="0" />
     </LineIds>
     <LineIds Name="FB_Piston.act_New_CMD">
       <LineId Id="25" Count="1" />
