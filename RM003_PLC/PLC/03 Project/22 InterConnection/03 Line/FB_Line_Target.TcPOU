@@ -5,6 +5,8 @@
 VAR_INPUT
 	valTankA				:	E_Pis_Name	;
 	valTankB				:	E_Pis_Name	;
+	valTankA_Pipe			:	E_Pis_Name	;
+	valTankB_Pipe			:	E_Pis_Name	;
 	valDrain				:	E_Pis_Name	;
 	valCIP					:	E_Pis_Name	;
 END_VAR
@@ -19,6 +21,8 @@ VAR
 	
 	stPis_TankA				: REFERENCE TO ST_Piston;
 	stPis_TankB				: REFERENCE TO ST_Piston;
+	stPis_TankA_Pipe		: REFERENCE TO ST_Piston;
+	stPis_TankB_Pipe		: REFERENCE TO ST_Piston;
 	stPis_Drain				: REFERENCE TO ST_Piston;
 	stPis_CIP				: REFERENCE TO ST_Piston;
 	
@@ -68,8 +72,10 @@ END_IF]]></ST>
     </Action>
     <Action Name="_aCIP_entry" Id="{162310eb-2bb6-431e-b347-1831ed1ae816}">
       <Implementation>
-        <ST><![CDATA[fbPis.m_SetByRecipe(stPis:=stPis_TankA, 			req:=E_Piston_Recipe_State.Release);		
+        <ST><![CDATA[fbPis.m_SetByRecipe(stPis:=stPis_TankA, 			req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_TankA_Pipe, 		req:=E_Piston_Recipe_State.Release);		
 fbPis.m_SetByRecipe(stPis:=stPis_TankB, 			req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_TankB_Pipe, 		req:=E_Piston_Recipe_State.Release);
 fbPis.m_SetByRecipe(stPis:=stPis_Drain, 			req:=E_Piston_Recipe_State.Act);
 fbPis.m_SetByRecipe(stPis:=stPis_CIP, 				req:=E_Piston_Recipe_State.Act);]]></ST>
       </Implementation>
@@ -112,8 +118,10 @@ END_IF]]></ST>
     </Action>
     <Action Name="_aClose_entry" Id="{0e56069f-368f-4cd6-b1bd-6a8c8b618221}">
       <Implementation>
-        <ST><![CDATA[fbPis.m_SetByRecipe(stPis:=stPis_TankA, 			req:=E_Piston_Recipe_State.Release);		
+        <ST><![CDATA[fbPis.m_SetByRecipe(stPis:=stPis_TankA, 			req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_TankA_Pipe, 		req:=E_Piston_Recipe_State.Release);		
 fbPis.m_SetByRecipe(stPis:=stPis_TankB, 			req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_TankB_Pipe, 		req:=E_Piston_Recipe_State.Release);
 fbPis.m_SetByRecipe(stPis:=stPis_Drain, 			req:=E_Piston_Recipe_State.Release);
 fbPis.m_SetByRecipe(stPis:=stPis_CIP, 				req:=E_Piston_Recipe_State.Release);]]></ST>
       </Implementation>
@@ -178,8 +186,10 @@ END_IF]]></ST>
     </Action>
     <Action Name="_aDrain_entry" Id="{e3786de5-7c06-4103-8b0a-d372c40a7876}">
       <Implementation>
-        <ST><![CDATA[fbPis.m_SetByRecipe(stPis:=stPis_TankA, 			req:=E_Piston_Recipe_State.Release);		
+        <ST><![CDATA[fbPis.m_SetByRecipe(stPis:=stPis_TankA, 			req:=E_Piston_Recipe_State.Release);	
+fbPis.m_SetByRecipe(stPis:=stPis_TankA_Pipe, 		req:=E_Piston_Recipe_State.Release);	
 fbPis.m_SetByRecipe(stPis:=stPis_TankB, 			req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_TankB_Pipe, 		req:=E_Piston_Recipe_State.Release);
 fbPis.m_SetByRecipe(stPis:=stPis_Drain, 			req:=E_Piston_Recipe_State.Act);
 fbPis.m_SetByRecipe(stPis:=stPis_CIP, 				req:=E_Piston_Recipe_State.Release);]]></ST>
       </Implementation>
@@ -322,8 +332,10 @@ END_IF]]></ST>
     </Action>
     <Action Name="_aTank_A_entry" Id="{2451655f-1f9c-46d1-bcc3-f92208ba93ea}">
       <Implementation>
-        <ST><![CDATA[fbPis.m_SetByRecipe(stPis:=stPis_TankA, 			req:=E_Piston_Recipe_State.Act);		
+        <ST><![CDATA[fbPis.m_SetByRecipe(stPis:=stPis_TankA, 			req:=E_Piston_Recipe_State.Act);	
+fbPis.m_SetByRecipe(stPis:=stPis_TankA_Pipe, 		req:=E_Piston_Recipe_State.Act);	
 fbPis.m_SetByRecipe(stPis:=stPis_TankB, 			req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_TankB_Pipe, 		req:=E_Piston_Recipe_State.Release);
 fbPis.m_SetByRecipe(stPis:=stPis_Drain, 			req:=E_Piston_Recipe_State.Release);
 fbPis.m_SetByRecipe(stPis:=stPis_CIP, 				req:=E_Piston_Recipe_State.Release);]]></ST>
       </Implementation>
@@ -366,8 +378,10 @@ END_IF]]></ST>
     </Action>
     <Action Name="_aTank_B_entry" Id="{0e5f6a4c-494c-482b-8faf-2288a342d2b2}">
       <Implementation>
-        <ST><![CDATA[fbPis.m_SetByRecipe(stPis:=stPis_TankA, 			req:=E_Piston_Recipe_State.Release);		
+        <ST><![CDATA[fbPis.m_SetByRecipe(stPis:=stPis_TankA, 			req:=E_Piston_Recipe_State.Release);	
+fbPis.m_SetByRecipe(stPis:=stPis_TankA_Pipe, 		req:=E_Piston_Recipe_State.Release);	
 fbPis.m_SetByRecipe(stPis:=stPis_TankB, 			req:=E_Piston_Recipe_State.Act);
+fbPis.m_SetByRecipe(stPis:=stPis_TankB_Pipe, 		req:=E_Piston_Recipe_State.Act);
 fbPis.m_SetByRecipe(stPis:=stPis_Drain, 			req:=E_Piston_Recipe_State.Release);
 fbPis.m_SetByRecipe(stPis:=stPis_CIP, 				req:=E_Piston_Recipe_State.Release);]]></ST>
       </Implementation>
@@ -393,6 +407,8 @@ fbPis.m_SetByRecipe(stPis:=stPis_CIP, 				req:=E_Piston_Recipe_State.Release);]]
 
 stPis_TankA				REF= g_Piston.stPis[valTankA];
 stPis_TankB				REF= g_Piston.stPis[valTankB];
+stPis_TankA_Pipe		REF= g_Piston.stPis[valTankA_Pipe];
+stPis_TankA_Pipe		REF= g_Piston.stPis[valTankB_Pipe];
 stPis_Drain				REF= g_Piston.stPis[valDrain];
 stPis_CIP				REF= g_Piston.stPis[valCIP];]]></ST>
       </Implementation>
@@ -3005,36 +3021,46 @@ stPis_CIP				REF= g_Piston.stPis[valCIP];]]></ST>
     <Action Name="act_Status" Id="{8c31a424-7f78-49e2-b4ec-e3d2a2df1502}" FolderPath="Manage\">
       <Implementation>
         <ST><![CDATA[IF TRUE 
-AND fbPis.m_CheckByRecipe(stPis:=stPis_TankA, 			req:=E_Piston_Recipe_State.Release)		
+AND fbPis.m_CheckByRecipe(stPis:=stPis_TankA, 			req:=E_Piston_Recipe_State.Release)	
+AND fbPis.m_CheckByRecipe(stPis:=stPis_TankA_Pipe, 		req:=E_Piston_Recipe_State.Release)	
 AND fbPis.m_CheckByRecipe(stPis:=stPis_TankB, 			req:=E_Piston_Recipe_State.Release)
+AND fbPis.m_CheckByRecipe(stPis:=stPis_TankB_Pipe, 		req:=E_Piston_Recipe_State.Release)
 AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 			req:=E_Piston_Recipe_State.Release)
 AND fbPis.m_CheckByRecipe(stPis:=stPis_CIP, 			req:=E_Piston_Recipe_State.Release)
 THEN;
 	eStatus:=E_Line_Target.eClose;
 ELSIF TRUE 
 AND fbPis.m_CheckByRecipe(stPis:=stPis_TankA, 			req:=E_Piston_Recipe_State.Act)		
+AND fbPis.m_CheckByRecipe(stPis:=stPis_TankA_Pipe, 		req:=E_Piston_Recipe_State.Act)	
 AND fbPis.m_CheckByRecipe(stPis:=stPis_TankB, 			req:=E_Piston_Recipe_State.Release)
+AND fbPis.m_CheckByRecipe(stPis:=stPis_TankB_Pipe, 		req:=E_Piston_Recipe_State.Release)
 AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 			req:=E_Piston_Recipe_State.Release)
 AND fbPis.m_CheckByRecipe(stPis:=stPis_CIP, 			req:=E_Piston_Recipe_State.Release)
 THEN;
 	eStatus:=E_Line_Target.eTank_A;
 ELSIF TRUE 
 AND fbPis.m_CheckByRecipe(stPis:=stPis_TankA, 			req:=E_Piston_Recipe_State.Release)		
+AND fbPis.m_CheckByRecipe(stPis:=stPis_TankA_Pipe, 		req:=E_Piston_Recipe_State.Release)	
 AND fbPis.m_CheckByRecipe(stPis:=stPis_TankB, 			req:=E_Piston_Recipe_State.Act)
+AND fbPis.m_CheckByRecipe(stPis:=stPis_TankB_Pipe, 		req:=E_Piston_Recipe_State.Act)
 AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 			req:=E_Piston_Recipe_State.Release)
 AND fbPis.m_CheckByRecipe(stPis:=stPis_CIP, 			req:=E_Piston_Recipe_State.Release)
 THEN;
 	eStatus:=E_Line_Target.eTank_B;
 ELSIF TRUE 
 AND fbPis.m_CheckByRecipe(stPis:=stPis_TankA, 			req:=E_Piston_Recipe_State.Release)		
+AND fbPis.m_CheckByRecipe(stPis:=stPis_TankA_Pipe, 		req:=E_Piston_Recipe_State.Release)	
 AND fbPis.m_CheckByRecipe(stPis:=stPis_TankB, 			req:=E_Piston_Recipe_State.Release)
+AND fbPis.m_CheckByRecipe(stPis:=stPis_TankB_Pipe, 		req:=E_Piston_Recipe_State.Release)
 AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 			req:=E_Piston_Recipe_State.Act)
 AND fbPis.m_CheckByRecipe(stPis:=stPis_CIP, 			req:=E_Piston_Recipe_State.Act)
 THEN;
 	eStatus:=E_Line_Target.eCIP;
 ELSIF TRUE 
 AND fbPis.m_CheckByRecipe(stPis:=stPis_TankA, 			req:=E_Piston_Recipe_State.Release)		
+AND fbPis.m_CheckByRecipe(stPis:=stPis_TankA_Pipe, 		req:=E_Piston_Recipe_State.Release)	
 AND fbPis.m_CheckByRecipe(stPis:=stPis_TankB, 			req:=E_Piston_Recipe_State.Release)
+AND fbPis.m_CheckByRecipe(stPis:=stPis_TankB_Pipe, 		req:=E_Piston_Recipe_State.Release)
 AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 			req:=E_Piston_Recipe_State.Act)
 AND fbPis.m_CheckByRecipe(stPis:=stPis_CIP, 			req:=E_Piston_Recipe_State.Release)
 THEN;
@@ -3109,7 +3135,10 @@ m_SFC_Handle();]]></ST>
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_Line_Target._aCIP_entry">
-      <LineId Id="2" Count="1" />
+      <LineId Id="2" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="3" Count="0" />
+      <LineId Id="9" Count="0" />
       <LineId Id="6" Count="1" />
     </LineIds>
     <LineIds Name="FB_Line_Target._aClose_active">
@@ -3117,7 +3146,10 @@ m_SFC_Handle();]]></ST>
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_Line_Target._aClose_entry">
-      <LineId Id="16" Count="1" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="23" Count="0" />
       <LineId Id="20" Count="1" />
     </LineIds>
     <LineIds Name="FB_Line_Target._aDone_entry">
@@ -3129,7 +3161,10 @@ m_SFC_Handle();]]></ST>
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_Line_Target._aDrain_entry">
-      <LineId Id="2" Count="1" />
+      <LineId Id="2" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="3" Count="0" />
+      <LineId Id="9" Count="0" />
       <LineId Id="6" Count="1" />
     </LineIds>
     <LineIds Name="FB_Line_Target._aInit_active">
@@ -3160,7 +3195,10 @@ m_SFC_Handle();]]></ST>
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_Line_Target._aTank_A_entry">
-      <LineId Id="2" Count="1" />
+      <LineId Id="2" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="3" Count="0" />
+      <LineId Id="9" Count="0" />
       <LineId Id="6" Count="1" />
     </LineIds>
     <LineIds Name="FB_Line_Target._aTank_B_active">
@@ -3168,33 +3206,47 @@ m_SFC_Handle();]]></ST>
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_Line_Target._aTank_B_entry">
-      <LineId Id="2" Count="1" />
+      <LineId Id="2" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="3" Count="0" />
+      <LineId Id="9" Count="0" />
       <LineId Id="6" Count="1" />
     </LineIds>
     <LineIds Name="FB_Line_Target.act_GetReference">
       <LineId Id="2" Count="4" />
-      <LineId Id="21" Count="0" />
+      <LineId Id="21" Count="2" />
       <LineId Id="9" Count="0" />
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_Line_Target.act_Status">
       <LineId Id="2" Count="0" />
-      <LineId Id="11" Count="1" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="82" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="83" Count="0" />
       <LineId Id="15" Count="1" />
       <LineId Id="8" Count="1" />
       <LineId Id="1" Count="0" />
-      <LineId Id="19" Count="1" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="84" Count="1" />
+      <LineId Id="20" Count="0" />
       <LineId Id="23" Count="1" />
       <LineId Id="27" Count="1" />
       <LineId Id="18" Count="0" />
-      <LineId Id="30" Count="1" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="86" Count="1" />
+      <LineId Id="31" Count="0" />
       <LineId Id="34" Count="1" />
       <LineId Id="38" Count="1" />
       <LineId Id="51" Count="0" />
-      <LineId Id="63" Count="1" />
+      <LineId Id="63" Count="0" />
+      <LineId Id="88" Count="1" />
+      <LineId Id="64" Count="0" />
       <LineId Id="67" Count="1" />
       <LineId Id="71" Count="1" />
-      <LineId Id="74" Count="5" />
+      <LineId Id="74" Count="1" />
+      <LineId Id="90" Count="1" />
+      <LineId Id="76" Count="3" />
       <LineId Id="73" Count="0" />
       <LineId Id="80" Count="1" />
       <LineId Id="62" Count="0" />
