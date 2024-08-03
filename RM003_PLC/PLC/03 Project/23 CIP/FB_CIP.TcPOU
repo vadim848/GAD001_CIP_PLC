@@ -126,7 +126,16 @@ VAR
 	rDeltaWater_DeterClient		:	REAL	;
 	rDeltaWater_DisInfLocal		:	REAL	;
 	rDeltaWater_DisInfClient	:	REAL	;
-	rDDd: INT;
+	//accumulative actual time for desinfection and detergent condition
+	nDeter_CondActTime_Lcl		:	INT	;//Actual condition time in seconds, for local client, detergent
+	nDeter_CondActTime_Clnt		:	INT	;//Actual condition time in seconds, for client, detergent
+	nDisInf_CondActTime_Lcl		:	INT	;//Actual condition time in seconds, for local client, disinfection
+	nDisInf_CondActTime_Clnt	:	INT	;//Actual condition time in seconds, for client, disinfection
+	
+	bDeter_CondActTime_Lcl_Done		:	BOOL	;
+	bDeter_CondActTime_Clnt_Done	:	BOOL	;
+	bDisInf_CondActTime_Lcl_Done	:	BOOL	;
+	bDisInf_CondActTime_Clnt_Done	:	BOOL	;
 END_VAR
 //upper lower control
 VAR
@@ -542,23 +551,50 @@ END_IF
 
 
 //ton_CIP_Condition(PT:=T#30S);
-ton_CIP_Condition(PT:=TO_TIME(st_CIP_Param.t_ConditionDetergent));
+IF st_CIP_Param.t_ConditionDetergent-nDeter_CondActTime_Clnt>0 THEN
+	ton_CIP_Condition(PT:=SECOND_TO_TIME(st_CIP_Param.t_ConditionDetergent-nDeter_CondActTime_Clnt));
+	bDeter_CondActTime_Clnt_Done:=FALSE;
+ELSE
+	bDeter_CondActTime_Clnt_Done:=TRUE;
+END_IF
+
 IF TRUE 
 AND Deterg_Conc_Client_Done.x
 AND Temperature_2_Done.x
+AND NOT bDeter_CondActTime_Clnt_Done
 AND TRUE
 THEN;
 	ton_CIP_Condition.IN:=TRUE;
 ELSE;
+	nDeter_CondActTime_Clnt:=TIME_TO_INT(ton_CIP_Condition.ET)/1000;
 	ton_CIP_Condition.IN:=FALSE;
 END_IF
 
-IF ton_CIP_Condition.Q THEN;
+IF ton_CIP_Condition.Q
+OR bDeter_CondActTime_Clnt_Done THEN;
 	bCIP_Condition_Done:=TRUE;
 ELSE;
 	bCIP_Condition_Done:=FALSE;
 END_IF
 ]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
+    <Action Name="_aCondition_CIP2_Client_entry" Id="{2055b624-a0a3-4bcf-960f-e71c5605395e}">
+      <Implementation>
+        <ST><![CDATA[bDeter_CondActTime_Clnt_Done:=FALSE;]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -606,23 +642,49 @@ THEN;
 END_IF
 
 //ton_CIP_Condition(PT:=T#30S);
-ton_CIP_Condition(PT:=SECOND_TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_ConditionDetergent));
+IF (g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_ConditionDetergent-nDeter_CondActTime_Lcl)>0 THEN
+	ton_CIP_Condition(PT:=SECOND_TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_ConditionDetergent-nDeter_CondActTime_Lcl));
+	bDeter_CondActTime_Lcl_Done:=FALSE;
+ELSE
+	bDeter_CondActTime_Lcl_Done:=TRUE;
+END_IF
+
 IF TRUE 
 AND Deterg_Conc_Local_Done.x
 AND Temperature_1_Done.x
+AND NOT bDeter_CondActTime_Lcl_Done
 AND TRUE
 THEN;
 	ton_CIP_Condition.IN:=TRUE;
 ELSE;
+	nDeter_CondActTime_Lcl:=TIME_TO_INT(ton_CIP_Condition.ET)/1000;
 	ton_CIP_Condition.IN:=FALSE;
 END_IF
-
-IF ton_CIP_Condition.Q THEN;
+	
+IF ton_CIP_Condition.Q OR bDeter_CondActTime_Lcl_Done THEN;
 	bCIP_Condition_Done:=TRUE;
 ELSE;
 	bCIP_Condition_Done:=FALSE;	
 END_IF
 ]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
+    <Action Name="_aCondition_CIP2_Local_entry" Id="{4279ea96-7314-40b5-9c75-ba79c0bca193}">
+      <Implementation>
+        <ST><![CDATA[bDeter_CondActTime_Lcl_Done:=FALSE;]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -669,23 +731,50 @@ END_IF
 
 
 //ton_CIP_Condition(PT:=T#30S);
-ton_CIP_Condition(PT:=TO_TIME(st_CIP_Param.t_ConditionDisInfection));
+IF st_CIP_Param.t_ConditionDisInfection-nDisInf_CondActTime_Clnt>0 THEN
+	ton_CIP_Condition(PT:=SECOND_TO_TIME(st_CIP_Param.t_ConditionDisInfection));
+	bDisInf_CondActTime_Clnt_Done:=FALSE;
+ELSE
+	bDisInf_CondActTime_Clnt_Done:=TRUE;
+END_IF
 IF TRUE 
 AND Disinfct_Conc_Client_Done.x
 AND Temperature_Dis_2_Done.x
+AND NOT bDisInf_CondActTime_Clnt_Done
 AND TRUE
 THEN;
 	ton_CIP_Condition.IN:=TRUE;
 ELSE;
+	nDisInf_CondActTime_Clnt:=TIME_TO_INT(ton_CIP_Condition.ET)/1000;
 	ton_CIP_Condition.IN:=FALSE;
 END_IF
 
-IF ton_CIP_Condition.Q THEN;
+IF ton_CIP_Condition.Q 
+OR bDisInf_CondActTime_Clnt_Done 
+THEN;
 	bCIP_Condition_Done:=TRUE;
 ELSE;
 	bCIP_Condition_Done:=FALSE;	
 END_IF
 ]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
+    <Action Name="_aCondition_CIP3_Client_entry" Id="{a4141ac8-8c4e-4a63-bcfd-1628a396a660}">
+      <Implementation>
+        <ST><![CDATA[bDisInf_CondActTime_Clnt_Done:=FALSE;]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -732,23 +821,51 @@ END_IF
 
 
 //ton_CIP_Condition(PT:=T#30S);
-ton_CIP_Condition(PT:=SECOND_TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_ConditionDisInfection));
+IF g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_ConditionDisInfection-nDisInf_CondActTime_Lcl>0 THEN
+	ton_CIP_Condition(PT:=SECOND_TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_ConditionDisInfection-nDisInf_CondActTime_Lcl));
+	bDisInf_CondActTime_Lcl_Done:=FALSE;
+ELSE
+	bDisInf_CondActTime_Lcl_Done:=TRUE;
+END_IF
+
 IF TRUE 
 AND Disinfct_Conc_Local_Done.x
 AND Temperature_Dis_1_Done.x
+AND NOT bDisInf_CondActTime_Lcl_Done
 AND TRUE
 THEN;
 	ton_CIP_Condition.IN:=TRUE;
 ELSE;
+	nDisInf_CondActTime_Lcl:=TIME_TO_INT(ton_CIP_Condition.ET)/1000;
 	ton_CIP_Condition.IN:=FALSE;
 END_IF
 
-IF ton_CIP_Condition.Q THEN;
+IF ton_CIP_Condition.Q
+OR bDisInf_CondActTime_Lcl_Done
+THEN
 	bCIP_Condition_Done:=TRUE;
 ELSE;
 	bCIP_Condition_Done:=FALSE;	
 END_IF
 ]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
+    <Action Name="_aCondition_CIP3_Local_entry" Id="{5a784446-f9fa-4db5-aff3-403f13a3b6d1}">
+      <Implementation>
+        <ST><![CDATA[bDisInf_CondActTime_Lcl_Done:=FALSE;]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -2200,7 +2317,12 @@ END_IF
     </Action>
     <Action Name="_aFill_Water_T91_active" Id="{5095c3b6-e26a-419b-998b-d45425bd5a3c}">
       <Implementation>
-        <ST><![CDATA[bStepDone:=FALSE;
+        <ST><![CDATA[nDisInf_CondActTime_Lcl:=0;
+nDisInf_CondActTime_Clnt:=0;
+bDisInf_CondActTime_Lcl_Done:=FALSE;
+bDisInf_CondActTime_Clnt_Done:=FALSE;
+
+bStepDone:=FALSE;
 IF fbCIP_Source.m_CheckStatus(eReqStatus:=E_CIP_Source.eClose) 
 AND fbCIP_Usage.m_CheckStatus(eReqStatus:=E_CIP_Usage.eLocal)  
 AND fbCIP_Return.m_CheckStatus(eReqStatus:=E_CIP_Return.eDrain)  
@@ -2262,7 +2384,13 @@ fbPis.m_SetByRecipe(stPis:=stPis_FillWater_T91, req:=E_Piston_Recipe_State.Act);
     </Action>
     <Action Name="_aFill_Water_T92_active" Id="{24710a65-e152-4b5e-946e-ece3bbec20c5}">
       <Implementation>
-        <ST><![CDATA[bStepDone:=FALSE;
+        <ST><![CDATA[//Reset
+nDeter_CondActTime_Lcl:=0;
+nDeter_CondActTime_Clnt:=0;
+bDeter_CondActTime_Lcl_Done:=FALSE;
+bDeter_CondActTime_Clnt_Done:=FALSE;
+
+bStepDone:=FALSE;
 IF fbCIP_Source.m_CheckStatus(eReqStatus:=E_CIP_Source.eClose) 
 AND fbCIP_Usage.m_CheckStatus(eReqStatus:=E_CIP_Usage.eLocal)  
 AND fbCIP_Return.m_CheckStatus(eReqStatus:=E_CIP_Return.eDrain)  
@@ -10422,7 +10550,7 @@ END_CASE]]></ST>
                                                           <o>
                                                             <v n="AttributeId">{a6b08bd8-b696-47e3-9cbf-7408b61c9ff8}</v>
                                                             <o n="Value" t="StringValue">
-                                                              <v n="Value">""</v>
+                                                              <v n="Value">"_aCondition_CIP2_Local_entry"</v>
                                                               <v n="DefaultValue">""</v>
                                                             </o>
                                                             <v n="Id">3899L</v>
@@ -14796,7 +14924,7 @@ END_CASE]]></ST>
                                                                       <o>
                                                                         <v n="AttributeId">{a6b08bd8-b696-47e3-9cbf-7408b61c9ff8}</v>
                                                                         <o n="Value" t="StringValue">
-                                                                          <v n="Value">""</v>
+                                                                          <v n="Value">"_aCondition_CIP2_Client_entry"</v>
                                                                           <v n="DefaultValue">""</v>
                                                                         </o>
                                                                         <v n="Id">5671L</v>
@@ -21947,7 +22075,7 @@ END_CASE]]></ST>
                                                           <o>
                                                             <v n="AttributeId">{a6b08bd8-b696-47e3-9cbf-7408b61c9ff8}</v>
                                                             <o n="Value" t="StringValue">
-                                                              <v n="Value">""</v>
+                                                              <v n="Value">"_aCondition_CIP3_Local_entry"</v>
                                                               <v n="DefaultValue">""</v>
                                                             </o>
                                                             <v n="Id">5595L</v>
@@ -25955,7 +26083,7 @@ END_CASE]]></ST>
                                                                       <o>
                                                                         <v n="AttributeId">{a6b08bd8-b696-47e3-9cbf-7408b61c9ff8}</v>
                                                                         <o n="Value" t="StringValue">
-                                                                          <v n="Value">""</v>
+                                                                          <v n="Value">"_aCondition_CIP3_Client_entry"</v>
                                                                           <v n="DefaultValue">""</v>
                                                                         </o>
                                                                         <v n="Id">5411L</v>
@@ -34244,11 +34372,23 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="44" Count="0" />
       <LineId Id="6" Count="7" />
       <LineId Id="16" Count="10" />
+      <LineId Id="48" Count="0" />
       <LineId Id="47" Count="0" />
-      <LineId Id="27" Count="11" />
+      <LineId Id="51" Count="2" />
+      <LineId Id="49" Count="1" />
+      <LineId Id="27" Count="2" />
+      <LineId Id="54" Count="0" />
+      <LineId Id="30" Count="3" />
+      <LineId Id="56" Count="0" />
+      <LineId Id="34" Count="3" />
+      <LineId Id="55" Count="0" />
+      <LineId Id="38" Count="0" />
       <LineId Id="41" Count="1" />
       <LineId Id="1" Count="0" />
       <LineId Id="40" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_CIP._aCondition_CIP2_Client_entry">
+      <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aCondition_CIP2_Local_active">
       <LineId Id="40" Count="0" />
@@ -34267,29 +34407,43 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="35" Count="4" />
       <LineId Id="34" Count="0" />
       <LineId Id="26" Count="0" />
-      <LineId Id="59" Count="1" />
-      <LineId Id="10" Count="0" />
-      <LineId Id="23" Count="1" />
-      <LineId Id="27" Count="0" />
-      <LineId Id="15" Count="0" />
-      <LineId Id="13" Count="0" />
-      <LineId Id="17" Count="1" />
-      <LineId Id="14" Count="0" />
-      <LineId Id="20" Count="0" />
-      <LineId Id="19" Count="0" />
-      <LineId Id="21" Count="0" />
-      <LineId Id="43" Count="0" />
-      <LineId Id="42" Count="0" />
-      <LineId Id="22" Count="0" />
+      <LineId Id="59" Count="0" />
+      <LineId Id="63" Count="0" />
+      <LineId Id="60" Count="0" />
+      <LineId Id="92" Count="0" />
+      <LineId Id="90" Count="1" />
+      <LineId Id="66" Count="0" />
+      <LineId Id="69" Count="3" />
+      <LineId Id="93" Count="0" />
+      <LineId Id="73" Count="7" />
+      <LineId Id="86" Count="0" />
+      <LineId Id="82" Count="2" />
+      <LineId Id="68" Count="0" />
       <LineId Id="41" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_CIP._aCondition_CIP2_Local_entry">
+      <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aCondition_CIP3_Client_active">
       <LineId Id="2" Count="4" />
       <LineId Id="44" Count="1" />
       <LineId Id="43" Count="0" />
       <LineId Id="7" Count="20" />
+      <LineId Id="47" Count="0" />
       <LineId Id="46" Count="0" />
-      <LineId Id="28" Count="14" />
+      <LineId Id="51" Count="0" />
+      <LineId Id="49" Count="1" />
+      <LineId Id="48" Count="0" />
+      <LineId Id="28" Count="2" />
+      <LineId Id="52" Count="0" />
+      <LineId Id="31" Count="3" />
+      <LineId Id="55" Count="0" />
+      <LineId Id="35" Count="3" />
+      <LineId Id="53" Count="1" />
+      <LineId Id="39" Count="3" />
+      <LineId Id="1" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_CIP._aCondition_CIP3_Client_entry">
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aCondition_CIP3_Local_active">
@@ -34297,8 +34451,23 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="44" Count="1" />
       <LineId Id="43" Count="0" />
       <LineId Id="7" Count="19" />
-      <LineId Id="47" Count="1" />
-      <LineId Id="28" Count="14" />
+      <LineId Id="47" Count="0" />
+      <LineId Id="49" Count="0" />
+      <LineId Id="48" Count="0" />
+      <LineId Id="51" Count="1" />
+      <LineId Id="54" Count="0" />
+      <LineId Id="50" Count="0" />
+      <LineId Id="55" Count="0" />
+      <LineId Id="28" Count="2" />
+      <LineId Id="56" Count="0" />
+      <LineId Id="31" Count="3" />
+      <LineId Id="59" Count="0" />
+      <LineId Id="35" Count="3" />
+      <LineId Id="57" Count="1" />
+      <LineId Id="39" Count="3" />
+      <LineId Id="1" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_CIP._aCondition_CIP3_Local_entry">
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aConnect_CIP1_Drain_active">
@@ -34650,6 +34819,11 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="3" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aFill_Water_T91_active">
+      <LineId Id="50" Count="0" />
+      <LineId Id="48" Count="0" />
+      <LineId Id="52" Count="0" />
+      <LineId Id="51" Count="0" />
+      <LineId Id="49" Count="0" />
       <LineId Id="2" Count="4" />
       <LineId Id="32" Count="15" />
       <LineId Id="8" Count="0" />
@@ -34661,6 +34835,12 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aFill_Water_T92_active">
+      <LineId Id="35" Count="0" />
+      <LineId Id="38" Count="0" />
+      <LineId Id="37" Count="0" />
+      <LineId Id="40" Count="0" />
+      <LineId Id="39" Count="0" />
+      <LineId Id="36" Count="0" />
       <LineId Id="2" Count="3" />
       <LineId Id="16" Count="0" />
       <LineId Id="19" Count="0" />
