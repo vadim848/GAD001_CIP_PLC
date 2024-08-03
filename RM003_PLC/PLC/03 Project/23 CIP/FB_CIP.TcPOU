@@ -67,6 +67,9 @@ VAR
 	pcTemperature_Deterg			: 	REFERENCE TO FB_ProcessControl	;	//detergent Client	
 	stTemperature_Dis				:	REFERENCE TO ST_ProcessControl	;
 	pcTemperature_Dis				: 	REFERENCE TO FB_ProcessControl	;//disinfectant local/client
+	//temperature client return
+	stTemp_ClntReturn				:	REFERENCE TO ST_ProcessControl	;//Client return temperature
+	pcTemp_ClntReturn				: 	REFERENCE TO FB_ProcessControl	;//Client return temperature
 	
 	//flow rate
 	stFlow1_Rate					:	REFERENCE TO ST_ProcessControl	;//CIP
@@ -545,6 +548,7 @@ END_IF
 
 IF Temperature_2_Done.x 
 AND NOT pcTemperature_Deterg.mRun()
+AND NOT pcTemp_ClntReturn.mRun()
 THEN;
 	bCIP_Condition_Failed:=TRUE;
 END_IF
@@ -719,6 +723,7 @@ END_IF
 
 IF Disinfct_Conc_Client_Done.x 
 AND NOT pcDisInfectant.mRun()
+AND NOT pcTemp_ClntReturn.mRun()
 THEN;
 	bCIP_Condition_Failed:=TRUE;
 END_IF
@@ -2523,12 +2528,6 @@ THEN;//need something in case there are error in level sensor, should jump into 
 	THEN;	
 		bStepDone:=TRUE;
 		fbPis.m_SetByRecipe(stPis:=stPis_FillWater_T94, req:=E_Piston_Recipe_State.Release);
-	(*ELSIF lvlTank_T94.e_state=E_Tank_Level.eLL
-	AND lvlTank_T94.rTankLevel>st_CIP_Param.r_TankLevel_2//st_CIP_Param.r_Water_TankLvl_Client_1 // Client requered Level
-	THEN;
-		//Level OK
-		bStepDone:=TRUE;
-		fbPis.m_SetByRecipe(stPis:=stPis_FillWater_T94, req:=E_Piston_Recipe_State.Release);*)
 	ELSE;
 		//Fill water
 		fbPis.m_SetByRecipe(stPis:=stPis_FillWater_T94, req:=E_Piston_Recipe_State.Act);
@@ -2739,8 +2738,9 @@ END_IF]]></ST>
         <ST><![CDATA[
 
 pcTemperature_Deterg.mRun();
+pcTemp_ClntReturn.mRun();
 
-IF stTemperature_Deterg.bDone THEN;
+IF stTemperature_Deterg.bDone AND stTemp_ClntReturn.bDone THEN;
 	//
 END_IF]]></ST>
       </Implementation>
@@ -2787,6 +2787,7 @@ END_IF]]></ST>
         <ST><![CDATA[
 
 pcTemperature_Deterg.mRun();
+pcTemp_ClntReturn.mRun();
 
 IF stTemperature_Deterg.bDone THEN;
 	//
@@ -3978,7 +3979,12 @@ fb_PumpClient.m_Stop();]]></ST>
     </Action>
     <Action Name="act_CallProcessControl" Id="{ba2500c4-7891-45b7-bd60-804b421a62c3}" FolderPath="Manage\">
       <Implementation>
-        <ST><![CDATA[//Detergent
+        <ST><![CDATA[//Client temperature return
+stTemp_ClntReturn.rValue:=g_AnalogSensor.stAnalogSensor[E_ASense_Name.TT1101].Value;//gIO.fbScaleFactor[E_ASense_Name.TT1101].rValOut;
+stTemp_ClntReturn.rSetPoint:=st_CIP_Param.r_Temper_ClientReturn;
+pcTemp_ClntReturn(stProcessControl:=stTemp_ClntReturn );
+
+//Detergent
 	//Concentration
 	stDetergent.rValue:=g_AnalogSensor.stAnalogSensor[E_ASense_Name.CT1101_3].Value;
 	//###stDetergent.ToleranceHigh:=0.05;
@@ -4109,6 +4115,8 @@ stColor_Level    REF=g_ProcControl.arr_stProcCntrl[E_ProcessControl_Name.eColor_
 stMarinada_Level REF=g_ProcControl.arr_stProcCntrl[E_ProcessControl_Name.eMarin_Level];
 	//Pressure
 stPressure 	REF=g_ProcControl.arr_stProcCntrl[E_ProcessControl_Name.eCIP_Pressure];
+//temperature control
+stTemp_ClntReturn REF=g_ProcControl.arr_stProcCntrl[E_ProcessControl_Name.eClietnReturn_Temp];
 
 //Function block
 	//concentration
@@ -4125,6 +4133,9 @@ pcColor_Level    REF=g_ProcControl.arr_fbProcCntrl[E_ProcessControl_Name.eColor_
 pcMarinada_Level REF=g_ProcControl.arr_fbProcCntrl[E_ProcessControl_Name.eMarin_Level];
 	//Pressure
 pcPressure 	REF=g_ProcControl.arr_fbProcCntrl[E_ProcessControl_Name.eCIP_Pressure];
+
+//temperature control
+pcTemp_ClntReturn 	REF=g_ProcControl.arr_fbProcCntrl[E_ProcessControl_Name.eClietnReturn_Temp];
 
 
 
@@ -14538,7 +14549,7 @@ END_CASE]]></ST>
                                                                                   <o>
                                                                                     <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                                                     <o n="Value" t="StringValue">
-                                                                                      <v n="Value">"stTemperature_Deterg.bDone"</v>
+                                                                                      <v n="Value">"stTemperature_Deterg.bDone AND stTemp_ClntReturn.bDone"</v>
                                                                                       <v n="DefaultValue">""</v>
                                                                                     </o>
                                                                                     <v n="Id">5747L</v>
@@ -25697,7 +25708,7 @@ END_CASE]]></ST>
                                                                                   <o>
                                                                                     <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                                                     <o n="Value" t="StringValue">
-                                                                                      <v n="Value">"stTemperature_Dis.bDone"</v>
+                                                                                      <v n="Value">"stTemperature_Dis.bDone AND stTemp_ClntReturn.bDone "</v>
                                                                                       <v n="DefaultValue">""</v>
                                                                                     </o>
                                                                                     <v n="Id">5248L</v>
@@ -34371,7 +34382,9 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="45" Count="1" />
       <LineId Id="44" Count="0" />
       <LineId Id="6" Count="7" />
-      <LineId Id="16" Count="10" />
+      <LineId Id="16" Count="4" />
+      <LineId Id="57" Count="0" />
+      <LineId Id="21" Count="5" />
       <LineId Id="48" Count="0" />
       <LineId Id="47" Count="0" />
       <LineId Id="51" Count="2" />
@@ -34428,7 +34441,9 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="2" Count="4" />
       <LineId Id="44" Count="1" />
       <LineId Id="43" Count="0" />
-      <LineId Id="7" Count="20" />
+      <LineId Id="7" Count="8" />
+      <LineId Id="56" Count="0" />
+      <LineId Id="16" Count="11" />
       <LineId Id="47" Count="0" />
       <LineId Id="46" Count="0" />
       <LineId Id="51" Count="0" />
@@ -34890,7 +34905,8 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="57" Count="0" />
       <LineId Id="56" Count="0" />
       <LineId Id="55" Count="0" />
-      <LineId Id="43" Count="10" />
+      <LineId Id="43" Count="1" />
+      <LineId Id="51" Count="2" />
       <LineId Id="40" Count="0" />
       <LineId Id="4" Count="0" />
       <LineId Id="1" Count="0" />
@@ -34964,6 +34980,7 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
     <LineIds Name="FB_CIP._aGet_Temperature_CIP2_02_active">
       <LineId Id="2" Count="1" />
       <LineId Id="1" Count="0" />
+      <LineId Id="8" Count="0" />
       <LineId Id="5" Count="0" />
       <LineId Id="4" Count="0" />
       <LineId Id="6" Count="1" />
@@ -34978,6 +34995,7 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
     <LineIds Name="FB_CIP._aGet_Temperature_Dis_2_active">
       <LineId Id="2" Count="1" />
       <LineId Id="1" Count="0" />
+      <LineId Id="8" Count="0" />
       <LineId Id="5" Count="0" />
       <LineId Id="4" Count="0" />
       <LineId Id="6" Count="1" />
@@ -35289,6 +35307,11 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP.act_CallProcessControl">
+      <LineId Id="821" Count="0" />
+      <LineId Id="825" Count="0" />
+      <LineId Id="827" Count="0" />
+      <LineId Id="826" Count="0" />
+      <LineId Id="822" Count="0" />
       <LineId Id="716" Count="104" />
       <LineId Id="101" Count="0" />
     </LineIds>
@@ -35310,10 +35333,15 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="59" Count="0" />
       <LineId Id="44" Count="0" />
       <LineId Id="43" Count="0" />
+      <LineId Id="84" Count="1" />
       <LineId Id="61" Count="8" />
       <LineId Id="78" Count="1" />
       <LineId Id="71" Count="3" />
-      <LineId Id="46" Count="6" />
+      <LineId Id="46" Count="0" />
+      <LineId Id="81" Count="0" />
+      <LineId Id="80" Count="0" />
+      <LineId Id="82" Count="0" />
+      <LineId Id="47" Count="5" />
       <LineId Id="45" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP.act_HeatExchng">
