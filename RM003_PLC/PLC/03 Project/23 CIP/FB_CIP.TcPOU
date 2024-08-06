@@ -12,7 +12,7 @@ VAR_INPUT
 	lvlTank_T92			: ST_Tank_Level	;
 	lvlTank_T93			: ST_Tank_Level	;
 	lvlTank_T94			: ST_Tank_Level	;
-		
+
 END_VAR
 VAR_OUTPUT
 END_VAR
@@ -139,6 +139,8 @@ VAR
 	bDeter_CondActTime_Clnt_Done	:	BOOL	;
 	bDisInf_CondActTime_Lcl_Done	:	BOOL	;
 	bDisInf_CondActTime_Clnt_Done	:	BOOL	;
+
+	fbHysteresisFillT94: FB_Hysteresis_REAL;
 	
 	//Choose pipe or sprinkler
 	bSprinkler	:	BOOL:=FALSE	;
@@ -190,7 +192,6 @@ VAR_IN_OUT
 	//Heat Exchenger	
 	fb_HeatExchenger	:	FB_HeatExchanger	;
 	
-
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -229,6 +230,8 @@ END_IF
 IF bRun AND bClientRef_done THEN;
 	act_Run();
 END_IF
+
+mFillWater();
 
 //IF bMoveStep THEN bMoveStep:=FALSE; END_IF
  
@@ -34550,6 +34553,70 @@ END_IF
 ]]></ST>
       </Implementation>
     </Method>
+    <Method Name="mFillWater" Id="{c38e9eb6-e5ec-4b46-a443-d362a1ec1959}" FolderPath="Meth\">
+      <Declaration><![CDATA[METHOD mFillWater : BOOL
+VAR_INPUT
+END_VAR
+
+VAR
+	reqVolume: REAL;	
+	valve : E_Pis_Name;;
+	actLevel: REAL;
+	fillCondition: BOOL;	
+	
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TRUE 
+AND fbPis.m_CheckByRecipe(stPis:=stPis_FillWater_T91, req:=E_Piston_Recipe_State.Release)
+AND fbPis.m_CheckByRecipe(stPis:=stPis_FillWater_T92, req:=E_Piston_Recipe_State.Release)
+AND fbPis.m_CheckByRecipe(stPis:=stPis_FillWater_T93, req:=E_Piston_Recipe_State.Release)
+AND bStateSafe
+AND TRUE
+THEN;
+	fillCondition:=TRUE;
+ELSE;
+	fillCondition:=FALSE;
+END_IF
+
+reqVolume:=st_CIP_Param.r_Tank94_Volume;
+IF g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Tank94_Volume>reqVolume THEN;
+	reqVolume:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Tank94_Volume;
+END_IF
+
+fbHysteresisFillT94(
+	fIn:= lvlTank_T94.rTankLevel, 
+	fHigh:= reqVolume, 
+	fLow:= reqVolume-50.0, 
+	iDigitsAfterDot:= 1, 
+	bOut=> );
+
+IF eMode<>E_CIP_Mode.eOff THEN;
+	IF fbPis.m_CheckByRecipe(stPis:=stPis_FillWater_T94, req:=E_Piston_Recipe_State.Act) 
+	AND (NOT fbHysteresisFillT94.bOut
+	OR NOT fillCondition)
+	THEN;
+		//stPis_FillWater_T94.req_Close:=TRUE;
+		fbPis.m_SetByRecipe(stPis:=stPis_FillWater_T94, req:=E_Piston_Recipe_State.Release);
+		
+	ELSIF fbPis.m_CheckByRecipe(stPis:=stPis_FillWater_T94, req:=E_Piston_Recipe_State.Release) 
+	AND fbHysteresisFillT94.bOut
+	AND fillCondition
+	THEN;
+		//stPis_FillWater_T94.req_Open:=TRUE;
+		fbPis.m_SetByRecipe(stPis:=stPis_FillWater_T94, req:=E_Piston_Recipe_State.Act);
+	END_IF	
+END_IF
+	
+	
+(*
+fbFillT94(	
+		valve:= valFillWater_T94, 
+		reqLevel:= reqVolume, 
+		actLevel:= lvlTank_T94.rTankLevel, 
+		fillCondition:= );
+*)		]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="mLoadDefProcessSetPoints" Id="{6622ea5b-b543-4ab8-8397-ed9f64ee15e5}">
       <Declaration><![CDATA[METHOD mLoadDefProcessSetPoints : BOOL
 VAR_INPUT
@@ -34640,7 +34707,9 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="186" Count="0" />
       <LineId Id="185" Count="0" />
       <LineId Id="187" Count="1" />
-      <LineId Id="1222" Count="0" />
+      <LineId Id="1426" Count="0" />
+      <LineId Id="1419" Count="0" />
+      <LineId Id="1423" Count="0" />
       <LineId Id="341" Count="0" />
       <LineId Id="131" Count="0" />
       <LineId Id="130" Count="0" />
@@ -36001,6 +36070,19 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="39" Count="0" />
       <LineId Id="37" Count="0" />
       <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_CIP.mFillWater">
+      <LineId Id="78" Count="22" />
+      <LineId Id="122" Count="0" />
+      <LineId Id="124" Count="0" />
+      <LineId Id="128" Count="8" />
+      <LineId Id="140" Count="0" />
+      <LineId Id="137" Count="2" />
+      <LineId Id="126" Count="1" />
+      <LineId Id="125" Count="0" />
+      <LineId Id="123" Count="0" />
+      <LineId Id="116" Count="5" />
+      <LineId Id="30" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP.mLoadDefProcessSetPoints">
       <LineId Id="6" Count="1" />
