@@ -11,16 +11,21 @@ END_VAR
 VAR
 	stPist	: REFERENCE TO ST_Piston;
 	stPump	: REFERENCE TO ST_Pump	;
+	bOneTime	:	BOOL	;
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[IF (stPump.bRun_Auto OR stPump.bRun_Man) THEN
+      <ST><![CDATA[act_SetReference();
+
+IF (stPump.bRun_Auto OR stPump.bRun_Man) THEN
+	bOneTime:=FALSE;
 	IF NOT stPist.st_Open THEN
 		stPist.req_Open:=TRUE;
 	END_IF
 ELSE
-	IF NOT stPist.st_Close THEN
+	IF NOT stPist.st_Close AND NOT bOneTime THEN
 		stPist.req_Close:=TRUE;
+		bOneTime:=TRUE;
 	END_IF
 END_IF]]></ST>
     </Implementation>
@@ -31,12 +36,16 @@ stPump REF= g_Pump.arr_st_Pump[Pump_ID];]]></ST>
       </Implementation>
     </Action>
     <LineIds Name="FB_OpenClose_Vlave">
+      <LineId Id="35" Count="1" />
       <LineId Id="9" Count="0" />
+      <LineId Id="38" Count="0" />
       <LineId Id="19" Count="0" />
       <LineId Id="15" Count="0" />
       <LineId Id="20" Count="0" />
       <LineId Id="17" Count="0" />
-      <LineId Id="21" Count="2" />
+      <LineId Id="21" Count="1" />
+      <LineId Id="39" Count="0" />
+      <LineId Id="23" Count="0" />
       <LineId Id="16" Count="0" />
     </LineIds>
     <LineIds Name="FB_OpenClose_Vlave.act_SetReference">
