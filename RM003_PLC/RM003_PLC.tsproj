@@ -2,29 +2,65 @@
 <TcSmProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2012/07/TcSmProject" TcSmVersion="1.0" TcVersion="3.1.4024.59">
 	<DataTypes>
 		<DataType>
-			<Name GUID="{0146173C-D895-D219-E209-CC005AC77636}" Namespace="Tc2_SerialCom" AutoDeleteType="true">EL6inData22B</Name>
-			<Comment><![CDATA[ This data type is corresponding to the
-   EL-6xxx data structure used in the
-   TwinCAT SystemManager
-   (EL-6xxx version using 22 data bytes) 
-]]></Comment>
-			<BitSize>192</BitSize>
+			<Name GUID="{052265B9-CCD9-C672-396A-1F57CB4AE13E}" AutoDeleteType="true">ST_EL3xx8</Name>
+			<BitSize>128</BitSize>
 			<SubItem>
-				<Name>Status</Name>
-				<Type GUID="{18071995-0000-0000-0000-000000000004}">WORD</Type>
+				<Name>ch1</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000006}">INT</Type>
 				<BitSize>16</BitSize>
 				<BitOffs>0</BitOffs>
 			</SubItem>
 			<SubItem>
-				<Name>D</Name>
-				<Type GUID="{18071995-0000-0000-0000-000000000001}">BYTE</Type>
-				<ArrayInfo>
-					<LBound>0</LBound>
-					<Elements>22</Elements>
-				</ArrayInfo>
-				<BitSize>176</BitSize>
+				<Name>ch2</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000006}">INT</Type>
+				<BitSize>16</BitSize>
 				<BitOffs>16</BitOffs>
 			</SubItem>
+			<SubItem>
+				<Name>ch3</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000006}">INT</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>32</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>ch4</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000006}">INT</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>48</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>ch5</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000006}">INT</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>64</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>ch6</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000006}">INT</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>80</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>ch7</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000006}">INT</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>96</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>ch8</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000006}">INT</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>112</BitOffs>
+			</SubItem>
+		</DataType>
+		<DataType>
+			<Name IecBaseType="true">ARRAY [1..5] OF ST_EL3xx8</Name>
+			<BitSize>640</BitSize>
+			<BaseType GUID="{052265B9-CCD9-C672-396A-1F57CB4AE13E}">ST_EL3xx8</BaseType>
+			<ArrayInfo>
+				<LBound>1</LBound>
+				<Elements>5</Elements>
+			</ArrayInfo>
 		</DataType>
 		<DataType>
 			<Name GUID="{15F1EE7B-133A-73EC-46FD-E420D489E311}" AutoDeleteType="true">ST_EL18x9</Name>
@@ -235,74 +271,38 @@
 			</SubItem>
 		</DataType>
 		<DataType>
-			<Name GUID="{C347D351-9DE1-3128-5E8B-939678CD786D}" IecBaseType="true" AutoDeleteType="true">ARRAY [1..16] OF ST_EL18x9</Name>
-			<BitSize>2304</BitSize>
+			<Name IecBaseType="true">ARRAY [1..18] OF ST_EL18x9</Name>
+			<BitSize>2592</BitSize>
 			<BaseType GUID="{15F1EE7B-133A-73EC-46FD-E420D489E311}">ST_EL18x9</BaseType>
 			<ArrayInfo>
 				<LBound>1</LBound>
-				<Elements>16</Elements>
+				<Elements>18</Elements>
 			</ArrayInfo>
 		</DataType>
 		<DataType>
-			<Name GUID="{052265B9-CCD9-C672-396A-1F57CB4AE13E}" AutoDeleteType="true">ST_EL3xx8</Name>
-			<BitSize>128</BitSize>
+			<Name GUID="{0146173C-D895-D219-E209-CC005AC77636}" Namespace="Tc2_SerialCom" AutoDeleteType="true">EL6inData22B</Name>
+			<Comment><![CDATA[ This data type is corresponding to the
+   EL-6xxx data structure used in the
+   TwinCAT SystemManager
+   (EL-6xxx version using 22 data bytes) 
+]]></Comment>
+			<BitSize>192</BitSize>
 			<SubItem>
-				<Name>ch1</Name>
-				<Type GUID="{18071995-0000-0000-0000-000000000006}">INT</Type>
+				<Name>Status</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000004}">WORD</Type>
 				<BitSize>16</BitSize>
 				<BitOffs>0</BitOffs>
 			</SubItem>
 			<SubItem>
-				<Name>ch2</Name>
-				<Type GUID="{18071995-0000-0000-0000-000000000006}">INT</Type>
-				<BitSize>16</BitSize>
+				<Name>D</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000001}">BYTE</Type>
+				<ArrayInfo>
+					<LBound>0</LBound>
+					<Elements>22</Elements>
+				</ArrayInfo>
+				<BitSize>176</BitSize>
 				<BitOffs>16</BitOffs>
 			</SubItem>
-			<SubItem>
-				<Name>ch3</Name>
-				<Type GUID="{18071995-0000-0000-0000-000000000006}">INT</Type>
-				<BitSize>16</BitSize>
-				<BitOffs>32</BitOffs>
-			</SubItem>
-			<SubItem>
-				<Name>ch4</Name>
-				<Type GUID="{18071995-0000-0000-0000-000000000006}">INT</Type>
-				<BitSize>16</BitSize>
-				<BitOffs>48</BitOffs>
-			</SubItem>
-			<SubItem>
-				<Name>ch5</Name>
-				<Type GUID="{18071995-0000-0000-0000-000000000006}">INT</Type>
-				<BitSize>16</BitSize>
-				<BitOffs>64</BitOffs>
-			</SubItem>
-			<SubItem>
-				<Name>ch6</Name>
-				<Type GUID="{18071995-0000-0000-0000-000000000006}">INT</Type>
-				<BitSize>16</BitSize>
-				<BitOffs>80</BitOffs>
-			</SubItem>
-			<SubItem>
-				<Name>ch7</Name>
-				<Type GUID="{18071995-0000-0000-0000-000000000006}">INT</Type>
-				<BitSize>16</BitSize>
-				<BitOffs>96</BitOffs>
-			</SubItem>
-			<SubItem>
-				<Name>ch8</Name>
-				<Type GUID="{18071995-0000-0000-0000-000000000006}">INT</Type>
-				<BitSize>16</BitSize>
-				<BitOffs>112</BitOffs>
-			</SubItem>
-		</DataType>
-		<DataType>
-			<Name GUID="{37784EF7-EB74-F529-D90E-1B69885BB56C}" IecBaseType="true" AutoDeleteType="true">ARRAY [1..4] OF ST_EL3xx8</Name>
-			<BitSize>512</BitSize>
-			<BaseType GUID="{052265B9-CCD9-C672-396A-1F57CB4AE13E}">ST_EL3xx8</BaseType>
-			<ArrayInfo>
-				<LBound>1</LBound>
-				<Elements>4</Elements>
-			</ArrayInfo>
 		</DataType>
 		<DataType>
 			<Name GUID="{43DBAE36-F52B-B81C-07B3-1EA511043F86}" AutoDeleteType="true">TwinSafeOut_PlcIn</Name>
@@ -400,31 +400,6 @@
 				<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
 				<BitSize>8</BitSize>
 				<BitOffs>64</BitOffs>
-			</SubItem>
-		</DataType>
-		<DataType>
-			<Name GUID="{D6B0A42D-897A-4B90-95E8-3C741C3CE3EE}" Namespace="Tc2_SerialCom" AutoDeleteType="true">EL6outData22B</Name>
-			<Comment><![CDATA[ This data type is corresponding to the
-   EL-6xxx data structure used in the
-   TwinCAT SystemManager
-   (EL-6xxx version using 22 data bytes) 
-]]></Comment>
-			<BitSize>192</BitSize>
-			<SubItem>
-				<Name>Ctrl</Name>
-				<Type GUID="{18071995-0000-0000-0000-000000000004}">WORD</Type>
-				<BitSize>16</BitSize>
-				<BitOffs>0</BitOffs>
-			</SubItem>
-			<SubItem>
-				<Name>D</Name>
-				<Type GUID="{18071995-0000-0000-0000-000000000001}">BYTE</Type>
-				<ArrayInfo>
-					<LBound>0</LBound>
-					<Elements>22</Elements>
-				</ArrayInfo>
-				<BitSize>176</BitSize>
-				<BitOffs>16</BitOffs>
 			</SubItem>
 		</DataType>
 		<DataType>
@@ -638,13 +613,38 @@
 			</SubItem>
 		</DataType>
 		<DataType>
-			<Name GUID="{C5304CCE-0FAA-A4E7-7F07-2B85637FD0AB}" IecBaseType="true" AutoDeleteType="true">ARRAY [1..5] OF ST_EL28x9</Name>
-			<BitSize>720</BitSize>
+			<Name IecBaseType="true">ARRAY [1..6] OF ST_EL28x9</Name>
+			<BitSize>864</BitSize>
 			<BaseType GUID="{7D86AFE9-88F0-CB53-FB25-D740E4FFD7A3}">ST_EL28x9</BaseType>
 			<ArrayInfo>
 				<LBound>1</LBound>
-				<Elements>5</Elements>
+				<Elements>6</Elements>
 			</ArrayInfo>
+		</DataType>
+		<DataType>
+			<Name GUID="{D6B0A42D-897A-4B90-95E8-3C741C3CE3EE}" Namespace="Tc2_SerialCom" AutoDeleteType="true">EL6outData22B</Name>
+			<Comment><![CDATA[ This data type is corresponding to the
+   EL-6xxx data structure used in the
+   TwinCAT SystemManager
+   (EL-6xxx version using 22 data bytes) 
+]]></Comment>
+			<BitSize>192</BitSize>
+			<SubItem>
+				<Name>Ctrl</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000004}">WORD</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>0</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>D</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000001}">BYTE</Type>
+				<ArrayInfo>
+					<LBound>0</LBound>
+					<Elements>22</Elements>
+				</ArrayInfo>
+				<BitSize>176</BitSize>
+				<BitOffs>16</BitOffs>
+			</SubItem>
 		</DataType>
 		<DataType>
 			<Name GUID="{921BB8B7-E310-7C4A-C49B-3019D3074CC8}" AutoDeleteType="true">ST_VTUG</Name>
@@ -877,23 +877,23 @@
 		</System>
 		<Plc>
 			<Project GUID="{AD98C8E8-1161-4C5F-BAB4-CA4317288767}" Name="PLC" PrjFilePath="PLC\PLC.plcproj" TmcFilePath="PLC\PLC.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="PLC\PLC.tmc" TmcHash="{0A849491-3484-8AD6-4C50-F7929DDF5899}">
+				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="PLC\PLC.tmc" TmcHash="{47AE5DA3-2779-696C-EDF9-41F907DBF01D}">
 					<Name>PLC Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Vars VarGrpType="1" ContextId="1" AreaNo="16">
 						<Name>PlcTask Inputs</Name>
 						<Var>
-							<Name>BackgroundPcCOM.stIn_PcCom</Name>
-							<Comment><![CDATA[ linked to the port in the TwinCAT System Manager ]]></Comment>
-							<Type GUID="{0146173C-D895-D219-E209-CC005AC77636}" Namespace="Tc2_SerialCom">EL6inData22B</Type>
+							<Name>gIO.ai_EL</Name>
+							<Type GUID="{90F2E9B6-D764-5C3E-BD15-643FDD0C1F57}">ARRAY [1..5] OF ST_EL3xx8</Type>
 						</Var>
 						<Var>
 							<Name>gIO.i_EL</Name>
-							<Type GUID="{C347D351-9DE1-3128-5E8B-939678CD786D}">ARRAY [1..16] OF ST_EL18x9</Type>
+							<Type GUID="{CB057230-D3B9-711C-08B4-AD196EC17119}">ARRAY [1..18] OF ST_EL18x9</Type>
 						</Var>
 						<Var>
-							<Name>gIO.ai_EL</Name>
-							<Type GUID="{37784EF7-EB74-F529-D90E-1B69885BB56C}">ARRAY [1..4] OF ST_EL3xx8</Type>
+							<Name>BackgroundPcCOM.stIn_PcCom</Name>
+							<Comment><![CDATA[ linked to the port in the TwinCAT System Manager ]]></Comment>
+							<Type GUID="{0146173C-D895-D219-E209-CC005AC77636}" Namespace="Tc2_SerialCom">EL6inData22B</Type>
 						</Var>
 						<Var>
 							<Name>gIO.Nidec[0].StatusWord</Name>
@@ -1033,13 +1033,13 @@
 					<Vars VarGrpType="2" ContextId="1" AreaNo="17">
 						<Name>PlcTask Outputs</Name>
 						<Var>
+							<Name>gIO.q_EL</Name>
+							<Type GUID="{D57CC763-DCF4-A513-CC02-31E16048C7E4}">ARRAY [1..6] OF ST_EL28x9</Type>
+						</Var>
+						<Var>
 							<Name>BackgroundPcCOM.stOut_PcCom</Name>
 							<Comment><![CDATA[ linked to the port in the TwinCAT System Manager ]]></Comment>
 							<Type GUID="{D6B0A42D-897A-4B90-95E8-3C741C3CE3EE}" Namespace="Tc2_SerialCom">EL6outData22B</Type>
-						</Var>
-						<Var>
-							<Name>gIO.q_EL</Name>
-							<Type GUID="{C5304CCE-0FAA-A4E7-7F07-2B85637FD0AB}">ARRAY [1..5] OF ST_EL28x9</Type>
 						</Var>
 						<Var>
 							<Name>gIO.q_Manifold1</Name>
@@ -3236,7 +3236,7 @@ Bit1: Value bigger/equal Limit2]]></Comment>
 						</EtherCAT>
 					</Box>
 					<Box Id="15" BoxType="9101" BoxFlags="#x00000020">
-						<Name>Term 15 (EL6001)</Name>
+						<Name>Serial Com 1 (EL6001)</Name>
 						<ImageId>1005</ImageId>
 						<EtherCAT SlaveType="7" PdiType="#x0005" MboxDataLinkLayer="true" CycleMBoxPolling="true" CoeType="7" FoeType="1" VendorId="#x00000002" ProductCode="#x17713052" RevisionNo="#x00160000" InfoDataAddr="true" TimeoutMailbox2="2000" CheckRevisionNoType="3" PortPhys="51" SdoUploadWithMaxLength="true" MaxSlotCount="256" MaxSlotGroupCount="1" SlotPdoIncrement="1" SlotIndexIncrement="16" Type="EL6001 Interface (RS232)" Desc="EL6001" PortABoxInfo="#x01000020">
 							<SyncMan>0018f6002600010001000000f600f600f600001826010000</SyncMan>
@@ -4690,7 +4690,7 @@ Bit1: Value bigger/equal Limit2]]></Comment>
 						</EtherCAT>
 					</Box>
 					<Box Id="39" BoxType="9099">
-						<Name>Term 39 (EK1122)</Name>
+						<Name>Spliter_01 (EK1122)</Name>
 						<ImageId>1006</ImageId>
 						<EtherCAT SlaveType="1" PdiType="#x0d00" CycleMBoxPollingTime="0" VendorId="#x00000002" ProductCode="#x04622c52" RevisionNo="#x00120000" PortPhys="4883" MaxSlotCount="256" MaxSlotGroupCount="1" SlotPdoIncrement="1" SlotIndexIncrement="16" Type="EK1122 2 port EtherCAT junction" Desc="EK1122" PortABoxInfo="#x0100000f"/>
 						<Box Id="40" BoxType="9099">
@@ -4698,7 +4698,7 @@ Bit1: Value bigger/equal Limit2]]></Comment>
 							<ImageId>1007</ImageId>
 							<EtherCAT SlaveType="1" PdiType="#x0d00" CycleMBoxPollingTime="0" VendorId="#x00000002" ProductCode="#x044c2c52" RevisionNo="#x00120000" PortPhys="305" MaxSlotCount="256" MaxSlotGroupCount="1" SlotPdoIncrement="1" SlotIndexIncrement="16" Type="EK1100 EtherCAT Coupler (2A E-Bus)" Desc="EK1100" PortABoxInfo="#x01000027"/>
 							<Box Id="41" BoxType="9099" BoxFlags="#x00000020">
-								<Name>Term 41 (EL1918)</Name>
+								<Name>SDI_04 (EL1918)</Name>
 								<ImageId>1001</ImageId>
 								<EtherCAT SlaveType="2" PdiType="#x0005" MboxDataLinkLayer="true" StateMBoxPolling="true" CycleMBoxPollingTime="0" CoeType="3" FoeType="1" VendorId="#x00000002" ProductCode="#x077e3052" RevisionNo="#x00110000" InfoDataAddr="true" RepeatSupport="true" TimeoutStateChange1="5000" TimeoutMailbox2="10000" TComSupport="true" PortPhys="51" DebugMemory="8" SafetyLogicSupported="true" MaxSlotCount="2" Type="EL1918, 8Ch. Safety Input 24V, TwinSAFE" Desc="EL1918" PortABoxInfo="#x01000028">
 									<SyncMan>001000012600010001000000000100010001001026010000</SyncMan>
@@ -4860,7 +4860,7 @@ Bit1: Value bigger/equal Limit2]]></Comment>
 								</EtherCAT>
 							</Box>
 							<Box Id="42" BoxType="9099" BoxFlags="#x00000020">
-								<Name>Term 42 (EL2904)</Name>
+								<Name>SDO_03 (EL2904)</Name>
 								<ImageId>118</ImageId>
 								<EtherCAT SlaveType="2" PdiType="#x0005" MboxDataLinkLayer="true" StateMBoxPolling="true" CycleMBoxPollingTime="0" CoeType="3" FoeType="1" VendorId="#x00000002" ProductCode="#x0b583052" RevisionNo="#x00130000" InfoDataAddr="true" TimeoutMailbox2="2000" CheckRevisionNoType="3" PortPhys="51" MaxSlotCount="2" Type="EL2904, 4 Ch. Safety Output 24V, 0.5A, TwinSAFE" Desc="EL2904" PortABoxInfo="#x01000029">
 									<SyncMan>001000012600010001000000400000010001001026010000</SyncMan>
@@ -4957,7 +4957,7 @@ Bit1: Value bigger/equal Limit2]]></Comment>
 								</EtherCAT>
 							</Box>
 							<Box Id="43" BoxType="9099">
-								<Name>Term 43 (EL1809)</Name>
+								<Name>DI_17 (EL1809)</Name>
 								<ImageId>7</ImageId>
 								<EtherCAT SlaveType="1" PdiType="#x0104" CycleMBoxPollingTime="0" VendorId="#x00000002" ProductCode="#x07113052" RevisionNo="#x00120000" RepeatSupport="true" PortPhys="51" MaxSlotCount="256" MaxSlotGroupCount="1" SlotPdoIncrement="1" SlotIndexIncrement="16" Type="EL1809 16Ch. Dig. Input 24V, 3ms" Desc="EL1809" PortABoxInfo="#x0100002a">
 									<SyncMan>001002000000010004000000000000000200001000010000</SyncMan>
@@ -5047,7 +5047,7 @@ Bit1: Value bigger/equal Limit2]]></Comment>
 								</EtherCAT>
 							</Box>
 							<Box Id="44" BoxType="9099">
-								<Name>Term 44 (EL1809)</Name>
+								<Name>DI_18 (EL1809)</Name>
 								<ImageId>7</ImageId>
 								<EtherCAT SlaveType="1" PdiType="#x0104" CycleMBoxPollingTime="0" VendorId="#x00000002" ProductCode="#x07113052" RevisionNo="#x00120000" RepeatSupport="true" PortPhys="51" MaxSlotCount="256" MaxSlotGroupCount="1" SlotPdoIncrement="1" SlotIndexIncrement="16" Type="EL1809 16Ch. Dig. Input 24V, 3ms" Desc="EL1809" PortABoxInfo="#x0100002b">
 									<SyncMan>001002000000010004000000000000000200001000010000</SyncMan>
@@ -5137,7 +5137,7 @@ Bit1: Value bigger/equal Limit2]]></Comment>
 								</EtherCAT>
 							</Box>
 							<Box Id="45" BoxType="9099">
-								<Name>Term 45 (EL2809)</Name>
+								<Name>DO_06 (EL2809)</Name>
 								<ImageId>1002</ImageId>
 								<EtherCAT SlaveType="1" PdiType="#x0104" CycleMBoxPollingTime="0" VendorId="#x00000002" ProductCode="#x0af93052" RevisionNo="#x00120000" RepeatSupport="true" PortPhys="51" MaxSlotCount="256" MaxSlotGroupCount="1" SlotPdoIncrement="1" SlotIndexIncrement="16" Type="EL2809 16Ch. Dig. Output 24V, 0.5A" Desc="EL2809" PortABoxInfo="#x0100002c">
 									<SyncMan>000f01004400010003000000000000000100000f44090000</SyncMan>
@@ -5228,7 +5228,7 @@ Bit1: Value bigger/equal Limit2]]></Comment>
 								</EtherCAT>
 							</Box>
 							<Box Id="46" BoxType="9099" BoxFlags="#x00000020">
-								<Name>Term 46 (EL3058)</Name>
+								<Name>AI_05 (EL3058)</Name>
 								<ImageId>1003</ImageId>
 								<EtherCAT SlaveType="2" PdiType="#x0405" MboxDataLinkLayer="true" StateMBoxPolling="true" CycleMBoxPollingTime="0" CoeType="7" FoeType="1" VendorId="#x00000002" ProductCode="#x0bf23052" RevisionNo="#x00160000" InfoDataAddr="true" TimeoutMailbox2="2000" CheckRevisionNoType="3" PortPhys="51" MaxSlotCount="256" MaxSlotGroupCount="1" SlotPdoIncrement="1" SlotIndexIncrement="16" Type="EL3058 8Ch. Ana. Input 4-20mA" Desc="EL3058" PortABoxInfo="#x0100002d">
 									<SyncMan>001080002600010001000000800080008000001026010000</SyncMan>
@@ -8700,7 +8700,7 @@ Bit1: Value bigger/equal Limit2]]></Comment>
 				<Link VarA="PlcTask Outputs^gIO.arSafe[1].TSafeOut^RUN" VarB="StandardOutputs^Standard In Var 2"/>
 				<Link VarA="PlcTask Outputs^gIO.arSafe[1].stSafetyOut^bEstopRestart" VarB="StandardOutputs^Standard In Var 28"/>
 			</OwnerB>
-			<OwnerB Name="TIID^Device 1 (EtherCAT)^Box_CIP (EK1200)^Term 15 (EL6001)">
+			<OwnerB Name="TIID^Device 1 (EtherCAT)^Box_CIP (EK1200)^Serial Com 1 (EL6001)">
 				<Link VarA="PlcTask Inputs^BackgroundPcCOM.stIn_PcCom^D[0]" VarB="COM Inputs^Data In 0"/>
 				<Link VarA="PlcTask Inputs^BackgroundPcCOM.stIn_PcCom^D[10]" VarB="COM Inputs^Data In 10"/>
 				<Link VarA="PlcTask Inputs^BackgroundPcCOM.stIn_PcCom^D[11]" VarB="COM Inputs^Data In 11"/>
@@ -8747,6 +8747,76 @@ Bit1: Value bigger/equal Limit2]]></Comment>
 				<Link VarA="PlcTask Outputs^BackgroundPcCOM.stOut_PcCom^D" VarB="COM Outputs^Data Out 7" Size="8" OffsA="56"/>
 				<Link VarA="PlcTask Outputs^BackgroundPcCOM.stOut_PcCom^D" VarB="COM Outputs^Data Out 8" Size="8" OffsA="64"/>
 				<Link VarA="PlcTask Outputs^BackgroundPcCOM.stOut_PcCom^D" VarB="COM Outputs^Data Out 9" Size="8" OffsA="72"/>
+			</OwnerB>
+			<OwnerB Name="TIID^Device 1 (EtherCAT)^Box_CIP (EK1200)^Spliter_01 (EK1122)^Box TriBlender (EK1100)^AI_05 (EL3058)">
+				<Link VarA="PlcTask Inputs^gIO.ai_EL[5]^ch1" VarB="AI Standard Channel 1^Value"/>
+				<Link VarA="PlcTask Inputs^gIO.ai_EL[5]^ch2" VarB="AI Standard Channel 2^Value"/>
+				<Link VarA="PlcTask Inputs^gIO.ai_EL[5]^ch3" VarB="AI Standard Channel 3^Value"/>
+				<Link VarA="PlcTask Inputs^gIO.ai_EL[5]^ch4" VarB="AI Standard Channel 4^Value"/>
+				<Link VarA="PlcTask Inputs^gIO.ai_EL[5]^ch5" VarB="AI Standard Channel 5^Value"/>
+				<Link VarA="PlcTask Inputs^gIO.ai_EL[5]^ch6" VarB="AI Standard Channel 6^Value"/>
+				<Link VarA="PlcTask Inputs^gIO.ai_EL[5]^ch7" VarB="AI Standard Channel 7^Value"/>
+				<Link VarA="PlcTask Inputs^gIO.ai_EL[5]^ch8" VarB="AI Standard Channel 8^Value"/>
+			</OwnerB>
+			<OwnerB Name="TIID^Device 1 (EtherCAT)^Box_CIP (EK1200)^Spliter_01 (EK1122)^Box TriBlender (EK1100)^DI_17 (EL1809)">
+				<Link VarA="PlcTask Inputs^gIO.i_EL[17]^i_ch1" VarB="Channel 1^Input"/>
+				<Link VarA="PlcTask Inputs^gIO.i_EL[17]^i_ch10" VarB="Channel 10^Input"/>
+				<Link VarA="PlcTask Inputs^gIO.i_EL[17]^i_ch11" VarB="Channel 11^Input"/>
+				<Link VarA="PlcTask Inputs^gIO.i_EL[17]^i_ch12" VarB="Channel 12^Input"/>
+				<Link VarA="PlcTask Inputs^gIO.i_EL[17]^i_ch13" VarB="Channel 13^Input"/>
+				<Link VarA="PlcTask Inputs^gIO.i_EL[17]^i_ch14" VarB="Channel 14^Input"/>
+				<Link VarA="PlcTask Inputs^gIO.i_EL[17]^i_ch15" VarB="Channel 15^Input"/>
+				<Link VarA="PlcTask Inputs^gIO.i_EL[17]^i_ch16" VarB="Channel 16^Input"/>
+				<Link VarA="PlcTask Inputs^gIO.i_EL[17]^i_ch2" VarB="Channel 2^Input"/>
+				<Link VarA="PlcTask Inputs^gIO.i_EL[17]^i_ch3" VarB="Channel 3^Input"/>
+				<Link VarA="PlcTask Inputs^gIO.i_EL[17]^i_ch4" VarB="Channel 4^Input"/>
+				<Link VarA="PlcTask Inputs^gIO.i_EL[17]^i_ch5" VarB="Channel 5^Input"/>
+				<Link VarA="PlcTask Inputs^gIO.i_EL[17]^i_ch6" VarB="Channel 6^Input"/>
+				<Link VarA="PlcTask Inputs^gIO.i_EL[17]^i_ch7" VarB="Channel 7^Input"/>
+				<Link VarA="PlcTask Inputs^gIO.i_EL[17]^i_ch8" VarB="Channel 8^Input"/>
+				<Link VarA="PlcTask Inputs^gIO.i_EL[17]^i_ch9" VarB="Channel 9^Input"/>
+			</OwnerB>
+			<OwnerB Name="TIID^Device 1 (EtherCAT)^Box_CIP (EK1200)^Spliter_01 (EK1122)^Box TriBlender (EK1100)^DI_18 (EL1809)">
+				<Link VarA="PlcTask Inputs^gIO.i_EL[18]^i_ch1" VarB="Channel 1^Input"/>
+				<Link VarA="PlcTask Inputs^gIO.i_EL[18]^i_ch10" VarB="Channel 10^Input"/>
+				<Link VarA="PlcTask Inputs^gIO.i_EL[18]^i_ch11" VarB="Channel 11^Input"/>
+				<Link VarA="PlcTask Inputs^gIO.i_EL[18]^i_ch12" VarB="Channel 12^Input"/>
+				<Link VarA="PlcTask Inputs^gIO.i_EL[18]^i_ch13" VarB="Channel 13^Input"/>
+				<Link VarA="PlcTask Inputs^gIO.i_EL[18]^i_ch14" VarB="Channel 14^Input"/>
+				<Link VarA="PlcTask Inputs^gIO.i_EL[18]^i_ch15" VarB="Channel 15^Input"/>
+				<Link VarA="PlcTask Inputs^gIO.i_EL[18]^i_ch16" VarB="Channel 16^Input"/>
+				<Link VarA="PlcTask Inputs^gIO.i_EL[18]^i_ch2" VarB="Channel 2^Input"/>
+				<Link VarA="PlcTask Inputs^gIO.i_EL[18]^i_ch3" VarB="Channel 3^Input"/>
+				<Link VarA="PlcTask Inputs^gIO.i_EL[18]^i_ch4" VarB="Channel 4^Input"/>
+				<Link VarA="PlcTask Inputs^gIO.i_EL[18]^i_ch5" VarB="Channel 5^Input"/>
+				<Link VarA="PlcTask Inputs^gIO.i_EL[18]^i_ch6" VarB="Channel 6^Input"/>
+				<Link VarA="PlcTask Inputs^gIO.i_EL[18]^i_ch7" VarB="Channel 7^Input"/>
+				<Link VarA="PlcTask Inputs^gIO.i_EL[18]^i_ch8" VarB="Channel 8^Input"/>
+				<Link VarA="PlcTask Inputs^gIO.i_EL[18]^i_ch9" VarB="Channel 9^Input"/>
+			</OwnerB>
+			<OwnerB Name="TIID^Device 1 (EtherCAT)^Box_CIP (EK1200)^Spliter_01 (EK1122)^Box TriBlender (EK1100)^DO_06 (EL2809)">
+				<Link VarA="PlcTask Outputs^gIO.q_EL[6]^q_ch1" VarB="Channel 1^Output"/>
+				<Link VarA="PlcTask Outputs^gIO.q_EL[6]^q_ch10" VarB="Channel 10^Output"/>
+				<Link VarA="PlcTask Outputs^gIO.q_EL[6]^q_ch11" VarB="Channel 11^Output"/>
+				<Link VarA="PlcTask Outputs^gIO.q_EL[6]^q_ch12" VarB="Channel 12^Output"/>
+				<Link VarA="PlcTask Outputs^gIO.q_EL[6]^q_ch13" VarB="Channel 13^Output"/>
+				<Link VarA="PlcTask Outputs^gIO.q_EL[6]^q_ch14" VarB="Channel 14^Output"/>
+				<Link VarA="PlcTask Outputs^gIO.q_EL[6]^q_ch15" VarB="Channel 15^Output"/>
+				<Link VarA="PlcTask Outputs^gIO.q_EL[6]^q_ch16" VarB="Channel 16^Output"/>
+				<Link VarA="PlcTask Outputs^gIO.q_EL[6]^q_ch2" VarB="Channel 2^Output"/>
+				<Link VarA="PlcTask Outputs^gIO.q_EL[6]^q_ch3" VarB="Channel 3^Output"/>
+				<Link VarA="PlcTask Outputs^gIO.q_EL[6]^q_ch4" VarB="Channel 4^Output"/>
+				<Link VarA="PlcTask Outputs^gIO.q_EL[6]^q_ch5" VarB="Channel 5^Output"/>
+				<Link VarA="PlcTask Outputs^gIO.q_EL[6]^q_ch6" VarB="Channel 6^Output"/>
+				<Link VarA="PlcTask Outputs^gIO.q_EL[6]^q_ch7" VarB="Channel 7^Output"/>
+				<Link VarA="PlcTask Outputs^gIO.q_EL[6]^q_ch8" VarB="Channel 8^Output"/>
+				<Link VarA="PlcTask Outputs^gIO.q_EL[6]^q_ch9" VarB="Channel 9^Output"/>
+			</OwnerB>
+			<OwnerB Name="TIID^Device 1 (EtherCAT)^Box_CIP (EK1200)^Spliter_01 (EK1122)^Box Triblender TB1001 (Commander C200 Open Loop)">
+				<Link VarA="PlcTask Inputs^gIO.Nidec[6].StatusWord" VarB="Transmit PDO Mapping 6^Status word"/>
+				<Link VarA="PlcTask Inputs^gIO.Nidec[6].actVelocity" VarB="Transmit PDO Mapping 6^vl velocity actual value"/>
+				<Link VarA="PlcTask Outputs^gIO.Nidec[6].ControlWord" VarB="Receive PDO Mapping 6^Control word"/>
+				<Link VarA="PlcTask Outputs^gIO.Nidec[6].targetVelocity" VarB="Receive PDO Mapping 6^vl target velocity"/>
 			</OwnerB>
 			<OwnerB Name="TIID^Device 1 (EtherCAT)^Box_Color (EK1100)^AI_03 (EL3058)">
 				<Link VarA="PlcTask Inputs^gIO.ai_EL[3]^ch1" VarB="AI Standard Channel 1^Value"/>
