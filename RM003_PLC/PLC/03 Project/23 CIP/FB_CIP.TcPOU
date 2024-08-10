@@ -2868,9 +2868,7 @@ END_IF]]></ST>
     </Action>
     <Action Name="_aGet_Temperature_CIP2_02_active" Id="{c8e1c339-f14d-475d-9d09-dca2ac603a91}">
       <Implementation>
-        <ST><![CDATA[
-
-pcTemperature_Deterg.mRun();
+        <ST><![CDATA[pcTemperature_Deterg.mRun();
 pcTemp_ClntReturn.mRun();
 
 IF stTemperature_Deterg.bDone AND stTemp_ClntReturn.bDone THEN;
@@ -2964,6 +2962,7 @@ END_IF]]></ST>
 IF eMode=E_CIP_Mode.eAuto THEN;
 	eMode:=E_CIP_Mode.eManual;
 END_IF
+g_Data.b_CIP_Run:=FALSE;
 _aGet_Client_active();
 ]]></ST>
       </Implementation>
@@ -3333,7 +3332,7 @@ CASE eReq.eClient OF
 		eRefClient_fbElement REF= fbElement[E_Element_List.eLine_Color];
 
 END_CASE
-
+g_Data.b_CIP_Run:=TRUE;
 bClientRef_done:=TRUE;]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -4116,6 +4115,79 @@ fb_PumpClient.m_Stop();]]></ST>
       <Implementation>
         <ST><![CDATA[fb_PumpCIP.m_Stop();
 fb_PumpClient.m_Stop();]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
+    <Action Name="_aTemperature_CIP2_1_active" Id="{4a943536-20c6-4ea6-9fe2-ed7d9108742a}">
+      <Implementation>
+        <ST><![CDATA[g_Data.pcHeatExchngPC_ID:=E_ProcessControl_Name.eDeterTemp;]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
+    <Action Name="_aTemperature_CPI2_2_active" Id="{59ec2271-ca55-4146-8ce1-6601ea869be3}">
+      <Implementation>
+        <ST><![CDATA[g_Data.pcHeatExchngPC_ID:=E_ProcessControl_Name.eClietnReturn_Temp;
+]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
+    <Action Name="_aTemperature_Dis_1_active" Id="{03e45c50-58bd-4c12-a22a-35831f9a45bc}">
+      <Implementation>
+        <ST><![CDATA[g_Data.pcHeatExchngPC_ID:=E_ProcessControl_Name.eDisTemp;]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
+    <Action Name="_aTemperature_Dis_2_active" Id="{69d79242-fe90-44bd-8a45-cc1c4ea4d172}">
+      <Implementation>
+        <ST><![CDATA[g_Data.pcHeatExchngPC_ID:=E_ProcessControl_Name.eClietnReturn_Temp;]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -10006,7 +10078,7 @@ END_CASE]]></ST>
                                                           <o>
                                                             <v n="AttributeId">{700a583f-b4d4-43e4-8c14-629c7cd3bec8}</v>
                                                             <o n="Value" t="StringValue">
-                                                              <v n="Value">""</v>
+                                                              <v n="Value">"_aTemperature_CIP2_1_active"</v>
                                                               <v n="DefaultValue">""</v>
                                                             </o>
                                                             <v n="Id">3087L</v>
@@ -14380,7 +14452,7 @@ END_CASE]]></ST>
                                                                       <o>
                                                                         <v n="AttributeId">{700a583f-b4d4-43e4-8c14-629c7cd3bec8}</v>
                                                                         <o n="Value" t="StringValue">
-                                                                          <v n="Value">""</v>
+                                                                          <v n="Value">"_aTemperature_CPI2_2_active"</v>
                                                                           <v n="DefaultValue">""</v>
                                                                         </o>
                                                                         <v n="Id">3289L</v>
@@ -21348,7 +21420,7 @@ END_CASE]]></ST>
                                                           <o>
                                                             <v n="AttributeId">{700a583f-b4d4-43e4-8c14-629c7cd3bec8}</v>
                                                             <o n="Value" t="StringValue">
-                                                              <v n="Value">""</v>
+                                                              <v n="Value">"_aTemperature_Dis_1_active"</v>
                                                               <v n="DefaultValue">""</v>
                                                             </o>
                                                             <v n="Id">4421L</v>
@@ -25356,7 +25428,7 @@ END_CASE]]></ST>
                                                                       <o>
                                                                         <v n="AttributeId">{700a583f-b4d4-43e4-8c14-629c7cd3bec8}</v>
                                                                         <o n="Value" t="StringValue">
-                                                                          <v n="Value">""</v>
+                                                                          <v n="Value">"_aTemperature_Dis_2_active"</v>
                                                                           <v n="DefaultValue">""</v>
                                                                         </o>
                                                                         <v n="Id">5282L</v>
@@ -35451,7 +35523,6 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="6" Count="1" />
     </LineIds>
     <LineIds Name="FB_CIP._aGet_Temperature_CIP2_02_active">
-      <LineId Id="2" Count="1" />
       <LineId Id="1" Count="0" />
       <LineId Id="8" Count="0" />
       <LineId Id="5" Count="0" />
@@ -35478,7 +35549,9 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
     </LineIds>
     <LineIds Name="FB_CIP._ainit_exit">
       <LineId Id="1" Count="0" />
-      <LineId Id="9" Count="3" />
+      <LineId Id="9" Count="2" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="12" Count="0" />
       <LineId Id="3" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._ameasure_Deterg_2_entry">
@@ -35786,6 +35859,18 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
     </LineIds>
     <LineIds Name="FB_CIP._aStopPump_CIP4_entry">
       <LineId Id="2" Count="0" />
+      <LineId Id="1" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_CIP._aTemperature_CIP2_1_active">
+      <LineId Id="1" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_CIP._aTemperature_CPI2_2_active">
+      <LineId Id="1" Count="1" />
+    </LineIds>
+    <LineIds Name="FB_CIP._aTemperature_Dis_1_active">
+      <LineId Id="1" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_CIP._aTemperature_Dis_2_active">
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP.act_CallProcessControl">

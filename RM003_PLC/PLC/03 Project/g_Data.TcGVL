@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
   <GVL Name="g_Data" Id="{d323a574-dba5-4513-95f5-99a87722cf92}">
     <Declaration><![CDATA[//{attribute 'qualified_only'}
 VAR_GLOBAL PERSISTENT
@@ -114,6 +114,7 @@ VAR_GLOBAL PERSISTENT
 	//Heat Exchanger
 	fbHeatExchenger	:	FB_HeatExchanger	;
 	stHeatExchanger	:	ST_HeatExchanger	;
+	pcHeatExchngPC_ID	:	E_ProcessControl_Name:=E_ProcessControl_Name.eDeterTemp	;
 	
 	////////////////////////////////////////////////////////////////
 	arrTanksSens	:	ARRAY [0..E_Tank_Name.last] OF FB_TankSensors;
@@ -121,6 +122,9 @@ VAR_GLOBAL PERSISTENT
 	
 	////////////////////////////////////////////////////////////////
 	arr_CIP_Param		:	ARRAY [0..E_CIP_Usage.eLocal] OF ST_CIP_Param		;//9-local, 1..8 cleints
+	
+	//additional variables
+	b_CIP_Run	:	BOOL	;
 END_VAR]]></Declaration>
   </GVL>
 </TcPlcObject>

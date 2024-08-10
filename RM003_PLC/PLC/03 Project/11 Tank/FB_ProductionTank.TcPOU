@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
   <POU Name="FB_ProductionTank" Id="{7ce7ab69-2020-4b39-9932-dc5de2cb0022}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_ProductionTank EXTENDS FB_SFC_Cycle IMPLEMENTS ITF_FB_SFC_Cycle
 VAR_INPUT
@@ -57,7 +57,8 @@ VAR
 	// Temperature process control
 	pc_TempCntrl	: REFERENCE TO FB_ProcessControl	;
 	st_TempCntrl	: REFERENCE TO ST_ProcessControl	;
-	bCntrlTemp: BOOL;
+	bCntrlTemp		: BOOL	;
+	bRunCIP			: BOOL	;
 END_VAR
 VAR_IN_OUT
 
@@ -3424,6 +3425,8 @@ stPis_CWIn REF= stPis[valCW_In];
 stPis_CWOut	 REF= stPis[valCW_Out];
 
 eStatus:=refState_Long;
+
+bRunCIP :=g_Data.b_CIP_Run;
 (*
 stPis_Outlet		REF= g_Piston.stPis[valOutlet];
 stPis_Line			REF= g_Piston.stPis[valOutlet];
@@ -18537,7 +18540,7 @@ st_TempCntrl.fHystHigh:=30;
 st_TempCntrl.ToleranceHigh:=5;
 st_TempCntrl.ToleravceLow:=-55;
 
-IF bCntrlTemp THEN
+IF bCntrlTemp AND NOT bRunCIP THEN
 	pc_TempCntrl.mRun_Hyst();
 	
  	IF TRUE 
@@ -18549,6 +18552,15 @@ IF bCntrlTemp THEN
 	ELSIF stPis_CWOut.st_Open THEN;
 		stPis_CWOut.req_Close:=TRUE;
 		//stPis_CWOut.req_Open:=FALSE;
+	END_IF
+	
+ELSE
+	IF NOT stPis_CWOut.st_Close THEN;
+		stPis_CWOut.req_Close:=TRUE;
+	END_IF
+	
+	IF NOT stPis_CWIn.st_Close THEN
+		stPis_CWIn.req_Close:=TRUE;
 	END_IF
 END_IF	
 
@@ -19052,6 +19064,8 @@ m_SFC_Handle();]]></ST>
       <LineId Id="16" Count="0" />
       <LineId Id="13" Count="0" />
       <LineId Id="12" Count="0" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="19" Count="0" />
       <LineId Id="5" Count="4" />
       <LineId Id="4" Count="0" />
       <LineId Id="10" Count="0" />
@@ -19092,6 +19106,10 @@ m_SFC_Handle();]]></ST>
       <LineId Id="62" Count="0" />
       <LineId Id="64" Count="2" />
       <LineId Id="58" Count="0" />
+      <LineId Id="70" Count="1" />
+      <LineId Id="73" Count="1" />
+      <LineId Id="72" Count="0" />
+      <LineId Id="76" Count="3" />
       <LineId Id="53" Count="0" />
       <LineId Id="35" Count="0" />
       <LineId Id="38" Count="0" />

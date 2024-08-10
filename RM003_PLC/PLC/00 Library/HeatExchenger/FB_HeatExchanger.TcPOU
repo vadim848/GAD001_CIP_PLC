@@ -1,20 +1,54 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
   <POU Name="FB_HeatExchanger" Id="{a552b9b2-c3a1-4da2-ba19-b259dcf3d943}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_HeatExchanger
 VAR_IN_OUT
 	ST_HeatExchanger	:	ST_HeatExchanger	;
 END_VAR
 VAR_INPUT
+	nValveID		:	E_Pis_Name 	;	
+	nAnalogValveID	:	E_Pis_Name 	;
+
+	nProcCntrlID	:	E_ProcessControl_Name	;
 END_VAR
 VAR_OUTPUT
+	nAlagonValveCntrOut	:	DINT	;//output for analog valve opening
 END_VAR
 VAR
+	stPis		:	REFERENCE TO ST_Piston;
+	
+	stProcessControl		:	REFERENCE TO ST_ProcessControl	;
+	fbProcessControl		: 	REFERENCE TO FB_ProcessControl	;
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[]]></ST>
+      <ST><![CDATA[act_GetReference();
+act_AnalogOutScaling();
+
+IF stProcessControl.bActiveCntr AND NOT stPis.st_Open THEN
+	stPis.req_Open:=TRUE;
+ELSIF NOT stProcessControl.bActiveCntr AND NOT stPis.st_Close THEN
+	stPis.req_Close:=TRUE;
+END_IF]]></ST>
     </Implementation>
+    <Action Name="act_AnalogOutScaling" Id="{3066c111-d337-406a-9a79-f8a55347b485}">
+      <Implementation>
+        <ST><![CDATA[IF (ST_HeatExchanger.cntrlVal_Max-ST_HeatExchanger.cntrlVal_Min)<>0 THEN
+	nAlagonValveCntrOut:=(TRUNC((stProcessControl.fCtrlOutput*
+		(ST_HeatExchanger.outVal_Max-ST_HeatExchanger.outVal_Min)/(ST_HeatExchanger.cntrlVal_Max-ST_HeatExchanger.cntrlVal_Min))+
+		ST_HeatExchanger.outOffset));
+END_IF]]></ST>
+      </Implementation>
+    </Action>
+    <Action Name="act_GetReference" Id="{e298de8b-73e5-4293-9611-13e0901ac69a}">
+      <Implementation>
+        <ST><![CDATA[//On-Off walve structure
+stPis REF= g_Piston.stPis[nValveID];
+
+stProcessControl REF=g_ProcControl.arr_stProcCntrl[nProcCntrlID];
+fbProcessControl REF=g_ProcControl.arr_fbProcCntrl[nProcCntrlID];]]></ST>
+      </Implementation>
+    </Action>
     <Method Name="m_Auto" Id="{0597b9e2-3cdd-4483-bbe1-b8f6f1a63d50}">
       <Declaration><![CDATA[METHOD m_Auto : BOOL
 VAR_INPUT
@@ -43,7 +77,25 @@ END_VAR
       </Implementation>
     </Method>
     <LineIds Name="FB_HeatExchanger">
+      <LineId Id="33" Count="0" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="34" Count="0" />
       <LineId Id="9" Count="0" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="31" Count="1" />
+      <LineId Id="30" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_HeatExchanger.act_AnalogOutScaling">
+      <LineId Id="2" Count="0" />
+      <LineId Id="1" Count="0" />
+      <LineId Id="4" Count="0" />
+      <LineId Id="6" Count="0" />
+      <LineId Id="3" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_HeatExchanger.act_GetReference">
+      <LineId Id="2" Count="0" />
+      <LineId Id="5" Count="1" />
+      <LineId Id="9" Count="1" />
     </LineIds>
     <LineIds Name="FB_HeatExchanger.m_Auto">
       <LineId Id="5" Count="0" />

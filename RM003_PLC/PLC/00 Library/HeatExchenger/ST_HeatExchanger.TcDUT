@@ -1,14 +1,22 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
   <DUT Name="ST_HeatExchanger" Id="{fdaef3e3-531e-423e-9e26-9ca260edffe0}">
     <Declaration><![CDATA[TYPE ST_HeatExchanger :
 STRUCT
 	//request
 	bAuto	:	BOOL	;//System in automatic
 	bRun	:	BOOL	;
-	nTemp	:	INT		;//Pump RPM 
+	nTemp	:	INT		;
 	//feedback
 	nTemp_fdbk	:	INT	;
+	
+	//Output signal scaling
+	cntrlVal_Min		: REAL:=0;
+	cntrlVal_Max		: REAL:=100;
+	
+	outVal_Min		: REAL:=100;
+	outVal_Max		: REAL:=32767;
+	outOffset		: REAL:=100;
 END_STRUCT
 END_TYPE
 ]]></Declaration>
