@@ -101,7 +101,7 @@ VAR
 	
 	bCIP_Condition_Failed: BOOL;
 	testTemperature: REAL := 26.0;
-	ton_CIP_Condition: TON;
+	tonr_CIP_Condition: TONR;
 	bCIP_Condition_Done: BOOL;
 	fReqVolumeT93: REAL := 250;
 	delta_T91_Volume: REAL;
@@ -690,7 +690,7 @@ END_IF
 
 //ton_CIP_Condition(PT:=T#30S);
 IF tConditionTime-nDeter_CondActTime_Clnt>0 THEN
-	ton_CIP_Condition(PT:=SECOND_TO_TIME(tConditionTime-nDeter_CondActTime_Clnt));
+	tonr_CIP_Condition(PT:=SECOND_TO_TIME(tConditionTime-nDeter_CondActTime_Clnt));
 	bDeter_CondActTime_Clnt_Done:=FALSE;
 ELSE
 	bDeter_CondActTime_Clnt_Done:=TRUE;
@@ -702,13 +702,13 @@ AND Temperature_2_Done.x
 AND NOT bDeter_CondActTime_Clnt_Done
 AND TRUE
 THEN;
-	ton_CIP_Condition.IN:=TRUE;
+	tonr_CIP_Condition.IN:=TRUE;
 ELSE;
-	nDeter_CondActTime_Clnt:=TIME_TO_INT(ton_CIP_Condition.ET)/1000;
-	ton_CIP_Condition.IN:=FALSE;
+	nDeter_CondActTime_Clnt:=TIME_TO_INT(tonr_CIP_Condition.ET)/1000;
+	tonr_CIP_Condition.IN:=FALSE;
 END_IF
 
-IF ton_CIP_Condition.Q
+IF tonr_CIP_Condition.Q
 OR bDeter_CondActTime_Clnt_Done THEN;
 	bCIP_Condition_Done:=TRUE;
 ELSE;
@@ -756,8 +756,8 @@ IF TRUE
 //AND stAnalogSensor[E_ASense_Name.FT1001].Value>=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_1 // 
 //AND stAnalogSensor[E_ASense_Name.FT1002].Value>=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_2 // 
 //AND stAnalogSensor[E_ASense_Name.PT1001].Value>=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Pressure // 
-AND pcFlow1_Rate.mRun()
-AND pcFlow2_Rate.mRun()
+AND pcFlow1_Rate.mRun_With_SP(Set_Point:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_Pipe)
+AND pcFlow2_Rate.mRun_With_SP(Set_Point:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_Pipe)
 AND pcTemperature_Deterg.mRun()
 THEN;
 	//
@@ -779,9 +779,30 @@ THEN;
 	bCIP_Condition_Failed:=TRUE;
 END_IF
 
+//tonr_CIP_Condition(PT:=T#30S);
+tonr_CIP_Condition(PT:=SECOND_TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_ConditionDetergent));
+
+IF TRUE 
+AND Deterg_Conc_Local_Done.x
+AND Temperature_1_Done.x
+AND TRUE
+THEN;
+	tonr_CIP_Condition.IN:=TRUE;
+ELSE;
+	tonr_CIP_Condition.IN:=FALSE;
+END_IF
+	
+IF tonr_CIP_Condition.Q THEN;
+	bCIP_Condition_Done:=TRUE;
+ELSE;
+	bCIP_Condition_Done:=FALSE;	
+END_IF
+
+// Reverce function
+(*
 //ton_CIP_Condition(PT:=T#30S);
 IF (g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_ConditionDetergent-nDeter_CondActTime_Lcl)>0 THEN
-	ton_CIP_Condition(PT:=SECOND_TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_ConditionDetergent-nDeter_CondActTime_Lcl));
+	tonr_CIP_Condition(PT:=SECOND_TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_ConditionDetergent-nDeter_CondActTime_Lcl));
 	bDeter_CondActTime_Lcl_Done:=FALSE;
 ELSE
 	bDeter_CondActTime_Lcl_Done:=TRUE;
@@ -793,17 +814,23 @@ AND Temperature_1_Done.x
 AND NOT bDeter_CondActTime_Lcl_Done
 AND TRUE
 THEN;
-	ton_CIP_Condition.IN:=TRUE;
+	tonr_CIP_Condition.IN:=TRUE;
 ELSE;
-	nDeter_CondActTime_Lcl:=TIME_TO_INT(ton_CIP_Condition.ET)/1000;
-	ton_CIP_Condition.IN:=FALSE;
+	nDeter_CondActTime_Lcl:=TIME_TO_INT(tonr_CIP_Condition.ET)/1000;
+	tonr_CIP_Condition.IN:=FALSE;
 END_IF
 	
-IF ton_CIP_Condition.Q OR bDeter_CondActTime_Lcl_Done THEN;
+IF tonr_CIP_Condition.Q OR bDeter_CondActTime_Lcl_Done THEN;
 	bCIP_Condition_Done:=TRUE;
 ELSE;
 	bCIP_Condition_Done:=FALSE;	
 END_IF
+
+*)
+
+
+
+
 ]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -868,7 +895,7 @@ END_IF
 
 //ton_CIP_Condition(PT:=T#30S);
 IF tConditionTime-nDisInf_CondActTime_Clnt>0 THEN
-	ton_CIP_Condition(PT:=SECOND_TO_TIME(tConditionTime-nDisInf_CondActTime_Clnt));
+	tonr_CIP_Condition(PT:=SECOND_TO_TIME(tConditionTime-nDisInf_CondActTime_Clnt));
 	bDisInf_CondActTime_Clnt_Done:=FALSE;
 ELSE
 	bDisInf_CondActTime_Clnt_Done:=TRUE;
@@ -879,13 +906,13 @@ AND Temperature_Dis_2_Done.x
 AND NOT bDisInf_CondActTime_Clnt_Done
 AND TRUE
 THEN;
-	ton_CIP_Condition.IN:=TRUE;
+	tonr_CIP_Condition.IN:=TRUE;
 ELSE;
-	nDisInf_CondActTime_Clnt:=TIME_TO_INT(ton_CIP_Condition.ET)/1000;
-	ton_CIP_Condition.IN:=FALSE;
+	nDisInf_CondActTime_Clnt:=TIME_TO_INT(tonr_CIP_Condition.ET)/1000;
+	tonr_CIP_Condition.IN:=FALSE;
 END_IF
 
-IF ton_CIP_Condition.Q 
+IF tonr_CIP_Condition.Q 
 OR bDisInf_CondActTime_Clnt_Done 
 THEN;
 	bCIP_Condition_Done:=TRUE;
@@ -958,7 +985,7 @@ END_IF
 
 //ton_CIP_Condition(PT:=T#30S);
 IF g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_ConditionDisInfection-nDisInf_CondActTime_Lcl>0 THEN
-	ton_CIP_Condition(PT:=SECOND_TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_ConditionDisInfection-nDisInf_CondActTime_Lcl));
+	tonr_CIP_Condition(PT:=SECOND_TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_ConditionDisInfection-nDisInf_CondActTime_Lcl));
 	bDisInf_CondActTime_Lcl_Done:=FALSE;
 ELSE
 	bDisInf_CondActTime_Lcl_Done:=TRUE;
@@ -970,13 +997,13 @@ AND Temperature_Dis_1_Done.x
 AND NOT bDisInf_CondActTime_Lcl_Done
 AND TRUE
 THEN;
-	ton_CIP_Condition.IN:=TRUE;
+	tonr_CIP_Condition.IN:=TRUE;
 ELSE;
-	nDisInf_CondActTime_Lcl:=TIME_TO_INT(ton_CIP_Condition.ET)/1000;
-	ton_CIP_Condition.IN:=FALSE;
+	nDisInf_CondActTime_Lcl:=TIME_TO_INT(tonr_CIP_Condition.ET)/1000;
+	tonr_CIP_Condition.IN:=FALSE;
 END_IF
 
-IF ton_CIP_Condition.Q
+IF tonr_CIP_Condition.Q
 OR bDisInf_CondActTime_Lcl_Done
 THEN
 	bCIP_Condition_Done:=TRUE;
@@ -3349,6 +3376,24 @@ bClientRef_done:=TRUE;]]></ST>
         </XmlArchive>
       </ObjectProperties>
     </Action>
+    <Action Name="_aReset_Cond_Tm_CIP2_01_active" Id="{93f99ae3-1917-408b-84a5-48debdd15f17}">
+      <Implementation>
+        <ST><![CDATA[tonr_CIP_Condition(ResetTime:=TRUE);]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
     <Action Name="_aSet_Valves_ToDeafult_active" Id="{6f0f9f2b-5faf-4a3e-bc50-2f79008d8530}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
@@ -3425,8 +3470,8 @@ END_IF]]></ST>
     </Action>
     <Action Name="_aStartPump_CIP1_01_entry" Id="{d05b04cb-ad28-4d2f-b50e-f58a7739d4a3}">
       <Implementation>
-        <ST><![CDATA[fb_PumpCIP.m_Run(RPM:=st_CIP_Param.r_CIP_Pmp_1);
-fb_PumpClient.m_Run(RPM:=st_CIP_Param.r_CIP_Client_Pmp_1);]]></ST>
+        <ST><![CDATA[fb_PumpCIP.m_Run(RPM:=st_CIP_Param.r_CIP_Pump);
+fb_PumpClient.m_Run(RPM:=st_CIP_Param.r_CIP_Client_Pump);]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -3448,8 +3493,8 @@ fb_PumpClient.m_Run(RPM:=st_CIP_Param.r_CIP_Client_Pmp_1);]]></ST>
 //AND stAnalogSensor[E_ASense_Name.FT1001].Value>=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_1 // 
 //AND stAnalogSensor[E_ASense_Name.FT1002].Value>=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_2 // 
 //AND stAnalogSensor[E_ASense_Name.PT1001].Value>=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Pressure // 
-AND pcFlow1_Rate.mRun()
-AND pcFlow2_Rate.mRun()
+AND pcFlow1_Rate.mRun_With_SP(Set_Point:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_Pipe)
+AND pcFlow2_Rate.mRun_With_SP(Set_Point:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_Pipe)
 AND pcPressure.mRun()
 THEN;
 	bStepDone:=TRUE;
@@ -3458,6 +3503,7 @@ ELSE;
 END_IF
 
 //pcFlow2_Rate.mRun_PID(Set_Point:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_2);//to run, just to check
+
 fb_PumpCIP.m_Run(RPM:=pcFlow1_Rate.mRun_PID(Set_Point:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_Pipe,controlManual:=NOT(fb_PumpCIP.modeAuto)));
 
 (*
@@ -3572,8 +3618,8 @@ fb_PumpClient.m_Run(RPM:=pcFlow2_Rate.mRun_PID(Set_Point:=fFlowRate,controlManua
     </Action>
     <Action Name="_aStartPump_CIP2_03_entry" Id="{d62af2fc-ec02-4514-bb41-1f2ef8535a97}">
       <Implementation>
-        <ST><![CDATA[fb_PumpCIP.m_Run(RPM:=st_CIP_Param.r_CIP_Pmp_1);
-fb_PumpClient.m_Run(RPM:=st_CIP_Param.r_CIP_Client_Pmp_1);]]></ST>
+        <ST><![CDATA[fb_PumpCIP.m_Run(RPM:=st_CIP_Param.r_CIP_Pump);
+fb_PumpClient.m_Run(RPM:=st_CIP_Param.r_CIP_Client_Pump);]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -3592,11 +3638,13 @@ fb_PumpClient.m_Run(RPM:=st_CIP_Param.r_CIP_Client_Pmp_1);]]></ST>
     <Action Name="_aStartPump_CIP2_RPM_01_active" Id="{926fdc44-d8f2-4656-9732-79a85aef1568}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
-fb_PumpCIP.m_Run(RPM:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_CIP_Pmp_1);//1500
+fb_PumpCIP.m_Run(RPM:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_CIP_Pump);//1500
 
 IF TRUE //Future condition
 AND StartPump_CIP2_RPM_01.t>SECOND_TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_PumpInitRun) 
-AND fb_PumpCIP.nRPM=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_CIP_Pmp_1
+AND fb_PumpCIP.nRPM=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_CIP_Pump
+AND stAnalogSensor[E_ASense_Name.FT1001].Value>=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_Sprinkler // 
+AND stAnalogSensor[E_ASense_Name.FT1002].Value>=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_Sprinkler // 
 THEN;
 	bStepDone:=TRUE;
 END_IF
@@ -3620,8 +3668,8 @@ END_IF
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
 
-fb_PumpCIP.m_Run(RPM:=st_CIP_Param.r_CIP_Pmp_1);
-fb_PumpClient.m_Run(RPM:=st_CIP_Param.r_CIP_Client_Pmp_1);
+fb_PumpCIP.m_Run(RPM:=st_CIP_Param.r_CIP_Pump);
+fb_PumpClient.m_Run(RPM:=st_CIP_Param.r_CIP_Client_Pump);
 
 // to stas question ? deference:
 //fb_PumpCIP.m_Run(RPM:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_CIP_Pmp_1);//1500
@@ -3652,7 +3700,7 @@ END_IF
     <Action Name="_aStartPump_CIP2_RPM_03_active" Id="{7055f639-2c8c-427c-8372-ce3721630720}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
-fb_PumpCIP.m_Run(RPM:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_CIP_Pmp_1);
+fb_PumpCIP.m_Run(RPM:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_CIP_Pump);
 
 IF TRUE //Future condition
 AND StartPump_CIP2_RPM_03.t>SECOND_TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_PumpInitRun) 
@@ -3678,7 +3726,7 @@ END_IF
     <Action Name="_aStartPump_CIP2_RPM_04_active" Id="{6541b9b3-a926-41a5-a2dd-43356cfd7a84}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
-fb_PumpCIP.m_Run(RPM:=pcFlow1_Rate.mRun_PID(Set_Point:=st_CIP_Param.r_CIP_Pmp_1,controlManual:=NOT(fb_PumpCIP.modeAuto)));
+fb_PumpCIP.m_Run(RPM:=pcFlow1_Rate.mRun_PID(Set_Point:=st_CIP_Param.r_CIP_Pump,controlManual:=NOT(fb_PumpCIP.modeAuto)));
 fb_PumpClient.m_Run(RPM:=pcFlow1_Rate.mRun_Hyst(mRun_Hyst=>));
 
 IF TRUE //Future condition
@@ -3843,7 +3891,7 @@ nStepHeat:=20;]]></ST>
     </Action>
     <Action Name="_aStartPump_CIP3_04_entry" Id="{81d3754d-4291-4c7d-b99c-2fc1e82b6fc9}">
       <Implementation>
-        <ST><![CDATA[fb_PumpCIP.m_Run(RPM:=st_CIP_Param.r_CIP_Pmp_1);
+        <ST><![CDATA[fb_PumpCIP.m_Run(RPM:=st_CIP_Param.r_CIP_Pump);
 
 
 CASE eReq.eClient OF
@@ -3851,7 +3899,7 @@ CASE eReq.eClient OF
 	E_CIP_Usage.eTank_2,
 	E_CIP_Usage.eTank_3,
 	E_CIP_Usage.eTank_4:;
-			fb_PumpClient.m_Run(RPM:=st_CIP_Param.r_CIP_Client_Pmp_1);
+			fb_PumpClient.m_Run(RPM:=st_CIP_Param.r_CIP_Client_Pump);
 ELSE;
 	//the client do is not have a pump
 END_CASE]]></ST>
@@ -3895,8 +3943,8 @@ bStepDone:=TRUE;]]></ST>
     <Action Name="_aStartPump_CIP4_entry" Id="{ce3107e7-d7e1-46a5-b32d-249da89f4251}">
       <Implementation>
         <ST><![CDATA[fbPis.m_SetByRecipe(stPis:=stPis_FillWater_T94, 	req:=E_Piston_Recipe_State.NoChanges);
-fb_PumpCIP.m_Run(RPM:=st_CIP_Param.r_CIP_Pmp_1);
-fb_PumpClient.m_Run(RPM:=st_CIP_Param.r_CIP_Client_Pmp_1);
+fb_PumpCIP.m_Run(RPM:=st_CIP_Param.r_CIP_Pump);
+fb_PumpClient.m_Run(RPM:=st_CIP_Param.r_CIP_Client_Pump);
 
 mVolumeReset_All();]]></ST>
       </Implementation>
@@ -4256,6 +4304,7 @@ pcTemp_ClntReturn(stProcessControl:=stTemp_ClntReturn );
 		//stFlow2_Rate.rSetPoint:=st_CIP_Param.r_Flow_Pipe;//st_CIP_Param.r_Flow_Sprinkler;//:=150
 		pcFlow2_Rate(stProcessControl:=stFlow2_Rate );
 
+		// TBD : to check if the first loop(local prepare) when Client selected gets relevant Flow SetPoint 
 		IF bSprinkler THEN
 			stFlow1_Rate.rSetPoint:=st_CIP_Param.r_Flow_Sprinkler;
 			stFlow2_Rate.rSetPoint:=st_CIP_Param.r_Flow_Sprinkler;
@@ -7657,7 +7706,7 @@ END_CASE]]></ST>
                                             <v n="IdParent">129L</v>
                                           </o>
                                           <o t="SFCTransition">
-                                            <v n="VariableName">"Connect_CIP2_01__to__CheckIf_CIP_Pump_Ready"</v>
+                                            <v n="VariableName">"Connect_CIP2_01__to__Reset_Cond_Tm_CIP2_01"</v>
                                             <n n="EmbeddedTransition" />
                                             <l2 n="EmbeddedTransitionProperties" />
                                             <l2 n="Attributes" cet="SFCAttribute">
@@ -7721,6 +7770,189 @@ END_CASE]]></ST>
                                               </o>
                                             </l2>
                                             <v n="Id">633L</v>
+                                            <v n="IdParent">129L</v>
+                                          </o>
+                                          <o t="SFCStep">
+                                            <n n="EmbeddedMainAction" />
+                                            <n n="EmbeddedEntryAction" />
+                                            <n n="EmbeddedExitAction" />
+                                            <l2 n="EmbeddedMainActionProperties" />
+                                            <l2 n="EmbeddedEntryActionProperties" />
+                                            <l2 n="EmbeddedExitActionProperties" />
+                                            <o n="ElementList" t="SFCElementList">
+                                              <l2 n="InnerList" />
+                                            </o>
+                                            <l2 n="Attributes" cet="SFCAttribute">
+                                              <o>
+                                                <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
+                                                <o n="Value" t="StringValue">
+                                                  <v n="Value">"Reset_Cond_Tm_CIP2_01"</v>
+                                                  <v n="DefaultValue">""</v>
+                                                </o>
+                                                <v n="Id">6481L</v>
+                                                <v n="IdParent">6480L</v>
+                                              </o>
+                                              <o>
+                                                <v n="AttributeId">{7d894980-aeea-405c-a0f6-e2b26429c58f}</v>
+                                                <o n="Value" t="StringValue">
+                                                  <v n="Value">""</v>
+                                                  <v n="DefaultValue">""</v>
+                                                </o>
+                                                <v n="Id">6482L</v>
+                                                <v n="IdParent">6480L</v>
+                                              </o>
+                                              <o>
+                                                <v n="AttributeId">{01580b27-6378-448b-8ecb-0e4b795b58d6}</v>
+                                                <o n="Value" t="BoolValue">
+                                                  <v n="Value">"FALSE"</v>
+                                                  <v n="DefaultValue">"FALSE"</v>
+                                                </o>
+                                                <v n="Id">6483L</v>
+                                                <v n="IdParent">6480L</v>
+                                              </o>
+                                              <o>
+                                                <v n="AttributeId">{bc882c11-1e91-4dd8-a6b8-2075724ed18b}</v>
+                                                <o n="Value" t="EnumValue">
+                                                  <v n="TemplateGuid">{79a4fdd5-c859-4de4-aa8d-c03372c880c2}</v>
+                                                  <n n="BaseType" />
+                                                  <v n="Value">"0"</v>
+                                                  <v n="DefaultValue">"0"</v>
+                                                </o>
+                                                <v n="Id">6484L</v>
+                                                <v n="IdParent">6480L</v>
+                                              </o>
+                                              <o>
+                                                <v n="AttributeId">{6844a48e-46c2-4cc8-a185-a478f3b99cc0}</v>
+                                                <o n="Value" t="BoolValue">
+                                                  <v n="Value">"FALSE"</v>
+                                                  <v n="DefaultValue">"FALSE"</v>
+                                                </o>
+                                                <v n="Id">6485L</v>
+                                                <v n="IdParent">6480L</v>
+                                              </o>
+                                              <o>
+                                                <v n="AttributeId">{62e1754b-7629-4e63-9cec-10ae0c536f1f}</v>
+                                                <o n="Value" t="BoolValue">
+                                                  <v n="Value">"FALSE"</v>
+                                                  <v n="DefaultValue">"FALSE"</v>
+                                                </o>
+                                                <v n="Id">6486L</v>
+                                                <v n="IdParent">6480L</v>
+                                              </o>
+                                              <o>
+                                                <v n="AttributeId">{cacf1a68-236e-47c2-b7b1-1cf9199718cb}</v>
+                                                <o n="Value" t="StringValue">
+                                                  <v n="Value">""</v>
+                                                  <v n="DefaultValue">""</v>
+                                                </o>
+                                                <v n="Id">6487L</v>
+                                                <v n="IdParent">6480L</v>
+                                              </o>
+                                              <o>
+                                                <v n="AttributeId">{b693554c-1b01-4a8d-afde-9e3a46f7465d}</v>
+                                                <o n="Value" t="StringValue">
+                                                  <v n="Value">""</v>
+                                                  <v n="DefaultValue">""</v>
+                                                </o>
+                                                <v n="Id">6488L</v>
+                                                <v n="IdParent">6480L</v>
+                                              </o>
+                                              <o>
+                                                <v n="AttributeId">{700a583f-b4d4-43e4-8c14-629c7cd3bec8}</v>
+                                                <o n="Value" t="StringValue">
+                                                  <v n="Value">"_aReset_Cond_Tm_CIP2_01_active"</v>
+                                                  <v n="DefaultValue">""</v>
+                                                </o>
+                                                <v n="Id">6489L</v>
+                                                <v n="IdParent">6480L</v>
+                                              </o>
+                                              <o>
+                                                <v n="AttributeId">{a6b08bd8-b696-47e3-9cbf-7408b61c9ff8}</v>
+                                                <o n="Value" t="StringValue">
+                                                  <v n="Value">""</v>
+                                                  <v n="DefaultValue">""</v>
+                                                </o>
+                                                <v n="Id">6490L</v>
+                                                <v n="IdParent">6480L</v>
+                                              </o>
+                                              <o>
+                                                <v n="AttributeId">{a2621e18-7de3-4ea6-ae6d-89e9e0b7befd}</v>
+                                                <o n="Value" t="StringValue">
+                                                  <v n="Value">""</v>
+                                                  <v n="DefaultValue">""</v>
+                                                </o>
+                                                <v n="Id">6491L</v>
+                                                <v n="IdParent">6480L</v>
+                                              </o>
+                                            </l2>
+                                            <v n="Id">6480L</v>
+                                            <v n="IdParent">129L</v>
+                                          </o>
+                                          <o t="SFCTransition">
+                                            <v n="VariableName">"Reset_Cond_Tm_CIP2_01__to__CheckIf_CIP_Pump_Ready"</v>
+                                            <n n="EmbeddedTransition" />
+                                            <l2 n="EmbeddedTransitionProperties" />
+                                            <l2 n="Attributes" cet="SFCAttribute">
+                                              <o>
+                                                <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
+                                                <o n="Value" t="StringValue">
+                                                  <v n="Value">"TRUE"</v>
+                                                  <v n="DefaultValue">""</v>
+                                                </o>
+                                                <v n="Id">6493L</v>
+                                                <v n="IdParent">6492L</v>
+                                              </o>
+                                              <o>
+                                                <v n="AttributeId">{7d894980-aeea-405c-a0f6-e2b26429c58f}</v>
+                                                <o n="Value" t="StringValue">
+                                                  <v n="Value">""</v>
+                                                  <v n="DefaultValue">""</v>
+                                                </o>
+                                                <v n="Id">6494L</v>
+                                                <v n="IdParent">6492L</v>
+                                              </o>
+                                              <o>
+                                                <v n="AttributeId">{01580b27-6378-448b-8ecb-0e4b795b58d6}</v>
+                                                <o n="Value" t="BoolValue">
+                                                  <v n="Value">"FALSE"</v>
+                                                  <v n="DefaultValue">"FALSE"</v>
+                                                </o>
+                                                <v n="Id">6495L</v>
+                                                <v n="IdParent">6492L</v>
+                                              </o>
+                                              <o>
+                                                <v n="AttributeId">{bc882c11-1e91-4dd8-a6b8-2075724ed18b}</v>
+                                                <o n="Value" t="EnumValue">
+                                                  <v n="TemplateGuid">{79a4fdd5-c859-4de4-aa8d-c03372c880c2}</v>
+                                                  <n n="BaseType" />
+                                                  <v n="Value">"0"</v>
+                                                  <v n="DefaultValue">"0"</v>
+                                                </o>
+                                                <v n="Id">6496L</v>
+                                                <v n="IdParent">6492L</v>
+                                              </o>
+                                              <o>
+                                                <v n="AttributeId">{62e1754b-7629-4e63-9cec-10ae0c536f1f}</v>
+                                                <o n="Value" t="BoolValue">
+                                                  <v n="Value">"FALSE"</v>
+                                                  <v n="DefaultValue">"FALSE"</v>
+                                                </o>
+                                                <v n="Id">6497L</v>
+                                                <v n="IdParent">6492L</v>
+                                              </o>
+                                              <o>
+                                                <v n="AttributeId">{8294df19-5962-4dee-a874-1051dabb0e3e}</v>
+                                                <o n="Value" t="EnumValue">
+                                                  <v n="TemplateGuid">{6ecff51c-9b8f-4338-aab0-67c2b31b07e9}</v>
+                                                  <n n="BaseType" />
+                                                  <v n="Value">"0"</v>
+                                                  <v n="DefaultValue">"0"</v>
+                                                </o>
+                                                <v n="Id">6498L</v>
+                                                <v n="IdParent">6492L</v>
+                                              </o>
+                                            </l2>
+                                            <v n="Id">6492L</v>
                                             <v n="IdParent">129L</v>
                                           </o>
                                           <o t="SFCStep">
@@ -34965,17 +35197,18 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="34" Count="0" />
       <LineId Id="26" Count="0" />
       <LineId Id="59" Count="0" />
-      <LineId Id="63" Count="0" />
-      <LineId Id="60" Count="0" />
-      <LineId Id="92" Count="0" />
-      <LineId Id="90" Count="1" />
-      <LineId Id="66" Count="0" />
-      <LineId Id="69" Count="3" />
-      <LineId Id="93" Count="0" />
-      <LineId Id="73" Count="7" />
+      <LineId Id="129" Count="0" />
+      <LineId Id="69" Count="7" />
+      <LineId Id="78" Count="2" />
       <LineId Id="86" Count="0" />
       <LineId Id="82" Count="2" />
       <LineId Id="68" Count="0" />
+      <LineId Id="95" Count="0" />
+      <LineId Id="94" Count="0" />
+      <LineId Id="96" Count="0" />
+      <LineId Id="104" Count="23" />
+      <LineId Id="98" Count="5" />
+      <LineId Id="97" Count="0" />
       <LineId Id="41" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aCondition_CIP2_Local_entry">
@@ -35641,6 +35874,9 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="32" Count="0" />
       <LineId Id="31" Count="0" />
     </LineIds>
+    <LineIds Name="FB_CIP._aReset_Cond_Tm_CIP2_01_active">
+      <LineId Id="1" Count="0" />
+    </LineIds>
     <LineIds Name="FB_CIP._aSet_Valves_ToDeafult_active">
       <LineId Id="2" Count="1" />
       <LineId Id="10" Count="3" />
@@ -35659,7 +35895,8 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aStartPump_CIP1_01_entry">
-      <LineId Id="1" Count="1" />
+      <LineId Id="4" Count="0" />
+      <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aStartPump_CIP2_01_active">
       <LineId Id="1" Count="0" />
@@ -35674,6 +35911,7 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="3" Count="0" />
       <LineId Id="34" Count="0" />
       <LineId Id="25" Count="0" />
+      <LineId Id="35" Count="0" />
       <LineId Id="15" Count="0" />
       <LineId Id="33" Count="0" />
       <LineId Id="23" Count="0" />
@@ -35723,6 +35961,8 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="10" Count="0" />
       <LineId Id="4" Count="1" />
       <LineId Id="11" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="12" Count="0" />
       <LineId Id="6" Count="0" />
       <LineId Id="9" Count="0" />
       <LineId Id="3" Count="0" />
@@ -35883,6 +36123,7 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="757" Count="0" />
       <LineId Id="828" Count="0" />
       <LineId Id="761" Count="1" />
+      <LineId Id="840" Count="0" />
       <LineId Id="833" Count="0" />
       <LineId Id="832" Count="0" />
       <LineId Id="838" Count="1" />

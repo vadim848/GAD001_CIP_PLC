@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="TONR" Id="{9547d203-9a95-4810-86d6-cc5974a97350}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK TONR //Retentive Timer
+VAR_INPUT
+    IN : BOOL;         // Input signal
+	ResetTime: BOOL;	//Reset Accumulating Time
+    PT : TIME := T#0S; // Preset time
+END_VAR
+VAR_OUTPUT
+    Q : BOOL;          // Output signal (true when time is reached)
+    ET : TIME;         // Elapsed time
+END_VAR
+VAR
+    StartTime : TIME := T#0S; // Start time storage
+    IsTiming : BOOL := FALSE; // Timing state
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[// Start or continue timing when the input is true
+IF IN THEN
+    IF NOT IsTiming THEN
+        StartTime := DT_TO_TIME(dtRealTime) - ET; // Adjust start time if resuming
+        IsTiming := TRUE;
+    END_IF
+    ET := DT_TO_TIME(dtRealTime) - StartTime; // Calculate elapsed time
+ELSE
+    IsTiming := FALSE; // Stop timing but retain elapsed time
+END_IF
+
+IF ResetTime THEN
+	ET:=T#0s;
+END_IF
+ 
+// Check if the elapsed time has reached the preset time
+IF ET >= PT THEN
+    Q := TRUE;
+ELSE
+    Q := FALSE;
+END_IF
+]]></ST>
+    </Implementation>
+    <LineIds Name="TONR">
+      <LineId Id="21" Count="9" />
+      <LineId Id="40" Count="0" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="42" Count="1" />
+      <LineId Id="41" Count="0" />
+      <LineId Id="32" Count="4" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="39" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

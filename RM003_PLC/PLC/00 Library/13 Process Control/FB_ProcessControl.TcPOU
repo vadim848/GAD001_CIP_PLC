@@ -554,6 +554,18 @@ hendelingPID_Manual(IN:=controlManual);
 mRun_PID:=stProcessControl.fCtrlOutput;]]></ST>
       </Implementation>
     </Method>
+    <Method Name="mRun_With_SP" Id="{2d03209f-e46c-40c1-b393-0560a9377f6a}">
+      <Declaration><![CDATA[METHOD mRun_With_SP : BOOL
+VAR_INPUT
+	Set_Point: REAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[bRun:=TRUE;
+stProcessControl.rSetPoint:=Set_Point;
+mRun_With_SP:=stProcessControl.bDone;]]></ST>
+      </Implementation>
+    </Method>
     <LineIds Name="FB_ProcessControl">
       <LineId Id="262" Count="38" />
       <LineId Id="302" Count="1" />
@@ -593,6 +605,11 @@ mRun_PID:=stProcessControl.fCtrlOutput;]]></ST>
       <LineId Id="15" Count="0" />
       <LineId Id="22" Count="0" />
       <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ProcessControl.mRun_With_SP">
+      <LineId Id="5" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="9" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>
