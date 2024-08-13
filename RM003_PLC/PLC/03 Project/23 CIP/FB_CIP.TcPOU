@@ -3403,7 +3403,7 @@ fbPis.m_SetByRecipe(stPis:=stPis_FillWater_T94, req:=E_Piston_Recipe_State.Relea
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
 
-IF StartPump_CIP1_01.t>SECOND_TO_TIME(st_CIP_Param.t_PumpStartTime) 
+IF StartPump_CIP1_01.t>SECOND_TO_TIME(st_CIP_Param.t_PumpInitRun) 
 OR lvlTank_T93.rTankLevel<st_CIP_Param.r_Tank93_Volume//st_CIP_Param.r_RWater_93_TankLvl
 THEN//Time+flow+water volume
 	bStepDone:=TRUE;
@@ -3511,7 +3511,7 @@ nStepHeat:=1;]]></ST>
 AND pcFlow1_Rate.mRun()
 AND pcFlow2_Rate.mRun()
 AND pcPressure.mRun()
-AND StartPump_CIP2_02.t>SECOND_TO_TIME(st_CIP_Param.t_PumpStartTime) 
+AND StartPump_CIP2_02.t>SECOND_TO_TIME(st_CIP_Param.t_PumpInitRun) 
 THEN;
 	bStepDone:=TRUE;
 ELSE;
@@ -3595,7 +3595,7 @@ fb_PumpClient.m_Run(RPM:=st_CIP_Param.r_CIP_Client_Pmp_1);]]></ST>
 fb_PumpCIP.m_Run(RPM:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_CIP_Pmp_1);//1500
 
 IF TRUE //Future condition
-AND StartPump_CIP2_RPM_01.t>SECOND_TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_PumpStartTime) 
+AND StartPump_CIP2_RPM_01.t>SECOND_TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_PumpInitRun) 
 AND fb_PumpCIP.nRPM=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_CIP_Pmp_1
 THEN;
 	bStepDone:=TRUE;
@@ -3628,7 +3628,7 @@ fb_PumpClient.m_Run(RPM:=st_CIP_Param.r_CIP_Client_Pmp_1);
 //fb_PumpCIP.m_Run(RPM:=st_CIP_Param.r_CIP_Pmp_1);
 
 IF TRUE //Future condition
-AND StartPump_CIP2_RPM_02.t>SECOND_TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_PumpStartTime) 
+AND StartPump_CIP2_RPM_02.t>SECOND_TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_PumpInitRun) 
 THEN;
 	bStepDone:=TRUE;
 END_IF
@@ -3655,7 +3655,7 @@ END_IF
 fb_PumpCIP.m_Run(RPM:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_CIP_Pmp_1);
 
 IF TRUE //Future condition
-AND StartPump_CIP2_RPM_03.t>SECOND_TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_PumpStartTime) 
+AND StartPump_CIP2_RPM_03.t>SECOND_TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_PumpInitRun) 
 THEN;
 	bStepDone:=TRUE;
 END_IF
@@ -3682,7 +3682,7 @@ fb_PumpCIP.m_Run(RPM:=pcFlow1_Rate.mRun_PID(Set_Point:=st_CIP_Param.r_CIP_Pmp_1,
 fb_PumpClient.m_Run(RPM:=pcFlow1_Rate.mRun_Hyst(mRun_Hyst=>));
 
 IF TRUE //Future condition
-AND StartPump_CIP2_RPM_04.t>SECOND_TO_TIME(st_CIP_Param.t_PumpStartTime) 
+AND StartPump_CIP2_RPM_04.t>SECOND_TO_TIME(st_CIP_Param.t_PumpInitRun) 
 THEN;
 	bStepDone:=TRUE;
 END_IF
@@ -3718,7 +3718,7 @@ ELSE;
 END_IF
 
 IF TRUE //Future condition
-AND StartPump_CIP3_01.t>SECOND_TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_PumpStartTime) THEN;
+AND StartPump_CIP3_01.t>SECOND_TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_PumpInitRun) THEN;
 	fb_PumpCIP.m_Run(RPM:=pcFlow1_Rate.mRun_PID(Set_Point:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_Pipe,controlManual:=NOT(fb_PumpCIP.modeAuto)));
 END_IF]]></ST>
       </Implementation>
@@ -3779,7 +3779,7 @@ END_IF
 //fb_PumpClient.m_Run(RPM:=pcFlow2_Rate.mRun_PID(Set_Point:=fFlowRate,controlManual:=NOT(fb_PumpCIP.modeAuto)));
 
 IF TRUE //Future condition
-AND StartPump_CIP3_02.t>SECOND_TO_TIME(st_CIP_Param.t_PumpStartTime) THEN;
+AND StartPump_CIP3_02.t>SECOND_TO_TIME(st_CIP_Param.t_PumpInitRun) THEN;
 	IF NOT bSprinkler THEN
 		//pipe
 		tConditionTime	:=st_CIP_Param.t_ConditionDisInfection;
@@ -35655,11 +35655,7 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aStartPump_CIP1_01_active">
-      <LineId Id="2" Count="1" />
-      <LineId Id="6" Count="0" />
-      <LineId Id="9" Count="0" />
-      <LineId Id="8" Count="0" />
-      <LineId Id="7" Count="0" />
+      <LineId Id="10" Count="5" />
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aStartPump_CIP1_01_entry">
