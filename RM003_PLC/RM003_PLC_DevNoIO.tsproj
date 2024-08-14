@@ -1,6 +1,31 @@
 <?xml version="1.0"?>
-<TcSmProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2012/07/TcSmProject" TcSmVersion="1.0" TcVersion="3.1.4024.56">
+<TcSmProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2012/07/TcSmProject" TcSmVersion="1.0" TcVersion="3.1.4024.59">
 	<DataTypes>
+		<DataType>
+			<Name GUID="{0146173C-D895-D219-E209-CC005AC77636}" Namespace="Tc2_SerialCom" AutoDeleteType="true">EL6inData22B</Name>
+			<Comment><![CDATA[ This data type is corresponding to the
+   EL-6xxx data structure used in the
+   TwinCAT SystemManager
+   (EL-6xxx version using 22 data bytes) 
+]]></Comment>
+			<BitSize>192</BitSize>
+			<SubItem>
+				<Name>Status</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000004}">WORD</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>0</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>D</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000001}">BYTE</Type>
+				<ArrayInfo>
+					<LBound>0</LBound>
+					<Elements>22</Elements>
+				</ArrayInfo>
+				<BitSize>176</BitSize>
+				<BitOffs>16</BitOffs>
+			</SubItem>
+		</DataType>
 		<DataType>
 			<Name GUID="{15F1EE7B-133A-73EC-46FD-E420D489E311}" AutoDeleteType="true">ST_EL18x9</Name>
 			<BitSize>144</BitSize>
@@ -210,12 +235,12 @@
 			</SubItem>
 		</DataType>
 		<DataType>
-			<Name GUID="{C347D351-9DE1-3128-5E8B-939678CD786D}" IecBaseType="true" AutoDeleteType="true">ARRAY [1..16] OF ST_EL18x9</Name>
-			<BitSize>2304</BitSize>
+			<Name IecBaseType="true">ARRAY [1..18] OF ST_EL18x9</Name>
+			<BitSize>2592</BitSize>
 			<BaseType GUID="{15F1EE7B-133A-73EC-46FD-E420D489E311}">ST_EL18x9</BaseType>
 			<ArrayInfo>
 				<LBound>1</LBound>
-				<Elements>16</Elements>
+				<Elements>18</Elements>
 			</ArrayInfo>
 		</DataType>
 		<DataType>
@@ -271,12 +296,12 @@
 			</SubItem>
 		</DataType>
 		<DataType>
-			<Name GUID="{37784EF7-EB74-F529-D90E-1B69885BB56C}" IecBaseType="true" AutoDeleteType="true">ARRAY [1..4] OF ST_EL3xx8</Name>
-			<BitSize>512</BitSize>
+			<Name IecBaseType="true">ARRAY [1..5] OF ST_EL3xx8</Name>
+			<BitSize>640</BitSize>
 			<BaseType GUID="{052265B9-CCD9-C672-396A-1F57CB4AE13E}">ST_EL3xx8</BaseType>
 			<ArrayInfo>
 				<LBound>1</LBound>
-				<Elements>4</Elements>
+				<Elements>5</Elements>
 			</ArrayInfo>
 		</DataType>
 		<DataType>
@@ -375,6 +400,31 @@
 				<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
 				<BitSize>8</BitSize>
 				<BitOffs>64</BitOffs>
+			</SubItem>
+		</DataType>
+		<DataType>
+			<Name GUID="{D6B0A42D-897A-4B90-95E8-3C741C3CE3EE}" Namespace="Tc2_SerialCom" AutoDeleteType="true">EL6outData22B</Name>
+			<Comment><![CDATA[ This data type is corresponding to the
+   EL-6xxx data structure used in the
+   TwinCAT SystemManager
+   (EL-6xxx version using 22 data bytes) 
+]]></Comment>
+			<BitSize>192</BitSize>
+			<SubItem>
+				<Name>Ctrl</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000004}">WORD</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>0</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>D</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000001}">BYTE</Type>
+				<ArrayInfo>
+					<LBound>0</LBound>
+					<Elements>22</Elements>
+				</ArrayInfo>
+				<BitSize>176</BitSize>
+				<BitOffs>16</BitOffs>
 			</SubItem>
 		</DataType>
 		<DataType>
@@ -588,12 +638,12 @@
 			</SubItem>
 		</DataType>
 		<DataType>
-			<Name GUID="{C5304CCE-0FAA-A4E7-7F07-2B85637FD0AB}" IecBaseType="true" AutoDeleteType="true">ARRAY [1..5] OF ST_EL28x9</Name>
-			<BitSize>720</BitSize>
+			<Name IecBaseType="true">ARRAY [1..6] OF ST_EL28x9</Name>
+			<BitSize>864</BitSize>
 			<BaseType GUID="{7D86AFE9-88F0-CB53-FB25-D740E4FFD7A3}">ST_EL28x9</BaseType>
 			<ArrayInfo>
 				<LBound>1</LBound>
-				<Elements>5</Elements>
+				<Elements>6</Elements>
 			</ArrayInfo>
 		</DataType>
 		<DataType>
@@ -824,18 +874,23 @@
 		</System>
 		<Plc>
 			<Project GUID="{AD98C8E8-1161-4C5F-BAB4-CA4317288767}" Name="PLC" PrjFilePath="PLC\PLC.plcproj" TmcFilePath="PLC\PLC.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="PLC\PLC.tmc" TmcHash="{5C075313-A80E-328B-934B-DBAB33012A56}">
+				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="PLC\PLC.tmc" TmcHash="{2C75A653-EF71-9995-697F-789FFFD499DB}">
 					<Name>PLC Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Vars VarGrpType="1" ContextId="1" AreaNo="16">
 						<Name>PlcTask Inputs</Name>
 						<Var>
+							<Name>BackgroundPcCOM.stIn_PcCom</Name>
+							<Comment><![CDATA[ linked to the port in the TwinCAT System Manager ]]></Comment>
+							<Type GUID="{0146173C-D895-D219-E209-CC005AC77636}" Namespace="Tc2_SerialCom">EL6inData22B</Type>
+						</Var>
+						<Var>
 							<Name>gIO.i_EL</Name>
-							<Type GUID="{C347D351-9DE1-3128-5E8B-939678CD786D}">ARRAY [1..16] OF ST_EL18x9</Type>
+							<Type GUID="{CB057230-D3B9-711C-08B4-AD196EC17119}">ARRAY [1..18] OF ST_EL18x9</Type>
 						</Var>
 						<Var>
 							<Name>gIO.ai_EL</Name>
-							<Type GUID="{37784EF7-EB74-F529-D90E-1B69885BB56C}">ARRAY [1..4] OF ST_EL3xx8</Type>
+							<Type GUID="{90F2E9B6-D764-5C3E-BD15-643FDD0C1F57}">ARRAY [1..5] OF ST_EL3xx8</Type>
 						</Var>
 						<Var>
 							<Name>gIO.Nidec[0].StatusWord</Name>
@@ -975,8 +1030,13 @@
 					<Vars VarGrpType="2" ContextId="1" AreaNo="17">
 						<Name>PlcTask Outputs</Name>
 						<Var>
+							<Name>BackgroundPcCOM.stOut_PcCom</Name>
+							<Comment><![CDATA[ linked to the port in the TwinCAT System Manager ]]></Comment>
+							<Type GUID="{D6B0A42D-897A-4B90-95E8-3C741C3CE3EE}" Namespace="Tc2_SerialCom">EL6outData22B</Type>
+						</Var>
+						<Var>
 							<Name>gIO.q_EL</Name>
-							<Type GUID="{C5304CCE-0FAA-A4E7-7F07-2B85637FD0AB}">ARRAY [1..5] OF ST_EL28x9</Type>
+							<Type GUID="{D57CC763-DCF4-A513-CC02-31E16048C7E4}">ARRAY [1..6] OF ST_EL28x9</Type>
 						</Var>
 						<Var>
 							<Name>gIO.q_Manifold1</Name>
