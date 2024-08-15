@@ -850,7 +850,7 @@ THEN;
 END_IF
 *)
 
-pcHeatExchanger.mRun_PID(Set_Point:=st_CIP_Param.r_Temper_Detergent, controlManual:=FALSE,mRun_PID=>_temp);
+pcHeatExchanger.mRun_PID(Set_Point:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Temper_Detergent, controlManual:=FALSE,mRun_PID=>_temp);
 tonr_CIP_Condition(PT:=SECOND_TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_ConditionDetergent), ResetTime:=FALSE);
 IF TRUE 
 AND pcHeatExchanger.mRun_With_SP(Set_Point:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Temper_Detergent, mRun_With_SP=>_cond[3])
@@ -34679,9 +34679,9 @@ END_IF
 ELSE
 	tConditionTime	:=st_CIP_Param.t_ConditionDetergent_Sprinkler;
 	fFlowRate		:=st_CIP_Param.r_Flow_Sprinkler;
-	rVolume_Collect :=st_CIP_Param.r_Volume_Collect_Detergent*st_CIP_Param.r_Volume_Sprinkler_Ratio;
-	rVolume_Drain	:=st_CIP_Param.r_Volume_Drain_Detergent*st_CIP_Param.r_Volume_Sprinkler_Ratio;
-	rVolume_Recycle	:=st_CIP_Param.r_Volume_Recycle_Detergent*st_CIP_Param.r_Volume_Sprinkler_Ratio;
+	rVolume_Collect :=st_CIP_Param.r_Volume_Collect_Detergent;//*st_CIP_Param.r_Volume_Sprinkler_Ratio
+	rVolume_Drain	:=st_CIP_Param.r_Volume_Drain_Detergent;//*st_CIP_Param.r_Volume_Sprinkler_Ratio
+	rVolume_Recycle	:=st_CIP_Param.r_Volume_Recycle_Detergent;//*st_CIP_Param.r_Volume_Sprinkler_Ratio
 END_IF]]></ST>
       </Implementation>
     </Action>
