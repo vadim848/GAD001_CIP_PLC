@@ -27986,37 +27986,39 @@ END_IF
       <Implementation>
         <ST><![CDATA[
 
-
-IF TRUE
-AND eRefClient_fbElement.eState_Long>=E_Element_State_Long.eCIP_1_Rinzed 
-AND eRefClient_fbElement.eState_Long<=E_Element_State_Long.eCIP_2_Deterged 
-THEN;
-	IF NOT bSprinkler THEN // Pipe
-		tConditionTime	:=st_CIP_Param.t_ConditionDetergent;
-		fFlowRate		:=st_CIP_Param.r_Flow_Pipe;
-	ELSE // Sprinkler
-		tConditionTime	:=st_CIP_Param.t_ConditionDetergent_Sprinkler;
-		fFlowRate		:=st_CIP_Param.r_Flow_Sprinkler;
+IF __ISVALIDREF(eRefClient_fbElement) THEN;
+	IF TRUE
+	AND eRefClient_fbElement.eState_Long>=E_Element_State_Long.eCIP_1_Rinzed 
+	AND eRefClient_fbElement.eState_Long<=E_Element_State_Long.eCIP_2_Deterged 
+	THEN;
+		IF NOT bSprinkler THEN // Pipe
+			tConditionTime	:=st_CIP_Param.t_ConditionDetergent;
+			fFlowRate		:=st_CIP_Param.r_Flow_Pipe;
+		ELSE // Sprinkler
+			tConditionTime	:=st_CIP_Param.t_ConditionDetergent_Sprinkler;
+			fFlowRate		:=st_CIP_Param.r_Flow_Sprinkler;
+		END_IF	
+		rVolume_Collect :=st_CIP_Param.r_Volume_Collect_Detergent;
+		rVolume_Drain	:=st_CIP_Param.r_Volume_Drain_Detergent;
+		rVolume_Recycle	:=st_CIP_Param.r_Volume_Recycle_Detergent;
+		
+	ELSIF TRUE
+	AND eRefClient_fbElement.eState_Long>=E_Element_State_Long.eCIP_3_Deterged_Clean 
+	AND eRefClient_fbElement.eState_Long<=E_Element_State_Long.eCIP_4_Sanitized 
+	THEN;
+		IF NOT bSprinkler THEN // Pipe
+			tConditionTime	:=st_CIP_Param.t_ConditionDisInfection;
+			fFlowRate		:=st_CIP_Param.r_Flow_Pipe;
+		ELSE // Sprinkler
+			tConditionTime	:=st_CIP_Param.t_ConditionDisInfection_Sprinkler;
+			fFlowRate		:=st_CIP_Param.r_Flow_Sprinkler;
+		END_IF	
+		rVolume_Collect :=st_CIP_Param.r_Volume_Collect_DisInfection;
+		rVolume_Drain	:=st_CIP_Param.r_Volume_Drain_DisInfection;
+		rVolume_Recycle	:=st_CIP_Param.r_Volume_Recycle_DisInfection;
 	END_IF	
-	rVolume_Collect :=st_CIP_Param.r_Volume_Collect_Detergent;
-	rVolume_Drain	:=st_CIP_Param.r_Volume_Drain_Detergent;
-	rVolume_Recycle	:=st_CIP_Param.r_Volume_Recycle_Detergent;
-	
-ELSIF TRUE
-AND eRefClient_fbElement.eState_Long>=E_Element_State_Long.eCIP_3_Deterged_Clean 
-AND eRefClient_fbElement.eState_Long<=E_Element_State_Long.eCIP_4_Sanitized 
-THEN;
-	IF NOT bSprinkler THEN // Pipe
-		tConditionTime	:=st_CIP_Param.t_ConditionDisInfection;
-		fFlowRate		:=st_CIP_Param.r_Flow_Pipe;
-	ELSE // Sprinkler
-		tConditionTime	:=st_CIP_Param.t_ConditionDisInfection_Sprinkler;
-		fFlowRate		:=st_CIP_Param.r_Flow_Sprinkler;
-	END_IF	
-	rVolume_Collect :=st_CIP_Param.r_Volume_Collect_DisInfection;
-	rVolume_Drain	:=st_CIP_Param.r_Volume_Drain_DisInfection;
-	rVolume_Recycle	:=st_CIP_Param.r_Volume_Recycle_DisInfection;
-END_IF]]></ST>
+END_IF
+]]></ST>
       </Implementation>
     </Action>
     <Action Name="act_ValveUpLow_Cntrl" Id="{767e74fb-6b96-4e97-bf7c-883c8d6e0955}" FolderPath="Manage\">
@@ -29873,20 +29875,9 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
     <LineIds Name="FB_CIP.act_SprinklerCondition">
       <LineId Id="1" Count="0" />
       <LineId Id="30" Count="0" />
-      <LineId Id="16" Count="1" />
-      <LineId Id="54" Count="0" />
-      <LineId Id="57" Count="0" />
-      <LineId Id="52" Count="0" />
-      <LineId Id="46" Count="5" />
-      <LineId Id="32" Count="0" />
-      <LineId Id="21" Count="2" />
-      <LineId Id="60" Count="0" />
-      <LineId Id="24" Count="0" />
-      <LineId Id="58" Count="1" />
-      <LineId Id="56" Count="0" />
-      <LineId Id="40" Count="5" />
-      <LineId Id="39" Count="0" />
-      <LineId Id="27" Count="2" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="63" Count="28" />
+      <LineId Id="61" Count="1" />
       <LineId Id="15" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP.act_ValveUpLow_Cntrl">
