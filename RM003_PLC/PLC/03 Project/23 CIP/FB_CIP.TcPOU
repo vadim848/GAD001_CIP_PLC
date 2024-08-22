@@ -255,7 +255,8 @@ mFillWater();
     <Folder Name="Meth" Id="{3ff852d5-11b9-4725-a976-204de9549283}" />
     <Action Name="_aActSprinkler_CIP4_entry" Id="{950b7eea-48d1-4526-8ac2-c40d033886ca}">
       <Implementation>
-        <ST><![CDATA[bSprinkler:=TRUE;]]></ST>
+        <ST><![CDATA[bSprinkler:=TRUE;
+tonr_CIP_Condition(ResetTime:=TRUE);]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -1190,10 +1191,10 @@ END_IF
     </Action>
     <Action Name="_aCondition_CIP4_Client_active" Id="{bfe6d02a-b7ef-406a-9930-97a8c275e005}">
       <Implementation>
-        <ST><![CDATA[fb_PumpCIP.m_Run(RPM:=pcFlow1_Rate.mRun_PID(Set_Point:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_Pipe,controlManual:=NOT(fb_PumpCIP.modeAuto)));
+        <ST><![CDATA[fb_PumpCIP.m_Run(RPM:=pcFlow1_Rate.mRun_PID(Set_Point:=fFlowRate,controlManual:=NOT(fb_PumpCIP.modeAuto)));
 
 
-tonr_CIP_Condition(PT:=SECOND_TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_ConditionDisInfection));
+tonr_CIP_Condition(PT:=SECOND_TO_TIME(tConditionTime));
 IF TRUE 
 AND pcFlow1_Rate.mRun(mRun=>_cond[1])
 AND pcFlow2_Rate.mRun(mRun=>_cond[2])	
@@ -3805,6 +3806,7 @@ fb_PumpClient.m_Run(RPM:=st_CIP_Param.r_CIP_Client_Pump);
 
 mVolumeReset_All();
 bSprinkler:=FALSE;
+tonr_CIP_Condition(ResetTime:=TRUE);
 ]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -30652,7 +30654,7 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="30" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aActSprinkler_CIP4_entry">
-      <LineId Id="1" Count="0" />
+      <LineId Id="1" Count="1" />
     </LineIds>
     <LineIds Name="FB_CIP._aCIP1_Done_entry">
       <LineId Id="1" Count="1" />
@@ -31641,7 +31643,9 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
     </LineIds>
     <LineIds Name="FB_CIP._aStartPump_CIP4_entry">
       <LineId Id="11" Count="4" />
-      <LineId Id="27" Count="1" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="28" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aStop_Pump_entry">
       <LineId Id="5" Count="2" />
