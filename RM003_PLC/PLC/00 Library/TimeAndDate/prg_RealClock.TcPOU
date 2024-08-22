@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
   <POU Name="prg_RealClock" Id="{e1fe7cf5-42c6-4697-8de3-74e42c26da6a}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM prg_RealClock
 VAR
@@ -32,6 +32,7 @@ VAR
 	bStartTime: BOOL;
 	stStart: TimeStruct;
 	sDelta: STRING;
+	ton_OneMinuteCount: TON;
 END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[(*--------->Set Plc Clock<----------------*)
@@ -77,7 +78,10 @@ sTimeWithMicroSec:=CONCAT(sTimeWithMicroSec,DWORD_TO_STRING(nMicroseconds));
 		CDT=>stSystemTime ,
 		CMICRO=>nMicroseconds );
 		
-act_TestDelta();		]]></ST>
+act_TestDelta();	
+
+ton_OneMinuteCount(PT:=T#1m, IN:=NOT ton_OneMinuteCount.Q);
+	]]></ST>
     </Implementation>
     <Action Name="act_TestDelta" Id="{08938b78-9c04-44ce-b119-b8aafe65b4bd}">
       <Implementation>
@@ -119,6 +123,9 @@ m_DeltaTime:=DELETE(m_DeltaTime,4,1);
       <LineId Id="152" Count="35" />
       <LineId Id="64" Count="0" />
       <LineId Id="220" Count="1" />
+      <LineId Id="254" Count="0" />
+      <LineId Id="253" Count="0" />
+      <LineId Id="255" Count="0" />
     </LineIds>
     <LineIds Name="prg_RealClock.act_TestDelta">
       <LineId Id="1" Count="1" />
