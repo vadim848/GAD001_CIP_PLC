@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
   <POU Name="FB_TwinSAFE" Id="{4ab5defe-eed2-490f-bb56-b846d8da8e90}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_TwinSAFE
 VAR_INPUT
@@ -20,7 +20,7 @@ VAR_IN_OUT
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[stTS.stSafetyOut.bEstopRestart:=ES_Restart;
+      <ST><![CDATA[stTS.stSafetyOut.ES_PB1_Restart:=ES_Restart;
 stTS.TSafeOut.Restart:=ES_Restart;
 
 ton_TSafe_OK(IN:=stTS.TSafeIn.InRun AND NOT stTS.TSafeIn.COM_Err, PT:=T#1S );
@@ -110,9 +110,7 @@ Buffer_Act_History[1].sErrorMessage:=CONCAT(Buffer_Act_History[1].sErrorMessage,
       </Implementation>
     </Method>
     <LineIds Name="FB_TwinSAFE">
-      <LineId Id="65" Count="1" />
-      <LineId Id="64" Count="0" />
-      <LineId Id="19" Count="25" />
+      <LineId Id="84" Count="28" />
       <LineId Id="9" Count="0" />
     </LineIds>
     <LineIds Name="FB_TwinSAFE.m_Print_Error_Message">
