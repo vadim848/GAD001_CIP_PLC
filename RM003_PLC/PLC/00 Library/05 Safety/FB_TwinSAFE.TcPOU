@@ -3,10 +3,13 @@
   <POU Name="FB_TwinSAFE" Id="{4ab5defe-eed2-490f-bb56-b846d8da8e90}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_TwinSAFE
 VAR_INPUT
-	ES_Restart: BOOL;
+	ES1_Restart: BOOL;
+	ES2_Restart: BOOL;
+	ES3_Restart: BOOL;
+	ES4_Restart: BOOL;
 END_VAR
 VAR_OUTPUT
-	bStateSafe: BOOL;
+	outStateSafe: BOOL;
 END_VAR
 VAR
 	rt_TSafe_OK: R_TRIG;
@@ -20,14 +23,24 @@ VAR_IN_OUT
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[stTS.stSafetyOut.ES_PB1_Restart:=ES_Restart;
-stTS.TSafeOut.Restart:=ES_Restart;
+      <ST><![CDATA[stTS.stSafetyOut.ES_PB1_Restart:=ES1_Restart;
+stTS.stSafetyOut.ES_PB2_Restart:=ES2_Restart;
+stTS.stSafetyOut.ES_PB3_Restart:=ES3_Restart;
+stTS.stSafetyOut.ES_PB4_Restart:=ES4_Restart;
+
+
+//stTS.TSafeOut.Restart:=ES1_Restart;
 
 ton_TSafe_OK(IN:=stTS.TSafeIn.InRun AND NOT stTS.TSafeIn.COM_Err, PT:=T#1S );
-IF ton_TSafe_OK.Q THEN;
-	bStateSafe:=TRUE;
+IF ton_TSafe_OK.Q 
+AND stTS.stSafetyIn.ES1_State
+AND stTS.stSafetyIn.ES2_State
+AND stTS.stSafetyIn.ES3_State
+AND stTS.stSafetyIn.ES4_State
+THEN;
+	outStateSafe:=TRUE;
 ELSE;
-	bStateSafe:=FALSE;	
+	outStateSafe:=FALSE;	
 END_IF
 rt_TSafe_OK(CLK:=ton_TSafe_OK.Q );
 IF rt_TSafe_OK.Q THEN;
@@ -110,7 +123,7 @@ Buffer_Act_History[1].sErrorMessage:=CONCAT(Buffer_Act_History[1].sErrorMessage,
       </Implementation>
     </Method>
     <LineIds Name="FB_TwinSAFE">
-      <LineId Id="84" Count="28" />
+      <LineId Id="212" Count="38" />
       <LineId Id="9" Count="0" />
     </LineIds>
     <LineIds Name="FB_TwinSAFE.m_Print_Error_Message">
