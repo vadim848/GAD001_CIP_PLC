@@ -23,12 +23,21 @@ END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[act_Call_TSs();
-bStateSafe:=arSafe[1].stSafetyIn.ES1_State;
 bStateSafe_ES1:=arSafe[1].stSafetyIn.ES1_State;
 bStateSafe_ES2:=arSafe[1].stSafetyIn.ES2_State;
 bStateSafe_ES3:=arSafe[1].stSafetyIn.ES3_State;
 bStateSafe_ES4:=arSafe[1].stSafetyIn.ES4_State;
 
+IF TRUE 
+AND bStateSafe_ES1
+AND bStateSafe_ES2
+AND bStateSafe_ES3
+AND bStateSafe_ES4
+THEN;
+	bStateSafe:=TRUE;
+ELSE;
+	bStateSafe:=FALSE;
+END_IF
 rtStateSafe(CLK:=bStateSafe);
 ftStateSafe(CLK:=bStateSafe);
 
@@ -648,9 +657,15 @@ Buffer_Act_History[1].sErrorMessage:=CONCAT(Buffer_Act_History[1].sErrorMessage,
     </Method>
     <LineIds Name="prg_Safety">
       <LineId Id="73" Count="0" />
-      <LineId Id="143" Count="0" />
       <LineId Id="146" Count="3" />
+      <LineId Id="169" Count="0" />
       <LineId Id="145" Count="0" />
+      <LineId Id="174" Count="3" />
+      <LineId Id="172" Count="0" />
+      <LineId Id="178" Count="0" />
+      <LineId Id="170" Count="0" />
+      <LineId Id="179" Count="0" />
+      <LineId Id="171" Count="0" />
       <LineId Id="93" Count="1" />
       <LineId Id="91" Count="0" />
       <LineId Id="72" Count="0" />

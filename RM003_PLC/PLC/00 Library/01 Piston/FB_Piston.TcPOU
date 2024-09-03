@@ -57,17 +57,12 @@ END_VAR
       <ST><![CDATA[IF iFB_Num <> E_Pis_Name.e0_not_in_use THEN;
 	
 END_IF
-(* case to acception at PLC Restart ...TBD
-IF prg_Safety.ftStateSafe.Q
-AND NOT stPis.st_Deafult
-THEN;
-	stPis.req_DefaultPos:=TRUE;
-	stPis.req_Close:=FALSE;
-	stPis.req_Open:=FALSE;	
-END_IF
-*)
 
 act_Get_Reference();
+
+
+
+
 act_State_Machine();
 act_StateDeafult();
 act_MemFdbkExist();
@@ -79,14 +74,26 @@ IF iFB_Num = E_Pis_Name.e0_not_in_use THEN;
 	//stPis.st_Deafult:=TRUE;
 END_IF
 
-IF prg_Safety.rtStateSafe.Q THEN;
-	
-	IF NOT stPis.st_Deafult THEN;
+(* case to acception at PLC Restart ...TBD*)
+IF __ISVALIDREF(stPis) THEN;
+	IF prg_Safety.ftStateSafe.Q
+	AND NOT stPis.st_Deafult
+	THEN;
 		stPis.req_DefaultPos:=TRUE;
+		stPis.req_Close:=FALSE;
+		stPis.req_Open:=FALSE;	
+	END_IF
+	
+	IF prg_Safety.rtStateSafe.Q THEN;
+		
+		IF NOT stPis.st_Deafult THEN;
+			stPis.req_DefaultPos:=TRUE;
+		END_IF	
+		stPis.b_Resume:=TRUE;
+		//stPis.b_Reset:=TRUE;	
 	END_IF	
-	stPis.b_Resume:=TRUE;
-	//stPis.b_Reset:=TRUE;	
 END_IF
+
 
 
 ]]></ST>
@@ -317,6 +324,9 @@ END_IF]]></ST>
 		stPis.req_CloseMan:=FALSE;
 		stPis.req_DefaultPos:=FALSE;	
 	END_IF
+	IF rt_DefaultPos.Q THEN; 
+		state:=E_Piston_State.Init; 
+	END_IF
 	
 	(*IF rt_CloseMan.Q THEN; 
 		state:=E_Piston_State.Busy_Close;
@@ -324,9 +334,7 @@ END_IF]]></ST>
 	IF rt_OpenMan.Q THEN; 
 		state:=E_Piston_State.Busy_Open; 
 	END_IF
-	IF rt_DefaultPos.Q THEN; 
-		state:=E_Piston_State.Init; 
-	END_IF*)
+*)
 	
 	IF rt_Close.Q 
 	OR rt_Open.Q
@@ -661,10 +669,8 @@ END_IF
       <LineId Id="249" Count="0" />
       <LineId Id="299" Count="0" />
       <LineId Id="250" Count="0" />
-      <LineId Id="356" Count="0" />
-      <LineId Id="426" Count="0" />
-      <LineId Id="357" Count="1" />
-      <LineId Id="362" Count="2" />
+      <LineId Id="536" Count="0" />
+      <LineId Id="535" Count="0" />
       <LineId Id="355" Count="0" />
       <LineId Id="427" Count="0" />
       <LineId Id="301" Count="0" />
@@ -677,12 +683,11 @@ END_IF
       <LineId Id="300" Count="0" />
       <LineId Id="65" Count="0" />
       <LineId Id="201" Count="1" />
-      <LineId Id="366" Count="0" />
-      <LineId Id="365" Count="0" />
-      <LineId Id="378" Count="0" />
-      <LineId Id="376" Count="1" />
-      <LineId Id="372" Count="0" />
-      <LineId Id="370" Count="1" />
+      <LineId Id="544" Count="0" />
+      <LineId Id="537" Count="0" />
+      <LineId Id="546" Count="0" />
+      <LineId Id="549" Count="14" />
+      <LineId Id="547" Count="1" />
       <LineId Id="368" Count="0" />
       <LineId Id="349" Count="0" />
       <LineId Id="351" Count="0" />
@@ -824,13 +829,14 @@ END_IF
       <LineId Id="48" Count="1" />
       <LineId Id="47" Count="0" />
       <LineId Id="34" Count="0" />
+      <LineId Id="55" Count="1" />
+      <LineId Id="54" Count="0" />
       <LineId Id="50" Count="0" />
       <LineId Id="12" Count="0" />
       <LineId Id="35" Count="1" />
       <LineId Id="13" Count="0" />
       <LineId Id="37" Count="1" />
-      <LineId Id="14" Count="0" />
-      <LineId Id="39" Count="1" />
+      <LineId Id="40" Count="0" />
       <LineId Id="16" Count="0" />
       <LineId Id="15" Count="0" />
       <LineId Id="17" Count="0" />
