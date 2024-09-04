@@ -1487,7 +1487,7 @@ END_IF
 IF Condition_CIP4_Client.t > SECOND_TO_TIME(st_CIP_Param.t_PumpInitRun) THEN;
 	fb_PumpCIP.m_Run(RPM:=pcFlow1_Rate.mRun_PID(Set_Point:=fFlowRate,controlManual:=NOT(fb_PumpCIP.modeAuto)));
 END_IF
-
+fb_PumpClient.m_Run(RPM:=st_CIP_Param.r_CIP_Client_Pump);
 //Level control
 
 IF FALSE  
