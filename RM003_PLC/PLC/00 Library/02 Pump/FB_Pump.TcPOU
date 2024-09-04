@@ -65,7 +65,7 @@ IF __ISVALIDREF(stNidec) THEN;
 		bRun:=bRun_Man:=bRun_Auto:=FALSE;
 		ControlWord.EnableOperation:=FALSE;
 	END_IF	
-
+	stPump.DriveReady:=DriveReady;
 ELSE;
 	//RETURN;
 END_IF
@@ -189,7 +189,10 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF  NOT StatusWord.VoltageEnabled OR StatusWord.Fault THEN;
+        <ST><![CDATA[IF  NOT StatusWord.VoltageEnabled 
+OR StatusWord.Fault 
+OR (state_init=Ready AND NOT StatusWord.ReadyToSwitchOn )
+THEN;
 	ControlWord.SwitchOn:=FALSE;
 	ControlWord.EnableVoltage:=FALSE;
 	ControlWord.QuickStop:=FALSE;
@@ -251,7 +254,9 @@ CASE state_init OF
 		IF ton_Drive_init.Q THEN;
 			state_init:=Ready;
 			ton_Drive_init(IN:=FALSE);
-		END_IF		
+		END_IF	
+
+	
 	
 END_CASE]]></ST>
       </Implementation>
@@ -343,6 +348,9 @@ m_Stop:=TRUE;]]></ST>
     </LineIds>
     <LineIds Name="FB_Pump.m_Nidec_Init">
       <LineId Id="5" Count="0" />
+      <LineId Id="95" Count="0" />
+      <LineId Id="97" Count="0" />
+      <LineId Id="96" Count="0" />
       <LineId Id="19" Count="0" />
       <LineId Id="15" Count="2" />
       <LineId Id="23" Count="0" />
@@ -368,6 +376,8 @@ m_Stop:=TRUE;]]></ST>
       <LineId Id="76" Count="8" />
       <LineId Id="86" Count="1" />
       <LineId Id="72" Count="0" />
+      <LineId Id="94" Count="0" />
+      <LineId Id="93" Count="0" />
       <LineId Id="52" Count="0" />
       <LineId Id="34" Count="0" />
     </LineIds>
