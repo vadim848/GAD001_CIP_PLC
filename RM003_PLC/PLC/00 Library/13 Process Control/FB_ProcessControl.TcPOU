@@ -41,7 +41,7 @@ IF bRun THEN
 	ELSIF stProcessControl.Deviation <= -stProcessControl.ToleranceHigh THEN;
 		//value too high need to be decreased
 		stProcessControl.OverFlow:=TRUE;
-		stProcessControl.Control_ON:=FALSE;
+		stProcessControl.Control_ON:=TRUE;
 		stProcessControl.bDone:=FALSE;
 		//message
 	ELSE;
@@ -562,6 +562,7 @@ END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[bRun:=TRUE;
+mRun();
 stProcessControl.rSetPoint:=Set_Point;
 mRun_With_SP:=stProcessControl.bDone;]]></ST>
       </Implementation>
@@ -608,6 +609,7 @@ mRun_With_SP:=stProcessControl.bDone;]]></ST>
     </LineIds>
     <LineIds Name="FB_ProcessControl.mRun_With_SP">
       <LineId Id="5" Count="0" />
+      <LineId Id="18" Count="0" />
       <LineId Id="13" Count="0" />
       <LineId Id="9" Count="0" />
     </LineIds>

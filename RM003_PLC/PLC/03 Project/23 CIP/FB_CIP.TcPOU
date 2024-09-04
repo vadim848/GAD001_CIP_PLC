@@ -123,7 +123,7 @@ VAR
 	a: REAL := 0.8;
 	b: REAL := 1.2;
 	i: E_CIP_Usage;
-	setTime: TIME;
+	tMeasureDelayTime: TIME;
 	bLoadDefSetPoints: BOOL;
 	
 	//Additional water valume if the solution concentration is too high
@@ -157,6 +157,7 @@ VAR
 	_cond: ARRAY[0..9] OF BOOL;
 	tonStepConditionTime: TON;
 	bClientTypeIs_Tank: BOOL;
+	t_ActMeasureTime: TIME;
 END_VAR
 //upper lower control
 VAR
@@ -245,6 +246,8 @@ IF bRun AND bClientRef_done THEN;
 	act_Run();
 END_IF
 
+
+t_ActMeasureTime:=m_MeasureTimeToHMI();
 mFillWater();
 
 //IF bMoveStep THEN bMoveStep:=FALSE; END_IF
@@ -3179,8 +3182,8 @@ _aGet_Client_active();
     <Action Name="_ameasureDelay_CIP2_1_active" Id="{eee92c62-884a-44e9-a331-0195a641ce83}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
-setTime:=SECOND_TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_Measure_Delay);
-IF measureDelay_CIP2_1.t>setTime THEN;
+tMeasureDelayTime:=SECOND_TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_Measure_Delay);
+IF measureDelay_CIP2_1.t > tMeasureDelayTime THEN;
 	bStepDone:=TRUE;
 END_IF
 
@@ -3224,7 +3227,8 @@ END_IF]]></ST>
     <Action Name="_ameasureDelay_CIP2_2_active" Id="{e6c27ce5-3263-4596-8180-705d3553666d}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
-IF measureDelay_CIP2_2.t>SECOND_TO_TIME(st_CIP_Param.t_Measure_Delay) THEN;
+tMeasureDelayTime:=SECOND_TO_TIME(st_CIP_Param.t_Measure_Delay);
+IF measureDelay_CIP2_2.t > tMeasureDelayTime THEN;
 	bStepDone:=TRUE;
 END_IF
 
@@ -3267,7 +3271,8 @@ END_IF]]></ST>
     <Action Name="_ameasureDelay_CIP3_1_active" Id="{95864345-55ce-4583-98e3-3f17b2ed667c}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
-IF measureDelay_CIP3_1.t>SECOND_TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_Measure_Delay) THEN;
+tMeasureDelayTime:=SECOND_TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_Measure_Delay);
+IF measureDelay_CIP3_1.t > tMeasureDelayTime THEN;
 	bStepDone:=TRUE;
 END_IF
 
@@ -3311,7 +3316,8 @@ END_IF]]></ST>
     <Action Name="_ameasureDelay_CIP3_2_active" Id="{79294f20-9c9f-4055-ae02-c5c9b94196a4}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
-IF measureDelay_CIP3_2.t>SECOND_TO_TIME(st_CIP_Param.t_Measure_Delay) THEN;
+tMeasureDelayTime:= SECOND_TO_TIME(st_CIP_Param.t_Measure_Delay);
+IF measureDelay_CIP3_2.t > tMeasureDelayTime THEN;
 	bStepDone:=TRUE;
 END_IF
 
@@ -31246,6 +31252,29 @@ END_VAR]]></Declaration>
 END_FOR]]></ST>
       </Implementation>
     </Method>
+    <Method Name="m_MeasureTimeToHMI" Id="{6c49de4b-95a1-4fe1-b1b1-55f4c051916f}" FolderPath="Meth\">
+      <Declaration><![CDATA[METHOD m_MeasureTimeToHMI : TIME
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF SFCCurrentStep='measureDelay_CIP2_1' THEN;
+	m_MeasureTimeToHMI:=measureDelay_CIP2_1.t;
+	
+ELSIF SFCCurrentStep='measureDelay_CIP2_2' THEN;
+	m_MeasureTimeToHMI:=measureDelay_CIP2_2.t;
+	
+ELSIF SFCCurrentStep='measureDelay_CIP3_1' THEN;
+	m_MeasureTimeToHMI:=measureDelay_CIP3_1.t;
+	
+ELSIF SFCCurrentStep='measureDelay_CIP3_2' THEN;
+	m_MeasureTimeToHMI:=measureDelay_CIP3_2.t;
+
+ELSE;
+	m_MeasureTimeToHMI:=T#0S;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="m_OverFlowCorrect" Id="{3d927e50-569d-481a-ab49-43c1ca44dff1}" FolderPath="Meth\">
       <Declaration><![CDATA[METHOD m_OverFlowCorrect : REAL
 VAR_INPUT
@@ -31773,6 +31802,7 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="186" Count="0" />
       <LineId Id="185" Count="0" />
       <LineId Id="187" Count="1" />
+      <LineId Id="1831" Count="1" />
       <LineId Id="1426" Count="0" />
       <LineId Id="1419" Count="0" />
       <LineId Id="1423" Count="0" />
@@ -32577,7 +32607,9 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._ameasureDelay_CIP2_2_active">
-      <LineId Id="2" Count="6" />
+      <LineId Id="2" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="3" Count="5" />
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._ameasureDelay_CIP2_2_entry">
@@ -32585,6 +32617,7 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
     </LineIds>
     <LineIds Name="FB_CIP._ameasureDelay_CIP3_1_active">
       <LineId Id="4" Count="0" />
+      <LineId Id="9" Count="0" />
       <LineId Id="1" Count="2" />
       <LineId Id="6" Count="0" />
       <LineId Id="5" Count="0" />
@@ -32596,6 +32629,7 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
     </LineIds>
     <LineIds Name="FB_CIP._ameasureDelay_CIP3_2_active">
       <LineId Id="4" Count="0" />
+      <LineId Id="9" Count="0" />
       <LineId Id="1" Count="2" />
       <LineId Id="6" Count="0" />
       <LineId Id="5" Count="0" />
@@ -33154,6 +33188,19 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="41" Count="7" />
       <LineId Id="39" Count="1" />
       <LineId Id="7" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_CIP.m_MeasureTimeToHMI">
+      <LineId Id="7" Count="1" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="17" Count="1" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="19" Count="1" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="11" Count="1" />
+      <LineId Id="9" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP.m_OverFlowCorrect">
       <LineId Id="5" Count="0" />
