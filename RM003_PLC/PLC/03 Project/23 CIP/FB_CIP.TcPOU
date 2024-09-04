@@ -867,7 +867,21 @@ mVolumeReset_All();
     </Action>
     <Action Name="_aCondition_CIP1_Client_active" Id="{9c9aa498-c10a-4f64-a491-9b8cc01cad7d}">
       <Implementation>
-        <ST><![CDATA[fb_PumpCIP.m_Run(RPM:=pcFlow1_Rate.mRun_PID(Set_Point:=fFlowRate,controlManual:=NOT(fb_PumpCIP.modeAuto)));
+        <ST><![CDATA[IF NOT bSprinkler THEN
+	//pipe
+	tConditionTime	:=st_CIP_Param.t_ConditionR_Water;
+	fFlowRate		:=st_CIP_Param.r_Flow_Pipe;
+	
+ELSE
+	//sprinkler
+	tConditionTime	:=st_CIP_Param.t_ConditionR_Water_Sprinkler;
+	fFlowRate		:=st_CIP_Param.r_Flow_Sprinkler;
+END_IF
+
+IF Condition_CIP1_Client.t > SECOND_TO_TIME(st_CIP_Param.t_PumpInitRun) THEN;
+	fb_PumpCIP.m_Run(RPM:=pcFlow1_Rate.mRun_PID(Set_Point:=fFlowRate,controlManual:=NOT(fb_PumpCIP.modeAuto)));
+END_IF
+
 
 tonr_CIP_Condition(PT:=SECOND_TO_TIME(tConditionTime));
 IF TRUE 
@@ -886,8 +900,9 @@ ELSE;
 	bCIP_Condition_Done:=FALSE;	
 END_IF
 
-IF TRUE  
-AND delta_T93_Volume < -st_CIP_Param.r_Volume_Drain_R_Water 
+IF FALSE  
+//AND delta_T93_Volume < -st_CIP_Param.r_Volume_Drain_R_Water 
+OR lvlTank_T93.rTankLevel < 250
 THEN;
 	bCIP_Condition_Failed:=TRUE;
 END_IF
@@ -958,6 +973,12 @@ END_IF
     <Action Name="_aCondition_CIP1_Client_entry" Id="{649219db-8d44-4e51-8e61-14138dc431b7}">
       <Implementation>
         <ST><![CDATA[//fbCIP_Return.m_Run(eReqProc:=E_CIP_Return.eT93_R_Water);
+
+fb_PumpCIP.m_Run(RPM:=st_CIP_Param.r_CIP_Pump);
+fb_PumpClient.m_Run(RPM:=st_CIP_Param.r_CIP_Client_Pump);
+
+bCIP_Condition_Failed:=FALSE;
+bCIP_Condition_Done:=FALSE;
 mVolumeReset_All();]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -1452,18 +1473,29 @@ END_IF
     </Action>
     <Action Name="_aCondition_CIP4_Client_active" Id="{bfe6d02a-b7ef-406a-9930-97a8c275e005}">
       <Implementation>
-        <ST><![CDATA[fb_PumpCIP.m_Run(RPM:=pcFlow1_Rate.mRun_PID(Set_Point:=fFlowRate,controlManual:=NOT(fb_PumpCIP.modeAuto)));
+        <ST><![CDATA[IF NOT bSprinkler THEN
+	//pipe
+	tConditionTime	:=st_CIP_Param.t_ConditionWater;
+	fFlowRate		:=st_CIP_Param.r_Flow_Pipe;
+	
+ELSE
+	//sprinkler
+	tConditionTime	:=st_CIP_Param.t_ConditionWater_Sprinkler;
+	fFlowRate		:=st_CIP_Param.r_Flow_Sprinkler;
+END_IF
+
+IF Condition_CIP4_Client.t > SECOND_TO_TIME(st_CIP_Param.t_PumpInitRun) THEN;
+	fb_PumpCIP.m_Run(RPM:=pcFlow1_Rate.mRun_PID(Set_Point:=fFlowRate,controlManual:=NOT(fb_PumpCIP.modeAuto)));
+END_IF
+
 //Level control
 
-bStepDone:=FALSE;
-IF TRUE  
-AND (delta_T94_Volume < -st_CIP_Param.r_Volume_Recycle_Detergent AND eRefClient_fbElement.eState_Long=E_Element_State_Long.eCIP_2_Deterged
-OR delta_T94_Volume < -st_CIP_Param.r_Volume_Recycle_DisInfection AND eRefClient_fbElement.eState_Long=E_Element_State_Long.eCIP_4_Sanitized) 
+IF FALSE  
+//AND (delta_T94_Volume < -st_CIP_Param.r_Volume_Recycle_Detergent AND eRefClient_fbElement.eState_Long=E_Element_State_Long.eCIP_2_Deterged
+//OR delta_T94_Volume < -st_CIP_Param.r_Volume_Recycle_DisInfection AND eRefClient_fbElement.eState_Long=E_Element_State_Long.eCIP_4_Sanitized) 
+OR lvlTank_T94.rTankLevel < 250
 THEN;
 	bCIP_Condition_Failed:=TRUE;
-	bStepDone:=TRUE;
-ELSIF bCIP_Condition_Done THEN;
-	bStepDone:=TRUE;
 END_IF
 
 
@@ -1546,6 +1578,8 @@ END_IF
     <Action Name="_aCondition_CIP4_Client_entry" Id="{d3c6cb88-c31f-437c-b71e-7c943a37e052}">
       <Implementation>
         <ST><![CDATA[//fbCIP_Return.m_Run(eReqProc:=E_CIP_Return.eT93_R_Water);
+bCIP_Condition_Failed:=FALSE;
+bCIP_Condition_Done:=FALSE;
 mVolumeReset_All();]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -3426,17 +3460,6 @@ bClientRef_done:=TRUE;]]></ST>
     <Action Name="_aReadyToCondition_Count_active" Id="{63783ecf-f88e-4e69-b08a-d0b63a866753}">
       <Implementation>
         <ST><![CDATA[
-IF NOT bSprinkler THEN
-	//pipe
-	tConditionTime	:=st_CIP_Param.t_ConditionWater;
-	fFlowRate		:=st_CIP_Param.r_Flow_Pipe;
-	
-ELSE
-	//sprinkler
-	tConditionTime	:=st_CIP_Param.t_ConditionWater_Sprinkler;
-	fFlowRate		:=st_CIP_Param.r_Flow_Sprinkler;
-END_IF
-
 (*
 IF TRUE 
 AND pcFlow1_Rate.mRun()
@@ -3481,8 +3504,7 @@ END_IF
     </Action>
     <Action Name="_aReadyToCondition_Count_entry" Id="{c49ce332-1ee4-4760-920c-b0d999acd035}">
       <Implementation>
-        <ST><![CDATA[bCIP_Condition_Failed:=FALSE;
-bCIP_Condition_Done:=FALSE;
+        <ST><![CDATA[
 fb_PumpCIP.m_Run(RPM:=st_CIP_Param.r_CIP_Pump);
 fb_PumpClient.m_Run(RPM:=st_CIP_Param.r_CIP_Client_Pump);]]></ST>
       </Implementation>
@@ -3504,7 +3526,7 @@ fb_PumpClient.m_Run(RPM:=st_CIP_Param.r_CIP_Client_Pump);]]></ST>
       <Implementation>
         <ST><![CDATA[IF TRUE
 //AND lvlTank_T94.e_state=E_Tank_Level.eLL
-AND lvlTank_T93.rTankLevel +20>st_CIP_Param.r_Tank93_Volume//st_CIP_Param.r_Water_TankLvl_Lcl_1 // Client requered Level
+AND lvlTank_T93.rTankLevel + 0 > st_CIP_Param.r_Tank93_Volume//st_CIP_Param.r_Water_TankLvl_Lcl_1 // Client requered Level
 THEN;	
 	bStepDone:=TRUE;
 	fbPis.m_SetByRecipe(stPis:=stPis_FillWater_T93, req:=E_Piston_Recipe_State.Release);
@@ -3721,24 +3743,10 @@ bStepDone:=TRUE;]]></ST>
         <ST><![CDATA[fb_PumpCIP.m_Run(RPM:=st_CIP_Param.r_CIP_Pump);
 fb_PumpClient.m_Run(RPM:=st_CIP_Param.r_CIP_Client_Pump);
 
-bCIP_Condition_Failed:=FALSE;
-bCIP_Condition_Done:=FALSE;
-
 mVolumeReset_All();
 
 tonr_CIP_Condition(ResetTime:=TRUE);
-
-
-IF NOT bSprinkler THEN
-	//pipe
-	tConditionTime	:=st_CIP_Param.t_ConditionWater;
-	fFlowRate		:=st_CIP_Param.r_Flow_Pipe;
-	
-ELSE
-	//sprinkler
-	tConditionTime	:=st_CIP_Param.t_ConditionWater_Sprinkler;
-	fFlowRate		:=st_CIP_Param.r_Flow_Sprinkler;
-END_IF]]></ST>
+]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -31928,12 +31936,18 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="1" Count="2" />
     </LineIds>
     <LineIds Name="FB_CIP._aCondition_CIP1_Client_active">
+      <LineId Id="118" Count="8" />
+      <LineId Id="114" Count="0" />
+      <LineId Id="127" Count="0" />
+      <LineId Id="115" Count="2" />
       <LineId Id="2" Count="0" />
       <LineId Id="96" Count="0" />
       <LineId Id="98" Count="14" />
       <LineId Id="97" Count="0" />
       <LineId Id="12" Count="0" />
-      <LineId Id="62" Count="3" />
+      <LineId Id="62" Count="1" />
+      <LineId Id="113" Count="0" />
+      <LineId Id="64" Count="1" />
       <LineId Id="69" Count="26" />
       <LineId Id="56" Count="0" />
       <LineId Id="33" Count="2" />
@@ -31951,6 +31965,11 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
     </LineIds>
     <LineIds Name="FB_CIP._aCondition_CIP1_Client_entry">
       <LineId Id="2" Count="0" />
+      <LineId Id="6" Count="1" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="4" Count="0" />
+      <LineId Id="3" Count="0" />
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aCondition_CIP1_Client_exit">
@@ -32083,9 +32102,18 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aCondition_CIP4_Client_active">
+      <LineId Id="94" Count="8" />
+      <LineId Id="92" Count="0" />
+      <LineId Id="103" Count="0" />
+      <LineId Id="93" Count="0" />
+      <LineId Id="104" Count="1" />
       <LineId Id="2" Count="0" />
       <LineId Id="12" Count="0" />
-      <LineId Id="57" Count="33" />
+      <LineId Id="57" Count="0" />
+      <LineId Id="59" Count="2" />
+      <LineId Id="107" Count="0" />
+      <LineId Id="62" Count="1" />
+      <LineId Id="67" Count="23" />
       <LineId Id="56" Count="0" />
       <LineId Id="91" Count="0" />
       <LineId Id="13" Count="0" />
@@ -32107,6 +32135,8 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
     </LineIds>
     <LineIds Name="FB_CIP._aCondition_CIP4_Client_entry">
       <LineId Id="2" Count="0" />
+      <LineId Id="4" Count="0" />
+      <LineId Id="3" Count="0" />
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aCondition_CIP4_Client_exit">
@@ -32616,12 +32646,6 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="31" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aReadyToCondition_Count_active">
-      <LineId Id="36" Count="3" />
-      <LineId Id="43" Count="0" />
-      <LineId Id="65" Count="0" />
-      <LineId Id="44" Count="2" />
-      <LineId Id="50" Count="0" />
-      <LineId Id="35" Count="0" />
       <LineId Id="69" Count="0" />
       <LineId Id="73" Count="9" />
       <LineId Id="70" Count="0" />
@@ -32636,7 +32660,6 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="51" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aReadyToCondition_Count_entry">
-      <LineId Id="2" Count="0" />
       <LineId Id="1" Count="0" />
       <LineId Id="4" Count="0" />
       <LineId Id="3" Count="0" />
@@ -32700,11 +32723,8 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
     <LineIds Name="FB_CIP._aStartPump_CIP1_01_entry">
       <LineId Id="4" Count="0" />
       <LineId Id="2" Count="0" />
-      <LineId Id="10" Count="1" />
-      <LineId Id="6" Count="0" />
       <LineId Id="12" Count="0" />
       <LineId Id="7" Count="2" />
-      <LineId Id="13" Count="10" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aStartPump_CIP2_01_active">
