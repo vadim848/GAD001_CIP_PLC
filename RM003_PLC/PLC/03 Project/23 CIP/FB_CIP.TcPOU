@@ -256,7 +256,10 @@ mFillWater();
 ]]></ST>
     </Implementation>
     <Folder Name="Manage" Id="{8cb05385-d8fc-420c-9505-d8b2a8121243}" />
-    <Folder Name="Meth" Id="{3ff852d5-11b9-4725-a976-204de9549283}" />
+    <Folder Name="Meth" Id="{3ff852d5-11b9-4725-a976-204de9549283}">
+      <Folder Name="Dashboard" Id="{9e04f67f-2723-4849-a13e-a86c894f0a2f}" />
+      <Folder Name="HMI_queue_pos" Id="{5c4eceae-9a17-444f-b26e-881c006e97cc}" />
+    </Folder>
     <Action Name="_aCIP1_Conn_Sprinkler_active" Id="{4c796a07-4449-4c49-bcc2-457b99419775}">
       <Implementation>
         <ST><![CDATA[//Connect client tank to sprinkler
@@ -31246,7 +31249,7 @@ CASE nStep_Vlv OF
 END_CASE ]]></ST>
       </Implementation>
     </Action>
-    <Method Name="m_CleanEmpty_Spaces" Id="{a02513cf-5921-4270-b511-66d8a68458f2}" FolderPath="Meth\">
+    <Method Name="m_CleanEmpty_Spaces" Id="{a02513cf-5921-4270-b511-66d8a68458f2}" FolderPath="Meth\HMI_queue_pos\">
       <Declaration><![CDATA[METHOD m_CleanEmpty_Spaces : BOOL
 VAR_INPUT
 END_VAR
@@ -31272,7 +31275,7 @@ END_VAR]]></Declaration>
 END_FOR]]></ST>
       </Implementation>
     </Method>
-    <Method Name="m_DashState_from" Id="{517ea0a0-c223-471a-a5e8-76eedc4a5a7a}" FolderPath="Meth\">
+    <Method Name="m_DashState_from" Id="{517ea0a0-c223-471a-a5e8-76eedc4a5a7a}" FolderPath="Meth\Dashboard\">
       <Declaration><![CDATA[METHOD m_DashState_from : E_CIP_DashStage_List
 VAR
 	eActCIP_State	: E_Element_State_Long;
@@ -31303,7 +31306,7 @@ ELSE;
 END_CASE]]></ST>
       </Implementation>
     </Method>
-    <Method Name="m_DashState_Get_ToBeDone_List" Id="{d256d03e-5646-4a44-97db-829d1963e250}" FolderPath="Meth\">
+    <Method Name="m_DashState_Get_ToBeDone_List" Id="{d256d03e-5646-4a44-97db-829d1963e250}" FolderPath="Meth\Dashboard\">
       <Declaration><![CDATA[METHOD m_DashState_Get_ToBeDone_List : BOOL
 VAR
 	//eActCIP_State	: E_Element_State_Long;
@@ -31360,7 +31363,7 @@ END_FOR
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="m_DashState_Sprinkler" Id="{306d9d0f-c147-419d-8576-035700b09af5}" FolderPath="Meth\">
+    <Method Name="m_DashState_Sprinkler" Id="{306d9d0f-c147-419d-8576-035700b09af5}" FolderPath="Meth\Dashboard\">
       <Declaration><![CDATA[METHOD m_DashState_Sprinkler : BOOL
 VAR_INPUT
 	stage: E_CIP_DashStage_List;
@@ -31379,7 +31382,7 @@ ELSE;
 END_CASE]]></ST>
       </Implementation>
     </Method>
-    <Method Name="m_DashState_to" Id="{90469f15-32d0-4753-bd08-fb0af69e8ea7}" FolderPath="Meth\">
+    <Method Name="m_DashState_to" Id="{90469f15-32d0-4753-bd08-fb0af69e8ea7}" FolderPath="Meth\Dashboard\">
       <Declaration><![CDATA[METHOD m_DashState_to : E_CIP_DashStage_List
 VAR
 	eCIP_req		: ST_CIP_Request;
@@ -31405,7 +31408,7 @@ END_CASE
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="m_DashState_ToString_convertion" Id="{ac0b670d-4de4-4707-89c6-0875fdc96ae9}" FolderPath="Meth\">
+    <Method Name="m_DashState_ToString_convertion" Id="{ac0b670d-4de4-4707-89c6-0875fdc96ae9}" FolderPath="Meth\Dashboard\">
       <Declaration><![CDATA[METHOD m_DashState_ToString_convertion : BOOL
 VAR_INPUT
 END_VAR
@@ -31456,7 +31459,7 @@ END_VAR
 m_OverFlowCorrect:=((rAv*rAc/100)/(rTc/100))-(rAv*rAc/100)-rAv+(rAv*rAc/100);]]></ST>
       </Implementation>
     </Method>
-    <Method Name="m_PosDelete_HMI" Id="{5ecfed30-e439-4aa1-8486-4d270c40480b}" FolderPath="Meth\">
+    <Method Name="m_PosDelete_HMI" Id="{5ecfed30-e439-4aa1-8486-4d270c40480b}" FolderPath="Meth\HMI_queue_pos\">
       <Declaration><![CDATA[METHOD m_PosDelete_HMI : BOOL
 VAR_INPUT
 END_VAR
@@ -31471,7 +31474,7 @@ END_VAR]]></Declaration>
 END_IF]]></ST>
       </Implementation>
     </Method>
-    <Method Name="m_PosDeleteAll_HMI" Id="{0565b103-e72e-4e42-86f5-de0bd5b6f5d7}" FolderPath="Meth\">
+    <Method Name="m_PosDeleteAll_HMI" Id="{0565b103-e72e-4e42-86f5-de0bd5b6f5d7}" FolderPath="Meth\HMI_queue_pos\">
       <Declaration><![CDATA[METHOD m_PosDeleteAll_HMI : BOOL
 VAR_INPUT
 END_VAR
@@ -31488,7 +31491,7 @@ FOR i:=0 TO 9 DO
 END_FOR]]></ST>
       </Implementation>
     </Method>
-    <Method Name="m_PosMove_Down_HMI" Id="{c114e84d-a8ed-4e16-9653-147f733c0d8b}" FolderPath="Meth\">
+    <Method Name="m_PosMove_Down_HMI" Id="{c114e84d-a8ed-4e16-9653-147f733c0d8b}" FolderPath="Meth\HMI_queue_pos\">
       <Declaration><![CDATA[METHOD m_PosMove_Down_HMI : BOOL
 VAR_INPUT
 END_VAR
@@ -31517,7 +31520,7 @@ END_VAR]]></Declaration>
 END_IF]]></ST>
       </Implementation>
     </Method>
-    <Method Name="m_PosMove_Up_HMI" Id="{882d4194-9591-429b-a6de-feb8c47cbd4c}" FolderPath="Meth\">
+    <Method Name="m_PosMove_Up_HMI" Id="{882d4194-9591-429b-a6de-feb8c47cbd4c}" FolderPath="Meth\HMI_queue_pos\">
       <Declaration><![CDATA[METHOD m_PosMove_Up_HMI : BOOL
 VAR_INPUT
 END_VAR
@@ -31570,7 +31573,7 @@ refSFC.SFCTipMode REF= SFCTipMode;
 m_SFC_Handle();]]></ST>
       </Implementation>
     </Method>
-    <Method Name="m_TakePosInCIPBuffer" Id="{b2dcb157-1d24-4a20-a9df-81a455a5e4d3}" FolderPath="Meth\">
+    <Method Name="m_TakePosInCIPBuffer" Id="{b2dcb157-1d24-4a20-a9df-81a455a5e4d3}" FolderPath="Meth\HMI_queue_pos\">
       <Declaration><![CDATA[METHOD m_TakePosInCIPBuffer : BOOL
 VAR_INPUT
 	stCIP_Request: ST_CIP_Request;
