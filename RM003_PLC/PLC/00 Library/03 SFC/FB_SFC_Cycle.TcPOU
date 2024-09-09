@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
   <POU Name="FB_SFC_Cycle" Id="{2eff1a57-7803-4790-acb1-7416be6b3b39}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_SFC_Cycle
 VAR_INPUT
@@ -37,6 +37,7 @@ VAR
 	
 	ErrorSFC: BOOL;
 
+	tonResetCycle: TON;
 	
 END_VAR
 ]]></Declaration>
@@ -69,7 +70,7 @@ VAR_INPUT
 END_VAR
 
 VAR
-	tonResetCycle: TON;
+	
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[
@@ -141,10 +142,10 @@ IF bResume THEN;
 	bResume:=FALSE;
 END_IF
 
-tonResetCycle(PT:=T#0.5S);
+tonResetCycle(PT:=T#0.5S,IN:=bResetCycle);
 IF bResetCycle THEN;
 	refSFC.SFCReset:=TRUE;
-	tonResetCycle.IN:=TRUE;
+	//tonResetCycle.IN:=TRUE;
 END_IF
 IF tonResetCycle.Q THEN;
 	bResetCycle:=FALSE;

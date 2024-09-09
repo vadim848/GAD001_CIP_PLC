@@ -3117,11 +3117,31 @@ IF __ISVALIDREF(eRefClient_fbElement) THEN
 		eRefClient_fbElement.m_InterConnect(value:=E_InterConnection.ConnToCIP);
 	END_IF
 	
+	
 	bStepDone:=TRUE;
 END_IF
 
 
 ]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
+    <Action Name="_aGet_Client_exit" Id="{bbec42eb-a783-4f5e-82aa-7eeb4cf6f071}">
+      <Implementation>
+        <ST><![CDATA[m_DashState_ToString_convertion();
+m_DashState_Get_ToBeDone_List();]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -5481,7 +5501,7 @@ END_CASE]]></ST>
                           <o>
                             <v n="AttributeId">{a2621e18-7de3-4ea6-ae6d-89e9e0b7befd}</v>
                             <o n="Value" t="StringValue">
-                              <v n="Value">""</v>
+                              <v n="Value">"_aGet_Client_exit"</v>
                               <v n="DefaultValue">""</v>
                             </o>
                             <v n="Id">79L</v>
@@ -30962,7 +30982,7 @@ END_IF
 	IF eRefClient_fbElement.bError AND SFCCurrentStep<>'Ready' THEN;
 		m_Set_LastStepBeforeError();
 		sError_Message:='Client Error';
-		mResetCycle();
+		//mResetCycle();
 	END_IF	
 END_IF
 
@@ -31249,6 +31269,154 @@ END_VAR]]></Declaration>
 			END_FOR
 		END_IF		
 	END_IF
+END_FOR]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_DashState_from" Id="{517ea0a0-c223-471a-a5e8-76eedc4a5a7a}" FolderPath="Meth\">
+      <Declaration><![CDATA[METHOD m_DashState_from : E_CIP_DashStage_List
+VAR
+	eActCIP_State	: E_Element_State_Long;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[eActCIP_State:=eRefClient_fbElement.eState_Long;
+
+CASE eActCIP_State OF
+	E_Element_State_Long.eNotClean:;
+		m_DashState_from:=E_CIP_DashStage_List.e01_CIP1_Client_Drain_Product_Rest_Pipe;	
+		
+	E_Element_State_Long.eCIP_1_Rinzed:;
+		m_DashState_from:=E_CIP_DashStage_List.e03_CIP2_Local_Detergent_Fill;	
+	
+	E_Element_State_Long.eCIP_2_Deterged:;
+		m_DashState_from:=E_CIP_DashStage_List.e08_CIP3_Detergent_Collect;	
+	
+	E_Element_State_Long.eCIP_3_Deterged_Clean:;
+		m_DashState_from:=E_CIP_DashStage_List.e12_CIP4_Local_DisInfection_Fill;	
+	
+	E_Element_State_Long.eCIP_4_Sanitized:;
+		m_DashState_from:=E_CIP_DashStage_List.e17_CIP5_DisInfection_Collect;	
+	
+ELSE;
+	//???
+		m_DashState_from:=E_CIP_DashStage_List.eLast;
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_DashState_Get_ToBeDone_List" Id="{d256d03e-5646-4a44-97db-829d1963e250}" FolderPath="Meth\">
+      <Declaration><![CDATA[METHOD m_DashState_Get_ToBeDone_List : BOOL
+VAR
+	//eActCIP_State	: E_Element_State_Long;
+	//eCIP_req		: ST_CIP_Request;	
+	stage			: E_CIP_DashStage_List;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[//eActCIP_State:=eRefClient_fbElement.eState_Long;
+//eCIP_req:=eReq;
+
+//init
+FOR stage:=E_CIP_DashStage_List.e00_NotSelected TO E_CIP_DashStage_List.eLast DO
+	arCIP_DashStage_list[stage]:=E_CIP_DashStage.eCIPStage_NotAvalable;
+END_FOR
+
+//Start done condition stages
+FOR stage:=E_CIP_DashStage_List.e00_NotSelected TO m_DashState_from()-1 DO
+	IF m_DashState_Sprinkler(stage:=stage) THEN;
+		IF bClientTypeIs_Tank THEN;
+			arCIP_DashStage_list[stage]:=E_CIP_DashStage.eCIPStage_Done;
+		ELSE;
+			arCIP_DashStage_list[stage]:=E_CIP_DashStage.eCIPStage_NotAvalable;
+		END_IF
+	ELSE;
+		arCIP_DashStage_list[stage]:=E_CIP_DashStage.eCIPStage_Done;
+	END_IF
+END_FOR
+
+// Request conditions
+FOR stage:=m_DashState_from() TO m_DashState_to() DO
+	IF m_DashState_Sprinkler(stage:=stage) THEN;
+		IF bClientTypeIs_Tank THEN;
+			arCIP_DashStage_list[stage]:=E_CIP_DashStage.eCIPStage_ToBeDone;
+		ELSE;
+			arCIP_DashStage_list[stage]:=E_CIP_DashStage.eCIPStage_NotAvalable;
+		END_IF
+	ELSE;
+		arCIP_DashStage_list[stage]:=E_CIP_DashStage.eCIPStage_ToBeDone;
+	END_IF
+END_FOR
+
+//Do not requested 
+FOR stage:=m_DashState_to()+1 TO E_CIP_DashStage_List.eLast DO
+	IF m_DashState_Sprinkler(stage:=stage) THEN;
+		IF bClientTypeIs_Tank THEN;
+			arCIP_DashStage_list[stage]:=E_CIP_DashStage.eCIPStage_NotInUse;
+		ELSE;
+			arCIP_DashStage_list[stage]:=E_CIP_DashStage.eCIPStage_NotAvalable;
+		END_IF
+	ELSE;
+		arCIP_DashStage_list[stage]:=E_CIP_DashStage.eCIPStage_NotInUse;
+	END_IF
+END_FOR
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_DashState_Sprinkler" Id="{306d9d0f-c147-419d-8576-035700b09af5}" FolderPath="Meth\">
+      <Declaration><![CDATA[METHOD m_DashState_Sprinkler : BOOL
+VAR_INPUT
+	stage: E_CIP_DashStage_List;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE stage OF 
+	E_CIP_DashStage_List.e02_CIP1_Client_Drain_Product_Rest_Sprinkler,
+	E_CIP_DashStage_List.e07_CIP2_Client_Detergent_Condition_Sprinkler,
+	E_CIP_DashStage_List.e11_CIP3_Detergent_Clean_Sprinkler,
+	E_CIP_DashStage_List.e16_CIP4_Client_DisInfection_Condition_Sprinkler,
+	E_CIP_DashStage_List.e20_CIP5_DisInfection_Clean_Sprinkler:;
+		m_DashState_Sprinkler:=TRUE;
+ELSE;
+		m_DashState_Sprinkler:=FALSE;
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_DashState_to" Id="{90469f15-32d0-4753-bd08-fb0af69e8ea7}" FolderPath="Meth\">
+      <Declaration><![CDATA[METHOD m_DashState_to : E_CIP_DashStage_List
+VAR
+	eCIP_req		: ST_CIP_Request;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[eCIP_req:=eReq;
+
+CASE eCIP_req.eType OF
+	E_CIP_Type.R_Water:;
+		m_DashState_to:=E_CIP_DashStage_List.e02_CIP1_Client_Drain_Product_Rest_Sprinkler;
+		
+	E_CIP_Type.Detergent:;
+		m_DashState_to:=E_CIP_DashStage_List.e11_CIP3_Detergent_Clean_Sprinkler;
+	
+	E_CIP_Type.Full:;
+		m_DashState_to:=E_CIP_DashStage_List.e20_CIP5_DisInfection_Clean_Sprinkler;
+
+ELSE;
+	//???
+		m_DashState_to:=E_CIP_DashStage_List.eLast;	
+END_CASE
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_DashState_ToString_convertion" Id="{ac0b670d-4de4-4707-89c6-0875fdc96ae9}" FolderPath="Meth\">
+      <Declaration><![CDATA[METHOD m_DashState_ToString_convertion : BOOL
+VAR_INPUT
+END_VAR
+
+VAR
+	eDashboard_CIP_State: E_CIP_DashStage_List:=E_CIP_DashStage_List.eLast;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[FOR eDashboard_CIP_State:=0 TO E_CIP_DashStage_List.eLast DO
+	//g_HMI.arCIP_DashStage_list[eDashboard_CIP_State]:=E_CIP_DashStage.eCIPStage_NotInUse;
+	g_HMI.arCIP_DashStage_string[eDashboard_CIP_State]:=TO_STRING(eDashboard_CIP_State);
 END_FOR]]></ST>
       </Implementation>
     </Method>
@@ -32580,11 +32748,17 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="53" Count="0" />
       <LineId Id="63" Count="0" />
       <LineId Id="141" Count="0" />
-      <LineId Id="144" Count="1" />
+      <LineId Id="144" Count="0" />
+      <LineId Id="146" Count="0" />
+      <LineId Id="145" Count="0" />
       <LineId Id="142" Count="0" />
       <LineId Id="52" Count="0" />
       <LineId Id="55" Count="0" />
       <LineId Id="54" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_CIP._aGet_Client_exit">
+      <LineId Id="2" Count="0" />
+      <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._ainit_active">
       <LineId Id="1" Count="0" />
@@ -33187,6 +33361,55 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="38" Count="0" />
       <LineId Id="41" Count="7" />
       <LineId Id="39" Count="1" />
+      <LineId Id="7" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_CIP.m_DashState_from">
+      <LineId Id="31" Count="0" />
+      <LineId Id="45" Count="0" />
+      <LineId Id="7" Count="1" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="14" Count="1" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="16" Count="1" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="18" Count="1" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="20" Count="2" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_CIP.m_DashState_Get_ToBeDone_List">
+      <LineId Id="95" Count="1" />
+      <LineId Id="136" Count="0" />
+      <LineId Id="138" Count="1" />
+      <LineId Id="149" Count="0" />
+      <LineId Id="137" Count="0" />
+      <LineId Id="97" Count="38" />
+      <LineId Id="62" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_CIP.m_DashState_Sprinkler">
+      <LineId Id="5" Count="0" />
+      <LineId Id="14" Count="4" />
+      <LineId Id="9" Count="2" />
+      <LineId Id="8" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_CIP.m_DashState_to">
+      <LineId Id="48" Count="1" />
+      <LineId Id="35" Count="2" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="38" Count="0" />
+      <LineId Id="43" Count="0" />
+      <LineId Id="39" Count="1" />
+      <LineId Id="44" Count="3" />
+      <LineId Id="41" Count="0" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_CIP.m_DashState_ToString_convertion">
+      <LineId Id="18" Count="2" />
       <LineId Id="7" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP.m_MeasureTimeToHMI">
