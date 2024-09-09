@@ -309,6 +309,8 @@ CASE eReq.eClient OF
 
 END_CASE
 tonr_CIP_Condition(ResetTime:=TRUE);
+
+
 ]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -474,7 +476,10 @@ END_IF
     </Action>
     <Action Name="_aCIP2_Flow_Sprincler_entry" Id="{4454f205-0cdf-4ef6-883c-72552e22abc1}">
       <Implementation>
-        <ST><![CDATA[tonStepConditionTime(IN:=FALSE);]]></ST>
+        <ST><![CDATA[tonStepConditionTime(IN:=FALSE);
+
+m_DashState_done(stage:=E_CIP_DashStage_List.e06_CIP2_Client_Detergent_Condition_Pipe);
+m_DashState_activate(stage:=E_CIP_DashStage_List.e07_CIP2_Client_Detergent_Condition_Sprinkler);]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -498,8 +503,11 @@ END_IF
 	E_CIP_Usage.eTank_3,
 	E_CIP_Usage.eTank_4:;
 			bStepDone:=TRUE;
+			m_DashState_done(stage:=E_CIP_DashStage_List.e07_CIP2_Client_Detergent_Condition_Sprinkler);
+			
 ELSE;
-	bStepDone:=FALSE;
+			bStepDone:=FALSE;
+			m_DashState_done(stage:=E_CIP_DashStage_List.e06_CIP2_Client_Detergent_Condition_Pipe);
 END_CASE]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -638,7 +646,9 @@ END_IF
     </Action>
     <Action Name="_aCIP3_Flow_Sprincler_entry" Id="{507a1c3c-2446-4445-99e2-6371dfdeab5d}">
       <Implementation>
-        <ST><![CDATA[tonStepConditionTime(IN:=FALSE);]]></ST>
+        <ST><![CDATA[tonStepConditionTime(IN:=FALSE);
+m_DashState_done(stage:=E_CIP_DashStage_List.e15_CIP4_Client_DisInfection_Condition_Pipe);
+m_DashState_activate(stage:=E_CIP_DashStage_List.e16_CIP4_Client_DisInfection_Condition_Sprinkler);]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -661,9 +671,11 @@ END_IF
 	E_CIP_Usage.eTank_2,
 	E_CIP_Usage.eTank_3,
 	E_CIP_Usage.eTank_4:;
-			bStepDone:=TRUE;
+		bStepDone:=TRUE;
+		m_DashState_done(stage:=E_CIP_DashStage_List.e16_CIP4_Client_DisInfection_Condition_Sprinkler);
 ELSE;
-	bStepDone:=FALSE;
+		bStepDone:=FALSE;
+		m_DashState_done(stage:=E_CIP_DashStage_List.e15_CIP4_Client_DisInfection_Condition_Pipe);
 END_CASE]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -855,6 +867,20 @@ END_IF]]></ST>
       <Implementation>
         <ST><![CDATA[fbCIP_Return.m_Run(eReqProc:=E_CIP_Return.eDrain);
 mVolumeReset_All();
+
+CASE eRefClient_fbElement.eState_Long OF
+
+	E_Element_State_Long.eCIP_2_Deterged:;
+			eRefClient_fbElement.m_InterConnected_State(eState_Long_Set:=E_Element_State_Long.eCIP_3_Deterged_Clean);	
+			m_DashState_done(stage:=E_CIP_DashStage_List.e08_CIP3_Detergent_Collect);
+			m_DashState_activate(stage:=E_CIP_DashStage_List.e09_CIP3_Detergent_Drain);
+
+	E_Element_State_Long.eCIP_4_Sanitized:;
+			eRefClient_fbElement.m_InterConnected_State(eState_Long_Set:=E_Element_State_Long.eCIP_5_Done);			
+			m_DashState_done(stage:=E_CIP_DashStage_List.e17_CIP5_DisInfection_Collect);
+			m_DashState_activate(stage:=E_CIP_DashStage_List.e18_CIP5_DisInfection_Drain);
+			
+END_CASE
 ]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -1745,7 +1771,10 @@ END_IF]]></ST>
       <Implementation>
         <ST><![CDATA[fbCIP_Source.m_Run(eReqProc:=E_CIP_Source.eT92_Detergent);
 fbCIP_Return.m_Run(eReqProc:=E_CIP_Return.eT92_Detergent);
-fbPis.m_SetByRecipe(stPis:=stPis_FillWater_T92, req:=E_Piston_Recipe_State.Release);]]></ST>
+fbPis.m_SetByRecipe(stPis:=stPis_FillWater_T92, req:=E_Piston_Recipe_State.Release);
+
+m_DashState_done(stage:=E_CIP_DashStage_List.e03_CIP2_Local_Detergent_Fill);
+m_DashState_activate(stage:=E_CIP_DashStage_List.e04_CIP2_Local_Detergent_Condition);]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -1789,7 +1818,10 @@ END_IF
         <ST><![CDATA[fbCIP_Return.m_Run(eReqProc:=E_CIP_Return.eT92_Detergent);
 fbPis.m_SetByRecipe(stPis:=stPis_FillWater_T92, req:=E_Piston_Recipe_State.Release);
 //fb_PumpDetergent.m_Auto();
-fb_HeatExchenger.m_Auto();]]></ST>
+fb_HeatExchenger.m_Auto();
+
+m_DashState_done(stage:=E_CIP_DashStage_List.e05_CIP2_Client_Detergent_Fill);
+m_DashState_activate(stage:=E_CIP_DashStage_List.e06_CIP2_Client_Detergent_Condition_Pipe);]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -1937,7 +1969,7 @@ CASE eReq.eClient OF
 
 END_CASE
 
-]]></ST>
+m_DashState_activate(stage:=E_CIP_DashStage_List.e05_CIP2_Client_Detergent_Fill);]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -1981,7 +2013,10 @@ END_IF]]></ST>
         <ST><![CDATA[fbCIP_Source.m_Run(eReqProc:=E_CIP_Source.eT91_Sanitation);
 fbCIP_Return.m_Run(eReqProc:=E_CIP_Return.eT91_Sanitation);
 fbPis.m_SetByRecipe(stPis:=stPis_FillWater_T91, req:=E_Piston_Recipe_State.Release);
-tonr_CIP_Condition(ResetTime:=TRUE);]]></ST>
+tonr_CIP_Condition(ResetTime:=TRUE);
+
+m_DashState_done(stage:=E_CIP_DashStage_List.e12_CIP4_Local_DisInfection_Fill);
+m_DashState_activate(stage:=E_CIP_DashStage_List.e13_CIP4_Local_DisInfection_Condition);]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -2052,6 +2087,8 @@ CASE eReq.eClient OF
 
 END_CASE
 tonr_CIP_Condition(ResetTime:=TRUE);
+
+m_DashState_activate(stage:=E_CIP_DashStage_List.e14_CIP4_Client_DisInfection_Fill);
 ]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -2196,7 +2233,21 @@ END_IF
     <Action Name="_aConnect_CIP4_R_Water_entry" Id="{14a8e164-fee8-4fa5-b39e-b5e01295e23f}">
       <Implementation>
         <ST><![CDATA[fbCIP_Return.m_Run(eReqProc:=E_CIP_Return.eT93_R_Water);
-mVolumeReset_All();]]></ST>
+mVolumeReset_All();
+
+	CASE eRefClient_fbElement.eState_Long OF
+	
+		E_Element_State_Long.eCIP_2_Deterged:;
+				eRefClient_fbElement.m_InterConnected_State(eState_Long_Set:=E_Element_State_Long.eCIP_3_Deterged_Clean);	
+				m_DashState_done(stage:=E_CIP_DashStage_List.e09_CIP3_Detergent_Drain);
+				m_DashState_activate(stage:=E_CIP_DashStage_List.e10_CIP3_Detergent_Clean_Pipe);
+	
+		E_Element_State_Long.eCIP_4_Sanitized:;
+				eRefClient_fbElement.m_InterConnected_State(eState_Long_Set:=E_Element_State_Long.eCIP_5_Done);			
+				m_DashState_done(stage:=E_CIP_DashStage_List.e18_CIP5_DisInfection_Drain);
+				m_DashState_activate(stage:=E_CIP_DashStage_List.e19_CIP5_DisInfection_Clean_Pipe);
+				
+	END_CASE	]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -2762,7 +2813,9 @@ END_IF
 fbCIP_Usage.m_Run(eReqProc:=E_CIP_Usage.eLocal);
 fbCIP_Return.m_Run(eReqProc:=E_CIP_Return.eDrain);
 fbPis.m_SetByRecipe(stPis:=stPis_FillWater_T91, req:=E_Piston_Recipe_State.Act);
-bSprinkler:=FALSE;]]></ST>
+bSprinkler:=FALSE;
+
+m_DashState_activate(stage:=E_CIP_DashStage_List.e12_CIP4_Local_DisInfection_Fill);]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -2829,7 +2882,9 @@ END_IF]]></ST>
 fbCIP_Usage.m_Run(eReqProc:=E_CIP_Usage.eLocal);
 fbCIP_Return.m_Run(eReqProc:=E_CIP_Return.eDrain);
 bSprinkler:=FALSE;
-//fbPis.m_SetByRecipe(stPis:=stPis_FillWater_T92, req:=E_Piston_Recipe_State.Act);]]></ST>
+//fbPis.m_SetByRecipe(stPis:=stPis_FillWater_T92, req:=E_Piston_Recipe_State.Act);
+
+m_DashState_activate(stage:=E_CIP_DashStage_List.e03_CIP2_Local_Detergent_Fill);]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -2927,6 +2982,13 @@ fbCIP_Usage.m_Run(eReqProc:=E_CIP_Usage.eLocal);
 fbCIP_Return.m_Run(eReqProc:=E_CIP_Return.eDrain);
 //fbPis.m_SetByRecipe(stPis:=stPis_FillWater_T93, req:=E_Piston_Recipe_State.Act);
 
+
+m_DashState_activate(stage:=E_CIP_DashStage_List.e01_CIP1_Client_Drain_Product_Rest_Pipe);
+(*
+arCIP_DashStage_list[E_CIP_DashStage_List.e01_CIP1_Client_Drain_Product_Rest_Pipe]:=E_CIP_DashStage.eCIPStage_Active;
+eCIP_DashStage_actual:=E_CIP_DashStage_List.e01_CIP1_Client_Drain_Product_Rest_Pipe;
+sCIP_DashStage_actual:=TO_STRING(eCIP_DashStage_actual);
+*)
 ]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -3026,7 +3088,19 @@ bStepDone:=TRUE;]]></ST>
 fbCIP_Usage.m_Run(eReqProc:=E_CIP_Usage.eLocal);
 fbCIP_Return.m_Run(eReqProc:=E_CIP_Return.eDrain);
 fbPis.m_SetByRecipe(stPis:=stPis_FillWater_T94, 			req:=E_Piston_Recipe_State.Act);
-]]></ST>
+
+
+CASE eRefClient_fbElement.eState_Long OF
+
+	E_Element_State_Long.eCIP_2_Deterged:;
+			eRefClient_fbElement.m_InterConnected_State(eState_Long_Set:=E_Element_State_Long.eCIP_3_Deterged_Clean);	
+			m_DashState_activate(stage:=E_CIP_DashStage_List.e08_CIP3_Detergent_Collect);
+
+	E_Element_State_Long.eCIP_4_Sanitized:;
+			eRefClient_fbElement.m_InterConnected_State(eState_Long_Set:=E_Element_State_Long.eCIP_5_Done);			
+			m_DashState_activate(stage:=E_CIP_DashStage_List.e17_CIP5_DisInfection_Collect);
+			
+END_CASE]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -3684,15 +3758,24 @@ AND bClientTypeIs_Tank
 AND bSprinkler
 THEN;	
 	bStepDone:=TRUE;
+	m_DashState_done(stage:=E_CIP_DashStage_List.e02_CIP1_Client_Drain_Product_Rest_Sprinkler);
 	
 ELSIF TRUE // Type Pine
 AND NOT bClientTypeIs_Tank	
 THEN;	
 	bStepDone:=TRUE;
+	m_DashState_done(stage:=E_CIP_DashStage_List.e01_CIP1_Client_Drain_Product_Rest_Pipe);
+	
 ELSE;
-	//Fill water
+	//continue with sprinkler
 	bStepDone:=FALSE;
-END_IF	]]></ST>
+	m_DashState_done(stage:=E_CIP_DashStage_List.e01_CIP1_Client_Drain_Product_Rest_Pipe);
+	m_DashState_activate(stage:=E_CIP_DashStage_List.e02_CIP1_Client_Drain_Product_Rest_Sprinkler);
+	
+END_IF	
+
+
+]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -3717,14 +3800,51 @@ AND bClientTypeIs_Tank
 AND bSprinkler
 THEN;	
 	bStepDone:=TRUE;
+	CASE eRefClient_fbElement.eState_Long OF
+	
+		E_Element_State_Long.eCIP_2_Deterged:;
+				eRefClient_fbElement.m_InterConnected_State(eState_Long_Set:=E_Element_State_Long.eCIP_3_Deterged_Clean);	
+				m_DashState_done(stage:=E_CIP_DashStage_List.e11_CIP3_Detergent_Clean_Sprinkler);
+	
+		E_Element_State_Long.eCIP_4_Sanitized:;
+				eRefClient_fbElement.m_InterConnected_State(eState_Long_Set:=E_Element_State_Long.eCIP_5_Done);			
+				m_DashState_done(stage:=E_CIP_DashStage_List.e20_CIP5_DisInfection_Clean_Sprinkler);
+				
+	END_CASE	
 	
 ELSIF TRUE // Type Pine
 AND NOT bClientTypeIs_Tank	
 THEN;	
 	bStepDone:=TRUE;
+	CASE eRefClient_fbElement.eState_Long OF
+	
+		E_Element_State_Long.eCIP_2_Deterged:;
+				eRefClient_fbElement.m_InterConnected_State(eState_Long_Set:=E_Element_State_Long.eCIP_3_Deterged_Clean);	
+				m_DashState_done(stage:=E_CIP_DashStage_List.e10_CIP3_Detergent_Clean_Pipe);
+	
+		E_Element_State_Long.eCIP_4_Sanitized:;
+				eRefClient_fbElement.m_InterConnected_State(eState_Long_Set:=E_Element_State_Long.eCIP_5_Done);			
+				m_DashState_done(stage:=E_CIP_DashStage_List.e19_CIP5_DisInfection_Clean_Pipe);
+				
+	END_CASE	
+	
 ELSE;
-	//Fill water
+	//continue with sprinkler
 	bStepDone:=FALSE;
+	CASE eRefClient_fbElement.eState_Long OF
+	
+		E_Element_State_Long.eCIP_2_Deterged:;
+				eRefClient_fbElement.m_InterConnected_State(eState_Long_Set:=E_Element_State_Long.eCIP_3_Deterged_Clean);	
+				m_DashState_done(stage:=E_CIP_DashStage_List.e10_CIP3_Detergent_Clean_Pipe);
+				m_DashState_activate(stage:=E_CIP_DashStage_List.e11_CIP3_Detergent_Clean_Sprinkler);
+	
+		E_Element_State_Long.eCIP_4_Sanitized:;
+				eRefClient_fbElement.m_InterConnected_State(eState_Long_Set:=E_Element_State_Long.eCIP_5_Done);			
+				m_DashState_done(stage:=E_CIP_DashStage_List.e19_CIP5_DisInfection_Clean_Pipe);
+				m_DashState_activate(stage:=E_CIP_DashStage_List.e20_CIP5_DisInfection_Clean_Sprinkler);
+				
+	END_CASE	
+	
 END_IF	]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -4038,6 +4158,25 @@ END_IF
         </XmlArchive>
       </ObjectProperties>
     </Action>
+    <Action Name="_aStartPump_CIP2_RPM_04_entry" Id="{4ef0dbbc-cc33-44cd-9ac5-b171cf1ff287}">
+      <Implementation>
+        <ST><![CDATA[m_DashState_done(stage:=E_CIP_DashStage_List.e14_CIP4_Client_DisInfection_Fill);
+m_DashState_activate(stage:=E_CIP_DashStage_List.e15_CIP4_Client_DisInfection_Condition_Pipe);]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
     <Action Name="_aStartPump_CIP3_01_active" Id="{e6aa8b88-0a3e-4980-90b3-b28e3208ca1c}">
       <Implementation>
         <ST><![CDATA[IF TRUE 
@@ -4293,7 +4432,9 @@ fb_PumpClient.m_Stop();]]></ST>
     </Action>
     <Action Name="_aStopPump_CIP2_01_entry" Id="{85898c2b-ab66-4edd-b612-16013618240b}">
       <Implementation>
-        <ST><![CDATA[fb_PumpCIP.m_Stop();]]></ST>
+        <ST><![CDATA[fb_PumpCIP.m_Stop();
+
+m_DashState_done(stage:=E_CIP_DashStage_List.e04_CIP2_Local_Detergent_Condition);]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -4349,7 +4490,9 @@ fb_PumpClient.m_Stop();]]></ST>
     </Action>
     <Action Name="_aStopPump_CIP3_01_entry" Id="{f602d6c0-0244-490d-974f-7786e863cb85}">
       <Implementation>
-        <ST><![CDATA[fb_PumpCIP.m_Stop();]]></ST>
+        <ST><![CDATA[fb_PumpCIP.m_Stop();
+
+m_DashState_done(stage:=E_CIP_DashStage_List.e13_CIP4_Local_DisInfection_Condition);]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -21730,7 +21873,7 @@ END_CASE]]></ST>
                                                           <o>
                                                             <v n="AttributeId">{a6b08bd8-b696-47e3-9cbf-7408b61c9ff8}</v>
                                                             <o n="Value" t="StringValue">
-                                                              <v n="Value">""</v>
+                                                              <v n="Value">"_aStartPump_CIP2_RPM_04_entry"</v>
                                                               <v n="DefaultValue">""</v>
                                                             </o>
                                                             <v n="Id">6145L</v>
@@ -31275,6 +31418,54 @@ END_VAR]]></Declaration>
 END_FOR]]></ST>
       </Implementation>
     </Method>
+    <Method Name="m_DashState_activate" Id="{02085a65-a2cd-4364-8e33-72b46cf78751}" FolderPath="Meth\Dashboard\">
+      <Declaration><![CDATA[METHOD m_DashState_activate : BOOL
+VAR_INPUT
+	stage		: E_CIP_DashStage_List;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[	IF arCIP_DashStage_list[stage] = E_CIP_DashStage.eCIPStage_ToBeDone THEN;
+		arCIP_DashStage_list[stage]:=E_CIP_DashStage.eCIPStage_Active;
+		eCIP_DashStage_actual:=stage;
+		sCIP_DashStage_actual:=TO_STRING(eCIP_DashStage_actual);	
+		RETURN;
+	END_IF
+
+(*
+FOR stage:=m_DashState_from() TO m_DashState_to() DO
+	IF arCIP_DashStage_list[stage] = E_CIP_DashStage.eCIPStage_ToBeDone THEN;
+		arCIP_DashStage_list[stage]:=E_CIP_DashStage.eCIPStage_Active;
+		eCIP_DashStage_actual:=stage;
+		sCIP_DashStage_actual:=TO_STRING(eCIP_DashStage_actual);	
+		RETURN;
+	END_IF
+END_FOR
+*)]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_DashState_done" Id="{7bac3818-529e-4a54-9082-0edd1812249d}" FolderPath="Meth\Dashboard\">
+      <Declaration><![CDATA[METHOD m_DashState_done : BOOL
+VAR_INPUT
+	stage	: E_CIP_DashStage_List;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF arCIP_DashStage_list[stage] = E_CIP_DashStage.eCIPStage_Active THEN;
+	arCIP_DashStage_list[stage]:=E_CIP_DashStage.eCIPStage_Done;
+	RETURN;
+END_IF
+
+(*
+FOR stage:=m_DashState_from() TO m_DashState_to() DO
+	IF arCIP_DashStage_list[stage] = E_CIP_DashStage.eCIPStage_Active THEN;
+		arCIP_DashStage_list[stage]:=E_CIP_DashStage.eCIPStage_Done;
+		RETURN;
+	END_IF
+END_FOR
+*)]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="m_DashState_from" Id="{517ea0a0-c223-471a-a5e8-76eedc4a5a7a}" FolderPath="Meth\Dashboard\">
       <Declaration><![CDATA[METHOD m_DashState_from : E_CIP_DashStage_List
 VAR
@@ -31995,7 +32186,10 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="3" Count="9" />
       <LineId Id="17" Count="0" />
       <LineId Id="2" Count="0" />
-      <LineId Id="18" Count="1" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="19" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aCIP1_Done_entry">
       <LineId Id="1" Count="1" />
@@ -32036,6 +32230,8 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
     </LineIds>
     <LineIds Name="FB_CIP._aCIP2_Flow_Sprincler_entry">
       <LineId Id="1" Count="0" />
+      <LineId Id="3" Count="1" />
+      <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aCIP2_If_ClientIsTank_active">
       <LineId Id="2" Count="0" />
@@ -32044,8 +32240,11 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="8" Count="0" />
       <LineId Id="10" Count="0" />
       <LineId Id="15" Count="0" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="21" Count="0" />
       <LineId Id="11" Count="0" />
       <LineId Id="14" Count="0" />
+      <LineId Id="19" Count="0" />
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aCIP3_Conn_Sprinkler_active">
@@ -32077,6 +32276,8 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
     </LineIds>
     <LineIds Name="FB_CIP._aCIP3_Flow_Sprincler_entry">
       <LineId Id="1" Count="0" />
+      <LineId Id="3" Count="0" />
+      <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aCIP3_If_ClientIsTank_active">
       <LineId Id="2" Count="0" />
@@ -32084,9 +32285,10 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="6" Count="0" />
       <LineId Id="8" Count="0" />
       <LineId Id="10" Count="0" />
-      <LineId Id="15" Count="0" />
+      <LineId Id="15" Count="1" />
       <LineId Id="11" Count="0" />
       <LineId Id="14" Count="0" />
+      <LineId Id="17" Count="0" />
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aCIP4_Collect_active">
@@ -32134,7 +32336,14 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aCIP4_Drain_entry">
-      <LineId Id="1" Count="2" />
+      <LineId Id="1" Count="1" />
+      <LineId Id="5" Count="4" />
+      <LineId Id="16" Count="1" />
+      <LineId Id="11" Count="2" />
+      <LineId Id="18" Count="1" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="4" Count="0" />
+      <LineId Id="3" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aCondition_CIP1_Client_active">
       <LineId Id="118" Count="8" />
@@ -32389,6 +32598,8 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="2" Count="0" />
       <LineId Id="4" Count="0" />
       <LineId Id="1" Count="0" />
+      <LineId Id="6" Count="1" />
+      <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aConnect_CIP2_02_active">
       <LineId Id="2" Count="0" />
@@ -32398,6 +32609,8 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
     </LineIds>
     <LineIds Name="FB_CIP._aConnect_CIP2_02_entry">
       <LineId Id="1" Count="3" />
+      <LineId Id="6" Count="1" />
+      <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aConnect_CIP2_Drain_active">
       <LineId Id="2" Count="2" />
@@ -32433,6 +32646,9 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="4" Count="0" />
       <LineId Id="1" Count="0" />
       <LineId Id="5" Count="0" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="6" Count="0" />
+      <LineId Id="8" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aConnect_CIP3_02_active">
       <LineId Id="2" Count="1" />
@@ -32448,6 +32664,8 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="5" Count="10" />
       <LineId Id="4" Count="0" />
       <LineId Id="17" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="18" Count="0" />
       <LineId Id="3" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aConnect_CIP4_active">
@@ -32492,6 +32710,8 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
     </LineIds>
     <LineIds Name="FB_CIP._aConnect_CIP4_R_Water_entry">
       <LineId Id="1" Count="1" />
+      <LineId Id="4" Count="12" />
+      <LineId Id="3" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aDeter_PumpRun_DW_Clnt_active">
       <LineId Id="2" Count="6" />
@@ -32627,6 +32847,8 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="2" Count="2" />
       <LineId Id="1" Count="0" />
       <LineId Id="6" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="7" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aFill_Water_T92_active">
       <LineId Id="35" Count="0" />
@@ -32648,6 +32870,8 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
     <LineIds Name="FB_CIP._aFill_Water_T92_entry">
       <LineId Id="2" Count="3" />
       <LineId Id="1" Count="0" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="6" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aFill_Water_T93_active">
       <LineId Id="18" Count="0" />
@@ -32677,7 +32901,14 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
     <LineIds Name="FB_CIP._aFill_Water_T93_entry">
       <LineId Id="1" Count="2" />
       <LineId Id="6" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="9" Count="0" />
       <LineId Id="5" Count="0" />
+      <LineId Id="10" Count="0" />
       <LineId Id="4" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aFill_Water_T94_active">
@@ -32709,6 +32940,12 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
     <LineIds Name="FB_CIP._aFill_Water_T94_entry">
       <LineId Id="1" Count="2" />
       <LineId Id="5" Count="0" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="6" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="13" Count="2" />
+      <LineId Id="17" Count="4" />
       <LineId Id="4" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aFlow_Volume_Meter_active">
@@ -32913,16 +33150,33 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="13" Count="0" />
       <LineId Id="5" Count="2" />
       <LineId Id="19" Count="0" />
+      <LineId Id="24" Count="0" />
       <LineId Id="15" Count="1" />
       <LineId Id="18" Count="0" />
       <LineId Id="14" Count="0" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="23" Count="0" />
       <LineId Id="9" Count="2" />
+      <LineId Id="26" Count="2" />
       <LineId Id="2" Count="0" />
+      <LineId Id="21" Count="1" />
+      <LineId Id="20" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aSprinkler_Request_CIP4_active">
       <LineId Id="1" Count="0" />
       <LineId Id="3" Count="0" />
-      <LineId Id="20" Count="12" />
+      <LineId Id="20" Count="4" />
+      <LineId Id="60" Count="4" />
+      <LineId Id="66" Count="3" />
+      <LineId Id="71" Count="0" />
+      <LineId Id="59" Count="0" />
+      <LineId Id="25" Count="4" />
+      <LineId Id="73" Count="9" />
+      <LineId Id="72" Count="0" />
+      <LineId Id="83" Count="0" />
+      <LineId Id="30" Count="2" />
+      <LineId Id="47" Count="11" />
+      <LineId Id="45" Count="1" />
       <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aStartPump_CIP1_01_active">
@@ -33028,6 +33282,9 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="3" Count="0" />
       <LineId Id="2" Count="0" />
     </LineIds>
+    <LineIds Name="FB_CIP._aStartPump_CIP2_RPM_04_entry">
+      <LineId Id="1" Count="1" />
+    </LineIds>
     <LineIds Name="FB_CIP._aStartPump_CIP3_01_active">
       <LineId Id="2" Count="3" />
       <LineId Id="16" Count="1" />
@@ -33099,6 +33356,7 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
     </LineIds>
     <LineIds Name="FB_CIP._aStopPump_CIP2_01_entry">
       <LineId Id="1" Count="0" />
+      <LineId Id="3" Count="1" />
     </LineIds>
     <LineIds Name="FB_CIP._aStopPump_CIP2_02_entry">
       <LineId Id="2" Count="0" />
@@ -33110,6 +33368,8 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
     </LineIds>
     <LineIds Name="FB_CIP._aStopPump_CIP3_01_entry">
       <LineId Id="1" Count="0" />
+      <LineId Id="3" Count="0" />
+      <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aStopPump_CIP3_02_entry">
       <LineId Id="2" Count="1" />
@@ -33365,6 +33625,32 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="41" Count="7" />
       <LineId Id="39" Count="1" />
       <LineId Id="7" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_CIP.m_DashState_activate">
+      <LineId Id="20" Count="4" />
+      <LineId Id="18" Count="1" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="14" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_CIP.m_DashState_done">
+      <LineId Id="17" Count="2" />
+      <LineId Id="15" Count="1" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="14" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP.m_DashState_from">
       <LineId Id="31" Count="0" />
