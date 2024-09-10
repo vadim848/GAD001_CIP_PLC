@@ -1361,6 +1361,7 @@ ELSE;
 	IF TRUE 
 	AND pcFlow1_Rate.mRun(mRun=>_cond[1])
 	AND pcFlow2_Rate.mRun(mRun=>_cond[2])
+	AND pcDisInfectant.mRun_With_SP(Set_Point:=st_CIP_Param.r_DisInfectionConcentration, mRun_With_SP=>_cond[6])
 	THEN;
 		//
 	ELSE;
@@ -1374,7 +1375,6 @@ IF TRUE
 AND pcHeatExchanger.mRun_With_SP(Set_Point:=st_CIP_Param.r_Temper_DisInfection, mRun_With_SP=>_cond[3])
 //AND pcTemperature_Dis.mRun_With_SP(Set_Point:=st_CIP_Param.r_Temper_DisInfection, mRun_With_SP=>_cond[4])
 AND pcTemp_ClntReturn.mRun_With_SP(Set_Point:=st_CIP_Param.r_Temper_DisInfection, mRun_With_SP=>_cond[5])
-AND pcDisInfectant.mRun_With_SP(Set_Point:=st_CIP_Param.r_DisInfectionConcentration, mRun_With_SP=>_cond[6])
 AND measure_Dis_2.x
 AND TRUE
 THEN;
@@ -3403,13 +3403,13 @@ END_IF]]></ST>
     <Action Name="_ameasure_Dis_2_active" Id="{1261d4d1-c6d0-4244-bace-be3e25c760cc}">
       <Implementation>
         <ST><![CDATA[
-ton_Concentration_Filter(PT:=T#30S, IN:=stDisInfectant.Control_ON);
+ton_Concentration_Filter(PT:=T#30S, IN:=stDisInfectant.Control_ON AND NOT bSprinkler);
 IF TRUE 	
 AND ton_Concentration_Filter.Q	
 THEN;
- bConcentration_correct:=TRUE;
+	bConcentration_correct:=TRUE;
 ELSE;
- bConcentration_correct:=FALSE;
+	bConcentration_correct:=FALSE;
 END_IF]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -3590,7 +3590,9 @@ END_IF]]></ST>
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
 tMeasureDelayTime:= SECOND_TO_TIME(st_CIP_Param.t_Measure_Delay);
-IF measureDelay_CIP3_2.t > tMeasureDelayTime THEN;
+IF measureDelay_CIP3_2.t > tMeasureDelayTime 
+OR bSprinkler
+THEN;
 	bStepDone:=TRUE;
 END_IF
 
@@ -32667,9 +32669,12 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="58" Count="0" />
       <LineId Id="2" Count="0" />
       <LineId Id="81" Count="0" />
-      <LineId Id="84" Count="17" />
+      <LineId Id="84" Count="12" />
+      <LineId Id="102" Count="0" />
+      <LineId Id="97" Count="4" />
       <LineId Id="11" Count="0" />
-      <LineId Id="59" Count="20" />
+      <LineId Id="59" Count="6" />
+      <LineId Id="67" Count="12" />
       <LineId Id="12" Count="1" />
       <LineId Id="57" Count="0" />
       <LineId Id="14" Count="1" />
@@ -33277,7 +33282,10 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
     <LineIds Name="FB_CIP._ameasureDelay_CIP3_2_active">
       <LineId Id="4" Count="0" />
       <LineId Id="9" Count="0" />
-      <LineId Id="1" Count="2" />
+      <LineId Id="1" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="2" Count="1" />
       <LineId Id="6" Count="0" />
       <LineId Id="5" Count="0" />
       <LineId Id="7" Count="1" />
