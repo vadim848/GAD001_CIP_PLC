@@ -22,6 +22,9 @@ VAR_INPUT
 	valFillWaterDrain		: E_Pis_Name;
 	valDrainTapWater		: E_Pis_Name;
 	
+	eTank_Name: E_Tank_Name;
+
+	
 	sens_TankTemp			: E_ASense_Name	;//Tenk temperature sensor ID
 	
 	valCW_In				:	E_Pis_Name	;//Valve to control tank temperature In
@@ -59,6 +62,8 @@ VAR
 	st_TempCntrl	: REFERENCE TO ST_ProcessControl	;
 	bCntrlTemp		: BOOL	;
 	bRunCIP			: BOOL	;
+	
+	ref_fbTankSensors			: REFERENCE TO FB_TankSensors;
 END_VAR
 VAR_IN_OUT
 
@@ -67,6 +72,7 @@ VAR_IN_OUT
 	fbLineTarget			: FB_Line_Target;
 	fbTriBlenderSource		: FB_Line_Source;
 	fbTriBlenderTarget		: FB_Line_Target;
+	
 
 	fb_PumpLine				: FB_Pump;
 	fb_PumpTriBlender		: FB_Pump;
@@ -3421,6 +3427,8 @@ refState_Long REF= fbElement[eElementID].eState_Long;
 stPis_FillWater REF= stPis[valFillWater];
 stPis_FillWaterDrain REF= stPis[valFillWaterDrain];
 stPis_DrainTapWater REF= stPis[valDrainTapWater];
+
+ref_fbTankSensors REF= g_Data.arrTanksSens[eTank_Name];
 
 stPis_CWIn REF= stPis[valCW_In];
 stPis_CWOut	 REF= stPis[valCW_Out];
@@ -19061,6 +19069,8 @@ m_SFC_Handle();]]></ST>
       <LineId Id="1" Count="2" />
       <LineId Id="11" Count="0" />
       <LineId Id="14" Count="1" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="21" Count="0" />
       <LineId Id="17" Count="1" />
       <LineId Id="16" Count="0" />
       <LineId Id="13" Count="0" />
