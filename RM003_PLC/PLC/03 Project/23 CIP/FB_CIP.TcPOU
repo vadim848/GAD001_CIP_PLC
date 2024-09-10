@@ -208,6 +208,7 @@ VAR_IN_OUT
 	//Pumps
 	fb_PumpCIP				: FB_Pump;
 	fb_PumpClient			: FB_Pump;
+	fb_Stirrer				: FB_Pump;
 	fb_PumpDetergent		: FB_DosingPump;
 	fb_PumpDisinfection		: FB_DosingPump;
 	
@@ -915,6 +916,27 @@ CASE eRefClient_fbElement.eState_Long OF
 			m_DashState_activate(stage:=E_CIP_DashStage_List.e18_CIP5_DisInfection_Drain);
 			
 END_CASE
+]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
+    <Action Name="_aClientReference_IsValid_entry" Id="{a12df6dc-c969-4946-9c7b-d8b72cd2928a}">
+      <Implementation>
+        <ST><![CDATA[IF bClientTypeIs_Tank THEN;
+	fb_Stirrer.m_Run(RPM:=1200);
+END_IF
 ]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -4530,6 +4552,7 @@ eRefClient_fbElement REF= fbElement_Blank;
 
 fb_PumpCIP.m_Stop();
 fb_PumpClient.m_Stop();
+fb_Stirrer.m_Stop();
 fb_PumpDetergent.m_Stop();
 fb_PumpDisinfection.m_Stop();
 
@@ -6385,7 +6408,7 @@ END_CASE]]></ST>
                           <o>
                             <v n="AttributeId">{a6b08bd8-b696-47e3-9cbf-7408b61c9ff8}</v>
                             <o n="Value" t="StringValue">
-                              <v n="Value">""</v>
+                              <v n="Value">"_aClientReference_IsValid_entry"</v>
                               <v n="DefaultValue">""</v>
                             </o>
                             <v n="Id">7130L</v>
@@ -32524,6 +32547,10 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="4" Count="0" />
       <LineId Id="3" Count="0" />
     </LineIds>
+    <LineIds Name="FB_CIP._aClientReference_IsValid_entry">
+      <LineId Id="2" Count="2" />
+      <LineId Id="1" Count="0" />
+    </LineIds>
     <LineIds Name="FB_CIP._aCondition_CIP1_Client_active">
       <LineId Id="118" Count="8" />
       <LineId Id="114" Count="0" />
@@ -33561,7 +33588,8 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="1" Count="0" />
       <LineId Id="9" Count="0" />
       <LineId Id="12" Count="0" />
-      <LineId Id="14" Count="2" />
+      <LineId Id="17" Count="1" />
+      <LineId Id="15" Count="1" />
       <LineId Id="11" Count="0" />
       <LineId Id="10" Count="0" />
     </LineIds>
