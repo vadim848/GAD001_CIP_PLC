@@ -78,6 +78,8 @@ VAR
 	pcFlow1_Rate					: 	REFERENCE TO FB_ProcessControl	;//disinfectant local/client
 	stFlow2_Rate					:	REFERENCE TO ST_ProcessControl	;//CIP send
 	pcFlow2_Rate					: 	REFERENCE TO FB_ProcessControl	;//disinfectant local/client	return 
+	stFlow3_Rate					:	REFERENCE TO ST_ProcessControl	;//CIP send
+	pcFlow3_Rate					: 	REFERENCE TO FB_ProcessControl	;//disinfectant local/client	return 
 	
 	stColor_Level					:	REFERENCE TO ST_ProcessControl	;//CLient CIP //level control 
 	pcColor_Level					: 	REFERENCE TO FB_ProcessControl	;//disinfectant local/client //level control 
@@ -158,6 +160,12 @@ VAR
 	tonStepConditionTime: TON;
 	bClientTypeIs_Tank: BOOL;
 	t_ActMeasureTime: TIME;
+	
+	volume_Requered	: INT;
+	volume_Actual	: INT;
+
+	ton_Concentration_Filter: TON;
+	bConcentration_correct: BOOL;
 END_VAR
 //upper lower control
 VAR
@@ -414,7 +422,6 @@ tonr_CIP_Condition(ResetTime:=TRUE);
     <Action Name="_aCIP2_Done_entry" Id="{9a18f41c-f03b-4bca-ad35-6eeccc6aba8e}">
       <Implementation>
         <ST><![CDATA[IF eReq.eClient=E_CIP_Usage.eLocal THEN;
-	//eRefClient_fbElement.m_InterConnected_State(eState_Long_Set:=E_Element_State_Long.eCIP_3_Deterged_Clean);
 	eRefClient_fbElement.m_InterConnected_State(eState_Long_Set:=E_Element_State_Long.eCIP_2_Deterged);
 ELSE;
 	eRefClient_fbElement.m_InterConnected_State(eState_Long_Set:=E_Element_State_Long.eCIP_2_Deterged);
@@ -695,6 +702,19 @@ END_CASE]]></ST>
     <Action Name="_aCIP4_Collect_active" Id="{245a31fa-2345-490d-951c-e73052de6876}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
+IF eRefClient_fbElement.eState_Long=E_Element_State_Long.eCIP_2_Deterged THEN;
+	volume_Requered:= REAL_TO_INT(st_CIP_Param.r_Volume_Collect_Detergent);
+	volume_Actual:= REAL_TO_INT(delta_T92_Volume);
+ELSIF eRefClient_fbElement.eState_Long=E_Element_State_Long.eCIP_4_Sanitized THEN;
+	volume_Requered:= REAL_TO_INT(st_CIP_Param.r_Volume_Collect_DisInfection);
+	volume_Actual:= REAL_TO_INT(delta_T91_Volume);
+END_IF
+
+IF volume_Actual >= volume_Requered THEN;
+	bStepDone:=TRUE;
+END_IF
+
+(*
 IF TRUE 
 OR (delta_T94_Volume < -st_CIP_Param.r_Volume_Collect_Detergent AND eRefClient_fbElement.eState_Long=E_Element_State_Long.eCIP_2_Deterged)
 OR (delta_T94_Volume < -st_CIP_Param.r_Volume_Collect_DisInfection AND eRefClient_fbElement.eState_Long=E_Element_State_Long.eCIP_4_Sanitized)
@@ -704,7 +724,7 @@ OR (delta_T91_Volume > st_CIP_Param.r_Volume_Collect_DisInfection AND eRefClient
 THEN
 	bStepDone:=TRUE;
 END_IF
-]]></ST>
+*)]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -839,6 +859,21 @@ END_CASE]]></ST>
     <Action Name="_aCIP4_Drain_active" Id="{d7aa4e20-df54-48dd-9a3c-3664a01991e5}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
+
+IF eRefClient_fbElement.eState_Long=E_Element_State_Long.eCIP_2_Deterged THEN;
+	volume_Requered:= REAL_TO_INT(st_CIP_Param.r_Volume_Drain_Detergent);
+	volume_Actual:= REAL_TO_INT(-delta_T94_Volume);
+ELSIF eRefClient_fbElement.eState_Long=E_Element_State_Long.eCIP_4_Sanitized THEN;
+	volume_Requered:= REAL_TO_INT(st_CIP_Param.r_Volume_Drain_DisInfection);
+	volume_Actual:= REAL_TO_INT(-delta_T94_Volume);
+END_IF
+
+IF volume_Actual >= volume_Requered THEN;
+	bStepDone:=TRUE;
+END_IF
+
+
+(*
 IF fbCIP_Return.m_CheckStatus(eReqStatus:=E_CIP_Return.eDrain)  
 AND ((delta_T94_Volume < -st_CIP_Param.r_Volume_Drain_Detergent AND eRefClient_fbElement.eState_Long=E_Element_State_Long.eCIP_2_Deterged)
 OR (delta_T94_Volume < -st_CIP_Param.r_Volume_Drain_DisInfection AND eRefClient_fbElement.eState_Long=E_Element_State_Long.eCIP_4_Sanitized))
@@ -847,7 +882,8 @@ OR (delta_T94_Volume < -st_CIP_Param.r_Volume_Drain_DisInfection AND eRefClient_
 //OR (delta_T93_Volume < -st_CIP_Param.r_Volume_Drain_DisInfection AND eRefClient_fbElement.eState_Long=E_Element_State_Long.eCIP_4_Sanitized))
 THEN;
 	bStepDone:=TRUE;
-END_IF]]></ST>
+END_IF
+*)]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -871,12 +907,10 @@ mVolumeReset_All();
 CASE eRefClient_fbElement.eState_Long OF
 
 	E_Element_State_Long.eCIP_2_Deterged:;
-			eRefClient_fbElement.m_InterConnected_State(eState_Long_Set:=E_Element_State_Long.eCIP_3_Deterged_Clean);	
 			m_DashState_done(stage:=E_CIP_DashStage_List.e08_CIP3_Detergent_Collect);
 			m_DashState_activate(stage:=E_CIP_DashStage_List.e09_CIP3_Detergent_Drain);
 
 	E_Element_State_Long.eCIP_4_Sanitized:;
-			eRefClient_fbElement.m_InterConnected_State(eState_Long_Set:=E_Element_State_Long.eCIP_5_Done);			
 			m_DashState_done(stage:=E_CIP_DashStage_List.e17_CIP5_DisInfection_Collect);
 			m_DashState_activate(stage:=E_CIP_DashStage_List.e18_CIP5_DisInfection_Drain);
 			
@@ -1050,17 +1084,25 @@ mVolumeReset_All();]]></ST>
         <ST><![CDATA[fb_PumpCIP.m_Run(RPM:=pcFlow1_Rate.mRun_PID(Set_Point:=fFlowRate, controlManual:=NOT(fb_PumpCIP.modeAuto)));
 fb_PumpClient.m_Run(RPM:=st_CIP_Param.r_CIP_Client_Pump);
 
-IF TRUE 
-AND pcFlow1_Rate.mRun(mRun=>_cond[1])
-AND pcFlow2_Rate.mRun(mRun=>_cond[2])
-//AND pcPressure.mRun()
-THEN;
-	//
+IF bSprinkler THEN;
+	IF TRUE 
+	AND pcFlow1_Rate.mRun(mRun=>_cond[1])
+	AND pcFlow3_Rate.mRun(mRun=>_cond[2])
+	THEN;
+		//
+	ELSE;
+		bCIP_Condition_Failed:=TRUE;
+	END_IF
 ELSE;
-	bCIP_Condition_Failed:=TRUE;
+	IF TRUE 
+	AND pcFlow1_Rate.mRun(mRun=>_cond[1])
+	AND pcFlow2_Rate.mRun(mRun=>_cond[2])
+	THEN;
+		//
+	ELSE;
+		bCIP_Condition_Failed:=TRUE;
+	END_IF	
 END_IF
-
-
 
 pcHeatExchanger.mRun_PID(Set_Point:=st_CIP_Param.r_Temper_Detergent, controlManual:=FALSE,mRun_PID=>_temp);
 tonr_CIP_Condition(PT:=SECOND_TO_TIME(tConditionTime));
@@ -1284,14 +1326,24 @@ END_IF
         <ST><![CDATA[fb_PumpCIP.m_Run(RPM:=pcFlow1_Rate.mRun_PID(Set_Point:=fFlowRate,controlManual:=NOT(fb_PumpCIP.modeAuto)));
 fb_PumpClient.m_Run(RPM:=st_CIP_Param.r_CIP_Client_Pump);
 
-IF TRUE  
-AND pcFlow1_Rate.mRun(mRun=>_cond[1])
-AND pcFlow2_Rate.mRun(mRun=>_cond[2])
-//AND pcPressure.mRun()
-THEN;
-	//
+IF bSprinkler THEN;
+	IF TRUE 
+	AND pcFlow1_Rate.mRun(mRun=>_cond[1])
+	AND pcFlow3_Rate.mRun(mRun=>_cond[2])
+	THEN;
+		//
+	ELSE;
+		bCIP_Condition_Failed:=TRUE;
+	END_IF
 ELSE;
-	bCIP_Condition_Failed:=TRUE;
+	IF TRUE 
+	AND pcFlow1_Rate.mRun(mRun=>_cond[1])
+	AND pcFlow2_Rate.mRun(mRun=>_cond[2])
+	THEN;
+		//
+	ELSE;
+		bCIP_Condition_Failed:=TRUE;
+	END_IF	
 END_IF
 
 pcHeatExchanger.mRun_PID(Set_Point:=st_CIP_Param.r_Temper_DisInfection, controlManual:=FALSE,mRun_PID=>_temp);
@@ -2140,6 +2192,8 @@ IF bStepDone THEN;
 		E_Element_State_Long.eCIP_4_Sanitized:;
 				//fbCIP_Return.m_Run(eReqProc:=E_CIP_Return.eT91_Sanitation);	
 				bStepDone:=fbCIP_Return.m_CheckStatus(eReqStatus:=E_CIP_Return.eT91_Sanitation);
+	ELSE;
+		bStepDone:=FALSE;
 	END_CASE	
 END_IF]]></ST>
       </Implementation>
@@ -2238,12 +2292,10 @@ mVolumeReset_All();
 	CASE eRefClient_fbElement.eState_Long OF
 	
 		E_Element_State_Long.eCIP_2_Deterged:;
-				eRefClient_fbElement.m_InterConnected_State(eState_Long_Set:=E_Element_State_Long.eCIP_3_Deterged_Clean);	
 				m_DashState_done(stage:=E_CIP_DashStage_List.e09_CIP3_Detergent_Drain);
 				m_DashState_activate(stage:=E_CIP_DashStage_List.e10_CIP3_Detergent_Clean_Pipe);
 	
 		E_Element_State_Long.eCIP_4_Sanitized:;
-				eRefClient_fbElement.m_InterConnected_State(eState_Long_Set:=E_Element_State_Long.eCIP_5_Done);			
 				m_DashState_done(stage:=E_CIP_DashStage_List.e18_CIP5_DisInfection_Drain);
 				m_DashState_activate(stage:=E_CIP_DashStage_List.e19_CIP5_DisInfection_Clean_Pipe);
 				
@@ -2772,7 +2824,7 @@ bStepDone:=FALSE;
 IF fbCIP_Source.m_CheckStatus(eReqStatus:=E_CIP_Source.eClose) 
 AND fbCIP_Usage.m_CheckStatus(eReqStatus:=E_CIP_Usage.eLocal)  
 AND fbCIP_Return.m_CheckStatus(eReqStatus:=E_CIP_Return.eDrain)  
-AND fbPis.m_CheckByRecipe(stPis:=stPis_FillWater_T91, req:=E_Piston_Recipe_State.Act) 
+//AND fbPis.m_CheckByRecipe(stPis:=stPis_FillWater_T91, req:=E_Piston_Recipe_State.Act) 
 THEN;
 	//IF eReq.eClient=E_CIP_Usage.eLocal 
 	IF lvlTank_T91.e_state=E_Tank_Level.eLL
@@ -3093,11 +3145,9 @@ fbPis.m_SetByRecipe(stPis:=stPis_FillWater_T94, 			req:=E_Piston_Recipe_State.Ac
 CASE eRefClient_fbElement.eState_Long OF
 
 	E_Element_State_Long.eCIP_2_Deterged:;
-			eRefClient_fbElement.m_InterConnected_State(eState_Long_Set:=E_Element_State_Long.eCIP_3_Deterged_Clean);	
 			m_DashState_activate(stage:=E_CIP_DashStage_List.e08_CIP3_Detergent_Collect);
 
 	E_Element_State_Long.eCIP_4_Sanitized:;
-			eRefClient_fbElement.m_InterConnected_State(eState_Long_Set:=E_Element_State_Long.eCIP_5_Done);			
 			m_DashState_activate(stage:=E_CIP_DashStage_List.e17_CIP5_DisInfection_Collect);
 			
 END_CASE]]></ST>
@@ -3261,6 +3311,110 @@ END_IF
 g_Data.b_CIP_Run:=FALSE;
 _aGet_Client_active();
 ]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
+    <Action Name="_ameasure_Deterg_2_active" Id="{26827e86-238f-4cae-90ea-080833e3ba15}">
+      <Implementation>
+        <ST><![CDATA[
+ton_Concentration_Filter(PT:=T#30S, IN:=stDetergent.Control_ON);
+IF TRUE 
+AND ton_Concentration_Filter.Q	
+THEN;
+ bConcentration_correct:=TRUE;
+ELSE;
+ bConcentration_correct:=FALSE;
+END_IF]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
+    <Action Name="_ameasure_Deterg_active" Id="{0df3b090-cf38-4d12-bf3b-cbf3c529cdce}">
+      <Implementation>
+        <ST><![CDATA[
+ton_Concentration_Filter(PT:=T#30S, IN:=stDetergent.Control_ON);
+IF TRUE 
+AND ton_Concentration_Filter.Q	
+THEN;
+ bConcentration_correct:=TRUE;
+ELSE;
+ bConcentration_correct:=FALSE;
+END_IF]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
+    <Action Name="_ameasure_Dis_2_active" Id="{1261d4d1-c6d0-4244-bace-be3e25c760cc}">
+      <Implementation>
+        <ST><![CDATA[
+ton_Concentration_Filter(PT:=T#30S, IN:=stDisInfectant.Control_ON);
+IF TRUE 	
+AND ton_Concentration_Filter.Q	
+THEN;
+ bConcentration_correct:=TRUE;
+ELSE;
+ bConcentration_correct:=FALSE;
+END_IF]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
+    <Action Name="_ameasure_Dis_active" Id="{53cb2553-ae2a-4250-8fcc-274b620fda49}">
+      <Implementation>
+        <ST><![CDATA[
+ton_Concentration_Filter(PT:=T#30S, IN:=stDisInfectant.Control_ON);
+IF TRUE 
+AND ton_Concentration_Filter.Q	
+THEN;
+ bConcentration_correct:=TRUE;
+ELSE;
+ bConcentration_correct:=FALSE;
+END_IF]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -3803,11 +3957,9 @@ THEN;
 	CASE eRefClient_fbElement.eState_Long OF
 	
 		E_Element_State_Long.eCIP_2_Deterged:;
-				eRefClient_fbElement.m_InterConnected_State(eState_Long_Set:=E_Element_State_Long.eCIP_3_Deterged_Clean);	
 				m_DashState_done(stage:=E_CIP_DashStage_List.e11_CIP3_Detergent_Clean_Sprinkler);
 	
 		E_Element_State_Long.eCIP_4_Sanitized:;
-				eRefClient_fbElement.m_InterConnected_State(eState_Long_Set:=E_Element_State_Long.eCIP_5_Done);			
 				m_DashState_done(stage:=E_CIP_DashStage_List.e20_CIP5_DisInfection_Clean_Sprinkler);
 				
 	END_CASE	
@@ -3819,11 +3971,9 @@ THEN;
 	CASE eRefClient_fbElement.eState_Long OF
 	
 		E_Element_State_Long.eCIP_2_Deterged:;
-				eRefClient_fbElement.m_InterConnected_State(eState_Long_Set:=E_Element_State_Long.eCIP_3_Deterged_Clean);	
 				m_DashState_done(stage:=E_CIP_DashStage_List.e10_CIP3_Detergent_Clean_Pipe);
 	
 		E_Element_State_Long.eCIP_4_Sanitized:;
-				eRefClient_fbElement.m_InterConnected_State(eState_Long_Set:=E_Element_State_Long.eCIP_5_Done);			
 				m_DashState_done(stage:=E_CIP_DashStage_List.e19_CIP5_DisInfection_Clean_Pipe);
 				
 	END_CASE	
@@ -3834,12 +3984,10 @@ ELSE;
 	CASE eRefClient_fbElement.eState_Long OF
 	
 		E_Element_State_Long.eCIP_2_Deterged:;
-				eRefClient_fbElement.m_InterConnected_State(eState_Long_Set:=E_Element_State_Long.eCIP_3_Deterged_Clean);	
 				m_DashState_done(stage:=E_CIP_DashStage_List.e10_CIP3_Detergent_Clean_Pipe);
 				m_DashState_activate(stage:=E_CIP_DashStage_List.e11_CIP3_Detergent_Clean_Sprinkler);
 	
 		E_Element_State_Long.eCIP_4_Sanitized:;
-				eRefClient_fbElement.m_InterConnected_State(eState_Long_Set:=E_Element_State_Long.eCIP_5_Done);			
 				m_DashState_done(stage:=E_CIP_DashStage_List.e19_CIP5_DisInfection_Clean_Pipe);
 				m_DashState_activate(stage:=E_CIP_DashStage_List.e20_CIP5_DisInfection_Clean_Sprinkler);
 				
@@ -4031,8 +4179,8 @@ fb_PumpCIP.m_Run(RPM:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_CIP_Pump);//150
 IF TRUE //Future condition
 AND StartPump_CIP2_RPM_01.t>SECOND_TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_PumpInitRun) 
 AND fb_PumpCIP.nRPM=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_CIP_Pump
-AND stAnalogSensor[E_ASense_Name.FT1001].Value>=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_Sprinkler // 
-AND stAnalogSensor[E_ASense_Name.FT1002].Value>=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_Sprinkler // 
+AND stAnalogSensor[E_ASense_Name.FT1001].Value>=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_Pipe // 
+AND stAnalogSensor[E_ASense_Name.FT1002].Value>=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_Pipe // 
 THEN;
 	bStepDone:=TRUE;
 END_IF
@@ -4062,13 +4210,22 @@ fb_PumpClient.m_Run(RPM:=st_CIP_Param.r_CIP_Client_Pump);
 // to stas question ? deference:
 //fb_PumpCIP.m_Run(RPM:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_CIP_Pmp_1);//1500
 //fb_PumpCIP.m_Run(RPM:=st_CIP_Param.r_CIP_Pmp_1);
-
+(*
 IF TRUE //Future condition
 AND delta_T92_Volume < - st_CIP_Param.r_Volume_Solution_Fill // Volume 
 //AND StartPump_CIP2_RPM_02.t>SECOND_TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_PumpInitRun) 
 THEN;
 	bStepDone:=TRUE;
 END_IF
+*)
+
+volume_Requered:= REAL_TO_INT( -st_CIP_Param.r_Volume_Solution_Fill);
+volume_Actual:= REAL_TO_INT(delta_T92_Volume);
+
+IF volume_Actual >= volume_Requered THEN;
+	bStepDone:=TRUE;
+END_IF
+
 
 ]]></ST>
       </Implementation>
@@ -4638,8 +4795,10 @@ fb_PumpClient.m_Stop();]]></ST>
 
 		//Pump CIP return 
 		stFlow2_Rate.rValue:=g_AnalogSensor.stAnalogSensor[E_ASense_Name.FT1002].Value;
-		//stFlow2_Rate.rSetPoint:=st_CIP_Param.r_Flow_Pipe;//st_CIP_Param.r_Flow_Sprinkler;//:=150
+		stFlow3_Rate.rValue:=g_AnalogSensor.stAnalogSensor[E_ASense_Name.FT1002].Value;
+		stFlow3_Rate.rSetPoint:=stFlow2_Rate.rSetPoint;
 		pcFlow2_Rate(stProcessControl:=stFlow2_Rate );
+		pcFlow3_Rate(stProcessControl:=stFlow3_Rate );
 
 		// TBD : to check if the first loop(local prepare) when Client selected gets relevant Flow SetPoint 
 		IF bSprinkler THEN
@@ -4727,6 +4886,7 @@ stTemperature_Dis 	 REF=g_ProcControl.arr_stProcCntrl[E_ProcessControl_Name.eDis
 	//Flow rate
 stFlow1_Rate REF=g_ProcControl.arr_stProcCntrl[E_ProcessControl_Name.eCIP_Flow_1];
 stFlow2_Rate REF=g_ProcControl.arr_stProcCntrl[E_ProcessControl_Name.eCIP_Flow_2];
+stFlow3_Rate REF=g_ProcControl.arr_stProcCntrl[E_ProcessControl_Name.eCIP_Flow_3];
 
 	//Level
 stColor_Level    REF=g_ProcControl.arr_stProcCntrl[E_ProcessControl_Name.eColor_Level];
@@ -4747,6 +4907,7 @@ pcTemperature_Dis 	 REF=g_ProcControl.arr_fbProcCntrl[E_ProcessControl_Name.eDis
 	//Flow rate
 pcFlow1_Rate REF=g_ProcControl.arr_fbProcCntrl[E_ProcessControl_Name.eCIP_Flow_1];
 pcFlow2_Rate REF=g_ProcControl.arr_fbProcCntrl[E_ProcessControl_Name.eCIP_Flow_2];
+pcFlow3_Rate REF=g_ProcControl.arr_fbProcCntrl[E_ProcessControl_Name.eCIP_Flow_3];
 	//Level
 pcColor_Level    REF=g_ProcControl.arr_fbProcCntrl[E_ProcessControl_Name.eColor_Level];
 pcMarinada_Level REF=g_ProcControl.arr_fbProcCntrl[E_ProcessControl_Name.eMarin_Level];
@@ -10875,7 +11036,7 @@ END_CASE]]></ST>
                                                           <o>
                                                             <v n="AttributeId">{700a583f-b4d4-43e4-8c14-629c7cd3bec8}</v>
                                                             <o n="Value" t="StringValue">
-                                                              <v n="Value">""</v>
+                                                              <v n="Value">"_ameasure_Deterg_active"</v>
                                                               <v n="DefaultValue">""</v>
                                                             </o>
                                                             <v n="Id">3099L</v>
@@ -11125,7 +11286,7 @@ END_CASE]]></ST>
                                                                       <o>
                                                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                                         <o n="Value" t="StringValue">
-                                                                          <v n="Value">"stDetergent.Control_ON"</v>
+                                                                          <v n="Value">"bConcentration_correct"</v>
                                                                           <v n="DefaultValue">""</v>
                                                                         </o>
                                                                         <v n="Id">3162L</v>
@@ -14360,7 +14521,7 @@ END_CASE]]></ST>
                                                                       <o>
                                                                         <v n="AttributeId">{700a583f-b4d4-43e4-8c14-629c7cd3bec8}</v>
                                                                         <o n="Value" t="StringValue">
-                                                                          <v n="Value">""</v>
+                                                                          <v n="Value">"_ameasure_Deterg_2_active"</v>
                                                                           <v n="DefaultValue">""</v>
                                                                         </o>
                                                                         <v n="Id">3445L</v>
@@ -14610,7 +14771,7 @@ END_CASE]]></ST>
                                                                                   <o>
                                                                                     <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                                                     <o n="Value" t="StringValue">
-                                                                                      <v n="Value">"stDetergent.Control_ON"</v>
+                                                                                      <v n="Value">"bConcentration_correct"</v>
                                                                                       <v n="DefaultValue">""</v>
                                                                                     </o>
                                                                                     <v n="Id">3638L</v>
@@ -19300,7 +19461,7 @@ END_CASE]]></ST>
                                                           <o>
                                                             <v n="AttributeId">{700a583f-b4d4-43e4-8c14-629c7cd3bec8}</v>
                                                             <o n="Value" t="StringValue">
-                                                              <v n="Value">""</v>
+                                                              <v n="Value">"_ameasure_Dis_active"</v>
                                                               <v n="DefaultValue">""</v>
                                                             </o>
                                                             <v n="Id">4297L</v>
@@ -19550,7 +19711,7 @@ END_CASE]]></ST>
                                                                       <o>
                                                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                                         <o n="Value" t="StringValue">
-                                                                          <v n="Value">"stDisInfectant.Control_ON"</v>
+                                                                          <v n="Value">"bConcentration_correct"</v>
                                                                           <v n="DefaultValue">""</v>
                                                                         </o>
                                                                         <v n="Id">4259L</v>
@@ -22602,7 +22763,7 @@ END_CASE]]></ST>
                                                                       <o>
                                                                         <v n="AttributeId">{700a583f-b4d4-43e4-8c14-629c7cd3bec8}</v>
                                                                         <o n="Value" t="StringValue">
-                                                                          <v n="Value">""</v>
+                                                                          <v n="Value">"_ameasure_Dis_2_active"</v>
                                                                           <v n="DefaultValue">""</v>
                                                                         </o>
                                                                         <v n="Id">5158L</v>
@@ -22852,7 +23013,7 @@ END_CASE]]></ST>
                                                                                   <o>
                                                                                     <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                                                     <o n="Value" t="StringValue">
-                                                                                      <v n="Value">"stDisInfectant.Control_ON"</v>
+                                                                                      <v n="Value">"bConcentration_correct"</v>
                                                                                       <v n="DefaultValue">""</v>
                                                                                     </o>
                                                                                     <v n="Id">5120L</v>
@@ -32210,7 +32371,7 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="18" Count="1" />
     </LineIds>
     <LineIds Name="FB_CIP._aCIP2_Done_entry">
-      <LineId Id="3" Count="1" />
+      <LineId Id="3" Count="0" />
       <LineId Id="8" Count="0" />
       <LineId Id="6" Count="1" />
       <LineId Id="5" Count="0" />
@@ -32292,7 +32453,19 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aCIP4_Collect_active">
-      <LineId Id="22" Count="2" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="34" Count="1" />
+      <LineId Id="39" Count="0" />
+      <LineId Id="38" Count="0" />
+      <LineId Id="40" Count="0" />
+      <LineId Id="37" Count="0" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="45" Count="0" />
+      <LineId Id="41" Count="0" />
+      <LineId Id="43" Count="1" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="23" Count="1" />
       <LineId Id="28" Count="0" />
       <LineId Id="30" Count="0" />
       <LineId Id="29" Count="0" />
@@ -32327,19 +32500,25 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="7" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aCIP4_Drain_active">
-      <LineId Id="8" Count="1" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="21" Count="10" />
+      <LineId Id="19" Count="1" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="9" Count="0" />
       <LineId Id="12" Count="2" />
       <LineId Id="16" Count="0" />
       <LineId Id="15" Count="0" />
       <LineId Id="11" Count="0" />
       <LineId Id="10" Count="0" />
       <LineId Id="1" Count="0" />
+      <LineId Id="32" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aCIP4_Drain_entry">
       <LineId Id="1" Count="1" />
-      <LineId Id="5" Count="4" />
+      <LineId Id="5" Count="3" />
       <LineId Id="16" Count="1" />
-      <LineId Id="11" Count="2" />
+      <LineId Id="11" Count="1" />
       <LineId Id="18" Count="1" />
       <LineId Id="15" Count="0" />
       <LineId Id="4" Count="0" />
@@ -32388,12 +32567,15 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
     <LineIds Name="FB_CIP._aCondition_CIP2_Client_active">
       <LineId Id="71" Count="0" />
       <LineId Id="75" Count="0" />
-      <LineId Id="43" Count="0" />
-      <LineId Id="2" Count="0" />
-      <LineId Id="45" Count="1" />
-      <LineId Id="44" Count="0" />
-      <LineId Id="6" Count="5" />
-      <LineId Id="24" Count="0" />
+      <LineId Id="143" Count="0" />
+      <LineId Id="142" Count="0" />
+      <LineId Id="148" Count="2" />
+      <LineId Id="154" Count="3" />
+      <LineId Id="146" Count="0" />
+      <LineId Id="144" Count="0" />
+      <LineId Id="158" Count="6" />
+      <LineId Id="147" Count="0" />
+      <LineId Id="145" Count="0" />
       <LineId Id="120" Count="1" />
       <LineId Id="112" Count="0" />
       <LineId Id="27" Count="0" />
@@ -32458,10 +32640,8 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="58" Count="0" />
       <LineId Id="2" Count="0" />
       <LineId Id="81" Count="0" />
-      <LineId Id="3" Count="0" />
-      <LineId Id="44" Count="1" />
-      <LineId Id="43" Count="0" />
-      <LineId Id="7" Count="4" />
+      <LineId Id="84" Count="17" />
+      <LineId Id="11" Count="0" />
       <LineId Id="59" Count="20" />
       <LineId Id="12" Count="1" />
       <LineId Id="57" Count="0" />
@@ -32681,6 +32861,7 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="31" Count="0" />
       <LineId Id="30" Count="0" />
       <LineId Id="35" Count="6" />
+      <LineId Id="45" Count="1" />
       <LineId Id="34" Count="0" />
       <LineId Id="33" Count="0" />
     </LineIds>
@@ -32710,7 +32891,9 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
     </LineIds>
     <LineIds Name="FB_CIP._aConnect_CIP4_R_Water_entry">
       <LineId Id="1" Count="1" />
-      <LineId Id="4" Count="12" />
+      <LineId Id="4" Count="3" />
+      <LineId Id="9" Count="3" />
+      <LineId Id="14" Count="2" />
       <LineId Id="3" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aDeter_PumpRun_DW_Clnt_active">
@@ -32944,8 +33127,10 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="6" Count="0" />
       <LineId Id="8" Count="0" />
       <LineId Id="11" Count="0" />
-      <LineId Id="13" Count="2" />
-      <LineId Id="17" Count="4" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="17" Count="1" />
+      <LineId Id="20" Count="1" />
       <LineId Id="4" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aFlow_Volume_Meter_active">
@@ -33009,6 +33194,27 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="13" Count="0" />
       <LineId Id="12" Count="0" />
       <LineId Id="3" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_CIP._ameasure_Deterg_2_active">
+      <LineId Id="2" Count="7" />
+      <LineId Id="1" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_CIP._ameasure_Deterg_active">
+      <LineId Id="2" Count="7" />
+      <LineId Id="1" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_CIP._ameasure_Dis_2_active">
+      <LineId Id="2" Count="7" />
+      <LineId Id="1" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_CIP._ameasure_Dis_active">
+      <LineId Id="3" Count="0" />
+      <LineId Id="1" Count="0" />
+      <LineId Id="4" Count="1" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="9" Count="1" />
+      <LineId Id="6" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._ameasureDelay_CIP2_1_active">
       <LineId Id="9" Count="0" />
@@ -33166,16 +33372,22 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="1" Count="0" />
       <LineId Id="3" Count="0" />
       <LineId Id="20" Count="4" />
-      <LineId Id="60" Count="4" />
-      <LineId Id="66" Count="3" />
+      <LineId Id="60" Count="2" />
+      <LineId Id="64" Count="0" />
+      <LineId Id="66" Count="1" />
+      <LineId Id="69" Count="0" />
       <LineId Id="71" Count="0" />
       <LineId Id="59" Count="0" />
       <LineId Id="25" Count="4" />
-      <LineId Id="73" Count="9" />
+      <LineId Id="73" Count="2" />
+      <LineId Id="77" Count="2" />
+      <LineId Id="81" Count="1" />
       <LineId Id="72" Count="0" />
       <LineId Id="83" Count="0" />
       <LineId Id="30" Count="2" />
-      <LineId Id="47" Count="11" />
+      <LineId Id="47" Count="2" />
+      <LineId Id="51" Count="3" />
+      <LineId Id="56" Count="2" />
       <LineId Id="45" Count="1" />
       <LineId Id="2" Count="0" />
     </LineIds>
@@ -33258,6 +33470,13 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="19" Count="0" />
       <LineId Id="11" Count="2" />
       <LineId Id="5" Count="0" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="30" Count="2" />
+      <LineId Id="20" Count="0" />
       <LineId Id="4" Count="0" />
       <LineId Id="3" Count="0" />
     </LineIds>
@@ -33400,8 +33619,9 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="754" Count="2" />
       <LineId Id="831" Count="0" />
       <LineId Id="757" Count="0" />
-      <LineId Id="828" Count="0" />
-      <LineId Id="761" Count="1" />
+      <LineId Id="845" Count="1" />
+      <LineId Id="761" Count="0" />
+      <LineId Id="847" Count="1" />
       <LineId Id="840" Count="0" />
       <LineId Id="833" Count="0" />
       <LineId Id="832" Count="0" />
@@ -33423,7 +33643,8 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="38" Count="0" />
       <LineId Id="40" Count="0" />
       <LineId Id="42" Count="0" />
-      <LineId Id="76" Count="1" />
+      <LineId Id="76" Count="0" />
+      <LineId Id="92" Count="1" />
       <LineId Id="75" Count="0" />
       <LineId Id="58" Count="0" />
       <LineId Id="57" Count="0" />
@@ -33433,7 +33654,8 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="84" Count="0" />
       <LineId Id="88" Count="1" />
       <LineId Id="61" Count="8" />
-      <LineId Id="78" Count="1" />
+      <LineId Id="78" Count="0" />
+      <LineId Id="90" Count="1" />
       <LineId Id="71" Count="3" />
       <LineId Id="46" Count="0" />
       <LineId Id="81" Count="0" />
