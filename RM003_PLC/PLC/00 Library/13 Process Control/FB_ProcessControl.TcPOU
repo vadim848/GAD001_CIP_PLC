@@ -19,39 +19,12 @@ END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[//stProcessControl.bManual:=TRUE;
-IF bRun THEN 
-	stProcessControl.bActiveCntr:=TRUE; 
-ELSIF NOT bRun AND Call_ActDelayTON.Q THEN
-	stProcessControl.bActiveCntr:=FALSE;
-END_IF
+
+
 
 Call_ActDelayTON(IN:=stProcessControl.bActiveCntr , PT:=T#1S , Q=> , ET=> );
 
-IF bRun THEN
-	stProcessControl.Deviation:=stProcessControl.rSetPoint-stProcessControl.rValue;
-	stProcessControl.Control_ON:=FALSE;
-	stProcessControl.OverFlow:=FALSE;
-	stProcessControl.bDone:=FALSE;
-	
-	IF stProcessControl.Deviation >= stProcessControl.ToleravceLow THEN;
-		//Value too low needs to be increased
-		stProcessControl.Control_ON:=TRUE;
-		stProcessControl.OverFlow:=FALSE;
-		stProcessControl.bDone:=FALSE;
-	ELSIF stProcessControl.Deviation <= -stProcessControl.ToleranceHigh THEN;
-		//value too high need to be decreased
-		stProcessControl.OverFlow:=TRUE;
-		stProcessControl.Control_ON:=TRUE;
-		stProcessControl.bDone:=FALSE;
-		//message
-	ELSE;
-		// Done, value in tolerace
-		stProcessControl.OverFlow:=FALSE;
-		stProcessControl.Control_ON:=FALSE;
-		stProcessControl.bDone:=TRUE;
-	END_IF
-	bRun:=FALSE;
-END_IF
+m_Check();
 
 act_Call_PID();
 act_CallHyst();
@@ -502,6 +475,45 @@ fbPID(
 ]]></ST>
       </Implementation>
     </Action>
+    <Method Name="m_Check" Id="{b27ec81e-04ce-483d-958b-1ee4b2519c56}">
+      <Declaration><![CDATA[METHOD m_Check : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF bRun THEN 
+	stProcessControl.bActiveCntr:=TRUE; 
+ELSIF NOT bRun AND Call_ActDelayTON.Q THEN
+	stProcessControl.bActiveCntr:=FALSE;
+END_IF
+
+IF bRun THEN
+	stProcessControl.Deviation:=stProcessControl.rSetPoint-stProcessControl.rValue;
+	stProcessControl.Control_ON:=FALSE;
+	stProcessControl.OverFlow:=FALSE;
+	stProcessControl.bDone:=FALSE;
+	
+	IF stProcessControl.Deviation >= stProcessControl.ToleravceLow THEN;
+		//Value too low needs to be increased
+		stProcessControl.Control_ON:=TRUE;
+		stProcessControl.OverFlow:=FALSE;
+		stProcessControl.bDone:=FALSE;
+	ELSIF stProcessControl.Deviation <= -stProcessControl.ToleranceHigh THEN;
+		//value too high need to be decreased
+		stProcessControl.OverFlow:=TRUE;
+		stProcessControl.Control_ON:=TRUE;
+		stProcessControl.bDone:=FALSE;
+		//message
+	ELSE;
+		// Done, value in tolerace
+		stProcessControl.OverFlow:=FALSE;
+		stProcessControl.Control_ON:=FALSE;
+		stProcessControl.bDone:=TRUE;
+	END_IF
+	bRun:=FALSE;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="mReset" Id="{b49576d6-978e-47f7-ae59-752a1612df43}">
       <Declaration><![CDATA[METHOD mReset : BOOL
 VAR_INPUT
@@ -522,6 +534,10 @@ END_VAR
       <Implementation>
         <ST><![CDATA[bRun:=TRUE;
 //stProcessControl.rSetPoint:=Set_Point;
+m_Check();
+
+
+
 mRun:=stProcessControl.bDone;]]></ST>
       </Implementation>
     </Method>
@@ -561,14 +577,20 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[bRun:=TRUE;
+        <ST><![CDATA[stProcessControl.rSetPoint:=Set_Point;
+bRun:=TRUE;
 mRun();
 stProcessControl.rSetPoint:=Set_Point;
 mRun_With_SP:=stProcessControl.bDone;]]></ST>
       </Implementation>
     </Method>
     <LineIds Name="FB_ProcessControl">
-      <LineId Id="262" Count="38" />
+      <LineId Id="262" Count="0" />
+      <LineId Id="324" Count="0" />
+      <LineId Id="329" Count="1" />
+      <LineId Id="263" Count="0" />
+      <LineId Id="331" Count="1" />
+      <LineId Id="296" Count="4" />
       <LineId Id="302" Count="1" />
       <LineId Id="305" Count="1" />
       <LineId Id="304" Count="0" />
@@ -587,6 +609,13 @@ mRun_With_SP:=stProcessControl.bDone;]]></ST>
       <LineId Id="1" Count="0" />
       <LineId Id="7" Count="1" />
     </LineIds>
+    <LineIds Name="FB_ProcessControl.m_Check">
+      <LineId Id="32" Count="3" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="6" Count="23" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
     <LineIds Name="FB_ProcessControl.mReset">
       <LineId Id="6" Count="1" />
       <LineId Id="5" Count="0" />
@@ -594,6 +623,10 @@ mRun_With_SP:=stProcessControl.bDone;]]></ST>
     <LineIds Name="FB_ProcessControl.mRun">
       <LineId Id="5" Count="0" />
       <LineId Id="13" Count="0" />
+      <LineId Id="44" Count="0" />
+      <LineId Id="51" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="18" Count="0" />
       <LineId Id="9" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProcessControl.mRun_Hyst">
@@ -608,6 +641,7 @@ mRun_With_SP:=stProcessControl.bDone;]]></ST>
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProcessControl.mRun_With_SP">
+      <LineId Id="23" Count="0" />
       <LineId Id="5" Count="0" />
       <LineId Id="18" Count="0" />
       <LineId Id="13" Count="0" />

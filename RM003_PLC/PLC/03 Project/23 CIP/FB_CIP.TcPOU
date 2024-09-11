@@ -167,6 +167,7 @@ VAR
 	ton_Concentration_Filter: TON;
 	bConcentration_correct: BOOL;
 	tonTankLowLevel: TON;
+	iCheck: INT;
 END_VAR
 //upper lower control
 VAR
@@ -2976,13 +2977,34 @@ END_IF]]></ST>
     </Action>
     <Action Name="_aFill_Solution_CIP3_active" Id="{74e111a2-69e4-43d1-a5ee-7e24dfbfb5e1}">
       <Implementation>
-        <ST><![CDATA[bStepDone:=FALSE;
+        <ST><![CDATA[fb_PumpCIP.m_Run(RPM:=st_CIP_Param.r_CIP_Pump);
+fb_PumpClient.m_Run(RPM:=st_CIP_Param.r_CIP_Client_Pump);
+
+bStepDone:=FALSE;
 volume_Requered:= REAL_TO_INT(st_CIP_Param.r_Volume_Solution_Fill);
 volume_Actual:= REAL_TO_INT(-delta_T91_Volume);
 
 IF volume_Actual >= volume_Requered THEN;
 	bStepDone:=TRUE;
 END_IF]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
+    <Action Name="_aFill_Solution_CIP3_entry" Id="{0bc51ded-0fb2-48b2-a7f6-a093346aa47f}">
+      <Implementation>
+        <ST><![CDATA[mVolumeReset_All();]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -22792,7 +22814,7 @@ END_CASE]]></ST>
                                                           <o>
                                                             <v n="AttributeId">{a6b08bd8-b696-47e3-9cbf-7408b61c9ff8}</v>
                                                             <o n="Value" t="StringValue">
-                                                              <v n="Value">""</v>
+                                                              <v n="Value">"_aFill_Solution_CIP3_entry"</v>
                                                               <v n="DefaultValue">""</v>
                                                             </o>
                                                             <v n="Id">7249L</v>
@@ -34205,7 +34227,9 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="81" Count="0" />
       <LineId Id="84" Count="12" />
       <LineId Id="102" Count="0" />
-      <LineId Id="97" Count="4" />
+      <LineId Id="97" Count="2" />
+      <LineId Id="116" Count="0" />
+      <LineId Id="101" Count="0" />
       <LineId Id="11" Count="0" />
       <LineId Id="59" Count="6" />
       <LineId Id="67" Count="12" />
@@ -34604,7 +34628,12 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aFill_Solution_CIP3_active">
+      <LineId Id="10" Count="0" />
+      <LineId Id="8" Count="1" />
       <LineId Id="2" Count="5" />
+      <LineId Id="1" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_CIP._aFill_Solution_CIP3_entry">
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aFill_Water_T91_active">
