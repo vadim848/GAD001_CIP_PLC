@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
   <POU Name="FB_Line_Source" Id="{137ed242-9f5e-44a3-a945-e1d43cf34d59}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_Line_Source EXTENDS FB_SFC_Cycle IMPLEMENTS ITF_FB_SFC_Cycle
 VAR_INPUT
@@ -91,7 +91,7 @@ fbPis.m_SetByRecipe(stPis:=stPis_TapWater, 			req:=E_Piston_Recipe_State.Release
 fbPis.m_SetByRecipe(stPis:=stPis_Drain, 			req:=E_Piston_Recipe_State.Act);
 fbPis.m_SetByRecipe(stPis:=stPis_CIP, 				req:=E_Piston_Recipe_State.Act);
 fbPis.m_SetByRecipe(stPis:=stPis_CIP_Sel,			req:=E_Piston_Recipe_State.Act);
-fbPis.m_SetByRecipe(stPis:=stPis_BlockWater, 		req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_BlockWater, 		req:=E_Piston_Recipe_State.Act);
 fbPis.m_SetByRecipe(stPis:=stPis_WaterSource, 		req:=E_Piston_Recipe_State.Release);]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -4208,7 +4208,7 @@ AND fbPis.m_CheckByRecipe(stPis:=stPis_TapWater, 		req:=E_Piston_Recipe_State.Re
 AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 			req:=E_Piston_Recipe_State.Act)
 AND fbPis.m_CheckByRecipe(stPis:=stPis_CIP, 			req:=E_Piston_Recipe_State.Act)
 AND fbPis.m_CheckByRecipe(stPis:=stPis_CIP_Sel,			req:=E_Piston_Recipe_State.Act)
-AND fbPis.m_CheckByRecipe(stPis:=stPis_BlockWater, 		req:=E_Piston_Recipe_State.Release)
+AND fbPis.m_CheckByRecipe(stPis:=stPis_BlockWater, 		req:=E_Piston_Recipe_State.Act)
 AND fbPis.m_CheckByRecipe(stPis:=stPis_WaterSource, 	req:=E_Piston_Recipe_State.Release)
 THEN;
 	eStatus:=E_Line_Source.eCIP;
