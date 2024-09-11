@@ -259,7 +259,6 @@ END_IF
 
 t_ActMeasureTime:=m_MeasureTimeToHMI();
 mFillWater();
-
 //IF bMoveStep THEN bMoveStep:=FALSE; END_IF
  
 
@@ -977,7 +976,7 @@ tonr_CIP_Condition(PT:=SECOND_TO_TIME(tConditionTime));
 IF bSprinkler THEN;
 	IF TRUE 
 	AND pcFlow1_Rate.mRun(mRun=>_cond[1])
-	AND pcFlow3_Rate.mRun(mRun=>_cond[2])
+	//AND pcFlow3_Rate.mRun(mRun=>_cond[2])
 	THEN;
 		tonr_CIP_Condition.IN:=TRUE;
 	ELSE;
@@ -986,7 +985,7 @@ IF bSprinkler THEN;
 ELSE;
 	IF TRUE 
 	AND pcFlow1_Rate.mRun(mRun=>_cond[1])
-	AND pcFlow2_Rate.mRun(mRun=>_cond[2])
+	//AND pcFlow2_Rate.mRun(mRun=>_cond[2])
 	THEN;
 		tonr_CIP_Condition.IN:=TRUE;
 	ELSE;
@@ -1161,6 +1160,17 @@ ELSE;
 	bCIP_Condition_Done:=FALSE;
 END_IF
 
+
+
+ton_Concentration_Filter(PT:=T#30S, IN:=stDetergent.Control_ON);
+IF TRUE 
+AND ton_Concentration_Filter.Q	
+THEN;
+ bConcentration_correct:=TRUE;
+ELSE;
+ bConcentration_correct:=FALSE;
+END_IF
+
 // Reverce function
 (*
 IF Deterg_Conc_Client_Done.x 
@@ -1272,6 +1282,16 @@ IF tonr_CIP_Condition.Q THEN;
 	bCIP_Condition_Done:=TRUE;
 ELSE;
 	bCIP_Condition_Done:=FALSE;	
+END_IF
+
+
+ton_Concentration_Filter(PT:=T#30S, IN:=stDetergent.Control_ON);
+IF TRUE 
+AND ton_Concentration_Filter.Q	
+THEN;
+ bConcentration_correct:=TRUE;
+ELSE;
+ bConcentration_correct:=FALSE;
 END_IF
 
 // Reverce function
@@ -1403,6 +1423,16 @@ ELSE;
 	bCIP_Condition_Done:=FALSE;	
 END_IF
 
+
+ton_Concentration_Filter(PT:=T#30S, IN:=stDisInfectant.Control_ON AND NOT bSprinkler);
+IF TRUE 	
+AND ton_Concentration_Filter.Q	
+THEN;
+	bConcentration_correct:=TRUE;
+ELSE;
+	bConcentration_correct:=FALSE;
+END_IF
+
 // Reverce function
 (*
 IF Disinfct_Conc_Client_Done.x 
@@ -1512,6 +1542,16 @@ IF tonr_CIP_Condition.Q THEN
 	bCIP_Condition_Done:=TRUE;
 ELSE;
 	bCIP_Condition_Done:=FALSE;	
+END_IF
+
+
+ton_Concentration_Filter(PT:=T#30S, IN:=stDisInfectant.Control_ON);
+IF TRUE 
+AND ton_Concentration_Filter.Q	
+THEN;
+ bConcentration_correct:=TRUE;
+ELSE;
+ bConcentration_correct:=FALSE;
 END_IF
 
 // Reverce function
@@ -1647,7 +1687,7 @@ tonr_CIP_Condition(PT:=SECOND_TO_TIME(tConditionTime));
 IF bSprinkler THEN;
 	IF TRUE 
 	AND pcFlow1_Rate.mRun(mRun=>_cond[1])
-	AND pcFlow3_Rate.mRun(mRun=>_cond[2])
+	//AND pcFlow3_Rate.mRun(mRun=>_cond[2])
 	THEN;
 		tonr_CIP_Condition.IN:=TRUE;
 	ELSE;
@@ -1656,7 +1696,7 @@ IF bSprinkler THEN;
 ELSE;
 	IF TRUE 
 	AND pcFlow1_Rate.mRun(mRun=>_cond[1])
-	AND pcFlow2_Rate.mRun(mRun=>_cond[2])
+	//AND pcFlow2_Rate.mRun(mRun=>_cond[2])
 	THEN;
 		tonr_CIP_Condition.IN:=TRUE;
 	ELSE;
@@ -3473,15 +3513,7 @@ _aGet_Client_active();
     </Action>
     <Action Name="_ameasure_Deterg_2_active" Id="{26827e86-238f-4cae-90ea-080833e3ba15}">
       <Implementation>
-        <ST><![CDATA[
-ton_Concentration_Filter(PT:=T#30S, IN:=stDetergent.Control_ON);
-IF TRUE 
-AND ton_Concentration_Filter.Q	
-THEN;
- bConcentration_correct:=TRUE;
-ELSE;
- bConcentration_correct:=FALSE;
-END_IF]]></ST>
+        <ST><![CDATA[]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -3500,14 +3532,7 @@ END_IF]]></ST>
     <Action Name="_ameasure_Deterg_active" Id="{0df3b090-cf38-4d12-bf3b-cbf3c529cdce}">
       <Implementation>
         <ST><![CDATA[
-ton_Concentration_Filter(PT:=T#30S, IN:=stDetergent.Control_ON);
-IF TRUE 
-AND ton_Concentration_Filter.Q	
-THEN;
- bConcentration_correct:=TRUE;
-ELSE;
- bConcentration_correct:=FALSE;
-END_IF]]></ST>
+]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -3525,15 +3550,7 @@ END_IF]]></ST>
     </Action>
     <Action Name="_ameasure_Dis_2_active" Id="{1261d4d1-c6d0-4244-bace-be3e25c760cc}">
       <Implementation>
-        <ST><![CDATA[
-ton_Concentration_Filter(PT:=T#30S, IN:=stDisInfectant.Control_ON AND NOT bSprinkler);
-IF TRUE 	
-AND ton_Concentration_Filter.Q	
-THEN;
-	bConcentration_correct:=TRUE;
-ELSE;
-	bConcentration_correct:=FALSE;
-END_IF]]></ST>
+        <ST><![CDATA[]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -3551,15 +3568,7 @@ END_IF]]></ST>
     </Action>
     <Action Name="_ameasure_Dis_active" Id="{53cb2553-ae2a-4250-8fcc-274b620fda49}">
       <Implementation>
-        <ST><![CDATA[
-ton_Concentration_Filter(PT:=T#30S, IN:=stDisInfectant.Control_ON);
-IF TRUE 
-AND ton_Concentration_Filter.Q	
-THEN;
- bConcentration_correct:=TRUE;
-ELSE;
- bConcentration_correct:=FALSE;
-END_IF]]></ST>
+        <ST><![CDATA[]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -4326,8 +4335,8 @@ fb_PumpCIP.m_Run(RPM:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_CIP_Pump);//150
 IF TRUE //Future condition
 AND StartPump_CIP2_RPM_01.t>SECOND_TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_PumpInitRun) 
 AND fb_PumpCIP.nRPM=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_CIP_Pump
-AND stAnalogSensor[E_ASense_Name.FT1001].Value>=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_Pipe // 
-AND stAnalogSensor[E_ASense_Name.FT1002].Value>=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_Pipe // 
+//AND stAnalogSensor[E_ASense_Name.FT1001].Value>=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_Pipe // 
+//AND stAnalogSensor[E_ASense_Name.FT1002].Value>=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_Pipe // 
 THEN;
 	bStepDone:=TRUE;
 END_IF
@@ -33870,7 +33879,6 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="1831" Count="1" />
       <LineId Id="1426" Count="0" />
       <LineId Id="1419" Count="0" />
-      <LineId Id="1423" Count="0" />
       <LineId Id="341" Count="0" />
       <LineId Id="131" Count="0" />
       <LineId Id="130" Count="0" />
@@ -34138,7 +34146,9 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="30" Count="8" />
       <LineId Id="41" Count="1" />
       <LineId Id="1" Count="0" />
+      <LineId Id="165" Count="9" />
       <LineId Id="81" Count="0" />
+      <LineId Id="175" Count="0" />
       <LineId Id="80" Count="0" />
       <LineId Id="125" Count="12" />
       <LineId Id="124" Count="0" />
@@ -34173,7 +34183,9 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="86" Count="0" />
       <LineId Id="82" Count="2" />
       <LineId Id="68" Count="0" />
+      <LineId Id="170" Count="8" />
       <LineId Id="95" Count="0" />
+      <LineId Id="179" Count="0" />
       <LineId Id="94" Count="0" />
       <LineId Id="155" Count="13" />
       <LineId Id="154" Count="0" />
@@ -34197,7 +34209,10 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="11" Count="0" />
       <LineId Id="59" Count="6" />
       <LineId Id="67" Count="12" />
-      <LineId Id="12" Count="1" />
+      <LineId Id="104" Count="8" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="113" Count="0" />
+      <LineId Id="13" Count="0" />
       <LineId Id="57" Count="0" />
       <LineId Id="14" Count="1" />
       <LineId Id="56" Count="0" />
@@ -34232,7 +34247,9 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="107" Count="0" />
       <LineId Id="29" Count="0" />
       <LineId Id="31" Count="11" />
+      <LineId Id="112" Count="8" />
       <LineId Id="61" Count="0" />
+      <LineId Id="121" Count="0" />
       <LineId Id="60" Count="0" />
       <LineId Id="63" Count="11" />
       <LineId Id="62" Count="0" />
@@ -34772,24 +34789,16 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="3" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._ameasure_Deterg_2_active">
-      <LineId Id="2" Count="7" />
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._ameasure_Deterg_active">
-      <LineId Id="2" Count="7" />
+      <LineId Id="2" Count="0" />
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._ameasure_Dis_2_active">
-      <LineId Id="2" Count="7" />
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._ameasure_Dis_active">
-      <LineId Id="3" Count="0" />
-      <LineId Id="1" Count="0" />
-      <LineId Id="4" Count="1" />
-      <LineId Id="8" Count="0" />
-      <LineId Id="7" Count="0" />
-      <LineId Id="9" Count="1" />
       <LineId Id="6" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._ameasureDelay_CIP2_1_active">
