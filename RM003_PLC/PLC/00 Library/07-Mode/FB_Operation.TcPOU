@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="FB_Operation" Id="{9990a2bc-e9a5-4153-a5b7-bae03643ac6d}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Operation
+VAR
+	r1: R_TRIG;
+	r2: R_TRIG;
+	arPauseHistory: ARRAY[0..9] OF INT;
+	ton_StopResetAllTime: TON;
+	ton_PauseDelay: TON;
+END_VAR
+VAR_IN_OUT
+	stOper	:ST_OperationButtons;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[r1(CLK:=stOper.bSetPlay,Q=>stOper.b_rt_Play );
+IF  r1.Q THEN
+	stOper.iActOperation:=E_OperationButtons.ePlayAll;
+	stOper.bSetPause:=FALSE;
+	stOper.bSetPlay:=FALSE;
+END_IF
+
+IF stOper.bSetPlay OR stOper.iActOperation=E_OperationButtons.ePlayAll THEN;
+	stOper.bSetPlay:=FALSE;
+END_IF
+
+r2(CLK:= stOper.bSetPause, Q=>stOper.b_rt_Pause );
+IF r2.Q THEN
+	stOper.iActOperation:=E_OperationButtons.ePauseAll;
+	stOper.bSetPause:=FALSE;
+	stOper.bSetPlay:=FALSE;
+	m_WritePauseHystory(iVar:=stOper.iPauseHistory);
+END_IF
+
+IF stOper.bSetPause OR stOper.iActOperation=E_OperationButtons.ePauseAll THEN;
+	stOper.bSetPause:=FALSE;
+END_IF
+
+ton_StopResetAllTime(PT:=T#0.5S);
+IF stOper.bStopResetAll OR NOT bStateSafe THEN;
+	ton_StopResetAllTime.IN:=TRUE;
+	stOper.bStopResetAll:=TRUE;
+	IF ton_StopResetAllTime.Q THEN;
+		ton_StopResetAllTime.IN:=FALSE;
+		stOper.bStopResetAll:=FALSE;
+	END_IF
+END_IF
+
+ton_PauseDelay(PT:=T#2S,
+IN:=stOper.iActOperation=E_OperationButtons.ePauseAll,
+Q=>stOper.bPauseOnDelayed
+);
+
+
+
+
+]]></ST>
+    </Implementation>
+    <Method Name="m_WritePauseHystory" Id="{75b78231-e980-4b10-afbb-1e1080d68899}">
+      <Declaration><![CDATA[METHOD m_WritePauseHystory : BOOL
+VAR_IN_OUT
+	iVar: INT;
+
+END_VAR
+VAR
+	i: INT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[FOR i:=9 TO 1 BY -1 DO;
+	arPauseHistory[i]:=arPauseHistory[i-1];
+END_FOR
+arPauseHistory[0]:=iVar;
+iVar:=0;]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_Operation">
+      <LineId Id="99" Count="8" />
+      <LineId Id="88" Count="0" />
+      <LineId Id="109" Count="0" />
+      <LineId Id="108" Count="0" />
+      <LineId Id="89" Count="3" />
+      <LineId Id="97" Count="0" />
+      <LineId Id="93" Count="3" />
+      <LineId Id="84" Count="0" />
+      <LineId Id="127" Count="0" />
+      <LineId Id="126" Count="0" />
+      <LineId Id="129" Count="1" />
+      <LineId Id="132" Count="0" />
+      <LineId Id="134" Count="1" />
+      <LineId Id="137" Count="0" />
+      <LineId Id="136" Count="0" />
+      <LineId Id="131" Count="0" />
+      <LineId Id="149" Count="0" />
+      <LineId Id="148" Count="0" />
+      <LineId Id="152" Count="0" />
+      <LineId Id="155" Count="0" />
+      <LineId Id="153" Count="0" />
+      <LineId Id="151" Count="0" />
+      <LineId Id="85" Count="1" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="47" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Operation.m_WritePauseHystory">
+      <LineId Id="5" Count="0" />
+      <LineId Id="8" Count="3" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="prg_Call_OpMode" Id="{37ea252d-f7d6-4416-870e-8e42ec6784ac}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM prg_Call_OpMode
+VAR
+	fbModeMain:FB_ModeSelect;
+	fbModeValve:FB_ModeSelect;
+	rt_HMI_Resume: R_TRIG;
+	rt_ActError: R_TRIG;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[fbModeMain(sModuleDescription:='Mode Select - Main',
+	bInterlockBypass:=bIntZoneBypass[1],
+	bLockedFB:=bIntZoneLocked[1],
+	bPistonCheck:=FALSE,	
+	bLockRequest=>bReq_LockZone[1],	
+	eModeZone:=E_ModeZone.eIndex,
+	stMode:=stModeMain,
+	stOperation:=stOpMain);
+	
+PauseAll:=stOpMain.iActOperation=E_OperationButtons.ePauseAll;	
+PauseAllDelayed:=stOpMain.bPauseOnDelayed;	
+(*	
+fbModeValve(sModuleDescription:='Mode Select - Non Pause',
+	bInterlockBypass:=TRUE,
+	bLockedFB:=TRUE,
+	bLockRequest=>,
+	eModeZone:=E_ModeZone.eIndex,
+	stMode:=stModeTable,
+	stOperation:=stOpNonPause);	
+*)	
+	
+	
+rt_HMI_Resume(CLK:=ResumeAll);
+IF rt_HMI_Resume.Q THEN;
+	stOpMain.bSetPlay:=TRUE;
+END_IF
+
+rt_ActError(CLK:=iActErrors<>0);
+IF iActErrors<>0 THEN;
+	stOpMain.bSetPause:=TRUE;
+END_IF
+
+prg_LightTower(
+	bBuzzerBypass:=bBuzzerMute , 
+	qLedGreen=> , //q_EL16[2].ch11
+	qLedYellow=> , //q_EL16[2].ch10
+	qLedRed=> , //q_EL16[2].ch9
+	qBuzzer=> );//q_EL16[2].ch12
+
+	]]></ST>
+    </Implementation>
+    <LineIds Name="prg_Call_OpMode">
+      <LineId Id="202" Count="38" />
+      <LineId Id="186" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

@@ -1,0 +1,175 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <GVL Name="Error_List" Id="{7bed808b-49e7-4fec-9c4e-1846c953597e}">
+    <Declaration><![CDATA[VAR_GLOBAL
+
+END_VAR
+
+VAR_GLOBAL CONSTANT
+	
+	ar_ErrorList					:ARRAY[1..C_Max_ErrorList,0..2] 	OF STRING[80]:= [
+(*	Error ID				Error ID		Error Message_ _ _ _ _ _  _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _*)
+		(*8888888888888888888888888888888888888888888*)					
+
+
+		                  (************************************ General *****************************************)
+
+'000x000xPUZ',   'Message',   'Pause requested',
+
+'000x000x999',	  'Error',	  'General Error',
+'000x000x777',	  'Error',	  'EtherCAT Com Fault - Chack Hardware Configuration',
+'777x777x777',	  'Error',	  'Loading Carrier Is Ready to move without Top Plate - logic conflict',
+
+'SMTx000x001',	  'Error',	  'Servo motor General Error',
+'SMTx000x002',	  'Error',	  'Servo motor Power Not OK',
+
+'050x000x001',  'Error',   'Air Pressure Too Low',
+'050x000x002',  'Message', 'Production Finished',
+'050x000x003',  'Error',   'Not able to change to Semi or Auto mode befor General initialization done',
+'050x000x004',  'Error',   'Unknown carrier status detected',
+'050x000x005',  'Error',   'Suction Tank Over Flow',
+'050x000x300',	'Warning',	'Manual mode request rejected - first pause automation',
+'050x000x301',	'Warning',	'Semi mode request rejected - first pause automation',
+'050x000x302',	'Warning',	'Auto mode request rejected - first pause automation',
+'050x000x303',	'Warning',	'Manual mode request rejected - Pistion not in last auto pisition',
+'050x000x304',	'Warning',	'Semi mode request rejected - Pistion not in last auto pisition',
+'050x000x305',	'Warning',	'Auto mode request rejected - Pistion not in last auto pisition',
+'050x000x306',	'Warning',	'Semi/Auto mode request rejected - automation lock failed',
+
+'050x000x350',	'Warning',	'Semi/Auto mode request rejected - initialize all system first',
+'050x000x351',	'Warning',	'Interlock Paused Operation',
+
+    (*State Machine*)
+'101x000x001',   'Error',      'Loading Recipies timeout',
+'101x000x003',   'Error',      'Piston border down timeout',
+'101x000x004',   'Error',      'Stacker Home timeout',
+'101x000x005',   'Error',      'Gripper Home timeout',
+'101x000x006',   'Error',      'Jog On in paper check timeout',
+'101x000x002',   'Error',      '',
+'101x000x007',   'Error',      'Stepper returning to work height timeout',
+'101x000x008',   'Error',      'Waiting Gripper at 4th speed zone in run, timeout',
+'101x000x009',   'Error',      'Waiting Gripper at home in run, timeout',
+'101x000x010',   'Error',      'Waiting Gripper at home in load paper, timeout',
+'101x000x011',   'Error',      'Waiting Stepper at home in load paper, timeout',
+'101x000x012',   'Error',      'Waiting Piston at upper postion in load paper, timeout',
+'101x000x013',   'Error',      'Waiting for Piston to be in disabled state in load paper, timeout',
+'101x000x014',   'Error',      'Gripper and Conveyor did not stopped at paper check. Timeout',
+
+'101x001x001',   'Error',      'Message num 1, non cyclic',
+'101x001x002',   'Message',    'Waiting for Operator to Start Single Cycle',
+'101x001x003',   'Error',      'Stepper did not found paper',
+'101x001x004',   'Warning',    'Gripper Cycle without moving Stepper',
+'101x001x005',   'Error',      'Multiple Gripper Cycles without moving Stepper',
+'101x001x006',   'Warning',    'Paper Ended in Run mode',
+'101x001x007',   'Warning',    'Paper Stacker Empty on Paper Check',
+'101x001x008',   'Error',      'Paper Stacker Column hight diference exceeds allowed limit',
+'101x001x009',   'Warning',     'System is waiting for Resume or Play activation from Operator',
+'101x001x010',   'Error',     	'Gripper Encoder is over 25000 the limit',
+'101x001x011',   'Warning',     'Stepper stopped, did not found papper',
+
+  
+    (*Emergency*)
+'106x000x051',   'Error',      'Emergency circuit interrupted',
+'106x000x052',   'Warning',    'Emergency PB1 Pressed',
+'106x000x053',   'Warning',    'Emergency PB2 Pressed',
+'106x000x054',   'Warning',    'Emergency PB3 Pressed',
+'106x000x055',   'Warning',    'Emergency PB4 Pressed',
+'106x000x060',   'Message',    'Emergency Bypass activated',	
+
+
+
+    (*Doors*)
+	
+'107x000x101',   'Warning',    'Door Num 1 Not Closed',
+'107x000x102',   'Warning',    'Door Num 2 Not Closed',
+'107x000x103',   'Warning',    'Door Num 3 Not Closed',
+'107x000x104',   'Warning',    'Door Num 4 Not Closed',
+
+'107x000x121',   'Warning',    'Door Num 1 Not Locked',
+'107x000x122',   'Warning',    'Door Num 2 Not Locked',
+'107x000x123',   'Warning',    'Door Num 3 Not Locked',
+'107x000x124',   'Warning',    'Door Num 4 Not Locked',
+
+
+
+    (*Inter lock Zone*)
+	
+'108x000x141',   'Warning',    'Interlock Zone 1 Robots and Table … doors not locked',
+'108x000x142',   'Warning',    'Interlock Zone 2 Load Conveyor … doors not locked',
+'108x000x143',   'Warning',    'Interlock Zone 3 Unload Conveyor … doors not locked',
+'108x000x144',   'Warning',    'Interlock Zone 4 Manipulator … doors not locked',
+
+
+      (* Axis ->  FB_Axis *)
+'001x000x001',   'Error',   'Motor Power Not OK',
+'001x000x002',   'Error',   'Waiting axis reach target',
+'001x000x003',   'Error',   'Axis in position check function failed',
+'001x000x004',   'Error',   'Limit Detected',
+'001x000x005',   'Error',   'Stop Axis',
+ 
+
+      (* Emergency&Interlock -> prg_Safety *)						  
+'002x000x001',   'Error',   'Check EMO devices State',	  
+'002x000x002',   'Error',   'TwinSAFE error',	  
+'002x000x003',   'Error',   'Check Motors Error',	  
+'002x000x004',   'Error',   'check Estop state',	  
+
+ 
+      (* Initialise -> prg_Initialise *)
+'004x000x001',   'Error',   'Wating For Emergency OK',
+'004x000x002',   'Error',   'Wating For Interlock OK',
+'004x000x003',   'Error',   'Wating For Motors OK',
+'004x000x004',   'Error',   'Check Init Station Done',
+'004x000x005',   'Error',   'Station Initialization',
+'004x000x006',   'Error',   'Loader Initialization',
+'004x000x007',   'Error',   'Unload Station',
+'004x000x008',   'Error',   'Measuring Station',
+'004x000x009',   'Error',   'Gripper Oriantation',
+'004x000x010',   'Error',   'index table did not reach home position',
+'004x000x012',   'Error',   'carriage position check failed',
+'004x000x023',   'Error',   'Wating for Cover Station Init done - check if Robot in safe position',
+
+  
+
+      (* Pneomatic ->  FB_Piston *)
+'007x000x001',   'Error',   'Waiting for Sensor Open at Open command',
+'007x000x002',   'Error',   'Waiting for Sensor NotClose at Open command',
+'007x000x003',   'Error',   'Waiting for Sensor Close at Close command',
+'007x000x004',   'Error',   'Waiting for Sensor NotOpen at Close command',
+'007x000x005',   'Error',   'No Status',
+'007x000x006',   'Error',   'No Valve Operation',
+'007x000x007',   'Error',   'Not synchronized with last auto-cycle command',
+'007x000x008',   'Error',   'Sensors Checking',
+	 
+		(*Process elementts*)
+'109x000x001',   'Warning',   'Conveyor 5 is full',
+'109x000x002',   'Error',     'Conveyor 5 is full and Conveyor 4 is ready to output full stack',
+
+'109x000x003',   'Warning',   'Slices Stack is Too Light',
+'109x000x004',   'Error',     'Slices Stack is Too Light',
+
+'109x000x005',   'Warning',   'Slices Stack is Too Heavy',
+'109x000x006',   'Error',     'Slices Stack is Too Heavy',
+ 
+'555x000x001',   'Error',     'Hello world from NIV',
+
+'985x000x001',   'Warning',     'X lens Constant velocity did not reach during coating',
+
+
+
+(*Niv Section*)
+(*Cycle X Curtain*)
+(*Cycle X & Y*)
+(*Cycle X & Theta)
+(*Nozzle Operation*)
+(*Cycle X Curtain*)
+(*Cycle X Curtain*)*)
+
+
+
+
+''];		
+END_VAR		
+]]></Declaration>
+  </GVL>
+</TcPlcObject>

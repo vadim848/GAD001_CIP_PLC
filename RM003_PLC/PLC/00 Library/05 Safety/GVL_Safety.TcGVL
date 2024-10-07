@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <GVL Name="GVL_Safety" Id="{3cd08c6f-0f8d-4637-a42d-45ca4bb76e3e}">
+    <Declaration><![CDATA[VAR_GLOBAL
+	bStateSafe						:BOOL:=TRUE; // FALSE
+	bES_Bypass						:BOOL:=FALSE; // FALSE
+	bES_Relay						:BOOL; 
+	bES_Relay_FB					:BOOL; 
+
+	//stSafetyIn			AT %I* 		:ST_SafeIn;
+	//stSafetyOut			AT %Q* 		:ST_SafeOut;
+
+	bES_PB							:ARRAY[1..12] 	OF ST_ES_PB;
+	bInterlock						:ARRAY[1..12] 	OF BOOL;
+	bDoorLocked						:ARRAY[1..12] 	OF BOOL;
+	bInterlockZone		AT %I*	 	:ARRAY[1..4] 	OF BOOL;
+	bIntZoneLocked					:ARRAY[1..4] 	OF BOOL;
+	bIntZoneBypass			 		:ARRAY[1..4] 	OF BOOL;
+	bReq_LockZone					:ARRAY[1..4] 	OF BOOL;
+	
+	sBitmap_ESButton		     	:STRING;
+	 
+    sInterlocksZone1                 :STRING; 
+    sInterlocksZone2                 :STRING; 
+    sInterlocksZone3                 :STRING; 
+   	sInterlocksZone4                 :STRING; 	
+END_VAR]]></Declaration>
+  </GVL>
+</TcPlcObject>

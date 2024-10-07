@@ -1,0 +1,310 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="prg_MessageManager" Id="{95ae2e99-240d-4c04-a74a-5e6256dca08f}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM prg_MessageManager
+VAR
+	i_count         : INT;
+	i_Reset         : INT;
+
+	i_Buffer        : INT;
+	i_Index         : INT;
+	rtPressostat    : R_TRIG;
+	PressostatFilter: TON;
+	i               : INT;
+	bAirPressureOk  : BOOL;
+	ton_Error_201_Delay: TON;
+	ton_Error_202_Delay: TON;
+	ton_Error_251_Delay: TON;
+	ton_Error_252_Delay: TON;
+	ton_Error_253_Delay: TON;
+	ton_Error_203_Delay: TON;
+	ton_Error_204_Delay: TON;
+	c_Unknown     : INT;
+	iNumber       : INT;
+	sNumber       : STRING(4);
+	iNumber2      : INT;
+	sNumber2      : STRING(4);
+	iNumber4      : INT;
+	sNumber4      : STRING(4);
+	iNumber5      : INT;
+	sNumber5      : STRING(4);
+	rt_Print: R_TRIG;
+	sModuleID: STRING(3);
+	sModuleDescriptionHMI: STRING;
+END_VAR
+
+VAR_INPUT
+	b_ResetAll    : BOOL;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[prg_MessageManager.act_Count();
+prg_MessageManager.act_GeneralMessage();
+]]></ST>
+    </Implementation>
+    <Action Name="act_Count" Id="{e1edd437-466a-4ed5-ba90-e55dbffd3223}">
+      <Implementation>
+        <ST><![CDATA[	iActErrors:=0;
+	iActMessages:=0;
+	iActWarning:=0;
+FOR i_count:=1 TO 100 BY 1 DO
+
+	IF Buffer_Act_Message[i_count].sLevel<>'' THEN
+		IF Buffer_Act_Message[i_count].sLevel='Error' THEN
+			iActErrors:=iActErrors+1;
+		ELSIF Buffer_Act_Message[i_count].sLevel='Warning' OR Buffer_Act_Message[i_count].sLevel='Error temp'THEN
+			iActWarning:=iActWarning+1;
+		ELSIF Buffer_Act_Message[i_count].sLevel='Message' THEN
+			iActMessages:=iActMessages+1;		
+		END_IF
+	END_IF
+
+END_FOR
+
+
+]]></ST>
+      </Implementation>
+    </Action>
+    <Action Name="act_GeneralMessage" Id="{e1df1325-0fb2-4d0d-8512-4981f93c1935}">
+      <Implementation>
+        <ST><![CDATA[;
+			(*-------------------->Air Pressure<--------------------*)
+	bAirPressureOk:= TRUE;  //i_EP[18].x0
+	IF   NOT bAirPressureOk THEN //bAirPressureSensorExist AND
+		//ar_Message[1].b_Active:=TRUE;	(*	Air_Pressure_Too_Low	*)
+		fbPrintErrMessageByID(sModuleDescription:='General',sActErrorID:='050x000x001');
+	ELSE;
+		//ar_Message[1].b_Active:=FALSE;	(*	Air_Pressure_Too_Low	*)
+	END_IF
+
+
+
+
+
+
+
+
+			(*-------------------->Emergency<--------------------*)
+	IF bES_Bypass THEN;
+		//'106x000x060',   'Warning',    'Emergency Bypass activated,	
+		fbPrintErrMessageByID(sModuleDescription:='Emergency',sActErrorID:='106x000x060');
+	ELSE;	
+		IF NOT bStateSafe THEN
+			//ar_Message[51].b_Active:=TRUE;	(*	Emergency circuit interrupte	*) 
+			fbPrintErrMessageByID(sModuleDescription:='Emergency',sActErrorID:='106x000x051');
+		END_IF
+		
+		IF NOT bES_PB[1].State THEN
+			//ar_Message[52].b_Active:=TRUE;	(*	Emergency_PB1_Pressed	*)
+			fbPrintErrMessageByID(sModuleDescription:='Emergency',sActErrorID:='106x000x052');
+		END_IF
+		IF NOT bES_PB[2].State THEN
+			//ar_Message[53].b_Active:=TRUE;	(*	Emergency_PB2_Pressed	*)
+			fbPrintErrMessageByID(sModuleDescription:='Emergency',sActErrorID:='106x000x053');
+		END_IF
+		IF NOT bES_PB[3].State THEN
+			//ar_Message[54].b_Active:=TRUE;	(*	Emergency_PB3_Pressed	*)
+			fbPrintErrMessageByID(sModuleDescription:='Emergency',sActErrorID:='106x000x054');
+		END_IF
+		IF NOT bES_PB[4].State THEN
+			//ar_Message[55].b_Active:=TRUE;	(*	Emergency_PB4_Pressed	*)
+			fbPrintErrMessageByID(sModuleDescription:='Emergency',sActErrorID:='106x000x055');
+		END_IF
+		
+		IF NOT bES_PB[5].State THEN
+			//ar_Message[56].b_Active:=TRUE;	(*	Emergency_PB5_Pressed	*)
+			fbPrintErrMessageByID(sModuleDescription:='Emergency',sActErrorID:='106x000x056');
+		END_IF
+	END_IF
+			(*-------------------->Doors Closed<--------------------*)
+	(*
+	IF NOT bInterlock[1] THEN;
+		ar_Message[1].b_Active:=TRUE;
+		fbPrintErrMessageByID(sModuleDescription:='Doors',sActErrorID:='107x000x101');
+	ELSE
+		IF NOT bInterlock[2] THEN;
+			ar_Message[2].b_Active:=TRUE;
+			fbPrintErrMessageByID(sModuleDescription:='Doors',sActErrorID:='107x000x102');
+		ELSE
+			IF NOT bInterlock[3] THEN;
+				ar_Message[3].b_Active:=TRUE;
+				fbPrintErrMessageByID(sModuleDescription:='Doors',sActErrorID:='107x000x103');
+			ELSE				
+				ar_Message[3].b_Active:=FALSE;
+			END_IF					
+			ar_Message[2].b_Active:=FALSE;
+		END_IF			
+		ar_Message[1].b_Active:=FALSE;
+	END_IF	
+	*)
+	(*		
+	FOR i:=4 TO 8 DO
+		IF NOT bInterlock[i] THEN
+			ar_Message[100+i].b_Active:=TRUE;	(*	Door_Num_1_Not_Closed	*)
+			iNumber := 100+i;
+			sNumber := INT_TO_STRING (iNumber);
+			
+		ELSE
+			ar_Message[100+i].b_Active:=FALSE;
+		END_IF
+	END_FOR
+	*)
+			(*-------------------->Doors Locked<--------------------*)
+			
+	FOR i:=1 TO 12 DO
+		iNumber2 := 120+i;
+		sNumber2 := INT_TO_STRING (iNumber2);		
+		CASE i OF 
+			//Zone1 
+			1,2,6,7:;
+				IF bReq_LockZone[1] AND NOT bDoorLocked[i] THEN
+					fbPrintErrMessageByID(sModuleDescription:='Doors',sActErrorID:=concat ('107x000x', sNumber2));
+				END_IF	
+		END_CASE
+		CASE i OF 		
+			//Zone2
+			2,3,4:;
+				IF bReq_LockZone[2] AND NOT bDoorLocked[i] THEN
+					fbPrintErrMessageByID(sModuleDescription:='Doors',sActErrorID:=concat ('107x000x', sNumber2));
+				END_IF	
+		END_CASE
+		CASE i OF 			
+			//Zone3
+			5,6:;
+				IF bReq_LockZone[3] AND NOT bDoorLocked[i] THEN
+					fbPrintErrMessageByID(sModuleDescription:='Doors',sActErrorID:=concat ('107x000x', sNumber2));
+				END_IF		
+		END_CASE
+		CASE i OF 					
+			//Zone4
+			3,4,5:;
+				IF bReq_LockZone[4] AND NOT bDoorLocked[i] THEN
+					fbPrintErrMessageByID(sModuleDescription:='Doors',sActErrorID:=concat ('107x000x', sNumber2));
+				END_IF							
+			
+		END_CASE
+
+	END_FOR
+	
+	
+			(*-------------------->Intrlock Zones<--------------------*)
+	FOR i:=1 TO 4 DO
+		IF bReq_LockZone[1] AND (NOT bIntZoneLocked[i]) AND (NOT bIntZoneBypass[i]) THEN
+			iNumber4 := 140+i;
+			sNumber4 := INT_TO_STRING (iNumber4);
+			fbPrintErrMessageByID(sModuleDescription:='Inter lock Zone',sActErrorID:=concat ('108x000x', sNumber4));
+		END_IF
+	END_FOR
+
+
+]]></ST>
+      </Implementation>
+    </Action>
+    <LineIds Name="prg_MessageManager">
+      <LineId Id="24" Count="0" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="46" Count="0" />
+    </LineIds>
+    <LineIds Name="prg_MessageManager.act_Count">
+      <LineId Id="33" Count="0" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="1" Count="1" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="35" Count="4" />
+      <LineId Id="41" Count="0" />
+      <LineId Id="40" Count="0" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="25" Count="2" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="43" Count="0" />
+    </LineIds>
+    <LineIds Name="prg_MessageManager.act_GeneralMessage">
+      <LineId Id="0" Count="4" />
+      <LineId Id="225" Count="0" />
+      <LineId Id="5" Count="2" />
+      <LineId Id="13" Count="3" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="40" Count="0" />
+      <LineId Id="66" Count="3" />
+      <LineId Id="344" Count="0" />
+      <LineId Id="342" Count="0" />
+      <LineId Id="340" Count="0" />
+      <LineId Id="338" Count="0" />
+      <LineId Id="70" Count="0" />
+      <LineId Id="232" Count="0" />
+      <LineId Id="71" Count="0" />
+      <LineId Id="337" Count="0" />
+      <LineId Id="72" Count="1" />
+      <LineId Id="234" Count="0" />
+      <LineId Id="74" Count="2" />
+      <LineId Id="235" Count="0" />
+      <LineId Id="77" Count="2" />
+      <LineId Id="236" Count="0" />
+      <LineId Id="80" Count="2" />
+      <LineId Id="237" Count="0" />
+      <LineId Id="83" Count="0" />
+      <LineId Id="339" Count="0" />
+      <LineId Id="84" Count="1" />
+      <LineId Id="238" Count="0" />
+      <LineId Id="86" Count="0" />
+      <LineId Id="343" Count="0" />
+      <LineId Id="91" Count="0" />
+      <LineId Id="335" Count="0" />
+      <LineId Id="270" Count="0" />
+      <LineId Id="287" Count="0" />
+      <LineId Id="275" Count="0" />
+      <LineId Id="273" Count="0" />
+      <LineId Id="277" Count="0" />
+      <LineId Id="288" Count="0" />
+      <LineId Id="278" Count="1" />
+      <LineId Id="282" Count="0" />
+      <LineId Id="289" Count="0" />
+      <LineId Id="283" Count="1" />
+      <LineId Id="286" Count="0" />
+      <LineId Id="280" Count="1" />
+      <LineId Id="276" Count="0" />
+      <LineId Id="274" Count="0" />
+      <LineId Id="272" Count="0" />
+      <LineId Id="334" Count="0" />
+      <LineId Id="271" Count="0" />
+      <LineId Id="92" Count="2" />
+      <LineId Id="242" Count="1" />
+      <LineId Id="241" Count="0" />
+      <LineId Id="95" Count="5" />
+      <LineId Id="325" Count="0" />
+      <LineId Id="101" Count="0" />
+      <LineId Id="333" Count="0" />
+      <LineId Id="332" Count="0" />
+      <LineId Id="292" Count="1" />
+      <LineId Id="295" Count="0" />
+      <LineId Id="307" Count="0" />
+      <LineId Id="311" Count="0" />
+      <LineId Id="302" Count="0" />
+      <LineId Id="327" Count="0" />
+      <LineId Id="326" Count="0" />
+      <LineId Id="296" Count="1" />
+      <LineId Id="314" Count="0" />
+      <LineId Id="318" Count="0" />
+      <LineId Id="303" Count="0" />
+      <LineId Id="329" Count="0" />
+      <LineId Id="328" Count="0" />
+      <LineId Id="298" Count="1" />
+      <LineId Id="321" Count="1" />
+      <LineId Id="304" Count="0" />
+      <LineId Id="331" Count="0" />
+      <LineId Id="330" Count="0" />
+      <LineId Id="300" Count="0" />
+      <LineId Id="305" Count="0" />
+      <LineId Id="323" Count="1" />
+      <LineId Id="306" Count="0" />
+      <LineId Id="301" Count="0" />
+      <LineId Id="294" Count="0" />
+      <LineId Id="106" Count="6" />
+      <LineId Id="249" Count="1" />
+      <LineId Id="336" Count="0" />
+      <LineId Id="116" Count="2" />
+      <LineId Id="132" Count="0" />
+      <LineId Id="217" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

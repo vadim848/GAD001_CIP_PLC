@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="FUN_Write_Line_To_History" Id="{2bbab7bb-9998-4057-b64e-98d4fa1a7ed8}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION FUN_Write_Line_To_History : BOOL
+VAR_INPUT
+END_VAR
+VAR
+	i: INT;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[	FOR i:=1000 TO 2 BY -1 DO
+		Buffer_Act_History[i]:=Buffer_Act_History[i-1];
+	END_FOR
+	Buffer_Act_History[1]:=Buffer_Act_Message[1];]]></ST>
+    </Implementation>
+    <LineIds Name="FUN_Write_Line_To_History">
+      <LineId Id="6" Count="3" />
+    </LineIds>
+  </POU>
+</TcPlcObject>
