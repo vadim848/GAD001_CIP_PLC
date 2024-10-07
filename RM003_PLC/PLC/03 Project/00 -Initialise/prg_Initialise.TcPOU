@@ -3118,8 +3118,8 @@ fbFormatString(
 	END_FOR*)
 	
 	FOR Pis:=1 TO C_Max_Pistons BY 1 DO
-		IF db_Pis[Pis].b_PistonActive THEN;
-			db_Pis[Pis].req_Init:=TRUE;
+		IF stPis[Pis].b_PistonActive THEN;
+			stPis[Pis].req_Init:=TRUE;
 		END_IF		
 	END_FOR]]></ST>
       </Implementation>
@@ -3166,7 +3166,7 @@ init_AllPiston   :=FALSE;
 
 			c_PisResetCleare:=0;
 	FOR Pis:=1 TO C_Max_Pistons BY 1 DO
-		IF db_Pis[Pis].b_Reset THEN
+		IF stPis[Pis].b_Reset THEN
 			c_PisResetCleare:=c_PisResetCleare+1;
 		END_IF
 	END_FOR
@@ -3236,7 +3236,7 @@ iResumeCount:=0;]]></ST>
 		db_Lat[Pis].req_Reset:=TRUE;
 	END_FOR*)
 	FOR Pis:=1 TO C_Max_Pistons BY 1 DO
-		db_Pis[Pis].b_Reset:=TRUE;
+		stPis[Pis].b_Reset:=TRUE;
 	END_FOR]]></ST>
       </Implementation>
     </Action>
@@ -3246,7 +3246,7 @@ iResumeCount:=0;]]></ST>
 		db_Lat[Pis].req_Resume:=TRUE;
 	END_FOR*)
 	FOR Pis:=1 TO C_Max_Pistons BY 1 DO
-		db_Pis[Pis].b_Resume:=TRUE;
+		stPis[Pis].b_Resume:=TRUE;
 	END_FOR]]></ST>
       </Implementation>
     </Action>

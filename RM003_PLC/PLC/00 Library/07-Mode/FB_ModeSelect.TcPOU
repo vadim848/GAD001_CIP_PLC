@@ -9,6 +9,7 @@ VAR_INPUT
 	eModeZone:E_ModeZone;
 	bLockedFB: BOOL;
 	bPistonCheck: BOOL:=TRUE;
+	bStateSafe: BOOL:=TRUE;
 END_VAR
 VAR_OUTPUT
 	bModeStillState: BOOL;
@@ -1629,7 +1630,7 @@ bModeStillState:=ton_ModeExchengeDelay.Q;]]></ST>
                                                               <o>
                                                                 <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                                 <o n="Value" t="StringValue">
-                                                                  <v n="Value">"NOT prg_Initialise.bGeneralDone"</v>
+                                                                  <v n="Value">"FALSE"</v>
                                                                   <v n="DefaultValue">""</v>
                                                                 </o>
                                                                 <v n="Id">757L</v>
@@ -4247,10 +4248,10 @@ stMode.bSetAuto:=FALSE;]]></ST>
         <ST><![CDATA[bPistonsOK:=TRUE;
 IF bPistonCheck THEN
 	FOR i:=1 TO C_Max_Pistons DO;
-		IF db_Pis[i].b_PistonActive
-		AND (NOT db_Pis[i].st_SyncAuto) THEN;
-			IF db_Pis[i].eModeZone=eModeZone THEN;
-				db_Pis[i].b_Print_NotSyncAutoMessage:=TRUE;
+		IF stPis[i].b_Exist
+		AND (NOT stPis[i].st_SyncAuto) THEN;
+			IF stPis[i].eModeZone=eModeZone THEN;
+				stPis[i].b_Print_NotSyncAutoMessage:=TRUE;
 				bPistonsOK:=FALSE;
 			END_IF
 		END_IF
@@ -4308,7 +4309,9 @@ stOperation.iPauseHistory:=6;]]></ST>
     </Action>
     <Action Name="SwitchFail1_entry" Id="{0a54deee-f1fc-4dfc-972d-717bcd92630a}">
       <Implementation>
-        <ST><![CDATA[//IF stMode.bSetAuto 		THEN; sActErrorID:='304';END_IF	(*	'050x000x305',	'Warning',	'Auto mode request rejected, Pistion not in last auto pisition',	*)
+        <ST><![CDATA[//entrance condition <NOT prg_Initialise.bGeneralDone>
+
+//IF stMode.bSetAuto 		THEN; sActErrorID:='304';END_IF	(*	'050x000x305',	'Warning',	'Auto mode request rejected, Pistion not in last auto pisition',	*)
 
 sActErrorID:='350'; // '050x000x350',	'Warning',	'Semi/Auto mode request rejected, initialize all system first',
 act_GetErrorID_Format();
@@ -4420,6 +4423,7 @@ stMode.bSetAuto:=FALSE;]]></ST>
       <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="FB_ModeSelect.SwitchFail1_entry">
+      <LineId Id="10" Count="1" />
       <LineId Id="2" Count="0" />
       <LineId Id="9" Count="0" />
       <LineId Id="8" Count="0" />

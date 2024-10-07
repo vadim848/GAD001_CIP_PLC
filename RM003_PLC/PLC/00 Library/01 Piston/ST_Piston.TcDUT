@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
   <DUT Name="ST_Piston" Id="{389db45f-0ecc-4a17-87ce-73a88efa24d5}">
     <Declaration><![CDATA[TYPE ST_Piston :
 STRUCT
@@ -27,8 +27,12 @@ STRUCT
 
 	// Status
 	st_Open			: BOOL	:=FALSE;	(* Piston state open	*)
-	st_Close		: BOOL	:=FALSE;	(* Piston state close	*)
+	st_Close		: BOOL	:=FALSE;	(* Piston state close	*)	
 	st_Deafult		: BOOL;
+	st_SyncAuto		:BOOL	:=TRUE;		(* Piston state synchronized to last auto cycle command	*)
+	set_SyncAuto	:BOOL;	
+	b_Print_NotSyncAutoMessage :BOOL;
+	
 	//additional status for Upper and Lower
 	st_Upper		:	BOOL	;
 	st_Lower		:	BOOL	;
@@ -62,7 +66,7 @@ STRUCT
 	valve_Open:		REFERENCE TO BOOL;
 	valve_Close:	REFERENCE TO BOOL;	
 	
-	
+	eModeZone:E_ModeZone;
 END_STRUCT
 END_TYPE
 ]]></Declaration>
