@@ -4,9 +4,13 @@
     <Declaration><![CDATA[PROGRAM prg_Call_OpMode
 VAR
 	fbModeMain:FB_ModeSelect;
-	fbModeValve:FB_ModeSelect;
+	//fbModeValve:FB_ModeSelect;
+	
 	rt_HMI_Resume: R_TRIG;
 	rt_ActError: R_TRIG;
+	
+	eModeZone: E_ModeZone;
+
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -14,10 +18,21 @@ END_VAR
 	bInterlockBypass:=TRUE, //bIntZoneBypass[1]
 	bLockedFB:=TRUE, //bIntZoneLocked[1]
 	bPistonCheck:=FALSE,	
-	bLockRequest=>bReq_LockZone[1],	
-	eModeZone:=E_ModeZone.eIndex,
+	bLockRequest=>,	//bReq_LockZone[1]
+	eModeZone:=E_ModeZone.eMain,
 	stMode:=stModeMain,
 	stOperation:=stOpMain);
+	
+FOR eModeZone:=	E_ModeZone.eMain TO E_ModeZone.eLast DO
+	fbMode[eModeZone](sModuleDescription:='Mode Select - ',
+		bInterlockBypass:=TRUE, //bIntZoneBypass[eModeZone]
+		bLockedFB:=TRUE, //bIntZoneLocked[eModeZone]
+		bPistonCheck:=FALSE,	
+		bLockRequest=>,	//bReq_LockZone[eModeZone]
+		eModeZone:=eModeZone,
+		stMode:=stMode[eModeZone],
+		stOperation:=stOper[eModeZone]);	
+END_FOR
 	
 PauseAll:=stOpMain.iActOperation=E_OperationButtons.ePauseAll;	
 PauseAllDelayed:=stOpMain.bPauseOnDelayed;	
@@ -52,7 +67,11 @@ prg_LightTower(
 	]]></ST>
     </Implementation>
     <LineIds Name="prg_Call_OpMode">
-      <LineId Id="202" Count="38" />
+      <LineId Id="202" Count="7" />
+      <LineId Id="242" Count="1" />
+      <LineId Id="249" Count="6" />
+      <LineId Id="247" Count="1" />
+      <LineId Id="210" Count="30" />
       <LineId Id="186" Count="0" />
     </LineIds>
   </POU>
