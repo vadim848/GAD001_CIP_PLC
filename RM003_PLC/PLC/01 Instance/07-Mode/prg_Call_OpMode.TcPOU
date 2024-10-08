@@ -4,7 +4,6 @@
     <Declaration><![CDATA[PROGRAM prg_Call_OpMode
 VAR
 	fbModeMain:FB_ModeSelect;
-	//fbModeValve:FB_ModeSelect;
 	
 	rt_HMI_Resume: R_TRIG;
 	rt_ActError: R_TRIG;
@@ -36,20 +35,12 @@ END_FOR
 	
 PauseAll:=stOpMain.iActOperation=E_OperationButtons.ePauseAll;	
 PauseAllDelayed:=stOpMain.bPauseOnDelayed;	
-(*	
-fbModeValve(sModuleDescription:='Mode Select - Non Pause',
-	bInterlockBypass:=TRUE,
-	bLockedFB:=TRUE,
-	bLockRequest=>,
-	eModeZone:=E_ModeZone.eIndex,
-	stMode:=stModeTable,
-	stOperation:=stOpNonPause);	
-*)	
-	
 	
 rt_HMI_Resume(CLK:=ResumeAll);
 IF rt_HMI_Resume.Q THEN;
 	stOpMain.bSetPlay:=TRUE;
+	prg_Messages.act_ResumeSFC();
+	ResumeAll:=FALSE;
 END_IF
 
 rt_ActError(CLK:=iActErrors<>0);
@@ -71,7 +62,10 @@ prg_LightTower(
       <LineId Id="242" Count="1" />
       <LineId Id="249" Count="6" />
       <LineId Id="247" Count="1" />
-      <LineId Id="210" Count="30" />
+      <LineId Id="210" Count="2" />
+      <LineId Id="223" Count="3" />
+      <LineId Id="256" Count="1" />
+      <LineId Id="227" Count="13" />
       <LineId Id="186" Count="0" />
     </LineIds>
   </POU>
