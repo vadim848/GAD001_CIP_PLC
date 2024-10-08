@@ -13,11 +13,11 @@ VAR_INPUT
 
 END_VAR
 VAR_OUTPUT
-	valve_Open		:BOOL;
-	valve_Close		:BOOL;	
+	valve_Open		: BOOL;
+	valve_Close		: BOOL;	
 END_VAR
 VAR_IN_OUT
-	stDevErr_H		: ST_DeviceErrorHandeling;	
+	stDevErr_H		: ST_OperationButtons;	
 END_VAR
 VAR
 	stPis			:	REFERENCE TO ST_Piston;
@@ -46,13 +46,15 @@ VAR
 	rt_OpenMan		: R_TRIG;
 	rt_CloseMan		: R_TRIG;
 	rt_DefaultPos	: R_TRIG;
-	rt_ResumeMaster: R_TRIG;
-	b_memo_OpenFDBKExist: BOOL;
-	b_memo_CloseFDBKExist: BOOL;
-	Call_FTrig_ReqUp: F_TRIG;
-	Call_FTrig_ReqLow: F_TRIG;
+	rt_ResumeMaster	: R_TRIG;
+	b_memo_OpenFDBKExist	: BOOL;
+	b_memo_CloseFDBKExist	: BOOL;
+	Call_FTrig_ReqUp	: F_TRIG;
+	Call_FTrig_ReqLow	: F_TRIG;
 	
 	bErrorMemo: BOOL;
+	
+	stOperation		: REFERENCE TO ST_OperationButtons;
 	
 END_VAR
 ]]></Declaration>
@@ -317,7 +319,7 @@ t_DelayClose:=fun_Real_SecondsToTime(in_Time:=stPis.t_DelayClose);
 t_DelayOpen:=fun_Real_SecondsToTime(in_Time:=stPis.t_DelayOpen);
 
 stPis.DefaultCmd REF= DefaultCmd;
-
+(*
 IF stPis.b_Error 
 AND stDevErr_H.eErrorActive=E_Error_Active_Module.noError 
 THEN;
@@ -327,11 +329,12 @@ THEN;
 	stDevErr_H.eErrorActive:=E_Error_Active_Module.Piston;
 	stDevErr_H.iObjectID:=iFB_Num;
 END_IF
+
 rt_ResumeMaster(CLK:=stDevErr_H.bMasterResume);
 IF rt_ResumeMaster.Q THEN;
 	stPis.b_Resume:=TRUE;
 END_IF
-]]></ST>
+*)]]></ST>
       </Implementation>
     </Action>
     <Action Name="act_MemFdbkExist" Id="{a0b17f23-d2da-40b6-b232-4b9995f30b7b}">
@@ -1014,7 +1017,9 @@ END_IF
     <LineIds Name="FB_Piston.act_Get_Reference">
       <LineId Id="147" Count="0" />
       <LineId Id="193" Count="0" />
-      <LineId Id="148" Count="44" />
+      <LineId Id="148" Count="40" />
+      <LineId Id="194" Count="0" />
+      <LineId Id="189" Count="3" />
       <LineId Id="15" Count="0" />
     </LineIds>
     <LineIds Name="FB_Piston.act_MemFdbkExist">
