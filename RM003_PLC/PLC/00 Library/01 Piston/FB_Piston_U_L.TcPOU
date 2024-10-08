@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
   <POU Name="FB_Piston_U_L" Id="{f6df062b-8dd7-4dca-98fe-56ea9e281485}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK PUBLIC FB_Piston_U_L// EXTENDS FB_Piston
 VAR_INPUT
@@ -25,12 +25,16 @@ VAR
 END_VAR
 VAR_IN_OUT
 	st_Piston_U_L	:	ST_Piston_U_L	;
+	stOperation		: ST_OperationButtons;
 END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[act_Get_Reference();
 act_SetOutputs();
 
+IF stPis.b_Error THEN;
+	stOperation.bSetPause:=TRUE;
+END_IF
 ]]></ST>
     </Implementation>
     <Action Name="act_Get_Reference" Id="{60607663-ce4f-44c4-8288-4340f34ed98c}">
@@ -109,7 +113,9 @@ st_Piston_U_L.st_Lower:=sen_Lower;]]></ST>
       <LineId Id="9" Count="0" />
       <LineId Id="16" Count="0" />
       <LineId Id="20" Count="0" />
+      <LineId Id="49" Count="1" />
       <LineId Id="22" Count="0" />
+      <LineId Id="51" Count="0" />
     </LineIds>
     <LineIds Name="FB_Piston_U_L.act_Get_Reference">
       <LineId Id="1" Count="0" />
