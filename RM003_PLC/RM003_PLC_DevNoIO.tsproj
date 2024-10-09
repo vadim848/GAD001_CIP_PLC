@@ -27,15 +27,6 @@
 			</SubItem>
 		</DataType>
 		<DataType>
-			<Name GUID="{064EA673-04B6-D0C1-CD14-82E56022843A}" IecBaseType="true" AutoDeleteType="true">ARRAY [1..4] OF BOOL</Name>
-			<BitSize>32</BitSize>
-			<BaseType GUID="{18071995-0000-0000-0000-000000000030}">BOOL</BaseType>
-			<ArrayInfo>
-				<LBound>1</LBound>
-				<Elements>4</Elements>
-			</ArrayInfo>
-		</DataType>
-		<DataType>
 			<Name GUID="{15F1EE7B-133A-73EC-46FD-E420D489E311}" AutoDeleteType="true">ST_EL18x9</Name>
 			<BitSize>144</BitSize>
 			<SubItem>
@@ -452,6 +443,15 @@
 				<BitSize>8</BitSize>
 				<BitOffs>128</BitOffs>
 			</SubItem>
+		</DataType>
+		<DataType>
+			<Name GUID="{064EA673-04B6-D0C1-CD14-82E56022843A}" IecBaseType="true" AutoDeleteType="true">ARRAY [1..4] OF BOOL</Name>
+			<BitSize>32</BitSize>
+			<BaseType GUID="{18071995-0000-0000-0000-000000000030}">BOOL</BaseType>
+			<ArrayInfo>
+				<LBound>1</LBound>
+				<Elements>4</Elements>
+			</ArrayInfo>
 		</DataType>
 		<DataType>
 			<Name GUID="{D6B0A42D-897A-4B90-95E8-3C741C3CE3EE}" Namespace="Tc2_SerialCom" AutoDeleteType="true">EL6outData22B</Name>
@@ -1031,7 +1031,7 @@
 		</System>
 		<Plc>
 			<Project GUID="{AD98C8E8-1161-4C5F-BAB4-CA4317288767}" Name="PLC" PrjFilePath="PLC\PLC.plcproj" TmcFilePath="PLC\PLC.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="PLC\PLC.tmc" TmcHash="{E5640BD4-2167-6536-191F-E6BA281BF9EB}">
+				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="PLC\PLC.tmc" TmcHash="{73C8F53E-802C-32FD-75B4-38042CBCC651}">
 					<Name>PLC Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Vars VarGrpType="1" ContextId="1" AreaNo="16">
@@ -1040,10 +1040,6 @@
 							<Name>BackgroundPcCOM.stIn_PcCom</Name>
 							<Comment><![CDATA[ linked to the port in the TwinCAT System Manager ]]></Comment>
 							<Type GUID="{0146173C-D895-D219-E209-CC005AC77636}" Namespace="Tc2_SerialCom">EL6inData22B</Type>
-						</Var>
-						<Var>
-							<Name>GVL_Safety.bInterlockZone</Name>
-							<Type GUID="{064EA673-04B6-D0C1-CD14-82E56022843A}">ARRAY [1..4] OF BOOL</Type>
 						</Var>
 						<Var>
 							<Name>gIO.i_EL</Name>
@@ -1186,6 +1182,10 @@
 						<Var>
 							<Name>gIO.arSafe[1].stSafetyIn</Name>
 							<Type GUID="{CFACFD09-0474-0B5F-8EAD-5B9FADD691D9}">ST_SafeOut_PlcIn</Type>
+						</Var>
+						<Var>
+							<Name>GVL_Safety.bInterlockZone</Name>
+							<Type GUID="{064EA673-04B6-D0C1-CD14-82E56022843A}">ARRAY [1..4] OF BOOL</Type>
 						</Var>
 					</Vars>
 					<Vars VarGrpType="2" ContextId="1" AreaNo="17">
