@@ -27,6 +27,15 @@
 			</SubItem>
 		</DataType>
 		<DataType>
+			<Name GUID="{064EA673-04B6-D0C1-CD14-82E56022843A}" IecBaseType="true" AutoDeleteType="true">ARRAY [1..4] OF BOOL</Name>
+			<BitSize>32</BitSize>
+			<BaseType GUID="{18071995-0000-0000-0000-000000000030}">BOOL</BaseType>
+			<ArrayInfo>
+				<LBound>1</LBound>
+				<Elements>4</Elements>
+			</ArrayInfo>
+		</DataType>
+		<DataType>
 			<Name GUID="{15F1EE7B-133A-73EC-46FD-E420D489E311}" AutoDeleteType="true">ST_EL18x9</Name>
 			<BitSize>144</BitSize>
 			<SubItem>
@@ -235,12 +244,12 @@
 			</SubItem>
 		</DataType>
 		<DataType>
-			<Name GUID="{7B87E5F0-E75C-83A1-DEAE-768394CE6A70}" IecBaseType="true" AutoDeleteType="true">ARRAY [1..19] OF ST_EL18x9</Name>
-			<BitSize>2736</BitSize>
+			<Name IecBaseType="true">ARRAY [1..27] OF ST_EL18x9</Name>
+			<BitSize>3888</BitSize>
 			<BaseType GUID="{15F1EE7B-133A-73EC-46FD-E420D489E311}">ST_EL18x9</BaseType>
 			<ArrayInfo>
 				<LBound>1</LBound>
-				<Elements>19</Elements>
+				<Elements>27</Elements>
 			</ArrayInfo>
 		</DataType>
 		<DataType>
@@ -296,12 +305,12 @@
 			</SubItem>
 		</DataType>
 		<DataType>
-			<Name GUID="{90F2E9B6-D764-5C3E-BD15-643FDD0C1F57}" IecBaseType="true" AutoDeleteType="true">ARRAY [1..5] OF ST_EL3xx8</Name>
-			<BitSize>640</BitSize>
+			<Name IecBaseType="true">ARRAY [1..6] OF ST_EL3xx8</Name>
+			<BitSize>768</BitSize>
 			<BaseType GUID="{052265B9-CCD9-C672-396A-1F57CB4AE13E}">ST_EL3xx8</BaseType>
 			<ArrayInfo>
 				<LBound>1</LBound>
-				<Elements>5</Elements>
+				<Elements>6</Elements>
 			</ArrayInfo>
 		</DataType>
 		<DataType>
@@ -443,15 +452,6 @@
 				<BitSize>8</BitSize>
 				<BitOffs>128</BitOffs>
 			</SubItem>
-		</DataType>
-		<DataType>
-			<Name GUID="{064EA673-04B6-D0C1-CD14-82E56022843A}" IecBaseType="true" AutoDeleteType="true">ARRAY [1..4] OF BOOL</Name>
-			<BitSize>32</BitSize>
-			<BaseType GUID="{18071995-0000-0000-0000-000000000030}">BOOL</BaseType>
-			<ArrayInfo>
-				<LBound>1</LBound>
-				<Elements>4</Elements>
-			</ArrayInfo>
 		</DataType>
 		<DataType>
 			<Name GUID="{D6B0A42D-897A-4B90-95E8-3C741C3CE3EE}" Namespace="Tc2_SerialCom" AutoDeleteType="true">EL6outData22B</Name>
@@ -689,12 +689,12 @@
 			</SubItem>
 		</DataType>
 		<DataType>
-			<Name GUID="{D57CC763-DCF4-A513-CC02-31E16048C7E4}" IecBaseType="true" AutoDeleteType="true">ARRAY [1..6] OF ST_EL28x9</Name>
-			<BitSize>864</BitSize>
+			<Name IecBaseType="true">ARRAY [1..10] OF ST_EL28x9</Name>
+			<BitSize>1440</BitSize>
 			<BaseType GUID="{7D86AFE9-88F0-CB53-FB25-D740E4FFD7A3}">ST_EL28x9</BaseType>
 			<ArrayInfo>
 				<LBound>1</LBound>
-				<Elements>6</Elements>
+				<Elements>10</Elements>
 			</ArrayInfo>
 		</DataType>
 		<DataType>
@@ -1031,7 +1031,7 @@
 		</System>
 		<Plc>
 			<Project GUID="{AD98C8E8-1161-4C5F-BAB4-CA4317288767}" Name="PLC" PrjFilePath="PLC\PLC.plcproj" TmcFilePath="PLC\PLC.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="PLC\PLC.tmc" TmcHash="{73C8F53E-802C-32FD-75B4-38042CBCC651}">
+				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="PLC\PLC.tmc" TmcHash="{10165AE1-F48C-5AE1-4CA3-31261606DDF6}">
 					<Name>PLC Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Vars VarGrpType="1" ContextId="1" AreaNo="16">
@@ -1042,12 +1042,16 @@
 							<Type GUID="{0146173C-D895-D219-E209-CC005AC77636}" Namespace="Tc2_SerialCom">EL6inData22B</Type>
 						</Var>
 						<Var>
+							<Name>GVL_Safety.bInterlockZone</Name>
+							<Type GUID="{064EA673-04B6-D0C1-CD14-82E56022843A}">ARRAY [1..4] OF BOOL</Type>
+						</Var>
+						<Var>
 							<Name>gIO.i_EL</Name>
-							<Type GUID="{7B87E5F0-E75C-83A1-DEAE-768394CE6A70}">ARRAY [1..19] OF ST_EL18x9</Type>
+							<Type GUID="{86ACAC57-6D14-B661-8952-6AD021D093A2}">ARRAY [1..27] OF ST_EL18x9</Type>
 						</Var>
 						<Var>
 							<Name>gIO.ai_EL</Name>
-							<Type GUID="{90F2E9B6-D764-5C3E-BD15-643FDD0C1F57}">ARRAY [1..5] OF ST_EL3xx8</Type>
+							<Type GUID="{149B0CAB-3FAC-4DEF-5784-EC561A1634C3}">ARRAY [1..6] OF ST_EL3xx8</Type>
 						</Var>
 						<Var>
 							<Name>gIO.Nidec[0].StatusWord</Name>
@@ -1183,10 +1187,6 @@
 							<Name>gIO.arSafe[1].stSafetyIn</Name>
 							<Type GUID="{CFACFD09-0474-0B5F-8EAD-5B9FADD691D9}">ST_SafeOut_PlcIn</Type>
 						</Var>
-						<Var>
-							<Name>GVL_Safety.bInterlockZone</Name>
-							<Type GUID="{064EA673-04B6-D0C1-CD14-82E56022843A}">ARRAY [1..4] OF BOOL</Type>
-						</Var>
 					</Vars>
 					<Vars VarGrpType="2" ContextId="1" AreaNo="17">
 						<Name>PlcTask Outputs</Name>
@@ -1197,7 +1197,7 @@
 						</Var>
 						<Var>
 							<Name>gIO.q_EL</Name>
-							<Type GUID="{D57CC763-DCF4-A513-CC02-31E16048C7E4}">ARRAY [1..6] OF ST_EL28x9</Type>
+							<Type GUID="{93796B73-C3C1-66E1-6825-B1D6FE2CA755}">ARRAY [1..10] OF ST_EL28x9</Type>
 						</Var>
 						<Var>
 							<Name>gIO.aq_EL</Name>
@@ -1209,6 +1209,10 @@
 						</Var>
 						<Var>
 							<Name>gIO.q_Manifold2</Name>
+							<Type GUID="{0BF2D286-D3B7-C0D2-7A90-EA7C2007271E}">ARRAY [1..24] OF ST_VTUG</Type>
+						</Var>
+						<Var>
+							<Name>gIO.q_Manifold3</Name>
 							<Type GUID="{0BF2D286-D3B7-C0D2-7A90-EA7C2007271E}">ARRAY [1..24] OF ST_VTUG</Type>
 						</Var>
 						<Var>
