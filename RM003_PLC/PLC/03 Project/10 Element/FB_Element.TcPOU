@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
   <POU Name="FB_Element" Id="{700358c5-37aa-4b9c-88fa-65bcc8fcf7eb}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_Element// EXTENDS FB_SFC_Cycle IMPLEMENTS ITF_FB_SFC_Cycle
 VAR_INPUT
@@ -38,7 +38,9 @@ VAR
 	bTakePosInCIPBuffer_Detergent: BOOL;
 	bError: BOOL;
 END_VAR
-]]></Declaration>
+VAR_IN_OUT
+	stOperation		: ST_OperationButtons;	
+END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[i:=i+1;
 //m_Set_SFCFlags_Reference();
@@ -195,6 +197,32 @@ END_VAR
 ]]></ST>
       </Implementation>
     </Method>
+    <Method Name="m_Get_Oper_Pause_State" Id="{a2cc3607-da54-4c2f-b052-7ea6fd6c809c}">
+      <Declaration><![CDATA[METHOD m_Get_Oper_Pause_State : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF stOperation.b_rt_Pause THEN;
+	m_Get_Oper_Pause_State:=TRUE;
+ELSE;
+	m_Get_Oper_Pause_State:=FALSE;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_Get_Oper_Play_State" Id="{1d8040a3-b691-4499-92e8-a729d8801f54}">
+      <Declaration><![CDATA[METHOD m_Get_Oper_Play_State : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF stOperation.iActOperation=E_OperationButtons.ePlayAll THEN;
+	m_Get_Oper_Play_State:=TRUE;
+ELSE;
+	m_Get_Oper_Play_State:=FALSE;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="m_InterConnect" Id="{72ff53e2-bb5f-4090-a2e6-ef10be06eb5a}">
       <Declaration><![CDATA[METHOD m_InterConnect : BOOL
 VAR_INPUT
@@ -222,6 +250,24 @@ END_IF
 
 
 ]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_Set_Oper_Pause" Id="{31bfa777-0c86-4838-93b6-ec28e092b686}">
+      <Declaration><![CDATA[METHOD m_Set_Oper_Pause
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[stOperation.bSetPause:=TRUE;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_Set_Oper_Play" Id="{6a6aba07-12dd-441c-945b-5a5009b81ef4}">
+      <Declaration><![CDATA[METHOD m_Set_Oper_Play
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[stOperation.bSetPlay:=TRUE;]]></ST>
       </Implementation>
     </Method>
     <Method Name="m_Set_SFCFlags_Reference" Id="{173e8058-adb0-4138-b5d3-8a3b87ec3293}">
@@ -340,6 +386,15 @@ END_IF]]></ST>
       <LineId Id="7" Count="1" />
       <LineId Id="6" Count="0" />
     </LineIds>
+    <LineIds Name="FB_Element.m_Get_Oper_Pause_State">
+      <LineId Id="6" Count="3" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Element.m_Get_Oper_Play_State">
+      <LineId Id="5" Count="1" />
+      <LineId Id="11" Count="1" />
+      <LineId Id="7" Count="0" />
+    </LineIds>
     <LineIds Name="FB_Element.m_InterConnect">
       <LineId Id="7" Count="1" />
     </LineIds>
@@ -351,6 +406,12 @@ END_IF]]></ST>
       <LineId Id="16" Count="0" />
       <LineId Id="5" Count="0" />
       <LineId Id="8" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Element.m_Set_Oper_Pause">
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Element.m_Set_Oper_Play">
+      <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_Element.m_Set_SFCFlags_Reference">
       <LineId Id="5" Count="15" />
