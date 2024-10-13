@@ -39,7 +39,10 @@ PauseAllDelayed:=stOpMain.bPauseOnDelayed;
 rt_HMI_Resume(CLK:=ResumeAll);
 IF rt_HMI_Resume.Q THEN;
 	stOpMain.bSetPlay:=TRUE;
-	prg_Messages.act_ResumeSFC();
+	prg_Messages.act_ResumeSFC();	
+	FOR eModeZone:=	E_ModeZone.eMain TO E_ModeZone.eLast DO;
+		stOper[eModeZone].bSetPlay:=TRUE;
+	END_FOR
 	ResumeAll:=FALSE;
 END_IF
 
@@ -64,7 +67,10 @@ prg_LightTower(
       <LineId Id="247" Count="1" />
       <LineId Id="210" Count="2" />
       <LineId Id="223" Count="3" />
-      <LineId Id="256" Count="1" />
+      <LineId Id="256" Count="0" />
+      <LineId Id="269" Count="0" />
+      <LineId Id="271" Count="1" />
+      <LineId Id="257" Count="0" />
       <LineId Id="227" Count="13" />
       <LineId Id="186" Count="0" />
     </LineIds>
