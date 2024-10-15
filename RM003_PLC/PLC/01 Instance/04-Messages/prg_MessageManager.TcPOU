@@ -88,32 +88,42 @@ END_FOR
 		//'106x000x060',   'Warning',    'Emergency Bypass activated,	
 		fbPrintErrMessageByID(sModuleDescription:='Emergency',sActErrorID:='106x000x060');
 	ELSE;	
-		IF NOT bStateSafe THEN
-			//ar_Message[51].b_Active:=TRUE;	(*	Emergency circuit interrupte	*) 
-			fbPrintErrMessageByID(sModuleDescription:='Emergency',sActErrorID:='106x000x051');
+		//IF NOT bStateSafe THEN
+		
+		IF NOT arSafe[1].stSafetyIn.ES1_State THEN
+			fbPrintErrMessageByID(sModuleDescription:='Emergency 1',sActErrorID:='106x001x001');
 		END_IF
 		
-		IF NOT bES_PB[1].State THEN
-			//ar_Message[52].b_Active:=TRUE;	(*	Emergency_PB1_Pressed	*)
-			fbPrintErrMessageByID(sModuleDescription:='Emergency',sActErrorID:='106x000x052');
-		END_IF
-		IF NOT bES_PB[2].State THEN
-			//ar_Message[53].b_Active:=TRUE;	(*	Emergency_PB2_Pressed	*)
-			fbPrintErrMessageByID(sModuleDescription:='Emergency',sActErrorID:='106x000x053');
-		END_IF
-		IF NOT bES_PB[3].State THEN
-			//ar_Message[54].b_Active:=TRUE;	(*	Emergency_PB3_Pressed	*)
-			fbPrintErrMessageByID(sModuleDescription:='Emergency',sActErrorID:='106x000x054');
-		END_IF
-		IF NOT bES_PB[4].State THEN
-			//ar_Message[55].b_Active:=TRUE;	(*	Emergency_PB4_Pressed	*)
-			fbPrintErrMessageByID(sModuleDescription:='Emergency',sActErrorID:='106x000x055');
+		IF NOT arSafe[1].stSafetyIn.ES2_State THEN
+			fbPrintErrMessageByID(sModuleDescription:='Emergency 2',sActErrorID:='106x002x001');
+		END_IF		
+		
+		IF NOT arSafe[1].stSafetyIn.ES3_State THEN
+			fbPrintErrMessageByID(sModuleDescription:='Emergency 3',sActErrorID:='106x003x001');
+		END_IF	
+	
+		IF NOT arSafe[1].stSafetyIn.ES4_State THEN
+			fbPrintErrMessageByID(sModuleDescription:='Emergency 4',sActErrorID:='106x004x001');
 		END_IF
 		
-		IF NOT bES_PB[5].State THEN
-			//ar_Message[56].b_Active:=TRUE;	(*	Emergency_PB5_Pressed	*)
-			fbPrintErrMessageByID(sModuleDescription:='Emergency',sActErrorID:='106x000x056');
+		
+		//IF NOT bES_PB[1].State THEN
+		IF NOT arSafe[1].stSafetyIn.ES1_PB_State THEN
+			fbPrintErrMessageByID(sModuleDescription:='Emergency 1',sActErrorID:='106x001x002');
 		END_IF
+		IF NOT arSafe[1].stSafetyIn.ES2_PB_State THEN
+			fbPrintErrMessageByID(sModuleDescription:='Emergency 2',sActErrorID:='106x002x002');
+		END_IF
+		IF NOT arSafe[1].stSafetyIn.ES3_PB1_State THEN
+			fbPrintErrMessageByID(sModuleDescription:='Emergency 3',sActErrorID:='106x003x002');
+		END_IF
+		IF NOT arSafe[1].stSafetyIn.ES3_PB2_State THEN
+			fbPrintErrMessageByID(sModuleDescription:='Emergency 3',sActErrorID:='106x003x003');
+		END_IF		
+		IF NOT arSafe[1].stSafetyIn.ES4_PB_State THEN
+			fbPrintErrMessageByID(sModuleDescription:='Emergency 4',sActErrorID:='106x004x002');
+		END_IF
+		
 	END_IF
 			(*-------------------->Doors Closed<--------------------*)
 	(*
@@ -229,24 +239,31 @@ END_FOR
       <LineId Id="344" Count="0" />
       <LineId Id="342" Count="0" />
       <LineId Id="340" Count="0" />
-      <LineId Id="338" Count="0" />
-      <LineId Id="70" Count="0" />
+      <LineId Id="347" Count="0" />
+      <LineId Id="349" Count="0" />
+      <LineId Id="348" Count="0" />
       <LineId Id="232" Count="0" />
       <LineId Id="71" Count="0" />
+      <LineId Id="350" Count="3" />
+      <LineId Id="360" Count="0" />
+      <LineId Id="354" Count="2" />
+      <LineId Id="361" Count="0" />
+      <LineId Id="357" Count="1" />
       <LineId Id="337" Count="0" />
-      <LineId Id="72" Count="1" />
+      <LineId Id="359" Count="0" />
+      <LineId Id="362" Count="2" />
       <LineId Id="234" Count="0" />
-      <LineId Id="74" Count="2" />
+      <LineId Id="74" Count="1" />
       <LineId Id="235" Count="0" />
-      <LineId Id="77" Count="2" />
+      <LineId Id="77" Count="1" />
       <LineId Id="236" Count="0" />
-      <LineId Id="80" Count="2" />
+      <LineId Id="80" Count="0" />
+      <LineId Id="366" Count="1" />
+      <LineId Id="365" Count="0" />
+      <LineId Id="81" Count="0" />
       <LineId Id="237" Count="0" />
       <LineId Id="83" Count="0" />
       <LineId Id="339" Count="0" />
-      <LineId Id="84" Count="1" />
-      <LineId Id="238" Count="0" />
-      <LineId Id="86" Count="0" />
       <LineId Id="343" Count="0" />
       <LineId Id="91" Count="0" />
       <LineId Id="335" Count="0" />
