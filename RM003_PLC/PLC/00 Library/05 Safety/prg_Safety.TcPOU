@@ -33,6 +33,9 @@ AND bStateSafe_ES1
 AND bStateSafe_ES2
 AND bStateSafe_ES3
 AND bStateSafe_ES4
+
+OR bES_Bypass
+
 THEN;
 	bStateSafe:=TRUE;
 ELSE;
@@ -40,6 +43,14 @@ ELSE;
 END_IF
 rtStateSafe(CLK:=bStateSafe);
 ftStateSafe(CLK:=bStateSafe);
+
+IF bStateSafe THEN
+	sBitmap_ESButton:= 'ImagePool.EStop_OK2';
+	stBitMap:='bitmap\EStop_OK2.bmp';
+ELSE
+	sBitmap_ESButton:= 'ImagePool.EStop_ACT2';
+	stBitMap:='bitmap\EStop_ACT2.bmp';
+END_IF
 
 (*
 ton_TSafe_OK(IN:=g_IO.TSafeIn.InRun AND NOT g_IO.TSafeIn.COM_Err, PT:=T#1S );
@@ -661,12 +672,17 @@ Buffer_Act_History[1].sErrorMessage:=CONCAT(Buffer_Act_History[1].sErrorMessage,
       <LineId Id="169" Count="0" />
       <LineId Id="145" Count="0" />
       <LineId Id="174" Count="3" />
+      <LineId Id="208" Count="1" />
+      <LineId Id="207" Count="0" />
       <LineId Id="172" Count="0" />
       <LineId Id="178" Count="0" />
       <LineId Id="170" Count="0" />
       <LineId Id="179" Count="0" />
       <LineId Id="171" Count="0" />
       <LineId Id="93" Count="1" />
+      <LineId Id="199" Count="0" />
+      <LineId Id="201" Count="5" />
+      <LineId Id="200" Count="0" />
       <LineId Id="91" Count="0" />
       <LineId Id="72" Count="0" />
       <LineId Id="8" Count="0" />
