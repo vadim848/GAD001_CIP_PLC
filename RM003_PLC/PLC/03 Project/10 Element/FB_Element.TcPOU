@@ -197,6 +197,15 @@ END_VAR
 ]]></ST>
       </Implementation>
     </Method>
+    <Method Name="m_Get_Oper_Pause_Puls" Id="{d59793fd-b3de-47f1-8e51-0b1c0e5d5b3f}">
+      <Declaration><![CDATA[METHOD m_Get_Oper_Pause_Puls : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[m_Get_Oper_Pause_Puls:=stOperation.b_rt_Pause;]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="m_Get_Oper_Pause_State" Id="{a2cc3607-da54-4c2f-b052-7ea6fd6c809c}">
       <Declaration><![CDATA[METHOD m_Get_Oper_Pause_State : BOOL
 VAR_INPUT
@@ -208,6 +217,15 @@ END_VAR
 ELSE;
 	m_Get_Oper_Pause_State:=FALSE;
 END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_Get_Oper_Play_Puls" Id="{57c42df4-a06a-4bc2-8394-7fb8c54c97b4}">
+      <Declaration><![CDATA[METHOD m_Get_Oper_Play_Puls : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[m_Get_Oper_Play_Puls:=stOperation.b_rt_Play;]]></ST>
       </Implementation>
     </Method>
     <Method Name="m_Get_Oper_Play_State" Id="{1d8040a3-b691-4499-92e8-a729d8801f54}">
@@ -267,7 +285,10 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[stOperation.bSetPause:=TRUE;]]></ST>
+        <ST><![CDATA[IF stOperation.iActOperation<>E_OperationButtons.ePauseAll THEN;
+	stOperation.bSetPause:=TRUE;
+END_IF
+]]></ST>
       </Implementation>
     </Method>
     <Method Name="m_Set_Oper_Play" Id="{6a6aba07-12dd-441c-945b-5a5009b81ef4}">
@@ -276,7 +297,10 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[stOperation.bSetPlay:=TRUE;]]></ST>
+        <ST><![CDATA[IF stOperation.iActOperation<>E_OperationButtons.ePlayAll THEN;
+	stOperation.bSetPlay:=TRUE;
+END_IF
+]]></ST>
       </Implementation>
     </Method>
     <Method Name="m_Set_SFCFlags_Reference" Id="{173e8058-adb0-4138-b5d3-8a3b87ec3293}">
@@ -395,9 +419,15 @@ END_IF]]></ST>
       <LineId Id="7" Count="1" />
       <LineId Id="6" Count="0" />
     </LineIds>
+    <LineIds Name="FB_Element.m_Get_Oper_Pause_Puls">
+      <LineId Id="16" Count="0" />
+    </LineIds>
     <LineIds Name="FB_Element.m_Get_Oper_Pause_State">
       <LineId Id="6" Count="3" />
       <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Element.m_Get_Oper_Play_Puls">
+      <LineId Id="16" Count="0" />
     </LineIds>
     <LineIds Name="FB_Element.m_Get_Oper_Play_State">
       <LineId Id="5" Count="1" />
@@ -420,9 +450,11 @@ END_IF]]></ST>
       <LineId Id="8" Count="0" />
     </LineIds>
     <LineIds Name="FB_Element.m_Set_Oper_Pause">
+      <LineId Id="9" Count="2" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_Element.m_Set_Oper_Play">
+      <LineId Id="9" Count="2" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_Element.m_Set_SFCFlags_Reference">
