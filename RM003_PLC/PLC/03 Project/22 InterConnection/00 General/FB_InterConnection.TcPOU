@@ -44,7 +44,9 @@ IF reqDisconnect THEN;
 	reqDisconnect:=FALSE;
 END_IF
 
-IF fbTankElement.eInterConnect <> E_InterConnection.NotConnected THEN;
+IF fbTankElement.eInterConnect <> E_InterConnection.NotConnected 
+OR fbTargetElement.eInterConnect <> E_InterConnection.NotConnected
+THEN;
 	act_At_Connected();
 END_IF]]></ST>
     </Implementation>
@@ -75,17 +77,70 @@ END_IF
     </Action>
     <Action Name="act_At_Connected" Id="{8a5c8281-87c5-4765-a1db-14d41e4f1a8c}">
       <Implementation>
-        <ST><![CDATA[/// Master case
-
+        <ST><![CDATA[
+/// Master case
 IF fbTankElement.m_Get_Oper_Pause_State() THEN;
-	fbTargetElement.m_Set_Oper_Pause();
+	CASE fbTankElement.eInterConnect OF 
+		E_InterConnection.NotConnected:;
+		E_InterConnection.ConnToCIP:;
+				// set pause to CIP
+				stOper[E_ModeZone.eCIP].bSetPause:=TRUE;
+				
+		E_InterConnection.ConnToTank:;
+				//Not avilble 
+		E_InterConnection.ConnToLine:;
+				IF fbTargetElement.m_Get_Type()=E_Element_Type.eLine THEN;
+					fbTargetElement.m_Set_Oper_Pause();
+				END_IF
+		E_InterConnection.ConnToTriBlender:;
+				IF fbTargetElement.m_Get_Type()=E_Element_Type.eTriBlender THEN;
+					fbTargetElement.m_Set_Oper_Pause();
+				END_IF				
+	END_CASE	
 END_IF
 
-/// Slave case
 
+/// Slave case
 IF fbTargetElement.m_Get_Oper_Pause_State() THEN;
+	CASE fbTargetElement.eInterConnect OF 
+		E_InterConnection.NotConnected:;
+		E_InterConnection.ConnToCIP:;
+				// set pause to CIP
+				stOper[E_ModeZone.eCIP].bSetPause:=TRUE;
+				
+		E_InterConnection.ConnToTank:;
+				IF TRUE
+				AND fbTargetElement.m_Get_Type()=E_Element_Type.eLine
+				AND fbTankElement.eInterConnect=E_InterConnection.ConnToLine THEN;
+					fbTankElement.m_Set_Oper_Pause();
+				END_IF
+				
+				IF TRUE
+				AND fbTargetElement.m_Get_Type()=E_Element_Type.eTriBlender
+				AND fbTankElement.eInterConnect=E_InterConnection.ConnToTriBlender THEN;
+					fbTankElement.m_Set_Oper_Pause();
+				END_IF
+								
+		E_InterConnection.ConnToLine:;
+				//Not avilble 
+		E_InterConnection.ConnToTriBlender:;
+				//Not avilble 			
+	END_CASE	
+END_IF
+
+// CIP Case
+IF stOper[E_ModeZone.eCIP].b_rt_Pause 
+AND	fbTankElement.eInterConnect=E_InterConnection.ConnToCIP
+THEN;	
 	fbTankElement.m_Set_Oper_Pause();
-END_IF]]></ST>
+END_IF
+
+IF stOper[E_ModeZone.eCIP].b_rt_Pause 
+AND	fbTargetElement.eInterConnect=E_InterConnection.ConnToCIP
+THEN;	
+	fbTargetElement.m_Set_Oper_Pause();
+END_IF
+]]></ST>
       </Implementation>
     </Action>
     <Action Name="act_Avalable" Id="{bbb91644-6566-4503-82ff-100a461e35c3}">
@@ -366,6 +421,8 @@ END_IF
       <LineId Id="126" Count="0" />
       <LineId Id="263" Count="0" />
       <LineId Id="38" Count="0" />
+      <LineId Id="292" Count="0" />
+      <LineId Id="291" Count="0" />
       <LineId Id="264" Count="1" />
     </LineIds>
     <LineIds Name="FB_InterConnection.act_Active">
@@ -389,14 +446,44 @@ END_IF
       <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="FB_InterConnection.act_At_Connected">
-      <LineId Id="1" Count="0" />
-      <LineId Id="3" Count="0" />
-      <LineId Id="2" Count="0" />
-      <LineId Id="4" Count="1" />
-      <LineId Id="7" Count="0" />
-      <LineId Id="6" Count="0" />
-      <LineId Id="9" Count="2" />
-      <LineId Id="8" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="40" Count="1" />
+      <LineId Id="46" Count="3" />
+      <LineId Id="60" Count="0" />
+      <LineId Id="85" Count="0" />
+      <LineId Id="50" Count="5" />
+      <LineId Id="57" Count="2" />
+      <LineId Id="56" Count="0" />
+      <LineId Id="44" Count="0" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="62" Count="0" />
+      <LineId Id="61" Count="0" />
+      <LineId Id="63" Count="6" />
+      <LineId Id="88" Count="0" />
+      <LineId Id="70" Count="0" />
+      <LineId Id="105" Count="0" />
+      <LineId Id="109" Count="0" />
+      <LineId Id="108" Count="0" />
+      <LineId Id="106" Count="1" />
+      <LineId Id="71" Count="0" />
+      <LineId Id="111" Count="4" />
+      <LineId Id="81" Count="0" />
+      <LineId Id="72" Count="0" />
+      <LineId Id="82" Count="0" />
+      <LineId Id="76" Count="0" />
+      <LineId Id="83" Count="0" />
+      <LineId Id="80" Count="0" />
+      <LineId Id="43" Count="0" />
+      <LineId Id="92" Count="0" />
+      <LineId Id="91" Count="0" />
+      <LineId Id="94" Count="0" />
+      <LineId Id="98" Count="0" />
+      <LineId Id="97" Count="0" />
+      <LineId Id="95" Count="0" />
+      <LineId Id="93" Count="0" />
+      <LineId Id="100" Count="4" />
+      <LineId Id="99" Count="0" />
+      <LineId Id="19" Count="0" />
     </LineIds>
     <LineIds Name="FB_InterConnection.act_Avalable">
       <LineId Id="85" Count="9" />

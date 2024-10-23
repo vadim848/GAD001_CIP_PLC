@@ -4077,6 +4077,7 @@ fbPis.m_SetByRecipe(stPis:=stPis_FillWater_T93, req:=E_Piston_Recipe_State.Relea
 fbPis.m_SetByRecipe(stPis:=stPis_FillWater_T94, req:=E_Piston_Recipe_State.Release);
 
 
+
 ]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -4692,6 +4693,10 @@ tonr_CIP_Condition(ResetTime:=TRUE);
         <ST><![CDATA[eReq:=eReqBlank;
 eRun:=E_CIP_Source.eNone;
 m_CleanEmpty_Spaces();
+
+IF __ISVALIDREF(eRefClient_fbElement) THEN;
+	eRefClient_fbElement.m_InterConnect(value:=E_InterConnection.NotConnected);
+END_IF
 eRefClient_fbElement REF= fbElement_Blank;
 
 fb_PumpCIP.m_Stop();
@@ -34985,6 +34990,7 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
     </LineIds>
     <LineIds Name="FB_CIP._aSet_Valves_ToDeafult_entry">
       <LineId Id="3" Count="3" />
+      <LineId Id="9" Count="0" />
       <LineId Id="8" Count="0" />
       <LineId Id="7" Count="0" />
       <LineId Id="2" Count="0" />
@@ -35191,6 +35197,9 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
     </LineIds>
     <LineIds Name="FB_CIP._aStop_Pump_entry">
       <LineId Id="5" Count="2" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="20" Count="1" />
+      <LineId Id="19" Count="0" />
       <LineId Id="1" Count="0" />
       <LineId Id="9" Count="0" />
       <LineId Id="12" Count="0" />
