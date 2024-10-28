@@ -73,7 +73,7 @@ END_IF
 
 IF modeAuto THEN;
 	//bRun:=bRun_Auto;
-	IF bRun_Auto AND stOperation.iActOperation=E_OperationButtons.ePlayAll THEN;
+	IF bRun_Auto AND m_CheckOper() THEN;
 		bRun:=TRUE;
 	ELSE;
 		bRun:=FALSE;
@@ -81,7 +81,7 @@ IF modeAuto THEN;
 	stPump.nRPM:=stPump.nRPM_Auto;
 ELSE;
 	//bRun:=bRun_Man;
-	IF bRun_Man AND stOperation.iActOperation=E_OperationButtons.ePlayAll THEN;
+	IF bRun_Man AND m_CheckOper() THEN;
 		bRun:=TRUE;
 	ELSE;
 		bRun:=FALSE;
@@ -133,6 +133,29 @@ END_IF
 
 bRun_Auto:=TRUE;
 //need to be set up an set point so the pump could keep the needed value in automatic mode]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_CheckOper" Id="{6a5ac2f6-04be-4f30-9c45-ef254ec3bf61}">
+      <Declaration><![CDATA[METHOD INTERNAL m_CheckOper : BOOL
+VAR_INPUT
+END_VAR
+
+VAR
+	sMotorTypeAgrigate_to_check: STRING(2);
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[sMotorTypeAgrigate_to_check:=TO_STRING(Pump_ID);
+
+IF sMotorTypeAgrigate_to_check='AG' THEN;
+	m_CheckOper:=TRUE;
+ELSE;
+	IF stOperation.iActOperation=E_OperationButtons.ePlayAll THEN;
+		m_CheckOper:=TRUE;
+	ELSE;
+		m_CheckOper:=FALSE;
+	END_IF
+END_IF
+]]></ST>
       </Implementation>
     </Method>
     <Method Name="m_Map_ControlWord" Id="{de707bea-2c05-4e8e-8763-cf6ec1f146fa}">
@@ -353,6 +376,17 @@ m_Stop:=TRUE;]]></ST>
       <LineId Id="27" Count="0" />
       <LineId Id="23" Count="0" />
       <LineId Id="14" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Pump.m_CheckOper">
+      <LineId Id="5" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="14" Count="2" />
+      <LineId Id="18" Count="1" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="6" Count="0" />
     </LineIds>
     <LineIds Name="FB_Pump.m_Map_ControlWord">
       <LineId Id="9" Count="21" />
