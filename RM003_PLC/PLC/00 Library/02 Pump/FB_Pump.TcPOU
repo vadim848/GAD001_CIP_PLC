@@ -63,7 +63,7 @@ IF __ISVALIDREF(stNidec) THEN;
 		ControlWord.EnableOperation:=bRun;
 	ELSE;
 		DriveReady:=FALSE;
-		bRun:=bRun_Man:=bRun_Auto:=FALSE;
+		//bRun:=bRun_Man:=bRun_Auto:=FALSE;
 		ControlWord.EnableOperation:=FALSE;
 	END_IF	
 	stPump.DriveReady:=DriveReady;
@@ -72,10 +72,20 @@ ELSE;
 END_IF
 
 IF modeAuto THEN;
-	bRun:=bRun_Auto;
+	//bRun:=bRun_Auto;
+	IF bRun_Auto AND stOperation.iActOperation=E_OperationButtons.ePlayAll THEN;
+		bRun:=TRUE;
+	ELSE;
+		bRun:=FALSE;
+	END_IF
 	stPump.nRPM:=stPump.nRPM_Auto;
 ELSE;
-	bRun:=bRun_Man;
+	//bRun:=bRun_Man;
+	IF bRun_Man AND stOperation.iActOperation=E_OperationButtons.ePlayAll THEN;
+		bRun:=TRUE;
+	ELSE;
+		bRun:=FALSE;
+	END_IF	
 	stPump.nRPM:=stPump.nRPM_Man;
 END_IF
 
@@ -305,9 +315,14 @@ m_Stop:=TRUE;]]></ST>
       <LineId Id="162" Count="0" />
       <LineId Id="171" Count="0" />
       <LineId Id="9" Count="0" />
-      <LineId Id="42" Count="0" />
+      <LineId Id="487" Count="0" />
+      <LineId Id="482" Count="1" />
+      <LineId Id="485" Count="1" />
+      <LineId Id="484" Count="0" />
       <LineId Id="146" Count="0" />
       <LineId Id="44" Count="1" />
+      <LineId Id="489" Count="3" />
+      <LineId Id="488" Count="0" />
       <LineId Id="147" Count="0" />
       <LineId Id="43" Count="0" />
       <LineId Id="71" Count="0" />
