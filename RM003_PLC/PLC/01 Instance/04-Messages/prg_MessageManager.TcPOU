@@ -31,6 +31,7 @@ VAR
 	rt_Print: R_TRIG;
 	sModuleID: STRING(3);
 	sModuleDescriptionHMI: STRING;
+	testMessage: BOOL;
 END_VAR
 
 VAR_INPUT
@@ -125,6 +126,11 @@ END_FOR
 		END_IF
 		
 	END_IF
+	
+//test
+		IF testMessage THEN
+			fbPrintErrMessageByID(sModuleDescription:='eTank1',sActErrorID:='000x000x999');
+		END_IF	
 			(*-------------------->Doors Closed<--------------------*)
 	(*
 	IF NOT bInterlock[1] THEN;
@@ -265,6 +271,9 @@ END_FOR
       <LineId Id="83" Count="0" />
       <LineId Id="339" Count="0" />
       <LineId Id="343" Count="0" />
+      <LineId Id="368" Count="1" />
+      <LineId Id="371" Count="1" />
+      <LineId Id="370" Count="0" />
       <LineId Id="91" Count="0" />
       <LineId Id="335" Count="0" />
       <LineId Id="270" Count="0" />

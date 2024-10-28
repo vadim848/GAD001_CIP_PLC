@@ -102,6 +102,8 @@ IF NOT bStateSafe OR stOperation.bStopResetAll THEN;
 	stMode.bSetManual:=TRUE;
 END_IF
 
+m_Error_zone_check();
+
 stOperation.iActModeState:=stMode.iActMode;]]></ST>
     </Implementation>
     <Folder Name="Actions" Id="{82255ca1-1f75-456a-a29d-0d95ddaf34af}" />
@@ -4272,6 +4274,31 @@ END_IF
 ]]></ST>
       </Implementation>
     </Action>
+    <Method Name="m_Error_zone_check" Id="{d71a2d60-edec-4d86-b797-3285b49c2480}">
+      <Declaration><![CDATA[METHOD m_Error_zone_check : BOOL
+VAR_INPUT
+END_VAR
+
+VAR
+	i: INT;
+	sCheckZone: STRING;
+
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[sCheckZone:=TO_STRING(stMode.eModeZone);
+
+FOR i:=1 TO C_Max_Buffer_Act_list DO;
+	IF TRUE 
+	AND Buffer_Act_Message[i].sLevel='Error'
+	AND Buffer_Act_Message[i].sModuleDescription=sCheckZone
+	AND stOperation.iActOperation=E_OperationButtons.ePlayAll 
+	THEN;
+		stOperation.bSetPause:=TRUE;
+	END_IF
+END_FOR]]></ST>
+      </Implementation>
+    </Method>
     <Action Name="Ready_exit" Id="{ab53e8f1-23f1-4ef5-9d62-59ff46d788ce}" FolderPath="Actions\">
       <Implementation>
         <ST><![CDATA[stOperation.bSetPause:=TRUE;
@@ -4323,7 +4350,10 @@ stMode.bSetAuto:=FALSE;]]></ST>
       </Implementation>
     </Action>
     <LineIds Name="FB_ModeSelect">
-      <LineId Id="376" Count="50" />
+      <LineId Id="376" Count="49" />
+      <LineId Id="476" Count="0" />
+      <LineId Id="475" Count="0" />
+      <LineId Id="426" Count="0" />
       <LineId Id="374" Count="0" />
     </LineIds>
     <LineIds Name="FB_ModeSelect.act_AutomationLock_Failed">
@@ -4407,6 +4437,14 @@ stMode.bSetAuto:=FALSE;]]></ST>
       <LineId Id="2" Count="0" />
       <LineId Id="8" Count="1" />
       <LineId Id="3" Count="0" />
+      <LineId Id="7" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ModeSelect.m_Error_zone_check">
+      <LineId Id="14" Count="1" />
+      <LineId Id="5" Count="1" />
+      <LineId Id="21" Count="1" />
+      <LineId Id="18" Count="1" />
+      <LineId Id="16" Count="1" />
       <LineId Id="7" Count="0" />
     </LineIds>
     <LineIds Name="FB_ModeSelect.Ready_exit">
