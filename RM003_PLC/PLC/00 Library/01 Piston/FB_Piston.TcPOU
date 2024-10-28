@@ -174,9 +174,9 @@ CASE state_Close OF
 		m_Error();
 		IF stPis.b_Resume THEN;
 			state_Close:=ValveUpdate;
-			stPis.b_Resume:=FALSE;	
-			stPis.b_Error:=FALSE;
-			bErrorMemo:=FALSE;
+			//stPis.b_Resume:=FALSE;	
+			//stPis.b_Error:=FALSE;
+			//bErrorMemo:=FALSE;
 		END_IF
 		
 END_CASE]]></ST>
@@ -436,9 +436,9 @@ CASE state_Open OF
 		m_Error();
 		IF stPis.b_Resume THEN;
 			state_Open:=ValveUpdate;
-			stPis.b_Resume:=FALSE;
-			stPis.b_Error:=FALSE;
-			bErrorMemo:=FALSE;
+			//stPis.b_Resume:=FALSE;
+			//stPis.b_Error:=FALSE;
+			//bErrorMemo:=FALSE;
 		END_IF
 		
 END_CASE]]></ST>
@@ -447,7 +447,8 @@ END_CASE]]></ST>
     <Action Name="act_State_Machine" Id="{0a032fc1-47d5-4a06-9768-752edcf06d0a}">
       <Implementation>
         <ST><![CDATA[IF stPis.b_Resume THEN;
-	stPis.b_Error:=FALSE;		
+	stPis.b_Error:=FALSE;
+	bErrorMemo:=FALSE;		
 END_IF
 
 act_New_CMD();
@@ -1059,6 +1060,7 @@ END_IF
     </LineIds>
     <LineIds Name="FB_Piston.act_State_Machine">
       <LineId Id="91" Count="1" />
+      <LineId Id="109" Count="0" />
       <LineId Id="90" Count="0" />
       <LineId Id="97" Count="0" />
       <LineId Id="93" Count="0" />
