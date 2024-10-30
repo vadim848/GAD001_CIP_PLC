@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<TcSmProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2012/07/TcSmProject" TcSmVersion="1.0" TcVersion="3.1.4024.60">
+<TcSmProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2012/07/TcSmProject" TcSmVersion="1.0" TcVersion="3.1.4024.62">
 	<DataTypes>
 		<DataType>
 			<Name GUID="{0146173C-D895-D219-E209-CC005AC77636}" Namespace="Tc2_SerialCom" AutoDeleteType="true">EL6inData22B</Name>
@@ -244,7 +244,7 @@
 			</SubItem>
 		</DataType>
 		<DataType>
-			<Name IecBaseType="true">ARRAY [1..27] OF ST_EL18x9</Name>
+			<Name GUID="{86ACAC57-6D14-B661-8952-6AD021D093A2}" IecBaseType="true" AutoDeleteType="true">ARRAY [1..27] OF ST_EL18x9</Name>
 			<BitSize>3888</BitSize>
 			<BaseType GUID="{15F1EE7B-133A-73EC-46FD-E420D489E311}">ST_EL18x9</BaseType>
 			<ArrayInfo>
@@ -305,7 +305,7 @@
 			</SubItem>
 		</DataType>
 		<DataType>
-			<Name IecBaseType="true">ARRAY [1..6] OF ST_EL3xx8</Name>
+			<Name GUID="{149B0CAB-3FAC-4DEF-5784-EC561A1634C3}" IecBaseType="true" AutoDeleteType="true">ARRAY [1..6] OF ST_EL3xx8</Name>
 			<BitSize>768</BitSize>
 			<BaseType GUID="{052265B9-CCD9-C672-396A-1F57CB4AE13E}">ST_EL3xx8</BaseType>
 			<ArrayInfo>
@@ -689,7 +689,7 @@
 			</SubItem>
 		</DataType>
 		<DataType>
-			<Name IecBaseType="true">ARRAY [1..10] OF ST_EL28x9</Name>
+			<Name GUID="{93796B73-C3C1-66E1-6825-B1D6FE2CA755}" IecBaseType="true" AutoDeleteType="true">ARRAY [1..10] OF ST_EL28x9</Name>
 			<BitSize>1440</BitSize>
 			<BaseType GUID="{7D86AFE9-88F0-CB53-FB25-D740E4FFD7A3}">ST_EL28x9</BaseType>
 			<ArrayInfo>
@@ -909,7 +909,7 @@
 			</ArrayInfo>
 		</DataType>
 		<DataType>
-			<Name GUID="{18071995-0000-0000-0000-002000000006}" IecBaseType="true" AutoDeleteType="true" HideSubItems="true">ARRAY [0..5] OF BIT</Name>
+			<Name GUID="{18071995-0000-0000-0000-002000000006}" IecBaseType="true" BitType="true" AutoDeleteType="true" HideSubItems="true">ARRAY [0..5] OF BIT</Name>
 			<BitSize>6</BitSize>
 			<BaseType GUID="{18071995-0000-0000-0000-000000000010}">BIT</BaseType>
 			<ArrayInfo>
@@ -1035,7 +1035,7 @@
 		</System>
 		<Plc>
 			<Project GUID="{AD98C8E8-1161-4C5F-BAB4-CA4317288767}" Name="PLC" PrjFilePath="PLC\PLC.plcproj" TmcFilePath="PLC\PLC.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="PLC\PLC.tmc" TmcHash="{A0B05020-037C-68D5-832D-62C8BC50B3D8}">
+				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="PLC\PLC.tmc" TmcHash="{103FE277-2386-87EB-EBFC-BB72C406DA3F}">
 					<Name>PLC Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Vars VarGrpType="1" ContextId="1" AreaNo="16">
@@ -1967,99 +1967,105 @@
 								</Slot>
 							</EtherCAT>
 						</Box>
+						<Box Id="39" BoxType="9099" BoxFlags="#x00000020">
+							<Name>SDO_05 (EL2904)</Name>
+							<ImageId>118</ImageId>
+							<EtherCAT SlaveType="2" PdiType="#x0005" MboxDataLinkLayer="true" StateMBoxPolling="true" CycleMBoxPollingTime="0" CoeType="3" FoeType="1" VendorId="#x00000002" ProductCode="#x0b583052" RevisionNo="#x00130000" InfoDataAddr="true" TimeoutMailbox2="2000" CheckRevisionNoType="3" PortPhys="51" MaxSlotCount="2" Type="EL2904, 4 Ch. Safety Output 24V, 0.5A, TwinSAFE" Desc="EL2904" PortABoxInfo="#x01000028">
+								<SyncMan>001000012600010001000000400000010001001026010000</SyncMan>
+								<SyncMan>001100012200010002000000400000010001001122010000</SyncMan>
+								<SyncMan>001208002400010003000000000000000800001224010000</SyncMan>
+								<SyncMan>001906002000010004000000000000000600001920010000</SyncMan>
+								<Fmmu>0000000000000000001200020100000001000000000000000000000000000000</Fmmu>
+								<Fmmu>0000000000000000001900010100000002000000000000000000000000000000</Fmmu>
+								<Fmmu>00000000000000000d0800010100000003000000000000000000000000000000</Fmmu>
+								<BootStrapData>0018f400f418f400</BootStrapData>
+								<Pdo Name="TxPDO" Index="#x1a00" Flags="#x0090" SyncMan="3">
+									<Entry Name="FSOE__FSoE Slave CMD" Index="#x6000" Sub="#x01">
+										<Type>USINT</Type>
+									</Entry>
+									<Entry Name="FSOE__">
+										<Type GUID="{18071995-0000-0000-0000-002000000008}">ARRAY [0..0] OF BYTE</Type>
+									</Entry>
+									<Entry Name="FSOE__FSoE Slave CRC_0" Index="#x6000" Sub="#x03">
+										<Type>UINT</Type>
+									</Entry>
+									<Entry Name="FSOE__FSoE Slave ConnID" Index="#x6000" Sub="#x02">
+										<Type>UINT</Type>
+									</Entry>
+								</Pdo>
+								<Pdo Name="RxPDO" Index="#x1600" InOut="1" Flags="#x0090" SyncMan="2">
+									<Entry Name="FSOE__FSoE Master CMD" Index="#x7000" Sub="#x01">
+										<Type>USINT</Type>
+									</Entry>
+									<Entry Name="FSOE__OutputChannel1" Index="#x7001" Sub="#x01">
+										<Type>BIT</Type>
+									</Entry>
+									<Entry Name="FSOE__OutputChannel2" Index="#x7001" Sub="#x02">
+										<Type>BIT</Type>
+									</Entry>
+									<Entry Name="FSOE__OutputChannel3" Index="#x7001" Sub="#x03">
+										<Type>BIT</Type>
+									</Entry>
+									<Entry Name="FSOE__OutputChannel4" Index="#x7001" Sub="#x04">
+										<Type>BIT</Type>
+									</Entry>
+									<Entry Name="FSOE__">
+										<Type GUID="{18071995-0000-0000-0000-002000000004}">ARRAY [0..3] OF BIT</Type>
+									</Entry>
+									<Entry Name="FSOE__FSoE Master CRC_0" Index="#x7000" Sub="#x03">
+										<Type>UINT</Type>
+									</Entry>
+									<Entry Name="FSOE__FSoE Master ConnID" Index="#x7000" Sub="#x02">
+										<Type>UINT</Type>
+									</Entry>
+								</Pdo>
+								<Pdo Name="RxPDO" Index="#x1601" InOut="1" Flags="#x0090" SyncMan="2">
+									<Entry Name="Output Channel 1" Index="#x7010" Sub="#x01">
+										<Type>BIT</Type>
+									</Entry>
+									<Entry Name="Output Channel 2" Index="#x7010" Sub="#x02">
+										<Type>BIT</Type>
+									</Entry>
+									<Entry Name="Output Channel 3" Index="#x7010" Sub="#x03">
+										<Type>BIT</Type>
+									</Entry>
+									<Entry Name="Output Channel 4" Index="#x7010" Sub="#x04">
+										<Type>BIT</Type>
+									</Entry>
+									<Entry>
+										<Type GUID="{18071995-0000-0000-0000-00200000000C}">ARRAY [0..11] OF BIT</Type>
+									</Entry>
+								</Pdo>
+								<CoeProfile ProfileNo="5001"/>
+								<CoeProfile ProfileNo="13112201"/>
+								<Slot Name="">
+									<SlotData>0000010001000400000000000000000000000000000000000000000000000000</SlotData>
+									<ModuleIdent>290</ModuleIdent>
+									<Module Id="#x0309000c" Type="FSOES" Class="290">
+										<Name>Module 1 (FSOES)</Name>
+										<ImageId>118</ImageId>
+										<ModuleData>020000002201000000000c000000000000000000000000000000000000000000</ModuleData>
+										<PdoIndex>6656</PdoIndex>
+										<PdoIndex>5632</PdoIndex>
+										<CoeProfile ProfileNo="#x00001389"/>
+									</Module>
+								</Slot>
+								<Slot Name="">
+									<SlotData>0000010001000400000000000000000000000000000000000000000000000000</SlotData>
+									<ModuleIdent>200</ModuleIdent>
+									<Module Id="#x0309000d" Type="DO" Class="200">
+										<Name>Module 2 (DO)</Name>
+										<ImageId>118</ImageId>
+										<ModuleData>02000000c8000000000004000000000000000000000000000000000000000000</ModuleData>
+										<PdoIndex>5633</PdoIndex>
+									</Module>
+								</Slot>
+							</EtherCAT>
+						</Box>
 						<Box Id="43" BoxType="9099">
 							<Name>DI_17 (EL1809)</Name>
 							<ImageId>7</ImageId>
-							<EtherCAT SlaveType="1" PdiType="#x0104" CycleMBoxPollingTime="0" VendorId="#x00000002" ProductCode="#x07113052" RevisionNo="#x00120000" RepeatSupport="true" PortPhys="51" MaxSlotCount="256" MaxSlotGroupCount="1" SlotPdoIncrement="1" SlotIndexIncrement="16" Type="EL1809 16Ch. Dig. Input 24V, 3ms" Desc="EL1809" PortABoxInfo="#x01000028">
-								<SyncMan>001002000000010004000000000000000200001000010000</SyncMan>
-								<Fmmu>0000000000000000001000010100000002000000000000000000000000000000</Fmmu>
-								<SuName>Main</SuName>
-								<Pdo Name="Channel 1" Index="#x1a00" Flags="#x0011" SyncMan="0">
-									<Entry Name="Input" Index="#x6000" Sub="#x01">
-										<Type>BIT</Type>
-									</Entry>
-								</Pdo>
-								<Pdo Name="Channel 2" Index="#x1a01" Flags="#x0011" SyncMan="0">
-									<Entry Name="Input" Index="#x6010" Sub="#x01">
-										<Type>BIT</Type>
-									</Entry>
-								</Pdo>
-								<Pdo Name="Channel 3" Index="#x1a02" Flags="#x0011" SyncMan="0">
-									<Entry Name="Input" Index="#x6020" Sub="#x01">
-										<Type>BIT</Type>
-									</Entry>
-								</Pdo>
-								<Pdo Name="Channel 4" Index="#x1a03" Flags="#x0011" SyncMan="0">
-									<Entry Name="Input" Index="#x6030" Sub="#x01">
-										<Type>BIT</Type>
-									</Entry>
-								</Pdo>
-								<Pdo Name="Channel 5" Index="#x1a04" Flags="#x0011" SyncMan="0">
-									<Entry Name="Input" Index="#x6040" Sub="#x01">
-										<Type>BIT</Type>
-									</Entry>
-								</Pdo>
-								<Pdo Name="Channel 6" Index="#x1a05" Flags="#x0011" SyncMan="0">
-									<Entry Name="Input" Index="#x6050" Sub="#x01">
-										<Type>BIT</Type>
-									</Entry>
-								</Pdo>
-								<Pdo Name="Channel 7" Index="#x1a06" Flags="#x0011" SyncMan="0">
-									<Entry Name="Input" Index="#x6060" Sub="#x01">
-										<Type>BIT</Type>
-									</Entry>
-								</Pdo>
-								<Pdo Name="Channel 8" Index="#x1a07" Flags="#x0011" SyncMan="0">
-									<Entry Name="Input" Index="#x6070" Sub="#x01">
-										<Type>BIT</Type>
-									</Entry>
-								</Pdo>
-								<Pdo Name="Channel 9" Index="#x1a08" Flags="#x0011" SyncMan="0">
-									<Entry Name="Input" Index="#x6080" Sub="#x01">
-										<Type>BIT</Type>
-									</Entry>
-								</Pdo>
-								<Pdo Name="Channel 10" Index="#x1a09" Flags="#x0011" SyncMan="0">
-									<Entry Name="Input" Index="#x6090" Sub="#x01">
-										<Type>BIT</Type>
-									</Entry>
-								</Pdo>
-								<Pdo Name="Channel 11" Index="#x1a0a" Flags="#x0011" SyncMan="0">
-									<Entry Name="Input" Index="#x60a0" Sub="#x01">
-										<Type>BIT</Type>
-									</Entry>
-								</Pdo>
-								<Pdo Name="Channel 12" Index="#x1a0b" Flags="#x0011" SyncMan="0">
-									<Entry Name="Input" Index="#x60b0" Sub="#x01">
-										<Type>BIT</Type>
-									</Entry>
-								</Pdo>
-								<Pdo Name="Channel 13" Index="#x1a0c" Flags="#x0011" SyncMan="0">
-									<Entry Name="Input" Index="#x60c0" Sub="#x01">
-										<Type>BIT</Type>
-									</Entry>
-								</Pdo>
-								<Pdo Name="Channel 14" Index="#x1a0d" Flags="#x0011" SyncMan="0">
-									<Entry Name="Input" Index="#x60d0" Sub="#x01">
-										<Type>BIT</Type>
-									</Entry>
-								</Pdo>
-								<Pdo Name="Channel 15" Index="#x1a0e" Flags="#x0011" SyncMan="0">
-									<Entry Name="Input" Index="#x60e0" Sub="#x01">
-										<Type>BIT</Type>
-									</Entry>
-								</Pdo>
-								<Pdo Name="Channel 16" Index="#x1a0f" Flags="#x0011" SyncMan="0">
-									<Entry Name="Input" Index="#x60f0" Sub="#x01">
-										<Type>BIT</Type>
-									</Entry>
-								</Pdo>
-							</EtherCAT>
-						</Box>
-						<Box Id="44" BoxType="9099">
-							<Name>DI_18 (EL1809)</Name>
-							<ImageId>7</ImageId>
-							<EtherCAT SlaveType="1" PdiType="#x0104" CycleMBoxPollingTime="0" VendorId="#x00000002" ProductCode="#x07113052" RevisionNo="#x00120000" RepeatSupport="true" PortPhys="51" MaxSlotCount="256" MaxSlotGroupCount="1" SlotPdoIncrement="1" SlotIndexIncrement="16" Type="EL1809 16Ch. Dig. Input 24V, 3ms" Desc="EL1809" PortABoxInfo="#x0100002b">
+							<EtherCAT SlaveType="1" PdiType="#x0104" CycleMBoxPollingTime="0" VendorId="#x00000002" ProductCode="#x07113052" RevisionNo="#x00120000" RepeatSupport="true" PortPhys="51" MaxSlotCount="256" MaxSlotGroupCount="1" SlotPdoIncrement="1" SlotIndexIncrement="16" Type="EL1809 16Ch. Dig. Input 24V, 3ms" Desc="EL1809" PortABoxInfo="#x01000027">
 								<SyncMan>001002000000010004000000000000000200001000010000</SyncMan>
 								<Fmmu>0000000000000000001000010100000002000000000000000000000000000000</Fmmu>
 								<SuName>Main</SuName>
@@ -2148,7 +2154,7 @@
 						<Box Id="45" BoxType="9099">
 							<Name>DO_06 (EL2809)</Name>
 							<ImageId>1006</ImageId>
-							<EtherCAT SlaveType="1" PdiType="#x0104" CycleMBoxPollingTime="0" VendorId="#x00000002" ProductCode="#x0af93052" RevisionNo="#x00120000" RepeatSupport="true" PortPhys="51" MaxSlotCount="256" MaxSlotGroupCount="1" SlotPdoIncrement="1" SlotIndexIncrement="16" Type="EL2809 16Ch. Dig. Output 24V, 0.5A" Desc="EL2809" PortABoxInfo="#x0100002c">
+							<EtherCAT SlaveType="1" PdiType="#x0104" CycleMBoxPollingTime="0" VendorId="#x00000002" ProductCode="#x0af93052" RevisionNo="#x00120000" RepeatSupport="true" PortPhys="51" MaxSlotCount="256" MaxSlotGroupCount="1" SlotPdoIncrement="1" SlotIndexIncrement="16" Type="EL2809 16Ch. Dig. Output 24V, 0.5A" Desc="EL2809" PortABoxInfo="#x0100002b">
 								<SyncMan>000f01004400010003000000000000000100000f44090000</SyncMan>
 								<SyncMan>010f01004400010003000000000000000100010f44090000</SyncMan>
 								<Fmmu>0000000000000000000f00020100000001000000000000000000000000000000</Fmmu>
@@ -7444,24 +7450,22 @@ Bit1: Value bigger/equal Limit2]]></Comment>
 				<Link VarA="Box 2 (CU1128)^BOX_CIP^SDI_01 (EL1918)^ConnectionOutputs^Message_32 RxPDO" VarB="Module 1 (FSOES)^TxPDO^FSOE"/>
 			</OwnerB>
 			<OwnerB Name="TIID^Device 2 (EtherCAT)^Box 2 (CU1128)^BOX_CIP^SDI_01 (EL1918)">
-				<Link VarA="Box 2 (CU1128)^BOX_CIP^SDI_02 (EL1918)^Module 1 (FSOE)^FSoE Outputs^FSOE" VarB="ConnectionInputs^Message_10 TxPDO"/>
+				<Link VarA="Box 2 (CU1128)^BOX_CIP^SDI_02 (EL1918)^Module 1 (FSOE)^FSoE Inputs^FSOE" VarB="ConnectionOutputs^Message_10 RxPDO"/>
+				<Link VarA="Box 2 (CU1128)^BOX_CIP^SDO_01 (EL2904)^Module 1 (FSOES)^RxPDO^FSOE" VarB="ConnectionInputs^Message_11 TxPDO"/>
+				<Link VarA="Box 2 (CU1128)^BOX_CIP^SDO_01 (EL2904)^Module 1 (FSOES)^TxPDO^FSOE" VarB="ConnectionOutputs^Message_11 RxPDO"/>
 				<Link VarA="Box 2 (CU1128)^Box 3 (CU1128-B)^BoxColor^SDI_03 (EL1918)^Module 1 (FSOE)^FSoE Inputs^FSOE" VarB="ConnectionOutputs^Message_29 RxPDO"/>
 				<Link VarA="Box 2 (CU1128)^Box 3 (CU1128-B)^BoxColor^SDI_03 (EL1918)^Module 1 (FSOE)^FSoE Outputs^FSOE" VarB="ConnectionInputs^Message_29 TxPDO"/>
 				<Link VarA="Box 2 (CU1128)^Box 3 (CU1128-B)^BoxColor^SDO_02 (EL2904)^Module 1 (FSOES)^TxPDO^FSOE" VarB="ConnectionOutputs^Message_30 RxPDO"/>
-				<Link VarA="Box 2 (CU1128)^BoxTriBlenderSmall^SDI_04 (EL1918)^Module 1 (FSOE)^FSoE Outputs^FSOE" VarB="ConnectionInputs^Message_31 TxPDO"/>
+				<Link VarA="Box 2 (CU1128)^BoxTriBlenderSmall^SDI_04 (EL1918)^Module 1 (FSOE)^FSoE Inputs^FSOE" VarB="ConnectionOutputs^Message_31 RxPDO"/>
 			</OwnerB>
 			<OwnerB Name="TIID^Device 2 (EtherCAT)^Box 2 (CU1128)^BOX_CIP^SDI_02 (EL1918)">
-				<Link VarA="Box 2 (CU1128)^BOX_CIP^SDI_01 (EL1918)^ConnectionOutputs^Message_10 RxPDO" VarB="Module 1 (FSOE)^FSoE Inputs^FSOE"/>
-			</OwnerB>
-			<OwnerB Name="TIID^Device 2 (EtherCAT)^Box 2 (CU1128)^BOX_CIP^SDO_01 (EL2904)">
-				<Link VarA="Box 2 (CU1128)^BOX_CIP^SDI_01 (EL1918)^ConnectionInputs^Message_11 TxPDO" VarB="Module 1 (FSOES)^RxPDO^FSOE"/>
-				<Link VarA="Box 2 (CU1128)^BOX_CIP^SDI_01 (EL1918)^ConnectionOutputs^Message_11 RxPDO" VarB="Module 1 (FSOES)^TxPDO^FSOE"/>
+				<Link VarA="Box 2 (CU1128)^BOX_CIP^SDI_01 (EL1918)^ConnectionInputs^Message_10 TxPDO" VarB="Module 1 (FSOE)^FSoE Outputs^FSOE"/>
 			</OwnerB>
 			<OwnerB Name="TIID^Device 2 (EtherCAT)^Box 2 (CU1128)^Box 3 (CU1128-B)^BoxColor^SDO_02 (EL2904)">
 				<Link VarA="Box 2 (CU1128)^BOX_CIP^SDI_01 (EL1918)^ConnectionInputs^Message_30 TxPDO" VarB="Module 1 (FSOES)^RxPDO^FSOE"/>
 			</OwnerB>
 			<OwnerB Name="TIID^Device 2 (EtherCAT)^Box 2 (CU1128)^BoxTriBlenderSmall^SDI_04 (EL1918)">
-				<Link VarA="Box 2 (CU1128)^BOX_CIP^SDI_01 (EL1918)^ConnectionOutputs^Message_31 RxPDO" VarB="Module 1 (FSOE)^FSoE Inputs^FSOE"/>
+				<Link VarA="Box 2 (CU1128)^BOX_CIP^SDI_01 (EL1918)^ConnectionInputs^Message_31 TxPDO" VarB="Module 1 (FSOE)^FSoE Outputs^FSOE"/>
 			</OwnerB>
 		</OwnerA>
 		<OwnerA Name="TIPC^PLC^PLC Instance">
@@ -8079,24 +8083,6 @@ Bit1: Value bigger/equal Limit2]]></Comment>
 				<Link VarA="PlcTask Inputs^gIO.i_EL[17]^i_ch7" VarB="Channel 7^Input"/>
 				<Link VarA="PlcTask Inputs^gIO.i_EL[17]^i_ch8" VarB="Channel 8^Input"/>
 				<Link VarA="PlcTask Inputs^gIO.i_EL[17]^i_ch9" VarB="Channel 9^Input"/>
-			</OwnerB>
-			<OwnerB Name="TIID^Device 2 (EtherCAT)^Box 2 (CU1128)^BoxTriBlenderSmall^DI_18 (EL1809)">
-				<Link VarA="PlcTask Inputs^gIO.i_EL[18]^i_ch1" VarB="Channel 1^Input"/>
-				<Link VarA="PlcTask Inputs^gIO.i_EL[18]^i_ch10" VarB="Channel 10^Input"/>
-				<Link VarA="PlcTask Inputs^gIO.i_EL[18]^i_ch11" VarB="Channel 11^Input"/>
-				<Link VarA="PlcTask Inputs^gIO.i_EL[18]^i_ch12" VarB="Channel 12^Input"/>
-				<Link VarA="PlcTask Inputs^gIO.i_EL[18]^i_ch13" VarB="Channel 13^Input"/>
-				<Link VarA="PlcTask Inputs^gIO.i_EL[18]^i_ch14" VarB="Channel 14^Input"/>
-				<Link VarA="PlcTask Inputs^gIO.i_EL[18]^i_ch15" VarB="Channel 15^Input"/>
-				<Link VarA="PlcTask Inputs^gIO.i_EL[18]^i_ch16" VarB="Channel 16^Input"/>
-				<Link VarA="PlcTask Inputs^gIO.i_EL[18]^i_ch2" VarB="Channel 2^Input"/>
-				<Link VarA="PlcTask Inputs^gIO.i_EL[18]^i_ch3" VarB="Channel 3^Input"/>
-				<Link VarA="PlcTask Inputs^gIO.i_EL[18]^i_ch4" VarB="Channel 4^Input"/>
-				<Link VarA="PlcTask Inputs^gIO.i_EL[18]^i_ch5" VarB="Channel 5^Input"/>
-				<Link VarA="PlcTask Inputs^gIO.i_EL[18]^i_ch6" VarB="Channel 6^Input"/>
-				<Link VarA="PlcTask Inputs^gIO.i_EL[18]^i_ch7" VarB="Channel 7^Input"/>
-				<Link VarA="PlcTask Inputs^gIO.i_EL[18]^i_ch8" VarB="Channel 8^Input"/>
-				<Link VarA="PlcTask Inputs^gIO.i_EL[18]^i_ch9" VarB="Channel 9^Input"/>
 			</OwnerB>
 			<OwnerB Name="TIID^Device 2 (EtherCAT)^Box 2 (CU1128)^BoxTriBlenderSmall^DO_06 (EL2809)">
 				<Link VarA="PlcTask Outputs^gIO.q_EL[6]^q_ch1" VarB="Channel 1^Output"/>
