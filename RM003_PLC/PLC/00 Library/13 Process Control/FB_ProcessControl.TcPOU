@@ -13,7 +13,7 @@ VAR
 	hystCIP_SetPoint: FB_Hysteresis_REAL;
 	Call_ActDelayTON	: TON	;
 	
-	hendelingPID_Manual: TON;
+	handling_PID_Manual: TON;
 
 END_VAR
 ]]></Declaration>
@@ -29,8 +29,8 @@ m_Check();
 act_Call_PID();
 act_CallHyst();
 
-hendelingPID_Manual(PT:=T#0.5S, IN:=TRUE);
-IF hendelingPID_Manual.Q THEN;
+handling_PID_Manual(PT:=T#0.5S, IN:=TRUE);
+IF handling_PID_Manual.Q THEN;
 	stProcessControl.bManual:=TRUE;
 ELSE;
 	stProcessControl.bManual:=FALSE;
@@ -134,8 +134,8 @@ END_IF
                           <v n="Extensible">false</v>
                         </o>
                         <n n="InputFlags" />
-                        <l2 n="InputItems" cet="BoxTreeOperand">
-                          <o>
+                        <l2 n="InputItems">
+                          <o t="BoxTreeOperand">
                             <o n="Operand" t="Operand">
                               <v n="Operand">"TRUE"</v>
                               <v n="Type">"BOOL"</v>
@@ -154,7 +154,7 @@ END_IF
                             </o>
                             <v n="Id">5L</v>
                           </o>
-                          <o>
+                          <o t="BoxTreeOperand">
                             <o n="Operand" t="Operand">
                               <v n="Operand">"stProcessControl.rValue"</v>
                               <v n="Type">"REAL"</v>
@@ -173,7 +173,7 @@ END_IF
                             </o>
                             <v n="Id">7L</v>
                           </o>
-                          <o>
+                          <o t="BoxTreeOperand">
                             <o n="Operand" t="Operand">
                               <v n="Operand">"stProcessControl.rSetPoint"</v>
                               <v n="Type">"REAL"</v>
@@ -192,7 +192,7 @@ END_IF
                             </o>
                             <v n="Id">9L</v>
                           </o>
-                          <o>
+                          <o t="BoxTreeOperand">
                             <o n="Operand" t="Operand">
                               <v n="Operand">"stProcessControl.fKp"</v>
                               <v n="Type">"REAL"</v>
@@ -211,7 +211,7 @@ END_IF
                             </o>
                             <v n="Id">15L</v>
                           </o>
-                          <o>
+                          <o t="BoxTreeOperand">
                             <o n="Operand" t="Operand">
                               <v n="Operand">"stProcessControl.fTn"</v>
                               <v n="Type">"REAL"</v>
@@ -230,7 +230,7 @@ END_IF
                             </o>
                             <v n="Id">17L</v>
                           </o>
-                          <o>
+                          <o t="BoxTreeOperand">
                             <o n="Operand" t="Operand">
                               <v n="Operand">"stProcessControl.fTv"</v>
                               <v n="Type">"REAL"</v>
@@ -249,7 +249,7 @@ END_IF
                             </o>
                             <v n="Id">19L</v>
                           </o>
-                          <o>
+                          <o t="BoxTreeOperand">
                             <o n="Operand" t="Operand">
                               <v n="Operand">"stProcessControl.fCtrlOutput_Manual"</v>
                               <v n="Type">"LREAL"</v>
@@ -268,7 +268,7 @@ END_IF
                             </o>
                             <v n="Id">21L</v>
                           </o>
-                          <o>
+                          <o t="BoxTreeOperand">
                             <o n="Operand" t="Operand">
                               <v n="Operand">"0"</v>
                               <v n="Type">"INT"</v>
@@ -287,7 +287,7 @@ END_IF
                             </o>
                             <v n="Id">23L</v>
                           </o>
-                          <o>
+                          <o t="BoxTreeOperand">
                             <o n="Operand" t="Operand">
                               <v n="Operand">"300"</v>
                               <v n="Type">"INT"</v>
@@ -306,7 +306,7 @@ END_IF
                             </o>
                             <v n="Id">25L</v>
                           </o>
-                          <o>
+                          <o t="BoxTreeOperand">
                             <o n="Operand" t="Operand">
                               <v n="Operand">"3000"</v>
                               <v n="Type">"INT"</v>
@@ -325,7 +325,7 @@ END_IF
                             </o>
                             <v n="Id">27L</v>
                           </o>
-                          <o>
+                          <o t="BoxTreeOperand">
                             <o n="Operand" t="Operand">
                               <v n="Operand">"stProcessControl.bManual"</v>
                               <v n="Type">"BOOL"</v>
@@ -344,10 +344,11 @@ END_IF
                             </o>
                             <v n="Id">29L</v>
                           </o>
-                          <o>
-                            <o n="Operand" t="Operand">
-                              <v n="Operand">"stProcessControl.bReset"</v>
-                              <v n="Type">"BOOL"</v>
+                          <o t="BoxTreeBox">
+                            <v n="BoxType">"OR"</v>
+                            <o n="Instance" t="Operand">
+                              <n n="Operand" />
+                              <v n="Type">""</v>
                               <v n="Comment">""</v>
                               <v n="SymbolComment">""</v>
                               <v n="Address">""</v>
@@ -358,10 +359,79 @@ END_IF
                               </o>
                               <v n="LValue">false</v>
                               <v n="Boolean">false</v>
-                              <v n="IsInstance">false</v>
-                              <v n="Id">32L</v>
+                              <v n="IsInstance">true</v>
+                              <v n="Id">58L</v>
                             </o>
-                            <v n="Id">31L</v>
+                            <o n="OutputItems" t="OutputItemList">
+                              <l2 n="OutputItems">
+                                <n />
+                              </l2>
+                            </o>
+                            <o n="Flags" t="Flags">
+                              <v n="Flags">0</v>
+                              <v n="Fixed">true</v>
+                              <v n="Extensible">false</v>
+                            </o>
+                            <n n="InputFlags" />
+                            <l2 n="InputItems" cet="BoxTreeOperand">
+                              <o>
+                                <o n="Operand" t="Operand">
+                                  <v n="Operand">"stProcessControl.bReset"</v>
+                                  <v n="Type">"BOOL"</v>
+                                  <v n="Comment">""</v>
+                                  <v n="SymbolComment">""</v>
+                                  <v n="Address">""</v>
+                                  <o n="Flags" t="Flags">
+                                    <v n="Flags">0</v>
+                                    <v n="Fixed">false</v>
+                                    <v n="Extensible">false</v>
+                                  </o>
+                                  <v n="LValue">false</v>
+                                  <v n="Boolean">false</v>
+                                  <v n="IsInstance">false</v>
+                                  <v n="Id">32L</v>
+                                </o>
+                                <v n="Id">31L</v>
+                              </o>
+                              <o>
+                                <o n="Operand" t="Operand">
+                                  <v n="Operand">"stProcessControl.bPause"</v>
+                                  <v n="Type">"BOOL"</v>
+                                  <v n="Comment">""</v>
+                                  <v n="SymbolComment">""</v>
+                                  <v n="Address">""</v>
+                                  <o n="Flags" t="Flags">
+                                    <v n="Flags">0</v>
+                                    <v n="Fixed">false</v>
+                                    <v n="Extensible">false</v>
+                                  </o>
+                                  <v n="LValue">false</v>
+                                  <v n="Boolean">false</v>
+                                  <v n="IsInstance">false</v>
+                                  <v n="Id">57L</v>
+                                </o>
+                                <v n="Id">56L</v>
+                              </o>
+                            </l2>
+                            <o n="InputParam" t="ParamList">
+                              <l2 n="Names" />
+                              <l2 n="Types" />
+                            </o>
+                            <o n="OutputParam" t="ParamList">
+                              <l2 n="Names" cet="String">
+                                <v></v>
+                              </l2>
+                              <l2 n="Types" cet="String">
+                                <v>BOOL</v>
+                              </l2>
+                            </o>
+                            <v n="CallType" t="Operator">Or</v>
+                            <v n="EN">false</v>
+                            <v n="ENO">false</v>
+                            <n n="STSnippet" />
+                            <v n="ContainsExtensibleInputs">false</v>
+                            <v n="ProvidesSTSnippet">false</v>
+                            <v n="Id">59L</v>
                           </o>
                         </l2>
                         <o n="InputParam" t="ParamList">
@@ -514,6 +584,16 @@ IF bRun THEN
 END_IF]]></ST>
       </Implementation>
     </Method>
+    <Method Name="mPause" Id="{be53090d-a73d-45ab-9fd1-26dc14e563ed}">
+      <Declaration><![CDATA[METHOD mPause : BOOL
+VAR_INPUT
+	value: BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[stProcessControl.bPause:=value;]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="mReset" Id="{b49576d6-978e-47f7-ae59-752a1612df43}">
       <Declaration><![CDATA[METHOD mReset : BOOL
 VAR_INPUT
@@ -566,7 +646,7 @@ END_VAR
         <ST><![CDATA[mRun();//mRun(Set_Point:=Set_Point);
 //stProcessControl.bManual:=controlManual;
 //stProcessControl.rSetPoint:=Set_Point;
-hendelingPID_Manual(IN:=controlManual);
+handling_PID_Manual(IN:=controlManual);
 mRun_PID:=stProcessControl.fCtrlOutput;]]></ST>
       </Implementation>
     </Method>
@@ -585,16 +665,7 @@ mRun_With_SP:=stProcessControl.bDone;]]></ST>
       </Implementation>
     </Method>
     <LineIds Name="FB_ProcessControl">
-      <LineId Id="262" Count="0" />
-      <LineId Id="324" Count="0" />
-      <LineId Id="329" Count="1" />
-      <LineId Id="263" Count="0" />
-      <LineId Id="331" Count="1" />
-      <LineId Id="296" Count="4" />
-      <LineId Id="302" Count="1" />
-      <LineId Id="305" Count="1" />
-      <LineId Id="304" Count="0" />
-      <LineId Id="301" Count="0" />
+      <LineId Id="363" Count="17" />
       <LineId Id="183" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProcessControl.act_Call_PID_old">
@@ -614,6 +685,9 @@ mRun_With_SP:=stProcessControl.bDone;]]></ST>
       <LineId Id="31" Count="0" />
       <LineId Id="30" Count="0" />
       <LineId Id="6" Count="23" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ProcessControl.mPause">
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProcessControl.mReset">
