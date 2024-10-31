@@ -2687,6 +2687,9 @@ THEN
 					bStepDone:=fbCIP_ClientTank_Color.m_CheckStatus(eReqStatus:=E_CIP_ClientTank.eDrain);
 		E_CIP_Usage.eTank_4:;
 					bStepDone:=fbCIP_ClientTank_Color.m_CheckStatus(eReqStatus:=E_CIP_ClientTank.eDrain);	
+		E_CIP_Usage.eTriBlender_Color,
+		E_CIP_Usage.eTriBlender_Marinada:;
+					bStepDone:=fbTriBlender_Select.m_CheckStatus(eReqStatus:=E_TriBlenderSelect.eDrain);											
 	ELSE;				
 		bStepDone:=TRUE;
 	END_CASE
@@ -2725,7 +2728,15 @@ CASE eReq.eClient OF
 	E_CIP_Usage.eTank_4:;
 				fbCIP_ClientTank_Color.m_Run(eReqProc:=E_CIP_ClientTank.eDrain);	
 
-END_CASE]]></ST>
+END_CASE
+
+IF eRefClient_fbElement.eElementID=E_Element_List.eTriBlender_Marinada THEN;
+	fbTriBlender_Select.m_Run(eReqProc:=E_TriBlenderSelect.eDrain);
+END_IF
+
+IF eRefClient_fbElement.eElementID=E_Element_List.eTriBlender_Color THEN;
+	fbTriBlender_Select.m_Run(eReqProc:=E_TriBlenderSelect.eDrain);
+END_IF]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -5027,6 +5038,60 @@ fb_PumpClient.m_Stop();]]></ST>
         </XmlArchive>
       </ObjectProperties>
     </Action>
+    <Action Name="_aTriBlender_Selection_active" Id="{d0e672f4-6afb-4eb1-ae08-259e55e6edbe}">
+      <Implementation>
+        <ST><![CDATA[
+IF eRefClient_fbElement.eElementID=E_Element_List.eTriBlender_Marinada THEN;
+	bStepDone:=fbTriBlender_Select.m_CheckStatus(eReqStatus:=E_TriBlenderSelect.eMarinade);
+END_IF
+
+IF eRefClient_fbElement.eElementID=E_Element_List.eTriBlender_Color THEN;
+	bStepDone:=fbTriBlender_Select.m_CheckStatus(eReqStatus:=E_TriBlenderSelect.eColor);
+END_IF
+
+
+]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
+    <Action Name="_aTriBlender_Selection_entry" Id="{0a68dd9d-1aca-4b6e-aa9d-fe1899267007}">
+      <Implementation>
+        <ST><![CDATA[
+IF eRefClient_fbElement.eElementID=E_Element_List.eTriBlender_Marinada THEN;
+	fbTriBlender_Select.m_Run(eReqProc:=E_TriBlenderSelect.eMarinade);
+END_IF
+
+IF eRefClient_fbElement.eElementID=E_Element_List.eTriBlender_Color THEN;
+	fbTriBlender_Select.m_Run(eReqProc:=E_TriBlenderSelect.eColor);
+END_IF
+]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
     <Action Name="act_CallProcessControl" Id="{ba2500c4-7891-45b7-bd60-804b421a62c3}" FolderPath="Manage\">
       <Implementation>
         <ST><![CDATA[//Heat Exchanger
@@ -6696,9 +6761,9 @@ END_CASE]]></ST>
                           <l2 n="InnerList" cet="SFCSegment">
                             <o>
                               <o n="ElementList" t="SFCElementList">
-                                <l2 n="InnerList" cet="SFCTransition">
-                                  <o>
-                                    <v n="VariableName">"Branch0__Client_Validation_check__to__ClientReference_IsValid"</v>
+                                <l2 n="InnerList">
+                                  <o t="SFCTransition">
+                                    <v n="VariableName">"Branch0__Client_Validation_check__to__TriBlender_Selection"</v>
                                     <n n="EmbeddedTransition" />
                                     <l2 n="EmbeddedTransitionProperties" />
                                     <l2 n="Attributes" cet="SFCAttribute">
@@ -6762,6 +6827,189 @@ END_CASE]]></ST>
                                       </o>
                                     </l2>
                                     <v n="Id">7346L</v>
+                                    <v n="IdParent">7370L</v>
+                                  </o>
+                                  <o t="SFCStep">
+                                    <n n="EmbeddedMainAction" />
+                                    <n n="EmbeddedEntryAction" />
+                                    <n n="EmbeddedExitAction" />
+                                    <l2 n="EmbeddedMainActionProperties" />
+                                    <l2 n="EmbeddedEntryActionProperties" />
+                                    <l2 n="EmbeddedExitActionProperties" />
+                                    <o n="ElementList" t="SFCElementList">
+                                      <l2 n="InnerList" />
+                                    </o>
+                                    <l2 n="Attributes" cet="SFCAttribute">
+                                      <o>
+                                        <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
+                                        <o n="Value" t="StringValue">
+                                          <v n="Value">"TriBlender_Selection"</v>
+                                          <v n="DefaultValue">""</v>
+                                        </o>
+                                        <v n="Id">7409L</v>
+                                        <v n="IdParent">7408L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{7d894980-aeea-405c-a0f6-e2b26429c58f}</v>
+                                        <o n="Value" t="StringValue">
+                                          <v n="Value">""</v>
+                                          <v n="DefaultValue">""</v>
+                                        </o>
+                                        <v n="Id">7410L</v>
+                                        <v n="IdParent">7408L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{01580b27-6378-448b-8ecb-0e4b795b58d6}</v>
+                                        <o n="Value" t="BoolValue">
+                                          <v n="Value">"FALSE"</v>
+                                          <v n="DefaultValue">"FALSE"</v>
+                                        </o>
+                                        <v n="Id">7411L</v>
+                                        <v n="IdParent">7408L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{bc882c11-1e91-4dd8-a6b8-2075724ed18b}</v>
+                                        <o n="Value" t="EnumValue">
+                                          <v n="TemplateGuid">{79a4fdd5-c859-4de4-aa8d-c03372c880c2}</v>
+                                          <n n="BaseType" />
+                                          <v n="Value">"0"</v>
+                                          <v n="DefaultValue">"0"</v>
+                                        </o>
+                                        <v n="Id">7412L</v>
+                                        <v n="IdParent">7408L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{6844a48e-46c2-4cc8-a185-a478f3b99cc0}</v>
+                                        <o n="Value" t="BoolValue">
+                                          <v n="Value">"FALSE"</v>
+                                          <v n="DefaultValue">"FALSE"</v>
+                                        </o>
+                                        <v n="Id">7413L</v>
+                                        <v n="IdParent">7408L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{62e1754b-7629-4e63-9cec-10ae0c536f1f}</v>
+                                        <o n="Value" t="BoolValue">
+                                          <v n="Value">"FALSE"</v>
+                                          <v n="DefaultValue">"FALSE"</v>
+                                        </o>
+                                        <v n="Id">7414L</v>
+                                        <v n="IdParent">7408L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{cacf1a68-236e-47c2-b7b1-1cf9199718cb}</v>
+                                        <o n="Value" t="StringValue">
+                                          <v n="Value">""</v>
+                                          <v n="DefaultValue">""</v>
+                                        </o>
+                                        <v n="Id">7415L</v>
+                                        <v n="IdParent">7408L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{b693554c-1b01-4a8d-afde-9e3a46f7465d}</v>
+                                        <o n="Value" t="StringValue">
+                                          <v n="Value">""</v>
+                                          <v n="DefaultValue">""</v>
+                                        </o>
+                                        <v n="Id">7416L</v>
+                                        <v n="IdParent">7408L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{700a583f-b4d4-43e4-8c14-629c7cd3bec8}</v>
+                                        <o n="Value" t="StringValue">
+                                          <v n="Value">"_aTriBlender_Selection_active"</v>
+                                          <v n="DefaultValue">""</v>
+                                        </o>
+                                        <v n="Id">7417L</v>
+                                        <v n="IdParent">7408L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{a6b08bd8-b696-47e3-9cbf-7408b61c9ff8}</v>
+                                        <o n="Value" t="StringValue">
+                                          <v n="Value">"_aTriBlender_Selection_entry"</v>
+                                          <v n="DefaultValue">""</v>
+                                        </o>
+                                        <v n="Id">7418L</v>
+                                        <v n="IdParent">7408L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{a2621e18-7de3-4ea6-ae6d-89e9e0b7befd}</v>
+                                        <o n="Value" t="StringValue">
+                                          <v n="Value">""</v>
+                                          <v n="DefaultValue">""</v>
+                                        </o>
+                                        <v n="Id">7419L</v>
+                                        <v n="IdParent">7408L</v>
+                                      </o>
+                                    </l2>
+                                    <v n="Id">7408L</v>
+                                    <v n="IdParent">7370L</v>
+                                  </o>
+                                  <o t="SFCTransition">
+                                    <v n="VariableName">"TriBlender_Selection__to__ClientReference_IsValid"</v>
+                                    <n n="EmbeddedTransition" />
+                                    <l2 n="EmbeddedTransitionProperties" />
+                                    <l2 n="Attributes" cet="SFCAttribute">
+                                      <o>
+                                        <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
+                                        <o n="Value" t="StringValue">
+                                          <v n="Value">"bStepDone"</v>
+                                          <v n="DefaultValue">""</v>
+                                        </o>
+                                        <v n="Id">7421L</v>
+                                        <v n="IdParent">7420L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{7d894980-aeea-405c-a0f6-e2b26429c58f}</v>
+                                        <o n="Value" t="StringValue">
+                                          <v n="Value">""</v>
+                                          <v n="DefaultValue">""</v>
+                                        </o>
+                                        <v n="Id">7422L</v>
+                                        <v n="IdParent">7420L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{01580b27-6378-448b-8ecb-0e4b795b58d6}</v>
+                                        <o n="Value" t="BoolValue">
+                                          <v n="Value">"FALSE"</v>
+                                          <v n="DefaultValue">"FALSE"</v>
+                                        </o>
+                                        <v n="Id">7423L</v>
+                                        <v n="IdParent">7420L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{bc882c11-1e91-4dd8-a6b8-2075724ed18b}</v>
+                                        <o n="Value" t="EnumValue">
+                                          <v n="TemplateGuid">{79a4fdd5-c859-4de4-aa8d-c03372c880c2}</v>
+                                          <n n="BaseType" />
+                                          <v n="Value">"0"</v>
+                                          <v n="DefaultValue">"0"</v>
+                                        </o>
+                                        <v n="Id">7424L</v>
+                                        <v n="IdParent">7420L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{62e1754b-7629-4e63-9cec-10ae0c536f1f}</v>
+                                        <o n="Value" t="BoolValue">
+                                          <v n="Value">"FALSE"</v>
+                                          <v n="DefaultValue">"FALSE"</v>
+                                        </o>
+                                        <v n="Id">7425L</v>
+                                        <v n="IdParent">7420L</v>
+                                      </o>
+                                      <o>
+                                        <v n="AttributeId">{8294df19-5962-4dee-a874-1051dabb0e3e}</v>
+                                        <o n="Value" t="EnumValue">
+                                          <v n="TemplateGuid">{6ecff51c-9b8f-4338-aab0-67c2b31b07e9}</v>
+                                          <n n="BaseType" />
+                                          <v n="Value">"0"</v>
+                                          <v n="DefaultValue">"0"</v>
+                                        </o>
+                                        <v n="Id">7426L</v>
+                                        <v n="IdParent">7420L</v>
+                                      </o>
+                                    </l2>
+                                    <v n="Id">7420L</v>
                                     <v n="IdParent">7370L</v>
                                   </o>
                                 </l2>
@@ -35212,7 +35460,11 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="9" Count="0" />
       <LineId Id="8" Count="0" />
       <LineId Id="11" Count="0" />
-      <LineId Id="13" Count="11" />
+      <LineId Id="13" Count="9" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="23" Count="1" />
       <LineId Id="7" Count="0" />
       <LineId Id="12" Count="0" />
       <LineId Id="1" Count="0" />
@@ -35223,6 +35475,8 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="4" Count="0" />
       <LineId Id="7" Count="11" />
       <LineId Id="5" Count="0" />
+      <LineId Id="20" Count="6" />
+      <LineId Id="19" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aDisinfct_Dose_1_active">
       <LineId Id="4" Count="0" />
@@ -35901,6 +36155,19 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
     <LineIds Name="FB_CIP._aTank_LowLevel_CIP4_active">
       <LineId Id="47" Count="0" />
       <LineId Id="8" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_CIP._aTriBlender_Selection_active">
+      <LineId Id="30" Count="6" />
+      <LineId Id="27" Count="2" />
+      <LineId Id="1" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_CIP._aTriBlender_Selection_entry">
+      <LineId Id="9" Count="0" />
+      <LineId Id="3" Count="0" />
+      <LineId Id="7" Count="1" />
+      <LineId Id="11" Count="2" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP.act_CallProcessControl">
       <LineId Id="842" Count="2" />

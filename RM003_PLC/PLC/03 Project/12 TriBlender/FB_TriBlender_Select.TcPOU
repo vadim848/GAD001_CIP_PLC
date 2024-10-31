@@ -2382,6 +2382,20 @@ THEN;
 END_IF]]></ST>
       </Implementation>
     </Method>
+    <Method Name="m_Run" Id="{a8b44bf2-fd16-4b21-9c83-6e8184bbb941}" FolderPath="Manage\">
+      <Declaration><![CDATA[METHOD m_Run : BOOL
+VAR_INPUT
+	eReqProc			: E_TriBlenderSelect;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF eProcess=E_TriBlenderSelect.eNone THEN;
+	eProcess:=eReq:=eReqProc;
+	bDone:=FALSE;
+	m_Run:=TRUE;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="m_Set_SFCFlags_Reference" Id="{40d7e9fd-d4fa-45bd-88e4-d85c0e80f0bc}" FolderPath="Manage\">
       <Declaration><![CDATA[{warning 'add method implementation '}
 METHOD m_Set_SFCFlags_Reference : BOOL
@@ -2489,6 +2503,12 @@ m_SFC_Handle();]]></ST>
       <LineId Id="10" Count="1" />
       <LineId Id="9" Count="0" />
       <LineId Id="7" Count="1" />
+    </LineIds>
+    <LineIds Name="FB_TriBlender_Select.m_Run">
+      <LineId Id="5" Count="0" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="9" Count="1" />
+      <LineId Id="8" Count="0" />
     </LineIds>
     <LineIds Name="FB_TriBlender_Select.m_Set_SFCFlags_Reference">
       <LineId Id="7" Count="15" />
