@@ -2364,7 +2364,25 @@ ELSE
 END_IF;]]></ST>
       </Implementation>
     </Action>
-    <Method Name="m_Set_SFCFlags_Reference" Id="{40d7e9fd-d4fa-45bd-88e4-d85c0e80f0bc}">
+    <Method Name="m_CheckStatus" Id="{3903e6c5-5909-4217-872b-04f94cc50c95}" FolderPath="Manage\">
+      <Declaration><![CDATA[METHOD m_CheckStatus : BOOL
+VAR_INPUT
+	eReqStatus		: E_CIP_Return;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF eStatus=eReqStatus 
+AND eProcess=E_CIP_Return.eNone
+AND eReq=E_CIP_Return.eNone
+AND bReady
+AND bDone
+AND NOT bRun
+THEN;
+	m_CheckStatus:=TRUE;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_Set_SFCFlags_Reference" Id="{40d7e9fd-d4fa-45bd-88e4-d85c0e80f0bc}" FolderPath="Manage\">
       <Declaration><![CDATA[{warning 'add method implementation '}
 METHOD m_Set_SFCFlags_Reference : BOOL
 ]]></Declaration>
@@ -2463,6 +2481,14 @@ m_SFC_Handle();]]></ST>
       <LineId Id="96" Count="0" />
       <LineId Id="105" Count="2" />
       <LineId Id="75" Count="1" />
+    </LineIds>
+    <LineIds Name="FB_TriBlender_Select.m_CheckStatus">
+      <LineId Id="5" Count="0" />
+      <LineId Id="13" Count="1" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="10" Count="1" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="7" Count="1" />
     </LineIds>
     <LineIds Name="FB_TriBlender_Select.m_Set_SFCFlags_Reference">
       <LineId Id="7" Count="15" />

@@ -176,14 +176,16 @@ END_CASE
     </Action>
     <Action Name="act_TriBlender" Id="{26031c10-f211-4816-a500-dc05d95c74de}" FolderPath="Manage\">
       <Implementation>
-        <ST><![CDATA[IF eInterConnect=E_InterConnection.ConnToCIP 
+        <ST><![CDATA[(*
+IF eInterConnect=E_InterConnection.ConnToCIP 
 AND eElementID=E_Element_List.eTriBlender_Marinada
 AND eTriBlenderPipe<>E_TriBlenderPipe.eMarinada
 THEN;
 	bError:=TRUE;
 ELSE;
 	bError:=FALSE;
-END_IF]]></ST>
+END_IF
+*)]]></ST>
       </Implementation>
     </Action>
     <Method Name="m_Disconnect" Id="{20e4c919-f24b-4fbd-ae5c-73c93cc7bd42}">
@@ -408,12 +410,14 @@ END_IF]]></ST>
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_Element.act_TriBlender">
+      <LineId Id="9" Count="0" />
       <LineId Id="1" Count="0" />
       <LineId Id="5" Count="1" />
       <LineId Id="4" Count="0" />
       <LineId Id="2" Count="0" />
       <LineId Id="7" Count="1" />
       <LineId Id="3" Count="0" />
+      <LineId Id="10" Count="0" />
     </LineIds>
     <LineIds Name="FB_Element.m_Disconnect">
       <LineId Id="7" Count="1" />
