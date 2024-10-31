@@ -1035,7 +1035,7 @@
 		</System>
 		<Plc>
 			<Project GUID="{AD98C8E8-1161-4C5F-BAB4-CA4317288767}" Name="PLC" PrjFilePath="PLC\PLC.plcproj" TmcFilePath="PLC\PLC.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="PLC\PLC.tmc" TmcHash="{D1BD92E3-317F-C76F-3512-8567C66CA2E5}">
+				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="PLC\PLC.tmc" TmcHash="{265472B4-E9F8-8D3D-1F6E-4815C206294D}">
 					<Name>PLC Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Vars VarGrpType="1" ContextId="1" AreaNo="16">
@@ -7439,6 +7439,7 @@ Bit1: Value bigger/equal Limit2]]></Comment>
 		<OwnerA Name="TIID^Device 1 (EtherCAT)">
 			<OwnerB Name="TIID^Device 2 (EtherCAT)^Box 2 (CU1128)^BOX_CIP^SDI_01 (EL1918)">
 				<Link VarA="BoxTriblrnderBig^SDI_05 (EL1904)^Module 1 (FSOES)^RxPDO^FSOE" VarB="ConnectionInputs^Message_47 TxPDO"/>
+				<Link VarA="BoxTriblrnderBig^SDO_03 (EL2904)^Module 1 (FSOES)^RxPDO^FSOE" VarB="ConnectionInputs^Message_32 TxPDO"/>
 			</OwnerB>
 		</OwnerA>
 		<OwnerA Name="TIID^Device 2 (EtherCAT)">
@@ -7446,26 +7447,25 @@ Bit1: Value bigger/equal Limit2]]></Comment>
 				<Link VarA="Box 2 (CU1128)^BOX_CIP^SDI_01 (EL1918)^ConnectionOutputs^Message_47 RxPDO" VarB="Module 1 (FSOES)^TxPDO^FSOE"/>
 			</OwnerB>
 			<OwnerB Name="TIID^Device 1 (EtherCAT)^BoxTriblrnderBig^SDO_03 (EL2904)">
-				<Link VarA="Box 2 (CU1128)^BOX_CIP^SDI_01 (EL1918)^ConnectionInputs^Message_32 TxPDO" VarB="Module 1 (FSOES)^RxPDO^FSOE"/>
 				<Link VarA="Box 2 (CU1128)^BOX_CIP^SDI_01 (EL1918)^ConnectionOutputs^Message_32 RxPDO" VarB="Module 1 (FSOES)^TxPDO^FSOE"/>
 			</OwnerB>
 			<OwnerB Name="TIID^Device 2 (EtherCAT)^Box 2 (CU1128)^BOX_CIP^SDI_01 (EL1918)">
 				<Link VarA="Box 2 (CU1128)^BOX_CIP^SDI_02 (EL1918)^Module 1 (FSOE)^FSoE Inputs^FSOE" VarB="ConnectionOutputs^Message_10 RxPDO"/>
+				<Link VarA="Box 2 (CU1128)^BOX_CIP^SDI_02 (EL1918)^Module 1 (FSOE)^FSoE Outputs^FSOE" VarB="ConnectionInputs^Message_10 TxPDO"/>
 				<Link VarA="Box 2 (CU1128)^BOX_CIP^SDO_01 (EL2904)^Module 1 (FSOES)^RxPDO^FSOE" VarB="ConnectionInputs^Message_11 TxPDO"/>
 				<Link VarA="Box 2 (CU1128)^BOX_CIP^SDO_01 (EL2904)^Module 1 (FSOES)^TxPDO^FSOE" VarB="ConnectionOutputs^Message_11 RxPDO"/>
-				<Link VarA="Box 2 (CU1128)^Box 3 (CU1128-B)^BoxColor^SDI_03 (EL1918)^Module 1 (FSOE)^FSoE Inputs^FSOE" VarB="ConnectionOutputs^Message_29 RxPDO"/>
-				<Link VarA="Box 2 (CU1128)^Box 3 (CU1128-B)^BoxColor^SDI_03 (EL1918)^Module 1 (FSOE)^FSoE Outputs^FSOE" VarB="ConnectionInputs^Message_29 TxPDO"/>
 				<Link VarA="Box 2 (CU1128)^Box 3 (CU1128-B)^BoxColor^SDO_02 (EL2904)^Module 1 (FSOES)^TxPDO^FSOE" VarB="ConnectionOutputs^Message_30 RxPDO"/>
-				<Link VarA="Box 2 (CU1128)^BoxTriBlenderSmall^SDI_04 (EL1918)^Module 1 (FSOE)^FSoE Inputs^FSOE" VarB="ConnectionOutputs^Message_31 RxPDO"/>
 			</OwnerB>
-			<OwnerB Name="TIID^Device 2 (EtherCAT)^Box 2 (CU1128)^BOX_CIP^SDI_02 (EL1918)">
-				<Link VarA="Box 2 (CU1128)^BOX_CIP^SDI_01 (EL1918)^ConnectionInputs^Message_10 TxPDO" VarB="Module 1 (FSOE)^FSoE Outputs^FSOE"/>
+			<OwnerB Name="TIID^Device 2 (EtherCAT)^Box 2 (CU1128)^Box 3 (CU1128-B)^BoxColor^SDI_03 (EL1918)">
+				<Link VarA="Box 2 (CU1128)^BOX_CIP^SDI_01 (EL1918)^ConnectionInputs^Message_29 TxPDO" VarB="Module 1 (FSOE)^FSoE Outputs^FSOE"/>
+				<Link VarA="Box 2 (CU1128)^BOX_CIP^SDI_01 (EL1918)^ConnectionOutputs^Message_29 RxPDO" VarB="Module 1 (FSOE)^FSoE Inputs^FSOE"/>
 			</OwnerB>
 			<OwnerB Name="TIID^Device 2 (EtherCAT)^Box 2 (CU1128)^Box 3 (CU1128-B)^BoxColor^SDO_02 (EL2904)">
 				<Link VarA="Box 2 (CU1128)^BOX_CIP^SDI_01 (EL1918)^ConnectionInputs^Message_30 TxPDO" VarB="Module 1 (FSOES)^RxPDO^FSOE"/>
 			</OwnerB>
 			<OwnerB Name="TIID^Device 2 (EtherCAT)^Box 2 (CU1128)^BoxTriBlenderSmall^SDI_04 (EL1918)">
 				<Link VarA="Box 2 (CU1128)^BOX_CIP^SDI_01 (EL1918)^ConnectionInputs^Message_31 TxPDO" VarB="Module 1 (FSOE)^FSoE Outputs^FSOE"/>
+				<Link VarA="Box 2 (CU1128)^BOX_CIP^SDI_01 (EL1918)^ConnectionOutputs^Message_31 RxPDO" VarB="Module 1 (FSOE)^FSoE Inputs^FSOE"/>
 			</OwnerB>
 		</OwnerA>
 		<OwnerA Name="TIPC^PLC^PLC Instance">
