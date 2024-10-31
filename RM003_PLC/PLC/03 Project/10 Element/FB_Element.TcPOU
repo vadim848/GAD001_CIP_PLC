@@ -199,6 +199,23 @@ END_VAR
 ]]></ST>
       </Implementation>
     </Method>
+    <Method Name="m_Get_CIP_Avilable" Id="{85fd739d-7b69-4185-bc50-898d5ccfd7e4}">
+      <Declaration><![CDATA[METHOD m_Get_CIP_Avilable : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TRUE 
+AND (eInterConnect=E_InterConnection.NotConnected OR eInterConnect=E_InterConnection.ConnToCIP)
+AND TRUE
+THEN;
+	m_Get_CIP_Avilable:=TRUE;
+ELSE;
+	m_Get_CIP_Avilable:=FALSE;
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="m_Get_Oper_Pause_Puls" Id="{d59793fd-b3de-47f1-8e51-0b1c0e5d5b3f}">
       <Declaration><![CDATA[METHOD m_Get_Oper_Pause_Puls : BOOL
 VAR_INPUT
@@ -259,7 +276,15 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[eInterConnect:=value;
+        <ST><![CDATA[IF eInterConnect=E_InterConnection.NotConnected 
+OR eInterConnect=value
+THEN;
+	eInterConnect:=value;
+	m_InterConnect:=TRUE;
+ELSE;
+	m_InterConnect:=FALSE;
+END_IF
+
 ]]></ST>
       </Implementation>
     </Method>
@@ -423,6 +448,15 @@ END_IF]]></ST>
       <LineId Id="7" Count="1" />
       <LineId Id="6" Count="0" />
     </LineIds>
+    <LineIds Name="FB_Element.m_Get_CIP_Avilable">
+      <LineId Id="6" Count="2" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="13" Count="0" />
+    </LineIds>
     <LineIds Name="FB_Element.m_Get_Oper_Pause_Puls">
       <LineId Id="16" Count="0" />
     </LineIds>
@@ -442,6 +476,12 @@ END_IF]]></ST>
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_Element.m_InterConnect">
+      <LineId Id="13" Count="0" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="18" Count="2" />
+      <LineId Id="15" Count="0" />
       <LineId Id="7" Count="1" />
     </LineIds>
     <LineIds Name="FB_Element.m_InterConnected_State">
