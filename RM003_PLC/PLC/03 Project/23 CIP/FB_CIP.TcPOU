@@ -5043,10 +5043,12 @@ fb_PumpClient.m_Stop();]]></ST>
         <ST><![CDATA[
 IF eRefClient_fbElement.eElementID=E_Element_List.eTriBlender_Marinada THEN;
 	bStepDone:=fbTriBlender_Select.m_CheckStatus(eReqStatus:=E_TriBlenderSelect.eMarinade);
-END_IF
 
-IF eRefClient_fbElement.eElementID=E_Element_List.eTriBlender_Color THEN;
+ELSIF eRefClient_fbElement.eElementID=E_Element_List.eTriBlender_Color THEN;
 	bStepDone:=fbTriBlender_Select.m_CheckStatus(eReqStatus:=E_TriBlenderSelect.eColor);
+	
+ELSE;
+	bStepDone:=TRUE;
 END_IF
 
 
@@ -36157,7 +36159,8 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="8" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aTriBlender_Selection_active">
-      <LineId Id="30" Count="6" />
+      <LineId Id="30" Count="2" />
+      <LineId Id="34" Count="5" />
       <LineId Id="27" Count="2" />
       <LineId Id="1" Count="0" />
     </LineIds>
