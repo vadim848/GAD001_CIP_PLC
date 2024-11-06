@@ -241,7 +241,7 @@ END_IF
     </Action>
     <Action Name="act_MemFdbkExist" Id="{a0b17f23-d2da-40b6-b232-4b9995f30b7b}">
       <Implementation>
-        <ST><![CDATA[IF stPis.st_Close AND stPis_UpLow.exist THEN
+        <ST><![CDATA[IF stPis.valve_Close AND stPis_UpLow.exist THEN
 	//Fetching signals
 	IF TRUE THEN
 		Call_FTrig_ReqUp(CLK:=stPis_UpLow.req_Upper , Q=> );
@@ -536,7 +536,7 @@ CASE state OF
 		END_IF
 END_CASE			
 
-ton_SensorCheck(PT:=T#0.5S);
+ton_SensorCheck(PT:=T#4S);//PT:=T#0.5S
 
 IF ton_SensorCheck.Q THEN;
 	stPis.b_Error:=TRUE;		
@@ -729,12 +729,16 @@ END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF stPis.sen_Close_Exist THEN;
-	IF valve_Close = sen_Close THEN;
-		OK_Close:=TRUE;
-	//ELSIF NOT valve_Close AND NOT sen_Close THEN;
-	//	OK_Close:=TRUE;
-	ELSE;
-		OK_Close:=FALSE;
+
+	//IF valve_Close = sen_Close THEN;
+	IF valve_Close THEN;
+		IF stPis_UpLow.out_Upper OR stPis_UpLow.out_Lower THEN;
+			OK_Close:=TRUE;
+		ELSE;
+			OK_Close:=sen_Close;
+		END_IF
+	ELSE ;
+		OK_Close:=NOT sen_Close;
 	END_IF
 ELSE
 	OK_Close:=TRUE;
@@ -743,8 +747,6 @@ END_IF
 IF stPis.sen_Open_Exist THEN;
 	IF valve_Open = sen_Open THEN;
 		OK_Open:=TRUE;	
-	//ELSIF NOT valve_Open AND sen_Open THEN;
-	//	OK_Open:=TRUE;
 	ELSE;
 		OK_Open:=FALSE;
 	END_IF
@@ -1178,20 +1180,17 @@ END_IF
     </LineIds>
     <LineIds Name="FB_Piston.m_PistonSensorCheck">
       <LineId Id="5" Count="0" />
-      <LineId Id="10" Count="0" />
-      <LineId Id="41" Count="0" />
-      <LineId Id="40" Count="0" />
-      <LineId Id="42" Count="0" />
+      <LineId Id="59" Count="0" />
+      <LineId Id="62" Count="3" />
+      <LineId Id="67" Count="1" />
+      <LineId Id="66" Count="0" />
       <LineId Id="16" Count="1" />
       <LineId Id="15" Count="0" />
       <LineId Id="12" Count="1" />
       <LineId Id="11" Count="0" />
       <LineId Id="25" Count="1" />
       <LineId Id="43" Count="0" />
-      <LineId Id="28" Count="0" />
-      <LineId Id="45" Count="0" />
-      <LineId Id="44" Count="0" />
-      <LineId Id="29" Count="4" />
+      <LineId Id="28" Count="5" />
       <LineId Id="24" Count="0" />
       <LineId Id="35" Count="0" />
       <LineId Id="34" Count="0" />
