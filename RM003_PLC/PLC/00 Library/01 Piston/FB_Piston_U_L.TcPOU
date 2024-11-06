@@ -22,6 +22,12 @@ VAR
 	b_Memo_ReqLow	:	BOOL	;
 	Call_FTrig_Error: 	F_TRIG	;
 	stPis			:	REFERENCE TO ST_Piston;
+	ton_req_Upper: TON;
+	ton_req_Lower: TON;
+	tOperation: TIME := T#2S;
+	ton_err_Upper: TON;
+	ton_err_Lower: TON;
+	tError: TIME := T#5s;
 END_VAR
 VAR_IN_OUT
 	st_Piston_U_L	:	ST_Piston_U_L	;
@@ -35,6 +41,37 @@ act_SetOutputs();
 IF stPis.b_Error THEN;
 	stOperation.bSetPause:=TRUE;
 END_IF
+
+ton_req_Upper(PT:=tOperation, IN:=st_Piston_U_L.req_Upper);
+ton_req_Lower(PT:=tOperation, IN:=st_Piston_U_L.req_Lower);
+
+ton_err_Upper(PT:=tError);
+ton_err_Lower(PT:=tError);
+
+IF TRUE 
+AND st_Piston_U_L.req_Upper
+AND (NOT st_Piston_U_L.st_Upper)
+AND (NOT FALSE) // reset error
+THEN;
+	ton_err_Upper.IN:=TRUE;
+ELSE;
+	ton_err_Upper.IN:=FALSE;
+END_IF
+
+IF TRUE 
+AND st_Piston_U_L.req_Lower
+AND (NOT st_Piston_U_L.st_Lower)
+AND (NOT FALSE) // reset error
+THEN;
+	ton_err_Lower.IN:=TRUE;
+ELSE;
+	ton_err_Lower.IN:=FALSE;
+END_IF
+
+IF ton_err_Upper.Q OR ton_err_Lower.Q THEN;
+	stPis.b_Error:=TRUE;
+END_IF
+
 ]]></ST>
     </Implementation>
     <Action Name="act_Get_Reference" Id="{60607663-ce4f-44c4-8288-4340f34ed98c}">
@@ -105,16 +142,63 @@ st_Piston_U_L.out_Upper:=valve_Upper;
 st_Piston_U_L.out_Lower:=valve_Lower;
 
 //Status
-st_Piston_U_L.st_Upper:=sen_Upper;
-st_Piston_U_L.st_Lower:=sen_Lower;]]></ST>
+st_Piston_U_L.st_Upper:=m_sen_Upper();
+st_Piston_U_L.st_Lower:=m_sen_Lower();
+
+st_Piston_U_L.sen_Upper:=sen_Upper;
+st_Piston_U_L.sen_Lower:=sen_Lower;]]></ST>
       </Implementation>
     </Action>
+    <Method Name="m_sen_Lower" Id="{87f5513f-eed4-4f44-8483-3e0613ae32b6}">
+      <Declaration><![CDATA[METHOD m_sen_Lower : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF st_Piston_U_L.sen_Lower_exist THEN; // sensor exist
+	m_sen_Lower:=sen_Lower;
+ELSE;
+	m_sen_Lower:=ton_req_Lower.Q;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_sen_Upper" Id="{2404f77a-a933-4805-88d7-69cc1f20bd1a}">
+      <Declaration><![CDATA[METHOD m_sen_Upper : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF st_Piston_U_L.sen_Upper_exist THEN; // sensor exist
+	m_sen_Upper:=sen_Upper;
+ELSE;
+	m_sen_Upper:=ton_req_Upper.Q;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
     <LineIds Name="FB_Piston_U_L">
       <LineId Id="9" Count="0" />
       <LineId Id="16" Count="0" />
       <LineId Id="20" Count="0" />
       <LineId Id="49" Count="1" />
       <LineId Id="22" Count="0" />
+      <LineId Id="79" Count="0" />
+      <LineId Id="83" Count="1" />
+      <LineId Id="87" Count="1" />
+      <LineId Id="80" Count="0" />
+      <LineId Id="94" Count="0" />
+      <LineId Id="93" Count="0" />
+      <LineId Id="103" Count="2" />
+      <LineId Id="101" Count="0" />
+      <LineId Id="95" Count="0" />
+      <LineId Id="98" Count="0" />
+      <LineId Id="97" Count="0" />
+      <LineId Id="96" Count="0" />
+      <LineId Id="110" Count="8" />
+      <LineId Id="107" Count="0" />
+      <LineId Id="119" Count="0" />
+      <LineId Id="106" Count="0" />
+      <LineId Id="108" Count="1" />
+      <LineId Id="89" Count="0" />
       <LineId Id="51" Count="0" />
     </LineIds>
     <LineIds Name="FB_Piston_U_L.act_Get_Reference">
@@ -172,6 +256,18 @@ st_Piston_U_L.st_Lower:=sen_Lower;]]></ST>
       <LineId Id="66" Count="0" />
       <LineId Id="65" Count="0" />
       <LineId Id="67" Count="1" />
+      <LineId Id="142" Count="1" />
+      <LineId Id="141" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Piston_U_L.m_sen_Lower">
+      <LineId Id="5" Count="0" />
+      <LineId Id="8" Count="2" />
+      <LineId Id="7" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Piston_U_L.m_sen_Upper">
+      <LineId Id="5" Count="0" />
+      <LineId Id="8" Count="2" />
+      <LineId Id="7" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>
