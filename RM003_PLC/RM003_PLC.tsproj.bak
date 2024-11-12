@@ -1014,7 +1014,7 @@
 		<ImageData Id="1018">424de6000000000000007600000028000000100000000e000000010004000000000000000000120b0000120b00001000000010000000411f91ffff00ffff999999ffa3a3cfffd0d0d0ffdbdbdbff000000ff000000ff000000ff000000ff000000ff000000ff000000ff000000ff000000ff000000ff12222222222222111244355555555201333333555500000012553555555552011235555555555231333333555533333312355555555552311235555555555231333333555533333312355555555552311205555555555231000000555533333312055555555552311222222222222211</ImageData>
 		<ImageData Id="1019">424de6000000000000007600000028000000100000000e000000010004000000000000000000120b0000120b00001000000010000000411f91ffff00ffff999999ffa3a3cfffd0d0d0ffdbdbdbff000000ff000000ff000000ff000000ff000000ff000000ff000000ff000000ff000000ff000000ff12222222222222111244355555555231333333555533333312553555555552311235555555555201333333555500000012355555555552011235555555555201333333555500000012355555555552011235555555555201333333555500000012355555555552011222222222222211</ImageData>
 	</ImageDatas>
-	<Project ProjectGUID="{B2325421-01BA-4B9E-AC46-CC5BF373E737}" TargetNetId="5.107.140.174.1.1" Target64Bit="true" ShowHideConfigurations="#x347">
+	<Project ProjectGUID="{B2325421-01BA-4B9E-AC46-CC5BF373E737}" TargetNetId="5.107.140.174.1.1" Target64Bit="true" RelativeTargetNetId="true" RelativeIpAddresses="true" ShowHideConfigurations="#x347">
 		<System>
 			<Settings MaxCpus="8">
 				<Cpu CpuId="7"/>
@@ -1035,7 +1035,7 @@
 		</System>
 		<Plc>
 			<Project GUID="{AD98C8E8-1161-4C5F-BAB4-CA4317288767}" Name="PLC" PrjFilePath="PLC\PLC.plcproj" TmcFilePath="PLC\PLC.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="PLC\PLC.tmc" TmcHash="{37151261-6D36-4899-9862-D590BF11232F}">
+				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="PLC\PLC.tmc" TmcHash="{56320A33-70EC-BB9A-8EF2-4D4B85BFA8EA}">
 					<Name>PLC Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Vars VarGrpType="1" ContextId="1" AreaNo="16">
@@ -1425,7 +1425,7 @@
 			</Project>
 		</Safety>
 		<Io>
-			<Device Id="1" DevType="111" DevFlags="#x0003" AmsPort="28673" AmsNetId="5.107.140.174.2.1" RemoteName="Device 1 (EtherCAT)" InfoImageId="2">
+			<Device Id="1" DevType="111" DevFlags="#x0003" AmsPort="28673" AmsNetId="0.0.0.0.2.1" RemoteName="Device 1 (EtherCAT)" InfoImageId="2">
 				<Name>Device 1 (EtherCAT)</Name>
 				<AddressInfo>
 					<Ccat>
@@ -1724,13 +1724,13 @@
 					<SuNamePreDef>Emergency_Disconnect_2</SuNamePreDef>
 				</EtherCAT>
 			</Device>
-			<Device Id="6" DevType="111" DevFlags="#x0003" AmsPort="28678" AmsNetId="5.107.140.174.7.1" RemoteName="Device 2 (EtherCAT)" InfoImageId="7">
+			<Device Id="6" DevType="111" DevFlags="#x0003" AmsPort="28678" AmsNetId="0.0.0.0.7.1" RemoteName="Device 2 (EtherCAT)" InfoImageId="7">
 				<Name>Device 2 (EtherCAT)</Name>
 				<AddressInfo>
 					<Pnp>
 						<DeviceDesc>X001 (X001)</DeviceDesc>
 						<DeviceName>\DEVICE\{F352F53E-FCEE-4F3A-BDBA-95A0F824452F}</DeviceName>
-						<DeviceData>0001056b8cae</DeviceData>
+						<DeviceData>000000000000</DeviceData>
 					</Pnp>
 				</AddressInfo>
 				<Image Id="6" AddrType="9" ImageType="3">
@@ -1886,7 +1886,7 @@
 									<ModuleIdent>1050494</ModuleIdent>
 									<Module Id="#x03090010" Type="FSOE" Class="1918">
 										<Name>Module 1 (FSOE)</Name>
-										<ImageId>410</ImageId>
+										<ImageId>409</ImageId>
 										<ModuleData>020000007e07100000002c000000000000000000000000000000000000000000</ModuleData>
 										<PdoIndex>6656</PdoIndex>
 										<PdoIndex>5632</PdoIndex>
@@ -1898,7 +1898,7 @@
 									<ModuleIdent>691</ModuleIdent>
 									<Module Id="#x03090011" Type="FSLOGIC" Class="FSLOGIC">
 										<Name>Module 2 (FSLOGIC)</Name>
-										<ImageId>410</ImageId>
+										<ImageId>409</ImageId>
 										<ModuleData>02000000b3020000000004000000000000000000000000000000000000000000</ModuleData>
 										<PdoIndex>7167</PdoIndex>
 										<PdoIndex>6143</PdoIndex>
@@ -1918,6 +1918,7 @@
 								<Fmmu>0000000000000000001900010100000002000000000000000000000000000000</Fmmu>
 								<Fmmu>00000000000000000d0800010100000003000000000000000000000000000000</Fmmu>
 								<BootStrapData>0018f400f418f400</BootStrapData>
+								<SuName>Main</SuName>
 								<Pdo Name="TxPDO" Index="#x1a00" Flags="#x0090" SyncMan="3">
 									<Entry Name="FSOE__FSoE Slave CMD" Index="#x6000" Sub="#x01">
 										<Type>USINT</Type>
@@ -2602,8 +2603,8 @@ Bit1: Value bigger/equal Limit2]]></Comment>
 							<EtherCAT SlaveType="2" PdiType="#x0005" MboxDataLinkLayer="true" StateMBoxPolling="true" CycleMBoxPollingTime="0" CoeType="3" FoeType="1" VendorId="#x00000002" ProductCode="#x077e3052" RevisionNo="#x00100000" InfoDataAddr="true" RepeatSupport="true" TimeoutStateChange1="5000" TimeoutMailbox2="10000" TComSupport="true" PortPhys="51" DebugMemory="8" SafetyLogicSupported="true" MaxSlotCount="2" Type="EL1918, 8Ch. Safety Input 24V, TwinSAFE" Desc="EL1918" PortABoxInfo="#x0100005c">
 								<SyncMan>001000012600010001000000000100010001001026010000</SyncMan>
 								<SyncMan>001100012200010002000000000100010001001122010000</SyncMan>
-								<SyncMan>001231002400010003000000000000000800001224010000</SyncMan>
-								<SyncMan>001d2f002000010004000000000000000900001d20010000</SyncMan>
+								<SyncMan>001237002400010003000000000000000800001224010000</SyncMan>
+								<SyncMan>001d35002000010004000000000000000900001d20010000</SyncMan>
 								<SyncMan>002e00002400000003000000000000000000002e24000000</SyncMan>
 								<SyncMan>002f00002000000004000000000000000000002f20000000</SyncMan>
 								<Fmmu>0000000000000000001200020100000001000000060000000200000000000000</Fmmu>
@@ -2639,6 +2640,9 @@ Bit1: Value bigger/equal Limit2]]></Comment>
 									<Entry Name="Message_47 TxPDO" Index="#x7000" Sub="#x07">
 										<Type GUID="{2438F91B-E188-4ED7-8594-54354F9ED6A4}" Namespace="Safety">FSOE_6</Type>
 									</Entry>
+									<Entry Name="Message_56 TxPDO" Index="#x7000" Sub="#x08">
+										<Type GUID="{2438F91B-E188-4ED7-8594-54354F9ED6A4}" Namespace="Safety">FSOE_6</Type>
+									</Entry>
 								</Pdo>
 								<Pdo Name="ConnectionOutputs" Index="#x1600" InOut="1" Flags="#x2011" SyncMan="2">
 									<Entry Name="Message_10 RxPDO" Index="#x6000" Sub="#x01">
@@ -2660,6 +2664,9 @@ Bit1: Value bigger/equal Limit2]]></Comment>
 										<Type GUID="{2438F91B-E188-4ED7-8594-54354F9ED6A4}" Namespace="Safety">FSOE_6</Type>
 									</Entry>
 									<Entry Name="Message_47 RxPDO" Index="#x6000" Sub="#x07">
+										<Type GUID="{2438F91B-E188-4ED7-8594-54354F9ED6A4}" Namespace="Safety">FSOE_6</Type>
+									</Entry>
+									<Entry Name="Message_56 RxPDO" Index="#x6000" Sub="#x08">
 										<Type GUID="{2438F91B-E188-4ED7-8594-54354F9ED6A4}" Namespace="Safety">FSOE_6</Type>
 									</Entry>
 								</Pdo>
@@ -2797,7 +2804,7 @@ Bit1: Value bigger/equal Limit2]]></Comment>
 									<ModuleIdent>691</ModuleIdent>
 									<Module Id="#x03090002" Type="FSLOGIC" Class="FSLOGIC">
 										<Name>Module 2 (FSLOGIC)</Name>
-										<ImageId>410</ImageId>
+										<ImageId>409</ImageId>
 										<ModuleData>02000000b3020000000004000000000000000000000000000000000000000000</ModuleData>
 										<PdoIndex>7167</PdoIndex>
 										<PdoIndex>6143</PdoIndex>
@@ -2947,7 +2954,7 @@ Bit1: Value bigger/equal Limit2]]></Comment>
 									<ModuleIdent>1050494</ModuleIdent>
 									<Module Id="#x03090003" Type="FSOE" Class="1918">
 										<Name>Module 1 (FSOE)</Name>
-										<ImageId>410</ImageId>
+										<ImageId>409</ImageId>
 										<ModuleData>020000007e07100000002c000000000000000000000000000000000000000000</ModuleData>
 										<PdoIndex>6656</PdoIndex>
 										<PdoIndex>5632</PdoIndex>
@@ -2959,7 +2966,7 @@ Bit1: Value bigger/equal Limit2]]></Comment>
 									<ModuleIdent>691</ModuleIdent>
 									<Module Id="#x03090004" Type="FSLOGIC" Class="FSLOGIC">
 										<Name>Module 2 (FSLOGIC)</Name>
-										<ImageId>410</ImageId>
+										<ImageId>409</ImageId>
 										<ModuleData>02000000b3020000000004000000000000000000000000000000000000000000</ModuleData>
 										<PdoIndex>7167</PdoIndex>
 										<PdoIndex>6143</PdoIndex>
@@ -4721,6 +4728,7 @@ Bit1: Value bigger/equal Limit2]]></Comment>
 							<Fmmu>00000000000000000d0800010100000003000000000000000000000000000000</Fmmu>
 							<SwitchPortData>0100000000c8a8c000ffffff06c8a8c000000000426f785f36375f5f436f6d6d616e640000000000000000000000000000000000000000000000000000000000</SwitchPortData>
 							<BootStrapData>0010000100110001</BootStrapData>
+							<SuName>Emergency_Disconnect</SuName>
 							<Pdo Name="Transmit PDO Mapping 1" Index="#x1a00" Flags="#x0000">
 								<Entry Name="Status word" Index="#x6041">
 									<Type>UINT</Type>
@@ -4915,7 +4923,7 @@ Bit1: Value bigger/equal Limit2]]></Comment>
 										<ModuleIdent>1050494</ModuleIdent>
 										<Module Id="#x03090001" Type="FSOE" Class="1918">
 											<Name>Module 1 (FSOE)</Name>
-											<ImageId>410</ImageId>
+											<ImageId>409</ImageId>
 											<ModuleData>020000007e07100000002c000000000000000000000000000000000000000000</ModuleData>
 											<PdoIndex>6656</PdoIndex>
 											<PdoIndex>5632</PdoIndex>
@@ -4927,7 +4935,7 @@ Bit1: Value bigger/equal Limit2]]></Comment>
 										<ModuleIdent>691</ModuleIdent>
 										<Module Id="#x03090008" Type="FSLOGIC" Class="FSLOGIC">
 											<Name>Module 2 (FSLOGIC)</Name>
-											<ImageId>410</ImageId>
+											<ImageId>409</ImageId>
 											<ModuleData>02000000b3020000000004000000000000000000000000000000000000000000</ModuleData>
 											<PdoIndex>7167</PdoIndex>
 											<PdoIndex>6143</PdoIndex>
@@ -7359,6 +7367,7 @@ Bit1: Value bigger/equal Limit2]]></Comment>
 								<Fmmu>00000000000000000d0800010100000003000000000000000000000000000000</Fmmu>
 								<SwitchPortData>0100000000000000000000000000000000000000426f785f315f5f436f6d6d616e64650000000000000000000000000000000000000000000000000000000000</SwitchPortData>
 								<BootStrapData>0010000100110001</BootStrapData>
+								<SuName>Emergency_Disconnect</SuName>
 								<Pdo Name="Transmit PDO Mapping 1" Index="#x1a00" Flags="#x0000">
 									<Entry Name="Status word" Index="#x6041">
 										<Type>UINT</Type>
@@ -7439,7 +7448,6 @@ Bit1: Value bigger/equal Limit2]]></Comment>
 		<OwnerA Name="TIID^Device 1 (EtherCAT)">
 			<OwnerB Name="TIID^Device 2 (EtherCAT)^Box 2 (CU1128)^BOX_CIP^SDI_01 (EL1918)">
 				<Link VarA="BoxTriblrnderBig^SDI_05 (EL1904)^Module 1 (FSOES)^RxPDO^FSOE" VarB="ConnectionInputs^Message_47 TxPDO"/>
-				<Link VarA="BoxTriblrnderBig^SDO_03 (EL2904)^Module 1 (FSOES)^RxPDO^FSOE" VarB="ConnectionInputs^Message_32 TxPDO"/>
 			</OwnerB>
 		</OwnerA>
 		<OwnerA Name="TIID^Device 2 (EtherCAT)">
@@ -7447,6 +7455,7 @@ Bit1: Value bigger/equal Limit2]]></Comment>
 				<Link VarA="Box 2 (CU1128)^BOX_CIP^SDI_01 (EL1918)^ConnectionOutputs^Message_47 RxPDO" VarB="Module 1 (FSOES)^TxPDO^FSOE"/>
 			</OwnerB>
 			<OwnerB Name="TIID^Device 1 (EtherCAT)^BoxTriblrnderBig^SDO_03 (EL2904)">
+				<Link VarA="Box 2 (CU1128)^BOX_CIP^SDI_01 (EL1918)^ConnectionInputs^Message_32 TxPDO" VarB="Module 1 (FSOES)^RxPDO^FSOE"/>
 				<Link VarA="Box 2 (CU1128)^BOX_CIP^SDI_01 (EL1918)^ConnectionOutputs^Message_32 RxPDO" VarB="Module 1 (FSOES)^TxPDO^FSOE"/>
 			</OwnerB>
 			<OwnerB Name="TIID^Device 2 (EtherCAT)^Box 2 (CU1128)^BOX_CIP^SDI_01 (EL1918)">
@@ -7454,18 +7463,22 @@ Bit1: Value bigger/equal Limit2]]></Comment>
 				<Link VarA="Box 2 (CU1128)^BOX_CIP^SDI_02 (EL1918)^Module 1 (FSOE)^FSoE Outputs^FSOE" VarB="ConnectionInputs^Message_10 TxPDO"/>
 				<Link VarA="Box 2 (CU1128)^BOX_CIP^SDO_01 (EL2904)^Module 1 (FSOES)^RxPDO^FSOE" VarB="ConnectionInputs^Message_11 TxPDO"/>
 				<Link VarA="Box 2 (CU1128)^BOX_CIP^SDO_01 (EL2904)^Module 1 (FSOES)^TxPDO^FSOE" VarB="ConnectionOutputs^Message_11 RxPDO"/>
-				<Link VarA="Box 2 (CU1128)^Box 3 (CU1128-B)^BoxColor^SDO_02 (EL2904)^Module 1 (FSOES)^TxPDO^FSOE" VarB="ConnectionOutputs^Message_30 RxPDO"/>
+				<Link VarA="Box 2 (CU1128)^Box 3 (CU1128-B)^BoxColor^SDI_03 (EL1918)^Module 1 (FSOE)^FSoE Inputs^FSOE" VarB="ConnectionOutputs^Message_29 RxPDO"/>
+				<Link VarA="Box 2 (CU1128)^BoxTriBlenderSmall^SDO_05 (EL2904)^Module 1 (FSOES)^RxPDO^FSOE" VarB="ConnectionInputs^Message_56 TxPDO"/>
 			</OwnerB>
 			<OwnerB Name="TIID^Device 2 (EtherCAT)^Box 2 (CU1128)^Box 3 (CU1128-B)^BoxColor^SDI_03 (EL1918)">
 				<Link VarA="Box 2 (CU1128)^BOX_CIP^SDI_01 (EL1918)^ConnectionInputs^Message_29 TxPDO" VarB="Module 1 (FSOE)^FSoE Outputs^FSOE"/>
-				<Link VarA="Box 2 (CU1128)^BOX_CIP^SDI_01 (EL1918)^ConnectionOutputs^Message_29 RxPDO" VarB="Module 1 (FSOE)^FSoE Inputs^FSOE"/>
 			</OwnerB>
 			<OwnerB Name="TIID^Device 2 (EtherCAT)^Box 2 (CU1128)^Box 3 (CU1128-B)^BoxColor^SDO_02 (EL2904)">
 				<Link VarA="Box 2 (CU1128)^BOX_CIP^SDI_01 (EL1918)^ConnectionInputs^Message_30 TxPDO" VarB="Module 1 (FSOES)^RxPDO^FSOE"/>
+				<Link VarA="Box 2 (CU1128)^BOX_CIP^SDI_01 (EL1918)^ConnectionOutputs^Message_30 RxPDO" VarB="Module 1 (FSOES)^TxPDO^FSOE"/>
 			</OwnerB>
 			<OwnerB Name="TIID^Device 2 (EtherCAT)^Box 2 (CU1128)^BoxTriBlenderSmall^SDI_04 (EL1918)">
 				<Link VarA="Box 2 (CU1128)^BOX_CIP^SDI_01 (EL1918)^ConnectionInputs^Message_31 TxPDO" VarB="Module 1 (FSOE)^FSoE Outputs^FSOE"/>
 				<Link VarA="Box 2 (CU1128)^BOX_CIP^SDI_01 (EL1918)^ConnectionOutputs^Message_31 RxPDO" VarB="Module 1 (FSOE)^FSoE Inputs^FSOE"/>
+			</OwnerB>
+			<OwnerB Name="TIID^Device 2 (EtherCAT)^Box 2 (CU1128)^BoxTriBlenderSmall^SDO_05 (EL2904)">
+				<Link VarA="Box 2 (CU1128)^BOX_CIP^SDI_01 (EL1918)^ConnectionOutputs^Message_56 RxPDO" VarB="Module 1 (FSOES)^TxPDO^FSOE"/>
 			</OwnerB>
 		</OwnerA>
 		<OwnerA Name="TIPC^PLC^PLC Instance">
