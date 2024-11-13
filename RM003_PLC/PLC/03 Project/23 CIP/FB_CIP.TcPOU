@@ -178,9 +178,9 @@ VAR
 	nNumOfPulses	:	INT:=5		;//Number of pulses per valve seat clean
 	nStep_Vlv		:	INT:=0		;
 	bValveCleanDone	:	BOOL:=FALSE	;
-	nI_1			:	INT:=1		;
-	nI_2			:	INT:=1		;//number of repeats
-	nI_3			:	INT:=0		;
+	nI_1_act_valve			:	INT:=1		;
+	nI_2_act_pulses			:	INT:=0		;
+	nI_3_act_repeats		:	INT:=1		;//number of repeats
 	ActvValve		:	E_Pis_Name	;
 	bSeatStatus		:	BOOL:=FALSE	;
 	sState			:	STRING		;
@@ -225,7 +225,6 @@ END_VAR
 act_GetReference();
 act_CallProcessControl();
 act_HeatExchng();
-act_ValveUpLow_Cntrl();
 act_SprinklerCondition();
 //SUPER^();
 
@@ -238,6 +237,7 @@ END_FOR
 act_Oper();
 act_ReqBuffer();
 mVolumeMeter();
+act_ValveUpLow_Cntrl();
 
 rtModeOff(CLK:=eMode=E_CIP_Mode.eOff);
 IF rtModeOff.Q THEN;
@@ -33967,7 +33967,7 @@ END_IF
     <Action Name="act_ValveUpLow_Cntrl" Id="{767e74fb-6b96-4e97-bf7c-883c8d6e0955}" FolderPath="Manage\">
       <Implementation>
         <ST><![CDATA[tOn(IN:= , PT:=T#1S , Q=> , ET=> );
-tOff(IN:= , PT:=T#1S , Q=> , ET=> );
+tOff(IN:= , PT:=T#5S , Q=> , ET=> );
 nClient:=eCIP_Usage:=eReq.eClient;
 
 //To be deleted just for testing
@@ -34095,9 +34095,9 @@ CASE nStep_Vlv OF
 		THEN
 			bValveCleanDone:=FALSE;
 			sState:='Busy';
-			nI_1:=1;//active valve
-			nI_2:=1;//active number of retries
-			nI_3:=1;//active number of pulses
+			nI_1_act_valve:=1;//active valve
+			nI_2_act_pulses:=1;//active number of pulses
+			nI_3_act_repeats:=1;//active number of retries
 			tOn.IN:=FALSE;
 			tOff.IN:=FALSE;
 			nStep_Vlv:=1;
@@ -34106,12 +34106,12 @@ CASE nStep_Vlv OF
 		END_IF
 	1:
 		bClean_MixProof:=FALSE;
-		nI_3:=1;
+		nI_2_act_pulses:=1;
 
 		IF TRUE 
-		AND gCIP_ValvUL[nClient,nI_1]<E_Pis_Name.last 
-		AND nI_1<=nMaxValves 
-		AND gCIP_ValvUL[nClient,nI_1]>E_Pis_Name.e0_not_in_use THEN
+		AND gCIP_ValvUL[nClient,nI_1_act_valve]<E_Pis_Name.last 
+		AND nI_1_act_valve<=nMaxValves 
+		AND gCIP_ValvUL[nClient,nI_1_act_valve]>E_Pis_Name.e0_not_in_use THEN
 			//existing step
 			nStep_Vlv:=2;
 		ELSE
@@ -34120,8 +34120,8 @@ CASE nStep_Vlv OF
 		END_IF
 		
 	2:
-		ActvValve:=gCIP_ValvUL[nClient,nI_1];
-		bSeatStatus:=gCIP_ValvUL_Seat[nClient,nI_1];
+		ActvValve:=gCIP_ValvUL[nClient,nI_1_act_valve];
+		bSeatStatus:=gCIP_ValvUL_Seat[nClient,nI_1_act_valve];
 		nStep_Vlv:=3;
 	3:
 		
@@ -34164,24 +34164,30 @@ CASE nStep_Vlv OF
 		
 		IF tOff.Q
 		AND g_Piston.stPis_U_L[ActvValve].st_Released
-		AND nI_3>=nNumOfPulses 
+		AND nI_2_act_pulses>=nNumOfPulses 
 		THEN
 			//fetch another valve
-			nI_1:=nI_1+1;
-			nStep_Vlv:=1;
+			IF nI_1_act_valve < nMaxValves THEN;
+				nI_1_act_valve:=nI_1_act_valve+1;
+				nStep_Vlv:=1;	
+			ELSE;
+				//DONE
+				nStep_Vlv:=10;	
+			END_IF
+
 		ELSIF tOff.Q
 		AND g_Piston.stPis_U_L[ActvValve].st_Released		
-		AND nI_3<nNumOfPulses 
+		AND nI_2_act_pulses<nNumOfPulses 
 		AND TRUE THEN
 			//return to open
-			nI_3:=nI_3+1;
+			nI_2_act_pulses:=nI_2_act_pulses+1;
 			nStep_Vlv:=3;
 		END_IF
 	10:
-		IF nI_2<nNumOfRetries THEN
+		IF nI_3_act_repeats<nNumOfRetries THEN
 			//returnng to repeat
-			nI_2:=nI_2+1;
-			nI_1:=1;
+			nI_3_act_repeats:=nI_3_act_repeats+1;
+			nI_1_act_valve:=1;
 			nStep_Vlv:=1;
 		ELSE
 			//Done
@@ -34661,6 +34667,7 @@ END_VAR
       <Implementation>
         <ST><![CDATA[IF bValveCleanDone THEN;
 	m_run_MixProof:=TRUE;
+	bClean_MixProof:=FALSE;
 ELSE;
 	bClean_MixProof:=TRUE;
 END_IF]]></ST>
@@ -35068,7 +35075,6 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="256" Count="0" />
       <LineId Id="437" Count="0" />
       <LineId Id="562" Count="0" />
-      <LineId Id="723" Count="0" />
       <LineId Id="1625" Count="0" />
       <LineId Id="25" Count="0" />
       <LineId Id="572" Count="0" />
@@ -35079,6 +35085,7 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="9" Count="0" />
       <LineId Id="31" Count="0" />
       <LineId Id="190" Count="0" />
+      <LineId Id="3145" Count="0" />
       <LineId Id="189" Count="0" />
       <LineId Id="127" Count="1" />
       <LineId Id="132" Count="1" />
@@ -36661,8 +36668,8 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="21" Count="0" />
       <LineId Id="31" Count="0" />
       <LineId Id="43" Count="0" />
+      <LineId Id="355" Count="0" />
       <LineId Id="60" Count="0" />
-      <LineId Id="85" Count="0" />
       <LineId Id="160" Count="1" />
       <LineId Id="22" Count="0" />
       <LineId Id="37" Count="1" />
@@ -36714,7 +36721,14 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="331" Count="0" />
       <LineId Id="335" Count="0" />
       <LineId Id="164" Count="0" />
-      <LineId Id="143" Count="1" />
+      <LineId Id="356" Count="0" />
+      <LineId Id="359" Count="0" />
+      <LineId Id="357" Count="0" />
+      <LineId Id="360" Count="0" />
+      <LineId Id="362" Count="0" />
+      <LineId Id="361" Count="0" />
+      <LineId Id="358" Count="0" />
+      <LineId Id="144" Count="0" />
       <LineId Id="157" Count="0" />
       <LineId Id="340" Count="0" />
       <LineId Id="333" Count="1" />
@@ -36925,6 +36939,7 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
     <LineIds Name="FB_CIP.m_run_MixProof">
       <LineId Id="5" Count="0" />
       <LineId Id="8" Count="0" />
+      <LineId Id="13" Count="0" />
       <LineId Id="6" Count="0" />
       <LineId Id="9" Count="0" />
       <LineId Id="7" Count="0" />
