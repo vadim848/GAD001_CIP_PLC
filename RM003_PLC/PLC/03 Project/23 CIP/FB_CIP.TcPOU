@@ -2824,7 +2824,9 @@ IF __ISVALIDREF(eRefClient_fbElement) THEN;
 		eRefClient_fbElement.m_Disconnect();
 	END_IF
 END_IF
-eRefClient_fbElement REF= fbElement_Blank;]]></ST>
+eRefClient_fbElement REF= fbElement_Blank;
+
+m_DashState_MixProof_set();]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -34713,6 +34715,38 @@ END_FOR
 ]]></ST>
       </Implementation>
     </Method>
+    <Method Name="m_DashState_MixProof_set" Id="{ba88b8f4-7cb8-4ee8-ab8e-9017339c8295}" FolderPath="Meth\Dashboard\">
+      <Declaration><![CDATA[METHOD m_DashState_MixProof_set : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF NOT __ISVALIDREF(eRefClient_fbElement) THEN;
+	RETURN;
+END_IF
+CASE eCIP_Usage OF
+	E_CIP_Usage.eNotInUse,
+	E_CIP_Usage.eLocal:;
+		FOR i:=1 TO 6 DO
+			g_HMI.arCIP_DashStage_MixProof[i].sName:='';
+			g_HMI.arCIP_DashStage_MixProof[i].bUpper:=FALSE;
+			g_HMI.arCIP_DashStage_MixProof[i].bLower:=FALSE;
+			g_HMI.arCIP_DashStage_MixProof[i].bRunning:=FALSE;
+			g_HMI.arCIP_DashStage_MixProof[i].bDone:=FALSE;
+		END_FOR	
+ELSE;
+		FOR i:=1 TO 6 DO
+			g_HMI.arCIP_DashStage_MixProof[i].sName:=TO_STRING(gCIP_ValvUL[eCIP_Usage,i]);
+			g_HMI.arCIP_DashStage_MixProof[i].bUpper:=gCIP_ValvUL_Seat[eCIP_Usage,i];
+			g_HMI.arCIP_DashStage_MixProof[i].bLower:=NOT gCIP_ValvUL_Seat[eCIP_Usage,i];
+			g_HMI.arCIP_DashStage_MixProof[i].bRunning:= nI_1_act_valve=i AND nStep_Vlv<>0;
+			g_HMI.arCIP_DashStage_MixProof[i].bDone:= (nI_1_act_valve>i AND nStep_Vlv<>0) OR bValveCleanDone;
+		END_FOR	
+END_CASE
+
+]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="m_DashState_Sprinkler" Id="{306d9d0f-c147-419d-8576-035700b09af5}" FolderPath="Meth\Dashboard\">
       <Declaration><![CDATA[METHOD m_DashState_Sprinkler : BOOL
 VAR_INPUT
@@ -34943,7 +34977,9 @@ END_VAR
 	bClean_MixProof:=FALSE;
 ELSE;
 	bClean_MixProof:=TRUE;
-END_IF]]></ST>
+END_IF
+
+m_DashState_MixProof_set();]]></ST>
       </Implementation>
     </Method>
     <Method Name="m_Set_SFCFlags_Reference" Id="{3959a842-c714-4552-9594-b319ee26bb78}" FolderPath="Meth\">
@@ -36098,6 +36134,8 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
     <LineIds Name="FB_CIP._aDisconnect_Old_Client_entry">
       <LineId Id="2" Count="8" />
       <LineId Id="1" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="11" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aDisinfct_Dose_1_active">
       <LineId Id="4" Count="0" />
@@ -37156,6 +37194,19 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="97" Count="38" />
       <LineId Id="62" Count="0" />
     </LineIds>
+    <LineIds Name="FB_CIP.m_DashState_MixProof_set">
+      <LineId Id="6" Count="2" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="12" Count="1" />
+      <LineId Id="34" Count="5" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="40" Count="5" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="17" Count="0" />
+    </LineIds>
     <LineIds Name="FB_CIP.m_DashState_Sprinkler">
       <LineId Id="5" Count="0" />
       <LineId Id="14" Count="4" />
@@ -37262,6 +37313,8 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="6" Count="0" />
       <LineId Id="9" Count="0" />
       <LineId Id="7" Count="0" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="17" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP.m_Set_SFCFlags_Reference">
       <LineId Id="5" Count="15" />
