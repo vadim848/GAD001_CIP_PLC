@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
   <POU Name="FB_Tank_Target" Id="{e77bc243-ef67-4877-849d-f4a841448420}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_Tank_Target EXTENDS FB_SFC_Cycle IMPLEMENTS ITF_FB_SFC_Cycle
 VAR_INPUT
@@ -27,6 +27,7 @@ VAR
 	stPis_CIP			: REFERENCE TO ST_Piston;
 
 	tonDrainTime: TON;
+	stTankLevel			:	ST_Tank_Level	;
 END_VAR
 VAR_IN_OUT
 
@@ -41,7 +42,10 @@ IF NOT Init.x THEN;
 	act_Status();
 END_IF
 
-tonDrainTime(PT:=T#1M, IN:=eStatus=E_Tank_Target.eDrain OR eStatus=E_Tank_Target.eClose_DrainPipe);
+tonDrainTime(PT:=T#1M, 
+	IN:=(eStatus=E_Tank_Target.eDrain AND stTankLevel.e_state=E_Tank_Level.eEmpty)
+			OR 
+		eStatus=E_Tank_Target.eClose_DrainPipe);
 IF tonDrainTime.Q 
 AND eReq=E_Tank_Target.eNone
 AND eProcess=E_Tank_Target.eNone
@@ -3144,11 +3148,23 @@ refSFC.SFCTipMode REF= SFCTipMode;
 m_SFC_Handle();]]></ST>
       </Implementation>
     </Method>
+    <Method Name="set_TankLevel" Id="{2976f91a-4f21-42e1-852d-f74c3c86612b}" FolderPath="Manage\">
+      <Declaration><![CDATA[METHOD set_TankLevel : BOOL
+VAR_INPUT
+	set_stTankLevel			:	ST_Tank_Level	;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[stTankLevel:=set_stTankLevel;]]></ST>
+      </Implementation>
+    </Method>
     <LineIds Name="FB_Tank_Target">
       <LineId Id="89" Count="2" />
       <LineId Id="93" Count="2" />
       <LineId Id="97" Count="0" />
-      <LineId Id="128" Count="5" />
+      <LineId Id="128" Count="0" />
+      <LineId Id="165" Count="2" />
+      <LineId Id="129" Count="4" />
       <LineId Id="55" Count="0" />
     </LineIds>
     <LineIds Name="FB_Tank_Target._aCIP_active">
@@ -3293,6 +3309,9 @@ m_SFC_Handle();]]></ST>
     <LineIds Name="FB_Tank_Target.m_Set_SFCFlags_Reference">
       <LineId Id="5" Count="15" />
       <LineId Id="4" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Tank_Target.set_TankLevel">
+      <LineId Id="5" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>

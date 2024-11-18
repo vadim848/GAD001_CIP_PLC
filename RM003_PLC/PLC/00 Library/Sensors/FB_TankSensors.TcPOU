@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
   <POU Name="FB_TankSensors" Id="{3b995b33-c693-4ceb-8bd6-f0dd6e1df1dc}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_TankSensors
 VAR_IN_OUT
@@ -53,6 +53,15 @@ stTankLevel.bIn_LL_signal:=senLL;
 ]]></ST>
       </Implementation>
     </Action>
+    <Method Name="get_stTankLevel" Id="{ebb28d4f-5ba4-4bcd-b99d-9ce82e080c07}">
+      <Declaration><![CDATA[METHOD get_stTankLevel : ST_Tank_Level
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[get_stTankLevel:=stTankLevel;]]></ST>
+      </Implementation>
+    </Method>
     <LineIds Name="FB_TankSensors">
       <LineId Id="50" Count="0" />
       <LineId Id="54" Count="0" />
@@ -64,6 +73,9 @@ stTankLevel.bIn_LL_signal:=senLL;
       <LineId Id="18" Count="0" />
       <LineId Id="16" Count="1" />
       <LineId Id="15" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_TankSensors.get_stTankLevel">
+      <LineId Id="5" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>
