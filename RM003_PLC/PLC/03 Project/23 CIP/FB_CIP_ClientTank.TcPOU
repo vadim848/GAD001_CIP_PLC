@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
   <POU Name="FB_CIP_ClientTank" Id="{ec4051e0-f8dc-45bc-bf46-7adcfec692af}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_CIP_ClientTank EXTENDS FB_SFC_Cycle IMPLEMENTS ITF_FB_SFC_Cycle
 VAR_INPUT	
@@ -309,7 +309,7 @@ END_IF]]></ST>
       <Implementation>
         <ST><![CDATA[fbPis.m_SetByRecipe(stPis:=stPis_Tank_A, 				req:=E_Piston_Recipe_State.Act);
 fbPis.m_SetByRecipe(stPis:=stPis_Tank_A_Sprinkler, 		req:=E_Piston_Recipe_State.Release);
-fbPis.m_SetByRecipe(stPis:=stPis_Tank_A_Main, 			req:=E_Piston_Recipe_State.Act);
+fbPis.m_SetByRecipe(stPis:=stPis_Tank_A_Main, 			req:=E_Piston_Recipe_State.Release);
 fbPis.m_SetByRecipe(stPis:=stPis_Tank_B, 				req:=E_Piston_Recipe_State.Release);
 fbPis.m_SetByRecipe(stPis:=stPis_Tank_B_Sprinkler, 		req:=E_Piston_Recipe_State.Release);
 fbPis.m_SetByRecipe(stPis:=stPis_Tank_B_Main, 			req:=E_Piston_Recipe_State.Release);
@@ -356,7 +356,7 @@ END_IF]]></ST>
       <Implementation>
         <ST><![CDATA[fbPis.m_SetByRecipe(stPis:=stPis_Tank_A, 				req:=E_Piston_Recipe_State.Act);
 fbPis.m_SetByRecipe(stPis:=stPis_Tank_A_Sprinkler, 		req:=E_Piston_Recipe_State.Act);
-fbPis.m_SetByRecipe(stPis:=stPis_Tank_A_Main, 			req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_Tank_A_Main, 			req:=E_Piston_Recipe_State.Act);
 fbPis.m_SetByRecipe(stPis:=stPis_Tank_B, 				req:=E_Piston_Recipe_State.Release);
 fbPis.m_SetByRecipe(stPis:=stPis_Tank_B_Sprinkler, 		req:=E_Piston_Recipe_State.Release);
 fbPis.m_SetByRecipe(stPis:=stPis_Tank_B_Main, 			req:=E_Piston_Recipe_State.Release);
@@ -406,7 +406,7 @@ fbPis.m_SetByRecipe(stPis:=stPis_Tank_A_Sprinkler, 		req:=E_Piston_Recipe_State.
 fbPis.m_SetByRecipe(stPis:=stPis_Tank_A_Main, 			req:=E_Piston_Recipe_State.Release);
 fbPis.m_SetByRecipe(stPis:=stPis_Tank_B, 				req:=E_Piston_Recipe_State.Act);
 fbPis.m_SetByRecipe(stPis:=stPis_Tank_B_Sprinkler, 		req:=E_Piston_Recipe_State.Release);
-fbPis.m_SetByRecipe(stPis:=stPis_Tank_B_Main, 			req:=E_Piston_Recipe_State.Act);
+fbPis.m_SetByRecipe(stPis:=stPis_Tank_B_Main, 			req:=E_Piston_Recipe_State.Release);
 fbPis.m_SetByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release);]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -453,7 +453,7 @@ fbPis.m_SetByRecipe(stPis:=stPis_Tank_A_Sprinkler, 		req:=E_Piston_Recipe_State.
 fbPis.m_SetByRecipe(stPis:=stPis_Tank_A_Main, 			req:=E_Piston_Recipe_State.Release);
 fbPis.m_SetByRecipe(stPis:=stPis_Tank_B, 				req:=E_Piston_Recipe_State.Act);
 fbPis.m_SetByRecipe(stPis:=stPis_Tank_B_Sprinkler, 		req:=E_Piston_Recipe_State.Act);
-fbPis.m_SetByRecipe(stPis:=stPis_Tank_B_Main, 			req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_Tank_B_Main, 			req:=E_Piston_Recipe_State.Act);
 fbPis.m_SetByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release);]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -3392,7 +3392,7 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
 	ELSIF TRUE 
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_A, 				req:=E_Piston_Recipe_State.Act)
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_A_Sprinkler, 	req:=E_Piston_Recipe_State.Release)
-	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_A_Main, 		req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_A_Main, 		req:=E_Piston_Recipe_State.Release)
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_B, 				req:=E_Piston_Recipe_State.Release)
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_B_Sprinkler, 	req:=E_Piston_Recipe_State.Release)
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_B_Main, 		req:=E_Piston_Recipe_State.Release)
@@ -3403,7 +3403,7 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
 	ELSIF TRUE 
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_A, 				req:=E_Piston_Recipe_State.Act)
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_A_Sprinkler, 	req:=E_Piston_Recipe_State.Act)
-	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_A_Main, 		req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_A_Main, 		req:=E_Piston_Recipe_State.Act)
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_B, 				req:=E_Piston_Recipe_State.Release)
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_B_Sprinkler, 	req:=E_Piston_Recipe_State.Release)
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_B_Main, 		req:=E_Piston_Recipe_State.Release)
@@ -3417,7 +3417,7 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_A_Main, 		req:=E_Piston_Recipe_State.Release)
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_B, 				req:=E_Piston_Recipe_State.Act)
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_B_Sprinkler, 	req:=E_Piston_Recipe_State.Release)
-	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_B_Main, 		req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_B_Main, 		req:=E_Piston_Recipe_State.Release)
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release)
 	THEN;
 		eStatus:=E_CIP_ClientTank.eTank_B;	
@@ -3428,7 +3428,7 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_A_Main, 		req:=E_Piston_Recipe_State.Release)
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_B, 				req:=E_Piston_Recipe_State.Act)
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_B_Sprinkler, 	req:=E_Piston_Recipe_State.Act)
-	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_B_Main, 		req:=E_Piston_Recipe_State.Release)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_Tank_B_Main, 		req:=E_Piston_Recipe_State.Act)
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release)
 	THEN;
 		eStatus:=E_CIP_ClientTank.eTank_B_Sprinkler;
