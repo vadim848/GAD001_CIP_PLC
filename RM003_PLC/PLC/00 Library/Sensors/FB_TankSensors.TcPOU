@@ -57,9 +57,17 @@ stTankLevel.bIn_LL_signal:=senLL;
       <Declaration><![CDATA[METHOD get_stTankLevel : ST_Tank_Level
 VAR_INPUT
 END_VAR
-]]></Declaration>
+VAR
+	blank: ST_Tank_Level;
+END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[get_stTankLevel:=stTankLevel;]]></ST>
+        <ST><![CDATA[
+IF __ISVALIDREF(stTankLevel) THEN;
+	get_stTankLevel:=stTankLevel;
+ELSE;
+	get_stTankLevel:=blank;
+END_IF
+]]></ST>
       </Implementation>
     </Method>
     <LineIds Name="FB_TankSensors">
@@ -75,7 +83,12 @@ END_VAR
       <LineId Id="15" Count="0" />
     </LineIds>
     <LineIds Name="FB_TankSensors.get_stTankLevel">
+      <LineId Id="9" Count="0" />
       <LineId Id="5" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="13" Count="1" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="10" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>
