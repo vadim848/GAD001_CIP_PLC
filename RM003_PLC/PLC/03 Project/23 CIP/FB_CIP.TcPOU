@@ -226,7 +226,7 @@ END_VAR
       <ST><![CDATA[m_Set_SFCFlags_Reference();
 act_GetReference();
 act_CallProcessControl();
-act_HeatExchng();
+//act_HeatExchng();
 act_SprinklerCondition();
 //SUPER^();
 
@@ -1228,7 +1228,7 @@ ELSE;
 	END_IF	
 END_IF
 
-pcHeatExchanger.mRun_PID(Set_Point:=st_CIP_Param.r_Temper_Detergent, controlManual:=FALSE,mRun_PID=>_temp);
+pcHeatExchanger.mRun_PID(Set_Point:=st_CIP_Param.r_Temper_Detergent, controlManual:=g_Data.stHeatExchanger.bManual ,mRun_PID=>_temp);
 tonr_CIP_Condition(PT:=SECOND_TO_TIME(tConditionTime));
 IF TRUE 
 AND pcHeatExchanger.mRun_With_SP(Set_Point:=st_CIP_Param.r_Temper_Detergent, mRun_With_SP=>_cond[3])
@@ -1355,7 +1355,7 @@ ELSE;
 	bCIP_Condition_Failed:=TRUE;
 END_IF
 
-pcHeatExchanger.mRun_PID(Set_Point:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Temper_Detergent, controlManual:=FALSE,mRun_PID=>_temp);
+pcHeatExchanger.mRun_PID(Set_Point:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Temper_Detergent, controlManual:=g_Data.stHeatExchanger.bManual ,mRun_PID=>_temp);
 tonr_CIP_Condition(PT:=SECOND_TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_ConditionDetergent), ResetTime:=FALSE);
 IF TRUE 
 AND pcHeatExchanger.mRun_With_SP(Set_Point:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Temper_Detergent, mRun_With_SP=>_cond[3])
@@ -1494,7 +1494,7 @@ ELSE;
 	END_IF	
 END_IF
 
-pcHeatExchanger.mRun_PID(Set_Point:=st_CIP_Param.r_Temper_DisInfection, controlManual:=FALSE,mRun_PID=>_temp);
+pcHeatExchanger.mRun_PID(Set_Point:=st_CIP_Param.r_Temper_DisInfection, controlManual:=g_Data.stHeatExchanger.bManual ,mRun_PID=>_temp);
 tonr_CIP_Condition(PT:=SECOND_TO_TIME(tConditionTime));
 IF TRUE 
 AND pcHeatExchanger.mRun_With_SP(Set_Point:=st_CIP_Param.r_Temper_DisInfection, mRun_With_SP=>_cond[3])
@@ -1630,7 +1630,7 @@ ELSE;
 	bCIP_Condition_Failed:=TRUE;
 END_IF
 
-pcHeatExchanger.mRun_PID(Set_Point:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Temper_DisInfection, controlManual:=FALSE,mRun_PID=>_temp);
+pcHeatExchanger.mRun_PID(Set_Point:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Temper_DisInfection, controlManual:=g_Data.stHeatExchanger.bManual ,mRun_PID=>_temp);
 tonr_CIP_Condition(PT:=SECOND_TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_ConditionDisInfection));
 IF TRUE 
 AND pcHeatExchanger.mRun_With_SP(Set_Point:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Temper_DisInfection, mRun_With_SP=>_cond[3])
@@ -5404,7 +5404,7 @@ pcHeatExchanger 	REF=g_ProcControl.arr_fbProcCntrl[E_ProcessControl_Name.eHeatEx
     <Action Name="act_HeatExchng" Id="{13b9d6f9-7b3e-4e54-9f53-f81ae43526f9}" FolderPath="Manage\">
       <Implementation>
         <ST><![CDATA[//calling heat exchanger 
-fb_HeatExchenger(ST_HeatExchanger:=g_Data.stHeatExchanger );
+fb_HeatExchenger(stHeatExchanger:=g_Data.stHeatExchanger );
 
 //Choosing heat exchanger set point 
 

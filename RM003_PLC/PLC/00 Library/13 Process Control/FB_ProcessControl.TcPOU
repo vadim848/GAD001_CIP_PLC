@@ -29,7 +29,7 @@ m_Check();
 act_Call_PID();
 act_CallHyst();
 
-handling_PID_Manual(PT:=T#0.5S, IN:=TRUE);
+handling_PID_Manual(PT:=T#0.5S);//, IN:=TRUE
 IF handling_PID_Manual.Q THEN;
 	stProcessControl.bManual:=TRUE;
 ELSE;
@@ -289,8 +289,8 @@ END_IF
                           </o>
                           <o t="BoxTreeOperand">
                             <o n="Operand" t="Operand">
-                              <v n="Operand">"300"</v>
-                              <v n="Type">"INT"</v>
+                              <v n="Operand">"stProcessControl.fCtrlOutput_Min"</v>
+                              <v n="Type">"LREAL"</v>
                               <v n="Comment">""</v>
                               <v n="SymbolComment">""</v>
                               <v n="Address">""</v>
@@ -308,8 +308,8 @@ END_IF
                           </o>
                           <o t="BoxTreeOperand">
                             <o n="Operand" t="Operand">
-                              <v n="Operand">"3000"</v>
-                              <v n="Type">"INT"</v>
+                              <v n="Operand">"mCtrlOutput_Max()"</v>
+                              <v n="Type">"REAL"</v>
                               <v n="Comment">""</v>
                               <v n="SymbolComment">""</v>
                               <v n="Address">""</v>
@@ -584,6 +584,15 @@ IF bRun THEN
 END_IF]]></ST>
       </Implementation>
     </Method>
+    <Method Name="mCtrlOutput_Max" Id="{96e0187b-897b-496a-b800-2f20b878b88c}">
+      <Declaration><![CDATA[METHOD mCtrlOutput_Max : REAL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[mCtrlOutput_Max:=stProcessControl.fCtrlOutput_Max;]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="mPause" Id="{be53090d-a73d-45ab-9fd1-26dc14e563ed}">
       <Declaration><![CDATA[METHOD mPause : BOOL
 VAR_INPUT
@@ -685,6 +694,9 @@ mRun_With_SP:=stProcessControl.bDone;]]></ST>
       <LineId Id="31" Count="0" />
       <LineId Id="30" Count="0" />
       <LineId Id="6" Count="23" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ProcessControl.mCtrlOutput_Max">
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProcessControl.mPause">
