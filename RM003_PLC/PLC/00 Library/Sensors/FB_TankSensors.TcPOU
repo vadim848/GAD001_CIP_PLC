@@ -61,11 +61,32 @@ VAR
 	blank: ST_Tank_Level;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[
-IF __ISVALIDREF(stTankLevel) THEN;
+        <ST><![CDATA[IF __ISVALIDREF(stTankLevel) THEN;
 	get_stTankLevel:=stTankLevel;
 ELSE;
 	get_stTankLevel:=blank;
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="get_stTankLevel_OverFlow" Id="{577bbcc6-3c21-40bc-aa52-4760d6cb7846}">
+      <Declaration><![CDATA[METHOD get_stTankLevel_OverFlow : BOOL
+VAR_INPUT
+END_VAR
+VAR
+	blank: ST_Tank_Level;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF __ISVALIDREF(stTankLevel) THEN;
+	IF stTankLevel.bIn_HL_signal 
+	OR stTankLevel.rTankLevelPercentage>100
+	THEN;
+		get_stTankLevel_OverFlow:=TRUE;
+	ELSE;
+		get_stTankLevel_OverFlow:=FALSE;
+	END_IF	
+ELSE;
+	get_stTankLevel_OverFlow:=FALSE;
 END_IF
 ]]></ST>
       </Implementation>
@@ -83,9 +104,20 @@ END_IF
       <LineId Id="15" Count="0" />
     </LineIds>
     <LineIds Name="FB_TankSensors.get_stTankLevel">
-      <LineId Id="9" Count="0" />
       <LineId Id="5" Count="0" />
       <LineId Id="11" Count="0" />
+      <LineId Id="13" Count="1" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="10" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_TankSensors.get_stTankLevel_OverFlow">
+      <LineId Id="5" Count="0" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="28" Count="1" />
+      <LineId Id="27" Count="0" />
       <LineId Id="13" Count="1" />
       <LineId Id="12" Count="0" />
       <LineId Id="10" Count="0" />
