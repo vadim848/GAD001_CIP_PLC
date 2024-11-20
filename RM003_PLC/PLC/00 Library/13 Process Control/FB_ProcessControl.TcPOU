@@ -588,9 +588,20 @@ END_IF]]></ST>
       <Declaration><![CDATA[METHOD mCtrlOutput_Max : REAL
 VAR_INPUT
 END_VAR
-]]></Declaration>
+
+VAR
+	span: LREAL;
+END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[mCtrlOutput_Max:=stProcessControl.fCtrlOutput_Max;]]></ST>
+        <ST><![CDATA[
+
+span:=ABS(stProcessControl.fCtrlOutput_Max-stProcessControl.fCtrlOutput_Min);
+//LimitedPrecentage:=
+IF stProcessControl.rValue>stProcessControl.rValue_Min_To_ReleaseControl THEN;
+	mCtrlOutput_Max:=stProcessControl.fCtrlOutput_Max;
+ELSE;
+	mCtrlOutput_Max:=stProcessControl.fCtrlOutput_Min+(span*0.3);
+END_IF]]></ST>
       </Implementation>
     </Method>
     <Method Name="mPause" Id="{be53090d-a73d-45ab-9fd1-26dc14e563ed}">
@@ -698,6 +709,12 @@ mRun_With_SP:=stProcessControl.bDone;]]></ST>
     </LineIds>
     <LineIds Name="FB_ProcessControl.mCtrlOutput_Max">
       <LineId Id="5" Count="0" />
+      <LineId Id="13" Count="1" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="21" Count="1" />
+      <LineId Id="12" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProcessControl.mPause">
       <LineId Id="5" Count="0" />
