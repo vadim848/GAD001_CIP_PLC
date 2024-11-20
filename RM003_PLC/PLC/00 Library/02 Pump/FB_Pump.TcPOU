@@ -29,6 +29,7 @@ VAR
 	state_init: (OFF,stage1,stage2,stage3,stage4, Ready);
 
 	bInitConnect: BOOL;
+	ton_RPM_feedback_lag_monitoring: TON;
 END_VAR
 VAR_OUTPUT
 	DriveReady	:   BOOL;
@@ -103,7 +104,10 @@ stPump.bRun_Man:=bRun_Man;
 stPump.bRun_Auto:=bRun_Auto;
 stPump.bRun:=bRun;
 
-
+IF m_Error() THEN;
+	stOperation.bSetPause:=TRUE;
+	//
+END_IF
 
 
 ]]></ST>
@@ -153,6 +157,32 @@ ELSE;
 		m_CheckOper:=TRUE;
 	ELSE;
 		m_CheckOper:=FALSE;
+	END_IF
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_Error" Id="{68a99073-1da5-4a02-9be0-3cdcd2d323d9}">
+      <Declaration><![CDATA[METHOD m_Error : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[ton_RPM_feedback_lag_monitoring(PT:=T#10S);
+IF bRun
+AND ABS(stNidec.targetVelocity - nRPM_fdbk) > 10 
+THEN;
+	ton_RPM_feedback_lag_monitoring.IN:=TRUE;
+ELSE;
+	ton_RPM_feedback_lag_monitoring.IN:=FALSE;
+END_IF
+
+
+IF bRun THEN;
+	IF (NOT DriveReady) 
+	OR (ton_RPM_feedback_lag_monitoring.Q)
+	THEN;
+		m_Error:=TRUE;
 	END_IF
 END_IF
 ]]></ST>
@@ -362,6 +392,9 @@ m_Stop:=TRUE;]]></ST>
       <LineId Id="440" Count="1" />
       <LineId Id="195" Count="0" />
       <LineId Id="144" Count="0" />
+      <LineId Id="533" Count="0" />
+      <LineId Id="535" Count="0" />
+      <LineId Id="534" Count="0" />
       <LineId Id="107" Count="0" />
       <LineId Id="145" Count="0" />
       <LineId Id="109" Count="0" />
@@ -387,6 +420,23 @@ m_Stop:=TRUE;]]></ST>
       <LineId Id="17" Count="0" />
       <LineId Id="13" Count="0" />
       <LineId Id="6" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Pump.m_Error">
+      <LineId Id="16" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="22" Count="1" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="17" Count="1" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="6" Count="0" />
+      <LineId Id="12" Count="1" />
+      <LineId Id="11" Count="0" />
     </LineIds>
     <LineIds Name="FB_Pump.m_Map_ControlWord">
       <LineId Id="9" Count="21" />
