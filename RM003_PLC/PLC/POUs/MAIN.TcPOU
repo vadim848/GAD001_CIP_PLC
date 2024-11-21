@@ -13,6 +13,8 @@ VAR
 	bTestEstop		:	BOOL:=TRUE	;
 	FB_OpenClose_Vlave_4026: FB_OpenClose_Vlave;
 	bTemp_Water_Overweight_check: BOOL;
+	fbUPS: FB_S_UPS_CX51x0;
+
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -93,7 +95,8 @@ fbWritePersistent(
 	BUSY=> , 
 	ERR=> , 
 	ERRID=> );
-]]></ST>
+
+fbUPS();]]></ST>
     </Implementation>
     <Action Name="act_Call_CIP" Id="{23177538-beef-46ee-b17f-61590a7b02ee}">
       <Implementation>
@@ -19770,6 +19773,7 @@ END_FOR]]></ST>
       <LineId Id="403" Count="0" />
       <LineId Id="388" Count="2" />
       <LineId Id="359" Count="11" />
+      <LineId Id="427" Count="0" />
       <LineId Id="16" Count="0" />
     </LineIds>
     <LineIds Name="MAIN.act_Call_For_HMI">
