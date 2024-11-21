@@ -139,6 +139,7 @@ VAR
 	rDeltaWater_DisInfClient	:	REAL	;
 
 	rDeluteVolume				: REAL;
+	rDeluteVolume_max			: REAL:=900;
 
 	//accumulative actual time for desinfection and detergent condition
 	nDeter_CondActTime_Lcl		:	INT	;//Actual condition time in seconds, for local client, detergent
@@ -176,6 +177,7 @@ VAR
 	tonTankLowLevel: TON;
 	iCheck: INT;
 	bMixProof_Release_All: BOOL;
+	iConcentrationDeluteCounter: INT;
 END_VAR
 //upper lower control
 VAR
@@ -1269,7 +1271,7 @@ END_IF
 
 
 
-ton_Concentration_Filter(PT:=T#30S, IN:=stDetergent.Control_ON);
+ton_Concentration_Filter(PT:=T#30S, IN:=stDetergent.Control_ON AND NOT stDetergent.OverFlow);
 IF TRUE 
 AND ton_Concentration_Filter.Q	
 THEN;
@@ -1392,7 +1394,7 @@ ELSE;
 END_IF
 
 
-ton_Concentration_Filter(PT:=T#30S, IN:=stDetergent.Control_ON);
+ton_Concentration_Filter(PT:=T#30S, IN:=stDetergent.Control_ON AND NOT stDetergent.OverFlow);
 IF TRUE 
 AND ton_Concentration_Filter.Q	
 THEN;
@@ -1546,7 +1548,7 @@ ELSE;
 END_IF
 
 
-ton_Concentration_Filter(PT:=T#30S, IN:=stDisInfectant.Control_ON AND NOT bSprinkler);
+ton_Concentration_Filter(PT:=T#30S, IN:=stDisInfectant.Control_ON AND (NOT stDisInfectant.OverFlow) AND (NOT bSprinkler));
 IF TRUE 	
 AND ton_Concentration_Filter.Q	
 THEN;
@@ -1667,7 +1669,7 @@ ELSE;
 END_IF
 
 
-ton_Concentration_Filter(PT:=T#30S, IN:=stDisInfectant.Control_ON);
+ton_Concentration_Filter(PT:=T#30S, IN:=stDisInfectant.Control_ON AND NOT stDisInfectant.OverFlow);
 IF TRUE 
 AND ton_Concentration_Filter.Q	
 THEN;
@@ -2614,7 +2616,7 @@ bStepDone:=fb_PumpDetergent.m_RunVolume(Volume:=0.9*(lvlTank_T92.rTankLevel*stDe
     </Action>
     <Action Name="_aDeterg_Overflow_1_active" Id="{cd08c8a2-15e0-4912-b571-0d97b1994428}">
       <Implementation>
-        <ST><![CDATA[IF lvlTank_T92.rTankLevel>=rDeluteVolume THEN;	
+        <ST><![CDATA[IF lvlTank_T92.rTankLevel>=rDeluteVolume OR bCIP_Condition_Failed  THEN;	
 	bStepDone:=TRUE;
 	fbPis.m_SetByRecipe(stPis:=stPis_FillWater_T92, req:=E_Piston_Recipe_State.Release);
 ELSE;
@@ -2631,7 +2633,21 @@ END_IF]]></ST>
         <ST><![CDATA[rDeltaWater_DeterLocal:=m_OverFlowCorrect(
 							rTc:=stDetergent.rSetPoint , //g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_DetergentConcentration
 							rAv:=lvlTank_T92.rTankLevel , 
-							rAc:=stDetergent.rValue );]]></ST>
+							rAc:=stDetergent.rValue );
+
+fbPrintErrMessageByID(sModuleDescription:='CIP',sActErrorID:='101x000x101');							
+rDeluteVolume:=rDeltaWater_DeterLocal + lvlTank_T92.rTankLevel;
+
+IF rDeluteVolume>rDeluteVolume_max THEN;
+	// message
+	iConcentrationDeluteCounter:=iConcentrationDeluteCounter+1;
+	IF iConcentrationDeluteCounter>3 THEN;
+		fbPrintErrMessageByID(sModuleDescription:='eCIP',sActErrorID:='101x000x103');
+	ELSE;
+		fbPrintErrMessageByID(sModuleDescription:='CIP',sActErrorID:='101x000x102');
+	END_IF
+	rDeluteVolume:=rDeluteVolume_max;
+END_IF]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -2649,7 +2665,7 @@ END_IF]]></ST>
     </Action>
     <Action Name="_aDeterg_Overflow_2_active" Id="{885afaf6-dc59-4f6b-8c27-9f845d09afe7}">
       <Implementation>
-        <ST><![CDATA[IF lvlTank_T92.rTankLevel>=rDeluteVolume THEN;	
+        <ST><![CDATA[IF lvlTank_T92.rTankLevel>=rDeluteVolume OR bCIP_Condition_Failed THEN;	
 	bStepDone:=TRUE;
 	fbPis.m_SetByRecipe(stPis:=stPis_FillWater_T92, req:=E_Piston_Recipe_State.Release);
 ELSE;
@@ -2679,7 +2695,21 @@ END_IF]]></ST>
         <ST><![CDATA[rDeltaWater_DeterClient:=m_OverFlowCorrect(
 							rTc:=stDetergent.rSetPoint , 
 							rAv:=lvlTank_T92.rTankLevel , 
-							rAc:=stDetergent.rValue );]]></ST>
+							rAc:=stDetergent.rValue );
+							
+fbPrintErrMessageByID(sModuleDescription:='CIP',sActErrorID:='101x000x101');							
+rDeluteVolume:=rDeltaWater_DeterClient + lvlTank_T92.rTankLevel;
+
+IF rDeluteVolume>rDeluteVolume_max THEN;
+	// message
+	iConcentrationDeluteCounter:=iConcentrationDeluteCounter+1;
+	IF iConcentrationDeluteCounter>3 THEN;
+		fbPrintErrMessageByID(sModuleDescription:='eCIP',sActErrorID:='101x000x103');
+	ELSE;
+		fbPrintErrMessageByID(sModuleDescription:='CIP',sActErrorID:='101x000x102');
+	END_IF
+	rDeluteVolume:=rDeluteVolume_max;
+END_IF]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -2853,7 +2883,7 @@ bStepDone:=fb_PumpDisinfection.m_RunVolume(Volume:=0.9*(lvlTank_T91.rTankLevel*s
     </Action>
     <Action Name="_aDisinfct_Overflow_1_active" Id="{4596c1cb-87de-42cb-9a79-bdfa938453a5}">
       <Implementation>
-        <ST><![CDATA[IF lvlTank_T91.rTankLevel>=rDeluteVolume THEN;	
+        <ST><![CDATA[IF lvlTank_T91.rTankLevel>=rDeluteVolume OR bCIP_Condition_Failed  THEN;	
 	bStepDone:=TRUE;
 	fbPis.m_SetByRecipe(stPis:=stPis_FillWater_T91, req:=E_Piston_Recipe_State.Release);
 ELSE;
@@ -2883,7 +2913,22 @@ END_IF	]]></ST>
         <ST><![CDATA[rDeltaWater_DisInfLocal:=m_OverFlowCorrect(
 								rTc:=stDisInfectant.rSetPoint , //g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_DisInfectionConcentration
 								rAv:=lvlTank_T91.rTankLevel , 
-								rAc:=stDisInfectant.rValue );]]></ST>
+								rAc:=stDisInfectant.rValue );
+								
+fbPrintErrMessageByID(sModuleDescription:='CIP',sActErrorID:='101x000x111');							
+rDeluteVolume:=rDeltaWater_DisInfLocal + lvlTank_T91.rTankLevel;
+
+IF rDeluteVolume>rDeluteVolume_max THEN;
+	// message
+	iConcentrationDeluteCounter:=iConcentrationDeluteCounter+1;
+	IF iConcentrationDeluteCounter>3 THEN;
+		fbPrintErrMessageByID(sModuleDescription:='eCIP',sActErrorID:='101x000x113');
+	ELSE;
+		fbPrintErrMessageByID(sModuleDescription:='CIP',sActErrorID:='101x000x112');
+	END_IF
+	
+	rDeluteVolume:=rDeluteVolume_max;
+END_IF]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -2901,7 +2946,7 @@ END_IF	]]></ST>
     </Action>
     <Action Name="_aDisinfct_Overflow_2_active" Id="{27431b62-dbc9-4a59-858c-5c0e54196656}">
       <Implementation>
-        <ST><![CDATA[IF lvlTank_T91.rTankLevel>=rDeluteVolume THEN;	
+        <ST><![CDATA[IF lvlTank_T91.rTankLevel>=rDeluteVolume OR bCIP_Condition_Failed  THEN;	
 	bStepDone:=TRUE;
 	fbPis.m_SetByRecipe(stPis:=stPis_FillWater_T91, req:=E_Piston_Recipe_State.Release);
 ELSE;
@@ -2931,7 +2976,22 @@ END_IF]]></ST>
         <ST><![CDATA[rDeltaWater_DisInfClient:=m_OverFlowCorrect(
 								rTc:=stDisInfectant.rSetPoint , 
 								rAv:=lvlTank_T91.rTankLevel , 
-								rAc:=stDisInfectant.rValue );]]></ST>
+								rAc:=stDisInfectant.rValue );
+								
+fbPrintErrMessageByID(sModuleDescription:='CIP',sActErrorID:='101x000x111');							
+rDeluteVolume:=rDeltaWater_DisInfClient + lvlTank_T91.rTankLevel;
+
+IF rDeluteVolume>rDeluteVolume_max THEN;
+	// message
+	iConcentrationDeluteCounter:=iConcentrationDeluteCounter+1;
+	IF iConcentrationDeluteCounter>3 THEN;
+		fbPrintErrMessageByID(sModuleDescription:='eCIP',sActErrorID:='101x000x113');
+	ELSE;
+		fbPrintErrMessageByID(sModuleDescription:='CIP',sActErrorID:='101x000x112');
+	END_IF
+	
+	rDeluteVolume:=rDeluteVolume_max;
+END_IF]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -4389,6 +4449,8 @@ fb_PumpCIP.m_Run(RPM:=pcFlow1_Rate.mRun_PID(Set_Point:=g_Data.arr_CIP_Param[E_CI
 fb_HeatExchenger.m_Auto();
 bCIP_Condition_Failed:=FALSE;
 bCIP_Condition_Done:=FALSE;
+iConcentrationDeluteCounter:=0;
+
 nStepHeat:=1;]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -4443,7 +4505,10 @@ END_IF
         <ST><![CDATA[fb_HeatExchenger.m_Auto();
 bCIP_Condition_Failed:=FALSE;
 bCIP_Condition_Done:=FALSE;
+iConcentrationDeluteCounter:=0;
+
 nStepHeat:=10;
+
 ]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -4639,7 +4704,8 @@ fb_HeatExchenger.m_Auto();
 bCIP_Condition_Failed:=FALSE;
 bCIP_Condition_Done:=FALSE;
 
-nStepHeat:=2;]]></ST>
+nStepHeat:=2;
+iConcentrationDeluteCounter:=0;]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -4720,6 +4786,7 @@ fb_HeatExchenger.m_Auto();
 
 bCIP_Condition_Failed:=FALSE;
 bCIP_Condition_Done:=FALSE;
+iConcentrationDeluteCounter:=0;
 
 nStepHeat:=20;]]></ST>
       </Implementation>
@@ -5183,7 +5250,7 @@ END_IF
 		//Pump CIP infeed
 		stFlow1_Rate.rValue:=g_AnalogSensor.stAnalogSensor[E_ASense_Name.FT1001].Value;
 		stFlow1_Rate.rValue:=g_AnalogSensor.stAnalogSensor[E_ASense_Name.FT1001].Value;
-		stFlow1_Rate.rValue_Min_To_ReleaseControl:=80;// Litter/Hours
+		stFlow1_Rate.rValue_Min_To_ReleaseControl:=50;// Litter/Hours
 		//stFlow1_Rate.rSetPoint:=st_CIP_Param.r_Flow_Pipe;//:=150
 		stFlow1_Rate.bPause:=stOper[E_ModeZone.eCIP].iActOperation=E_OperationButtons.ePauseAll;
 		stFlow1_Rate.fCtrlOutput_Manual:=fb_PumpCIP.nRPM;
@@ -34070,8 +34137,6 @@ IF rTc=0 THEN;
 ELSE;
 	m_OverFlowCorrect:=((rAv*rAc/100)/(rTc/100))-(rAv*rAc/100)-rAv+(rAv*rAc/100);
 END_IF
-
-rDeluteVolume:=m_OverFlowCorrect+rAv;
 ]]></ST>
       </Implementation>
     </Method>
@@ -35290,13 +35355,23 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="2" Count="0" />
       <LineId Id="5" Count="0" />
       <LineId Id="3" Count="1" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="10" Count="3" />
+      <LineId Id="17" Count="4" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="9" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aDeterg_Overflow_2_active">
       <LineId Id="2" Count="8" />
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aDeterg_Overflow_2_entry">
-      <LineId Id="1" Count="3" />
+      <LineId Id="1" Count="4" />
+      <LineId Id="7" Count="2" />
+      <LineId Id="14" Count="8" />
+      <LineId Id="6" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aDisconnect_CIP_Client_active">
       <LineId Id="2" Count="3" />
@@ -35346,14 +35421,23 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aDisinfct_Overflow_1_entry">
-      <LineId Id="2" Count="3" />
+      <LineId Id="2" Count="4" />
+      <LineId Id="8" Count="4" />
+      <LineId Id="15" Count="2" />
+      <LineId Id="19" Count="1" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="13" Count="1" />
+      <LineId Id="7" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aDisinfct_Overflow_2_active">
       <LineId Id="2" Count="8" />
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aDisinfct_Overflow_2_entry">
-      <LineId Id="1" Count="3" />
+      <LineId Id="1" Count="4" />
+      <LineId Id="7" Count="2" />
+      <LineId Id="14" Count="9" />
+      <LineId Id="6" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aDone_entry">
       <LineId Id="2" Count="2" />
@@ -35828,6 +35912,7 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="1" Count="1" />
       <LineId Id="4" Count="1" />
       <LineId Id="3" Count="0" />
+      <LineId Id="7" Count="1" />
       <LineId Id="6" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aStartPump_CIP2_02_active">
@@ -35844,8 +35929,10 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
     </LineIds>
     <LineIds Name="FB_CIP._aStartPump_CIP2_02_entry">
       <LineId Id="3" Count="0" />
-      <LineId Id="6" Count="1" />
+      <LineId Id="6" Count="2" />
+      <LineId Id="10" Count="0" />
       <LineId Id="5" Count="0" />
+      <LineId Id="9" Count="0" />
       <LineId Id="4" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aStartPump_CIP2_RPM_01_active">
@@ -35917,6 +36004,7 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="9" Count="0" />
       <LineId Id="11" Count="2" />
       <LineId Id="5" Count="0" />
+      <LineId Id="15" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aStartPump_CIP3_02_active">
       <LineId Id="2" Count="3" />
@@ -35937,7 +36025,7 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
     <LineIds Name="FB_CIP._aStartPump_CIP3_02_entry">
       <LineId Id="11" Count="7" />
       <LineId Id="8" Count="0" />
-      <LineId Id="20" Count="0" />
+      <LineId Id="20" Count="1" />
       <LineId Id="19" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aStartPump_CIP4_active">
@@ -36456,8 +36544,6 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="16" Count="1" />
       <LineId Id="19" Count="1" />
       <LineId Id="18" Count="0" />
-      <LineId Id="22" Count="0" />
-      <LineId Id="21" Count="0" />
       <LineId Id="9" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP.m_PosDelete_HMI">
