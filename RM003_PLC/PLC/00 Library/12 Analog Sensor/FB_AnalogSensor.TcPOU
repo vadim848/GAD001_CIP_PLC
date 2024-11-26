@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
   <POU Name="FB_AnalogSensor" Id="{4149a809-7c27-49b8-ae2f-6ef38e3fd813}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_AnalogSensor
 VAR_INPUT
@@ -61,16 +61,33 @@ END_VAR
 act_Get_Reference();
 act_MA();
 act_SetValues();
-sName:=TO_STRING(nSensorID);]]></ST>
+sName:=TO_STRING(nSensorID);
+act_AlarmWarnings();]]></ST>
     </Implementation>
     <Action Name="act_AlarmWarnings" Id="{94bc8425-4f7d-409b-a6cf-b4ccd61c6a97}">
       <Implementation>
         <ST><![CDATA[//arRS		:	ARRAY [0..3] OF RS		;//HH Alarm/LL Alarm/HH Warning/LL Warning
+(*
+arRS[0](
+		SET:=(stASens.Value>= stASens.rHH_Alarm AND NOT bHH_Alarm) , 
+		RESET1:=arReset_AlrmWrn[0] , Q1=>bHH_Alarm );
+arRS[1](
+		SET:=(stASens.Value<= stASens.rLL_Alarm AND NOT bLL_Alarm) , 
+		RESET1:=arReset_AlrmWrn[1] , Q1=>bLL_Alarm );
+arRS[2](
+		SET:=(stASens.Value>= stASens.rHH_Warning AND stASens.Value<stASens.rHH_Alarm AND NOT bHH_Warning) , 
+		RESET1:=arReset_AlrmWrn[2] , Q1=>bHH_Warning );
+arRS[3](
+		SET:=(stASens.Value<= stASens.rLL_Warning AND stASens.Value>stASens.rLL_Alarm AND NOT bLL_Warning) , 
+		RESET1:=arReset_AlrmWrn[3] , Q1=>bLL_Warning );
 
-arRS[0](SET:=(stASens.Value>= stASens.rHH_Alarm AND NOT bHH_Alarm) , RESET1:=arReset_AlrmWrn[0] , Q1=>bHH_Alarm );
-arRS[1](SET:=(stASens.Value<= stASens.rLL_Alarm AND NOT bLL_Alarm) , RESET1:=arReset_AlrmWrn[1] , Q1=>bLL_Alarm );
-arRS[2](SET:=(stASens.Value>= stASens.rHH_Warning AND stASens.Value<stASens.rHH_Alarm AND NOT bHH_Warning) , RESET1:=arReset_AlrmWrn[2] , Q1=>bHH_Warning );
-arRS[3](SET:=(stASens.Value<= stASens.rLL_Warning AND stASens.Value>stASens.rLL_Alarm AND NOT bLL_Warning) , RESET1:=arReset_AlrmWrn[3] , Q1=>bLL_Warning );]]></ST>
+
+*)		
+bHH_Alarm:=stASens.Value>= stASens.rHH_Alarm;	
+bLL_Alarm:=stASens.Value<= stASens.rLL_Alarm;	
+bHH_Warning:=stASens.Value>= stASens.rHH_Warning AND stASens.Value<stASens.rHH_Alarm;	
+bLL_Warning:=stASens.Value<= stASens.rLL_Warning AND stASens.Value>stASens.rLL_Alarm;	
+	]]></ST>
       </Implementation>
     </Action>
     <Action Name="act_Get_Reference" Id="{3b9743a6-e63a-4bc1-886c-5921c522c277}">
@@ -242,12 +259,23 @@ stASens.outOffset:=fbScale.rOutOffset;
       <LineId Id="34" Count="0" />
       <LineId Id="21" Count="0" />
       <LineId Id="85" Count="0" />
+      <LineId Id="140" Count="0" />
     </LineIds>
     <LineIds Name="FB_AnalogSensor.act_AlarmWarnings">
       <LineId Id="5" Count="0" />
       <LineId Id="11" Count="0" />
       <LineId Id="10" Count="0" />
-      <LineId Id="12" Count="2" />
+      <LineId Id="15" Count="1" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="17" Count="1" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="19" Count="1" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="21" Count="1" />
+      <LineId Id="25" Count="1" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="28" Count="3" />
+      <LineId Id="27" Count="0" />
     </LineIds>
     <LineIds Name="FB_AnalogSensor.act_Get_Reference">
       <LineId Id="138" Count="9" />

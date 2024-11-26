@@ -41,9 +41,20 @@ END_VAR]]></Declaration>
       <ST><![CDATA[prg_MessageManager.act_Count();
 prg_MessageManager.act_GeneralMessage();
 prg_MessageManager.act_Tanks_Lock();
+prg_MessageManager.act_AirPressure();
 
 ]]></ST>
     </Implementation>
+    <Action Name="act_AirPressure" Id="{6278f770-60d2-4a7f-8e91-a19dc59364e8}">
+      <Implementation>
+        <ST><![CDATA[
+ m_AirPressure(aSense_Name:=E_ASense_Name.AP1001);
+ m_AirPressure(aSense_Name:=E_ASense_Name.AP2001);
+ m_AirPressure(aSense_Name:=E_ASense_Name.AP3001);
+ m_AirPressure(aSense_Name:=E_ASense_Name.AP4001);
+ ]]></ST>
+      </Implementation>
+    </Action>
     <Action Name="act_Count" Id="{e1edd437-466a-4ed5-ba90-e55dbffd3223}">
       <Implementation>
         <ST><![CDATA[	iActErrors:=0;
@@ -250,11 +261,59 @@ END_IF
 ]]></ST>
       </Implementation>
     </Action>
+    <Method Name="m_AirPressure" Id="{0d4a249b-5a9a-4e82-96f9-5b2109911d5f}">
+      <Declaration><![CDATA[METHOD m_AirPressure : BOOL
+VAR_INPUT
+	aSense_Name: E_ASense_Name;
+END_VAR
+
+VAR
+	k: STRING(1);
+	temp_string: STRING(3);
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[
+IF TRUE
+//AND __ISVALIDREF(fbAnalogSensor[aSense_Name]) 
+THEN;
+	
+	temp_string:=TO_STRING(aSense_Name);
+	k:=MID(temp_string, 3, 3);
+	
+	IF fbAnalogSensor[aSense_Name].bLL_Warning THEN;
+		fbPrintErrMessageByID(sModuleDescription:='Air Pressure',sActErrorID:=concat ('101x003x01', k));
+	END_IF
+	
+	IF fbAnalogSensor[aSense_Name].bHH_Warning THEN;
+		fbPrintErrMessageByID(sModuleDescription:='Air Pressure',sActErrorID:=concat ('101x003x02', k));
+	END_IF
+	
+	IF fbAnalogSensor[aSense_Name].bLL_Alarm THEN;
+		fbPrintErrMessageByID(sModuleDescription:='Air Pressure',sActErrorID:=concat ('101x003x11', k));
+	END_IF
+	
+	IF fbAnalogSensor[aSense_Name].bHH_Alarm THEN;
+		fbPrintErrMessageByID(sModuleDescription:='Air Pressure',sActErrorID:=concat ('101x003x12', k));
+	END_IF
+	
+	
+ELSE;
+	RETURN;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
     <LineIds Name="prg_MessageManager">
       <LineId Id="24" Count="0" />
-      <LineId Id="83" Count="1" />
+      <LineId Id="83" Count="0" />
+      <LineId Id="85" Count="1" />
       <LineId Id="82" Count="0" />
       <LineId Id="46" Count="0" />
+    </LineIds>
+    <LineIds Name="prg_MessageManager.act_AirPressure">
+      <LineId Id="2" Count="0" />
+      <LineId Id="6" Count="3" />
+      <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="prg_MessageManager.act_Count">
       <LineId Id="33" Count="0" />
@@ -373,6 +432,19 @@ END_IF
       <LineId Id="1" Count="0" />
       <LineId Id="7" Count="22" />
       <LineId Id="6" Count="0" />
+    </LineIds>
+    <LineIds Name="prg_MessageManager.m_AirPressure">
+      <LineId Id="8" Count="0" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="40" Count="0" />
+      <LineId Id="36" Count="3" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="13" Count="2" />
+      <LineId Id="17" Count="11" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="11" Count="1" />
+      <LineId Id="10" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>
