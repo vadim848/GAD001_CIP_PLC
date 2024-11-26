@@ -18,6 +18,8 @@ VAR
 	Lat: INT;
 
 	HighLightErrorPB: BOOL;
+	HighLightWarningPB: BOOL;
+	
 	Clear: STRING := '';
 	ton_BitMapBlink: TON;
 	stBitMap: STRING;
@@ -37,12 +39,24 @@ ELSE
 	HighLightErrorPB:=FALSE;
 END_IF
 
+IF iActWarning<>0 THEN
+	HighLightWarningPB:=TRUE;
+ELSE
+	HighLightWarningPB:=FALSE;
+END_IF
+
 ton_BitMapBlink(PT:=T#1S,IN:=NOT ton_BitMapBlink.Q);
 IF HighLightErrorPB THEN
 	IF ton_BitMapBlink.ET>T#0.5S THEN
 		 s_Error_BitmapID:='ImagePool.Error_Yel';
 	ELSE
 		 s_Error_BitmapID:='ImagePool.Error_Red';
+	END_IF
+ELSIF HighLightWarningPB THEN
+	IF ton_BitMapBlink.ET>T#0.5S THEN
+		 s_Error_BitmapID:='ImagePool.Error_Yel';
+	ELSE
+		 s_Error_BitmapID:='ImagePool.Error_No';
 	END_IF
 ELSE
 		 s_Error_BitmapID:='ImagePool.Error_No';
@@ -107,7 +121,15 @@ END_IF]]></ST>
       </Implementation>
     </Action>
     <LineIds Name="prg_Messages">
-      <LineId Id="95" Count="20" />
+      <LineId Id="95" Count="10" />
+      <LineId Id="141" Count="4" />
+      <LineId Id="106" Count="0" />
+      <LineId Id="146" Count="0" />
+      <LineId Id="107" Count="6" />
+      <LineId Id="147" Count="4" />
+      <LineId Id="114" Count="0" />
+      <LineId Id="152" Count="0" />
+      <LineId Id="115" Count="0" />
       <LineId Id="49" Count="0" />
     </LineIds>
     <LineIds Name="prg_Messages.act_ResetErrors">
