@@ -40,6 +40,8 @@ END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[prg_MessageManager.act_Count();
 prg_MessageManager.act_GeneralMessage();
+prg_MessageManager.act_Tanks_Lock();
+
 ]]></ST>
     </Implementation>
     <Action Name="act_Count" Id="{e1edd437-466a-4ed5-ba90-e55dbffd3223}">
@@ -215,9 +217,43 @@ END_FOR
 ]]></ST>
       </Implementation>
     </Action>
+    <Action Name="act_Tanks_Lock" Id="{33f4d09a-f1e9-4133-b68f-7c920adc8446}">
+      <Implementation>
+        <ST><![CDATA[
+
+IF NOT gIO.arSafe[1].stSafetyIn.TankLocked_CIP_T91 THEN
+	fbPrintErrMessageByID(sModuleDescription:='Tank Interlock',sActErrorID:='101x002xT91');
+END_IF
+IF NOT gIO.arSafe[1].stSafetyIn.TankLocked_CIP_T92 THEN
+	fbPrintErrMessageByID(sModuleDescription:='Tank Interlock',sActErrorID:='101x002xT92');
+END_IF
+IF NOT gIO.arSafe[1].stSafetyIn.TankLocked_CIP_T93 THEN
+	fbPrintErrMessageByID(sModuleDescription:='Tank Interlock',sActErrorID:='101x002xT93');
+END_IF
+IF NOT gIO.arSafe[1].stSafetyIn.TankLocked_CIP_T94 THEN
+	fbPrintErrMessageByID(sModuleDescription:='Tank Interlock',sActErrorID:='101x002xT94');
+END_IF
+
+IF NOT gIO.arSafe[1].stSafetyIn.TankLocked_Marinade_T1 THEN
+	//fbPrintErrMessageByID(sModuleDescription:='Tank Interlock',sActErrorID:='101x002xT01');
+END_IF
+IF NOT gIO.arSafe[1].stSafetyIn.TankLocked_Marinade_T2 THEN
+	//fbPrintErrMessageByID(sModuleDescription:='Tank Interlock',sActErrorID:='101x002xT02');
+END_IF
+
+IF NOT gIO.arSafe[1].stSafetyIn.TankLocked_Color_T3 THEN
+	fbPrintErrMessageByID(sModuleDescription:='Tank Interlock',sActErrorID:='101x002xT03');
+END_IF
+IF NOT gIO.arSafe[1].stSafetyIn.TankLocked_Color_T4 THEN
+	fbPrintErrMessageByID(sModuleDescription:='Tank Interlock',sActErrorID:='101x002xT04');
+END_IF
+]]></ST>
+      </Implementation>
+    </Action>
     <LineIds Name="prg_MessageManager">
       <LineId Id="24" Count="0" />
-      <LineId Id="26" Count="0" />
+      <LineId Id="83" Count="1" />
+      <LineId Id="82" Count="0" />
       <LineId Id="46" Count="0" />
     </LineIds>
     <LineIds Name="prg_MessageManager.act_Count">
@@ -331,6 +367,12 @@ END_FOR
       <LineId Id="116" Count="2" />
       <LineId Id="132" Count="0" />
       <LineId Id="217" Count="0" />
+    </LineIds>
+    <LineIds Name="prg_MessageManager.act_Tanks_Lock">
+      <LineId Id="2" Count="3" />
+      <LineId Id="1" Count="0" />
+      <LineId Id="7" Count="22" />
+      <LineId Id="6" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>
