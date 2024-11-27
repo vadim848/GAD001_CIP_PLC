@@ -4,9 +4,10 @@
     <Declaration><![CDATA[FUNCTION_BLOCK FB_Pump
 VAR_INPUT
 	Pump_ID: E_Pump_List:=E_Pump_List.eNotSelected;
-
 END_VAR
 VAR
+	sID: STRING(6);
+
 	stNidec: REFERENCE TO ST_Nidec;
 	status_word: WORD;
 	control_word: WORD;
@@ -45,6 +46,7 @@ END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[stNidec REF= gIO.Nidec[Pump_ID];
+sID:=TO_STRING(Pump_ID);
 nRPM:=stPump.nRPM;
 IF __ISVALIDREF(stNidec) THEN;
 	//run
@@ -104,10 +106,10 @@ stPump.bRun_Man:=bRun_Man;
 stPump.bRun_Auto:=bRun_Auto;
 stPump.bRun:=bRun;
 
-IF m_Error() THEN;
-	stOperation.bSetPause:=TRUE;
+IF m_Error()<>'' THEN;
+	//stOperation.bSetPause:=TRUE;
 	//print error
-	fbPrintErrMessageByID(sModuleDescription:='Pump',sActErrorID:='101x000x001');	
+	//fbPrintErrMessageByID(sModuleDescription:='Pump',sActErrorID:='101x000x001');	
 END_IF
 
 
@@ -164,29 +166,46 @@ END_IF
       </Implementation>
     </Method>
     <Method Name="m_Error" Id="{68a99073-1da5-4a02-9be0-3cdcd2d323d9}">
-      <Declaration><![CDATA[METHOD m_Error : BOOL
+      <Declaration><![CDATA[METHOD m_Error : STRING(11)
 VAR_INPUT
+	
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[ton_RPM_feedback_lag_monitoring(PT:=T#10S);
-IF bRun
-AND ABS(stNidec.targetVelocity - nRPM_fdbk) > 10 
-THEN;
-	ton_RPM_feedback_lag_monitoring.IN:=TRUE;
-ELSE;
-	ton_RPM_feedback_lag_monitoring.IN:=FALSE;
+IF __ISVALIDREF(stNidec) THEN;
+	IF bRun
+	AND ABS(stNidec.targetVelocity - nRPM_fdbk) > 10 
+	THEN;
+		ton_RPM_feedback_lag_monitoring.IN:=TRUE;
+	ELSE;
+		ton_RPM_feedback_lag_monitoring.IN:=FALSE;
+	END_IF	
 END_IF
+
 
 
 IF bRun THEN;
-	IF (NOT DriveReady) 
-	OR (ton_RPM_feedback_lag_monitoring.Q)
-	THEN;
-		m_Error:=TRUE;
+	IF NOT DriveReady THEN;
+		m_Error:=concat(sID,'x001');
+		stOperation.bSetPause:=TRUE;
+		RETURN;
+	END_IF	
+
+	IF ton_RPM_feedback_lag_monitoring.Q THEN;
+		m_Error:=concat(sID,'x002');
+		RETURN;
 	END_IF
 END_IF
-]]></ST>
+
+IF NOT DriveReady THEN;
+	m_Error:=concat(sID,'x003');
+	//stOperation.bSetPause:=TRUE;
+	RETURN;
+END_IF
+
+
+m_Error:='';]]></ST>
       </Implementation>
     </Method>
     <Method Name="m_Map_ControlWord" Id="{de707bea-2c05-4e8e-8763-cf6ec1f146fa}">
@@ -351,6 +370,7 @@ m_Stop:=TRUE;]]></ST>
     </Method>
     <LineIds Name="FB_Pump">
       <LineId Id="157" Count="0" />
+      <LineId Id="621" Count="0" />
       <LineId Id="398" Count="0" />
       <LineId Id="160" Count="1" />
       <LineId Id="178" Count="6" />
@@ -425,19 +445,22 @@ m_Stop:=TRUE;]]></ST>
     </LineIds>
     <LineIds Name="FB_Pump.m_Error">
       <LineId Id="16" Count="0" />
-      <LineId Id="19" Count="0" />
-      <LineId Id="26" Count="0" />
-      <LineId Id="24" Count="0" />
-      <LineId Id="20" Count="0" />
-      <LineId Id="22" Count="1" />
+      <LineId Id="57" Count="0" />
+      <LineId Id="60" Count="5" />
+      <LineId Id="58" Count="1" />
       <LineId Id="21" Count="0" />
-      <LineId Id="17" Count="1" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="42" Count="0" />
       <LineId Id="9" Count="0" />
-      <LineId Id="8" Count="0" />
-      <LineId Id="15" Count="0" />
-      <LineId Id="14" Count="0" />
-      <LineId Id="6" Count="0" />
+      <LineId Id="46" Count="3" />
+      <LineId Id="44" Count="1" />
+      <LineId Id="37" Count="1" />
+      <LineId Id="33" Count="0" />
       <LineId Id="12" Count="1" />
+      <LineId Id="52" Count="4" />
+      <LineId Id="51" Count="0" />
+      <LineId Id="50" Count="0" />
+      <LineId Id="32" Count="0" />
       <LineId Id="11" Count="0" />
     </LineIds>
     <LineIds Name="FB_Pump.m_Map_ControlWord">

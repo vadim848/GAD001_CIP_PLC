@@ -41,7 +41,24 @@ END_VAR]]></Declaration>
       <ST><![CDATA[prg_MessageManager.act_Count();
 prg_MessageManager.act_GeneralMessage();
 prg_MessageManager.act_Tanks_Lock();
-prg_MessageManager.act_AirPressure();
+//prg_MessageManager.act_AirPressure();
+
+ m_AirPressure(aSense_Name:=E_ASense_Name.AP1001);
+ m_AirPressure(aSense_Name:=E_ASense_Name.AP2001);
+ m_AirPressure(aSense_Name:=E_ASense_Name.AP3001);
+ m_AirPressure(aSense_Name:=E_ASense_Name.AP4001);
+ 
+ // Motors
+m_Motor(ePump_name:=E_Pump_List.P1001);
+//m_Motor(ePump_name:=E_Pump_List.P3001);
+//m_Motor(ePump_name:=E_Pump_List.P3002);
+//m_Motor(ePump_name:=E_Pump_List.AG3001);
+//m_Motor(ePump_name:=E_Pump_List.AG3002);
+m_Motor(ePump_name:=E_Pump_List.P4001);
+m_Motor(ePump_name:=E_Pump_List.P4002);
+m_Motor(ePump_name:=E_Pump_List.AG4001);
+m_Motor(ePump_name:=E_Pump_List.AG4002);
+m_Motor(ePump_name:=E_Pump_List.TB0001);
 
 ]]></ST>
     </Implementation>
@@ -303,12 +320,39 @@ ELSE;
 END_IF]]></ST>
       </Implementation>
     </Method>
+    <Method Name="m_Motor" Id="{ac9b50dd-4470-451b-b667-000b344bf669}">
+      <Declaration><![CDATA[METHOD m_Motor : BOOL
+VAR_INPUT
+	ePump_name: E_Pump_List;
+END_VAR
+
+VAR
+	temp_string: STRING(6);
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[temp_string:=TO_STRING(ePump_name);
+
+IF g_Pump.fbPump[ePump_name].m_Error()<>'' THEN;
+	fbPrintErrMessageByID(sModuleDescription:='Motor', sActErrorID:=g_Pump.fbPump[ePump_name].m_Error());
+END_IF]]></ST>
+      </Implementation>
+    </Method>
     <LineIds Name="prg_MessageManager">
       <LineId Id="24" Count="0" />
       <LineId Id="83" Count="0" />
       <LineId Id="85" Count="1" />
       <LineId Id="82" Count="0" />
+      <LineId Id="122" Count="2" />
       <LineId Id="46" Count="0" />
+      <LineId Id="125" Count="2" />
+      <LineId Id="131" Count="2" />
+      <LineId Id="135" Count="0" />
+      <LineId Id="138" Count="2" />
+      <LineId Id="137" Count="0" />
+      <LineId Id="136" Count="0" />
+      <LineId Id="130" Count="0" />
+      <LineId Id="129" Count="0" />
     </LineIds>
     <LineIds Name="prg_MessageManager.act_AirPressure">
       <LineId Id="2" Count="0" />
@@ -445,6 +489,12 @@ END_IF]]></ST>
       <LineId Id="16" Count="0" />
       <LineId Id="11" Count="1" />
       <LineId Id="10" Count="0" />
+    </LineIds>
+    <LineIds Name="prg_MessageManager.m_Motor">
+      <LineId Id="5" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="15" Count="1" />
     </LineIds>
   </POU>
 </TcPlcObject>
