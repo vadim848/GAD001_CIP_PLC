@@ -142,6 +142,11 @@ IF bResume THEN;
 	bResume:=FALSE;
 END_IF
 
+IF prg_Safety.ftStateSafe.Q THEN;
+	bResetCycle:=TRUE;
+END_IF
+ 
+
 tonResetCycle(PT:=T#0.5S,IN:=bResetCycle);
 IF bResetCycle THEN;
 	refSFC.SFCReset:=TRUE;
@@ -283,6 +288,9 @@ END_IF]]></ST>
       <LineId Id="103" Count="0" />
       <LineId Id="105" Count="2" />
       <LineId Id="100" Count="1" />
+      <LineId Id="130" Count="1" />
+      <LineId Id="133" Count="1" />
+      <LineId Id="132" Count="0" />
       <LineId Id="116" Count="0" />
       <LineId Id="112" Count="0" />
       <LineId Id="111" Count="0" />
