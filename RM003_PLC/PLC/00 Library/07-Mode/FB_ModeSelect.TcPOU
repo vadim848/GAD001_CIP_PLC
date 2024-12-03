@@ -9,7 +9,7 @@ VAR_INPUT
 	eModeZone:E_ModeZone;
 	bLockedFB: BOOL;
 	bPistonCheck: BOOL:=TRUE;
-	bStateSafe: BOOL:=TRUE;
+	bStateSafe_mode: BOOL:=TRUE;
 END_VAR
 VAR_OUTPUT
 	bModeStillState: BOOL;
@@ -98,8 +98,9 @@ END_IF
 
 rt_Play(CLK:=stOperation.iActOperation=E_OperationButtons.ePlayAll);
 
-IF NOT bStateSafe OR stOperation.bStopResetAll THEN;
+IF NOT bStateSafe_mode OR stOperation.bStopResetAll THEN;
 	stMode.bSetManual:=TRUE;
+	stOperation.bSetPause:=TRUE;
 END_IF
 
 m_Error_zone_check();
@@ -4350,10 +4351,9 @@ stMode.bSetAuto:=FALSE;]]></ST>
       </Implementation>
     </Action>
     <LineIds Name="FB_ModeSelect">
-      <LineId Id="376" Count="49" />
-      <LineId Id="476" Count="0" />
-      <LineId Id="475" Count="0" />
-      <LineId Id="426" Count="0" />
+      <LineId Id="573" Count="48" />
+      <LineId Id="626" Count="0" />
+      <LineId Id="622" Count="3" />
       <LineId Id="374" Count="0" />
     </LineIds>
     <LineIds Name="FB_ModeSelect.act_AutomationLock_Failed">
