@@ -56,6 +56,8 @@ VAR
 		
 	ton_Req_Close_timeout: TON;
 	ton_Req_Open_timeout: TON;
+	rt_StateSafe: R_TRIG;
+	ft_StateSafe: F_TRIG;
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -80,8 +82,12 @@ IF iFB_Num = E_Pis_Name.e0_not_in_use THEN;
 END_IF
 
 (* case to acception at PLC Restart ...TBD*)
+
+rt_StateSafe(CLK:=stOperation.bStateSafe_mode);
+ft_StateSafe(CLK:=stOperation.bStateSafe_mode);
+
 IF __ISVALIDREF(stPis) THEN;
-	IF prg_Safety.ftStateSafe.Q
+	IF ft_StateSafe.Q
 	AND NOT stPis.st_Deafult
 	THEN;
 		stPis.req_DefaultPos:=TRUE;
@@ -89,7 +95,7 @@ IF __ISVALIDREF(stPis) THEN;
 		stPis.req_Open:=FALSE;	
 	END_IF
 	
-	IF prg_Safety.rtStateSafe.Q THEN;
+	IF rt_StateSafe.Q THEN;
 		
 		IF NOT stPis.st_Deafult THEN;
 			stPis.req_DefaultPos:=TRUE;
@@ -848,6 +854,9 @@ END_IF
       <LineId Id="201" Count="1" />
       <LineId Id="544" Count="0" />
       <LineId Id="537" Count="0" />
+      <LineId Id="621" Count="0" />
+      <LineId Id="624" Count="1" />
+      <LineId Id="622" Count="0" />
       <LineId Id="546" Count="0" />
       <LineId Id="549" Count="14" />
       <LineId Id="547" Count="1" />
