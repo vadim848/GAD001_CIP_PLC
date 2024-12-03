@@ -56,6 +56,7 @@ VAR
 		
 	ton_Req_Close_timeout: TON;
 	ton_Req_Open_timeout: TON;
+	ton_Req_Default_timeout: TON;
 	rt_StateSafe: R_TRIG;
 	ft_StateSafe: F_TRIG;
 END_VAR
@@ -327,7 +328,7 @@ END_IF]]></ST>
 	rt_Open(CLK:=stPis.req_Open AND NOT ton_Req_Open_timeout.Q);
 	rt_CloseMan(CLK:=stPis.req_CloseMan);
 	rt_OpenMan(CLK:=stPis.req_OpenMan);
-	rt_DefaultPos(CLK:=stPis.req_DefaultPos);
+	rt_DefaultPos(CLK:=stPis.req_DefaultPos AND NOT ton_Req_Default_timeout.Q);
 	
 	ton_Req_Close_timeout(PT:=T#0.1S);	
 	IF (stPis.req_Close OR stPis.req_CloseMan)
@@ -347,6 +348,16 @@ END_IF]]></ST>
 		ton_Req_Open_timeout.IN:=TRUE;
 	ELSE;
 		ton_Req_Open_timeout.IN:=FALSE;
+	END_IF
+
+	ton_Req_Default_timeout(PT:=T#0.1S);	
+	IF (stPis.req_DefaultPos OR stPis.req_DefaultPos)
+	AND state_Open=Ready
+	AND NOT ton_Req_Default_timeout.Q
+	THEN;
+		ton_Req_Default_timeout.IN:=TRUE;
+	ELSE;
+		ton_Req_Default_timeout.IN:=FALSE;
 	END_IF
 	
 	IF rt_Close.Q OR rt_CloseMan.Q THEN; 
@@ -1008,6 +1019,9 @@ END_IF
       <LineId Id="66" Count="6" />
       <LineId Id="76" Count="1" />
       <LineId Id="9" Count="0" />
+      <LineId Id="78" Count="0" />
+      <LineId Id="80" Count="7" />
+      <LineId Id="79" Count="0" />
       <LineId Id="73" Count="0" />
       <LineId Id="10" Count="0" />
       <LineId Id="31" Count="0" />
