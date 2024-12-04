@@ -280,7 +280,7 @@ IF bMixProof_Release_All THEN;
 		bMixProof_Release_All:=FALSE;
 	END_IF
 END_IF
-
+m_DashState_MixProof_set();
 (*
 arTestOverflow[0]:=m_OverFlowCorrect(
 rTc:=arTestOverflow[1], 
@@ -1256,7 +1256,7 @@ AND measure_Deterg_2.x
 AND TRUE
 THEN;
 	tonr_CIP_Condition.IN:=TRUE;
-	m_run_MixProof();
+	m_MixProof_run();
 ELSE;
 	tonr_CIP_Condition.IN:=FALSE;
 END_IF
@@ -1275,9 +1275,9 @@ ton_Concentration_Filter(PT:=T#30S, IN:=stDetergent.Control_ON AND NOT stDeterge
 IF TRUE 
 AND ton_Concentration_Filter.Q	
 THEN;
- bConcentration_correct:=TRUE;
+	bConcentration_correct:=TRUE;
 ELSE;
- bConcentration_correct:=FALSE;
+	bConcentration_correct:=FALSE;
 END_IF
 
 // Reverce function
@@ -1398,9 +1398,9 @@ ton_Concentration_Filter(PT:=T#30S, IN:=stDetergent.Control_ON AND NOT stDeterge
 IF TRUE 
 AND ton_Concentration_Filter.Q	
 THEN;
- bConcentration_correct:=TRUE;
+	bConcentration_correct:=TRUE;
 ELSE;
- bConcentration_correct:=FALSE;
+	bConcentration_correct:=FALSE;
 END_IF
 
 // Reverce function
@@ -1521,7 +1521,7 @@ AND measure_Dis_2.x
 AND TRUE
 THEN;
 	tonr_CIP_Condition.IN:=TRUE;
-	m_run_MixProof();
+	m_MixProof_run();
 ELSE;
 	tonr_CIP_Condition.IN:=FALSE;
 END_IF
@@ -3194,11 +3194,10 @@ END_IF
 fbCIP_Usage.m_Run(eReqProc:=E_CIP_Usage.eLocal);
 fbCIP_Return.m_Run(eReqProc:=E_CIP_Return.eDrain);
 bSprinkler:=FALSE;
-bClean_MixProof:=FALSE;
-bValveCleanDone:=FALSE;
+
 m_DashState_activate(stage:=E_CIP_DashStage_List.e12_CIP4_Local_DisInfection_Fill);
 	
-]]></ST>
+m_MixProof_set();]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -3267,10 +3266,10 @@ END_IF]]></ST>
 fbCIP_Usage.m_Run(eReqProc:=E_CIP_Usage.eLocal);
 fbCIP_Return.m_Run(eReqProc:=E_CIP_Return.eDrain);
 bSprinkler:=FALSE;
-bClean_MixProof:=FALSE;
-bValveCleanDone:=FALSE;
+m_MixProof_set();
+m_DashState_activate(stage:=E_CIP_DashStage_List.e03_CIP2_Local_Detergent_Fill);
 
-m_DashState_activate(stage:=E_CIP_DashStage_List.e03_CIP2_Local_Detergent_Fill);]]></ST>
+]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -3378,8 +3377,8 @@ arCIP_DashStage_list[E_CIP_DashStage_List.e01_CIP1_Client_Drain_Product_Rest_Pip
 eCIP_DashStage_actual:=E_CIP_DashStage_List.e01_CIP1_Client_Drain_Product_Rest_Pipe;
 sCIP_DashStage_actual:=TO_STRING(eCIP_DashStage_actual);
 *)
-bClean_MixProof:=FALSE;
-bValveCleanDone:=FALSE;
+
+m_MixProof_set();
 
 ]]></ST>
       </Implementation>
@@ -3493,8 +3492,7 @@ CASE eRefClient_fbElement.eState_Long OF
 			
 END_CASE
 
-bClean_MixProof:=FALSE;
-bValveCleanDone:=FALSE;]]></ST>
+m_MixProof_set();]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -3652,8 +3650,7 @@ IF eMode=E_CIP_Mode.eAuto THEN;
 	eMode:=E_CIP_Mode.eManual;
 END_IF
 g_Data.b_CIP_Run:=FALSE;
-bClean_MixProof:=FALSE;
-bValveCleanDone:=FALSE;
+m_MixProof_set();
 _aGet_Client_active();
 ]]></ST>
       </Implementation>
@@ -34364,7 +34361,7 @@ END_IF
     </Action>
     <Action Name="act_ValveUpLow_Cntrl" Id="{767e74fb-6b96-4e97-bf7c-883c8d6e0955}" FolderPath="Manage\">
       <Implementation>
-        <ST><![CDATA[tOn(IN:= , PT:=T#0.5S , Q=> , ET=> );
+        <ST><![CDATA[tOn(IN:= , PT:=T#1S , Q=> , ET=> );
 tOff(IN:= , PT:=T#10S , Q=> , ET=> );
 nClient:=eCIP_Usage:=eReq.eClient;
 
@@ -34493,9 +34490,9 @@ CASE nStep_Vlv OF
 		THEN
 			bValveCleanDone:=FALSE;
 			sState:='Busy';
-			nI_1_act_valve:=1;//active valve
-			nI_2_act_pulses:=1;//active number of pulses
-			nI_3_act_repeats:=1;//active number of retries
+			//nI_1_act_valve:=1;//active valve
+			//nI_2_act_pulses:=1;//active number of pulses
+			//nI_3_act_repeats:=1;//active number of retries
 			tOn.IN:=FALSE;
 			tOff.IN:=FALSE;
 			nStep_Vlv:=1;
@@ -34878,7 +34875,7 @@ ELSE;
 			g_HMI.arCIP_DashStage_MixProof[i].bUpper:=gCIP_ValvUL_Seat[eCIP_Usage,i];
 			g_HMI.arCIP_DashStage_MixProof[i].bLower:=NOT gCIP_ValvUL_Seat[eCIP_Usage,i];
 			g_HMI.arCIP_DashStage_MixProof[i].bRunning:= nI_1_act_valve=i AND nStep_Vlv<>0;
-			g_HMI.arCIP_DashStage_MixProof[i].bDone:= (nI_1_act_valve>i AND nStep_Vlv<>0) OR bValveCleanDone;
+			g_HMI.arCIP_DashStage_MixProof[i].bDone:= (nI_1_act_valve>i AND TRUE) OR bValveCleanDone;
 		END_FOR	
 END_CASE
 
@@ -34968,7 +34965,7 @@ ELSE;
 END_IF]]></ST>
       </Implementation>
     </Method>
-    <Method Name="m_MixProof_Release_All" Id="{1ab3387d-433c-48b8-b836-ebaa8cac6bd9}">
+    <Method Name="m_MixProof_Release_All" Id="{1ab3387d-433c-48b8-b836-ebaa8cac6bd9}" FolderPath="Meth\">
       <Declaration><![CDATA[METHOD m_MixProof_Release_All : BOOL
 VAR_INPUT
 END_VAR
@@ -34998,6 +34995,36 @@ FOR i:=1 TO 8 DO
 END_FOR
 
 m_MixProof_Release_All:=TRUE;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_MixProof_run" Id="{85b46243-a5be-4f92-aac7-41082da3dd8d}" FolderPath="Meth\">
+      <Declaration><![CDATA[METHOD m_MixProof_run : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF bValveCleanDone THEN;
+	m_MixProof_run:=TRUE;
+	bClean_MixProof:=FALSE;
+ELSE;
+	bClean_MixProof:=TRUE;
+END_IF
+
+m_DashState_MixProof_set();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_MixProof_set" Id="{bcaada45-0b02-4450-aebc-b6cfe6d7e3e5}" FolderPath="Meth\">
+      <Declaration><![CDATA[METHOD m_MixProof_set : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[nI_1_act_valve:=1;//active valve
+nI_2_act_pulses:=1;//active number of pulses
+nI_3_act_repeats:=1;//active number of retries
+
+bClean_MixProof:=FALSE;
+bValveCleanDone:=FALSE;]]></ST>
       </Implementation>
     </Method>
     <Method Name="m_OverFlowCorrect" Id="{3d927e50-569d-481a-ab49-43c1ca44dff1}" FolderPath="Meth\">
@@ -35107,22 +35134,6 @@ END_VAR]]></Declaration>
 			END_IF	
 	END_IF
 END_IF]]></ST>
-      </Implementation>
-    </Method>
-    <Method Name="m_run_MixProof" Id="{85b46243-a5be-4f92-aac7-41082da3dd8d}" FolderPath="Manage\">
-      <Declaration><![CDATA[METHOD m_run_MixProof : BOOL
-VAR_INPUT
-END_VAR
-]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[IF bValveCleanDone THEN;
-	m_run_MixProof:=TRUE;
-	bClean_MixProof:=FALSE;
-ELSE;
-	bClean_MixProof:=TRUE;
-END_IF
-
-m_DashState_MixProof_set();]]></ST>
       </Implementation>
     </Method>
     <Method Name="m_Set_SFCFlags_Reference" Id="{3959a842-c714-4552-9594-b319ee26bb78}" FolderPath="Meth\">
@@ -36375,7 +36386,6 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
     <LineIds Name="FB_CIP._aFill_Water_T91_entry">
       <LineId Id="2" Count="2" />
       <LineId Id="6" Count="0" />
-      <LineId Id="9" Count="0" />
       <LineId Id="8" Count="0" />
       <LineId Id="7" Count="0" />
       <LineId Id="14" Count="0" />
@@ -36401,10 +36411,10 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
     </LineIds>
     <LineIds Name="FB_CIP._aFill_Water_T92_entry">
       <LineId Id="2" Count="3" />
-      <LineId Id="9" Count="0" />
-      <LineId Id="8" Count="0" />
       <LineId Id="7" Count="0" />
       <LineId Id="6" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="10" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aFill_Water_T93_active">
       <LineId Id="18" Count="0" />
@@ -36444,8 +36454,8 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="9" Count="0" />
       <LineId Id="5" Count="0" />
       <LineId Id="10" Count="0" />
-      <LineId Id="14" Count="0" />
-      <LineId Id="4" Count="0" />
+      <LineId Id="52" Count="0" />
+      <LineId Id="51" Count="0" />
       <LineId Id="48" Count="0" />
       <LineId Id="47" Count="0" />
     </LineIds>
@@ -36488,7 +36498,7 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="17" Count="1" />
       <LineId Id="20" Count="1" />
       <LineId Id="4" Count="0" />
-      <LineId Id="23" Count="1" />
+      <LineId Id="23" Count="0" />
       <LineId Id="22" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP._aFlow_Volume_Meter_active">
@@ -36547,7 +36557,8 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
     <LineIds Name="FB_CIP._ainit_exit">
       <LineId Id="1" Count="0" />
       <LineId Id="9" Count="2" />
-      <LineId Id="13" Count="2" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="15" Count="0" />
       <LineId Id="12" Count="0" />
       <LineId Id="3" Count="0" />
     </LineIds>
@@ -37200,8 +37211,7 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="343" Count="0" />
       <LineId Id="21" Count="0" />
       <LineId Id="31" Count="0" />
-      <LineId Id="43" Count="0" />
-      <LineId Id="355" Count="0" />
+      <LineId Id="363" Count="1" />
       <LineId Id="60" Count="0" />
       <LineId Id="160" Count="1" />
       <LineId Id="22" Count="0" />
@@ -37445,6 +37455,16 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="35" Count="0" />
       <LineId Id="34" Count="0" />
     </LineIds>
+    <LineIds Name="FB_CIP.m_MixProof_run">
+      <LineId Id="25" Count="6" />
+      <LineId Id="17" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_CIP.m_MixProof_set">
+      <LineId Id="6" Count="1" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="9" Count="1" />
+      <LineId Id="8" Count="0" />
+    </LineIds>
     <LineIds Name="FB_CIP.m_OverFlowCorrect">
       <LineId Id="5" Count="0" />
       <LineId Id="16" Count="1" />
@@ -37493,16 +37513,6 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="43" Count="0" />
       <LineId Id="23" Count="0" />
       <LineId Id="7" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_CIP.m_run_MixProof">
-      <LineId Id="5" Count="0" />
-      <LineId Id="8" Count="0" />
-      <LineId Id="13" Count="0" />
-      <LineId Id="6" Count="0" />
-      <LineId Id="9" Count="0" />
-      <LineId Id="7" Count="0" />
-      <LineId Id="18" Count="0" />
-      <LineId Id="17" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP.m_Set_SFCFlags_Reference">
       <LineId Id="5" Count="15" />
