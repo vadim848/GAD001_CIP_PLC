@@ -82,7 +82,6 @@ IF iFB_Num = E_Pis_Name.e0_not_in_use THEN;
 	//stPis.st_Deafult:=TRUE;
 END_IF
 
-(* case to acception at PLC Restart ...TBD*)
 
 rt_StateSafe(CLK:=stOperation.bStateSafe_mode);
 ft_StateSafe(CLK:=stOperation.bStateSafe_mode);
@@ -91,15 +90,15 @@ IF __ISVALIDREF(stPis) THEN;
 	IF ft_StateSafe.Q
 	AND NOT stPis.st_Deafult
 	THEN;
-		stPis.req_DefaultPos:=TRUE;
-		stPis.req_Close:=FALSE;
-		stPis.req_Open:=FALSE;	
+		//stPis.req_DefaultPos:=TRUE;
+		//stPis.req_Close:=FALSE;
+		//stPis.req_Open:=FALSE;	
 	END_IF
 	
 	IF rt_StateSafe.Q THEN;
 		
 		IF NOT stPis.st_Deafult THEN;
-			stPis.req_DefaultPos:=TRUE;
+			//stPis.req_DefaultPos:=TRUE;
 		END_IF	
 		stPis.b_Resume:=TRUE;
 		//stPis.b_Reset:=TRUE;	
@@ -864,7 +863,6 @@ END_IF
       <LineId Id="65" Count="0" />
       <LineId Id="201" Count="1" />
       <LineId Id="544" Count="0" />
-      <LineId Id="537" Count="0" />
       <LineId Id="621" Count="0" />
       <LineId Id="624" Count="1" />
       <LineId Id="622" Count="0" />
