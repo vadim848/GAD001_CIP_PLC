@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
   <POU Name="FB_CIP_Source" Id="{51aff4c3-d299-4189-9ddb-b537da8ea506}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_CIP_Source EXTENDS FB_SFC_Cycle IMPLEMENTS ITF_FB_SFC_Cycle
 VAR_INPUT
@@ -26,7 +26,7 @@ VAR
 	stPis_Tank_Detergent	: REFERENCE TO ST_Piston;
 	stPis_Tank_DisInfection	: REFERENCE TO ST_Piston;
 	stPis_Drain				: REFERENCE TO ST_Piston;
-
+	rt_Req_Reset: R_TRIG;
 END_VAR
 VAR_IN_OUT
 
@@ -41,7 +41,7 @@ IF NOT Init.x THEN;
 	act_Status();
 END_IF
 
-]]></ST>
+m_Request_Reset(memo:=rt_Req_Reset);//]]></ST>
     </Implementation>
     <Folder Name="Manage" Id="{f72c9a77-5990-4e2a-906f-d727cb28c56e}" />
     <Action Name="_aClose_active" Id="{31213e26-c963-4ed4-8ec0-5daeea10e078}">
@@ -3691,7 +3691,7 @@ ELSE;
 END_IF]]></ST>
       </Implementation>
     </Action>
-    <Method Name="m_CheckStatus" Id="{cc574672-75d4-4109-af68-d1c872851152}">
+    <Method Name="m_CheckStatus" Id="{cc574672-75d4-4109-af68-d1c872851152}" FolderPath="Manage\">
       <Declaration><![CDATA[METHOD m_CheckStatus : BOOL
 VAR_INPUT
 	eReqStatus		: E_CIP_Source;
@@ -3709,7 +3709,22 @@ THEN;
 END_IF]]></ST>
       </Implementation>
     </Method>
-    <Method Name="m_Run" Id="{5d191ab6-be10-46af-8016-5701543b152c}">
+    <Method Name="m_Request_Reset" Id="{54a4460d-5097-43de-b69e-b82abb168d84}" FolderPath="Manage\">
+      <Declaration><![CDATA[METHOD m_Request_Reset : BOOL
+VAR_IN_OUT
+	memo: R_TRIG;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[memo(CLK:=eReq=0);
+IF TRUE 
+AND memo.Q
+THEN;
+	SFCReset:=TRUE;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_Run" Id="{5d191ab6-be10-46af-8016-5701543b152c}" FolderPath="Manage\">
       <Declaration><![CDATA[METHOD m_Run : BOOL
 VAR_INPUT
 	eReqProc			: E_CIP_Source;
@@ -3723,7 +3738,7 @@ END_VAR
 END_IF]]></ST>
       </Implementation>
     </Method>
-    <Method Name="m_Set_SFCFlags_Reference" Id="{6a5e32bd-46a1-4d83-b2b2-41e90d72387a}">
+    <Method Name="m_Set_SFCFlags_Reference" Id="{6a5e32bd-46a1-4d83-b2b2-41e90d72387a}" FolderPath="Manage\">
       <Declaration><![CDATA[METHOD m_Set_SFCFlags_Reference : BOOL
 ]]></Declaration>
       <Implementation>
@@ -3880,6 +3895,13 @@ m_SFC_Handle();]]></ST>
       <LineId Id="10" Count="1" />
       <LineId Id="9" Count="0" />
       <LineId Id="7" Count="1" />
+    </LineIds>
+    <LineIds Name="FB_CIP_Source.m_Request_Reset">
+      <LineId Id="10" Count="0" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="6" Count="1" />
     </LineIds>
     <LineIds Name="FB_CIP_Source.m_Run">
       <LineId Id="5" Count="0" />

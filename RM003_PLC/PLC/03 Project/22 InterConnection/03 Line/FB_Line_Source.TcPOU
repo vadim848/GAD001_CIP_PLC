@@ -38,6 +38,7 @@ VAR
 	tonDrainTime: TON;
 	ton_TapWaterNotInUse: TON;
 	ton_TapWaterDrain_Timeout: TON;
+	rt_Req_Reset: R_TRIG;
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -56,7 +57,9 @@ AND eReq=E_Line_Source.eNone
 AND eProcess=E_Line_Source.eNone
 THEN;
 	eReq:=E_Line_Source.eClose;
-END_IF]]></ST>
+END_IF
+
+m_Request_Reset(memo:=rt_Req_Reset);//]]></ST>
     </Implementation>
     <Folder Name="Manage" Id="{88761bd7-027b-418f-9edc-eb285488f960}" />
     <Action Name="_aCIP_active" Id="{d20e9967-4c28-47ef-96b1-f277270a5409}">
@@ -4247,6 +4250,21 @@ THEN;
 END_IF]]></ST>
       </Implementation>
     </Method>
+    <Method Name="m_Request_Reset" Id="{a20f9c0a-99d9-433b-80f9-02dafa9d62e9}" FolderPath="Manage\">
+      <Declaration><![CDATA[METHOD m_Request_Reset : BOOL
+VAR_IN_OUT
+	memo: R_TRIG;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[memo(CLK:=eReq=0);
+IF TRUE 
+AND memo.Q
+THEN;
+	SFCReset:=TRUE;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="m_Run" Id="{b3f2817c-37d1-47ea-82d9-76c7c92e82ed}" FolderPath="Manage\">
       <Declaration><![CDATA[METHOD m_Run : BOOL
 VAR_INPUT
@@ -4324,6 +4342,8 @@ END_IF
       <LineId Id="120" Count="0" />
       <LineId Id="76" Count="6" />
       <LineId Id="9" Count="0" />
+      <LineId Id="161" Count="0" />
+      <LineId Id="160" Count="0" />
     </LineIds>
     <LineIds Name="FB_Line_Source._aCIP_active">
       <LineId Id="2" Count="4" />
@@ -4481,6 +4501,13 @@ END_IF
       <LineId Id="10" Count="1" />
       <LineId Id="9" Count="0" />
       <LineId Id="7" Count="1" />
+    </LineIds>
+    <LineIds Name="FB_Line_Source.m_Request_Reset">
+      <LineId Id="10" Count="0" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="6" Count="1" />
     </LineIds>
     <LineIds Name="FB_Line_Source.m_Run">
       <LineId Id="5" Count="0" />

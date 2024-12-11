@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
   <POU Name="FB_CIP_Client" Id="{c5033c12-cb76-4d9f-9912-a992211c6f9c}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_CIP_Client EXTENDS FB_SFC_Cycle IMPLEMENTS ITF_FB_SFC_Cycle
 VAR_INPUT
@@ -53,6 +53,9 @@ VAR
 	stPis_S_Future				: REFERENCE TO ST_Piston;
 
 	tonDrainTime: TON;
+	
+	rt_Req_Reset: R_TRIG;
+
 END_VAR
 VAR_IN_OUT
 
@@ -74,7 +77,8 @@ AND eProcess=E_CIP_Client_Selector.eNone
 THEN;
 	eReq:=E_CIP_Client_Selector.eClose;
 END_IF
-]]></ST>
+
+m_Request_Reset(memo:=rt_Req_Reset);//rt_Req_Reset: R_TRIG;]]></ST>
     </Implementation>
     <Folder Name="Manage" Id="{38103117-043f-403d-a53b-cc92b5c9eca8}" />
     <Action Name="_aClose_active" Id="{0c273ec4-07ea-4c3a-9a5b-c8ebfdd77695}">
@@ -4225,7 +4229,7 @@ ELSE;
 END_IF]]></ST>
       </Implementation>
     </Action>
-    <Method Name="m_CheckStatus" Id="{b5de556e-91b0-4df7-96d4-bc419ec06c1d}">
+    <Method Name="m_CheckStatus" Id="{b5de556e-91b0-4df7-96d4-bc419ec06c1d}" FolderPath="Manage\">
       <Declaration><![CDATA[METHOD m_CheckStatus : BOOL
 VAR_INPUT
 	eReqStatus		: E_CIP_Usage;
@@ -4264,7 +4268,22 @@ THEN;
 END_IF]]></ST>
       </Implementation>
     </Method>
-    <Method Name="m_Run" Id="{a8bdb2df-eb11-4961-9b0c-b01d07d5677a}">
+    <Method Name="m_Request_Reset" Id="{3a0085ac-d519-46ef-8977-d86d9a880e6b}" FolderPath="Manage\">
+      <Declaration><![CDATA[METHOD m_Request_Reset : BOOL
+VAR_IN_OUT
+	memo: R_TRIG;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[memo(CLK:=eReq=0);
+IF TRUE 
+AND memo.Q
+THEN;
+	SFCReset:=TRUE;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_Run" Id="{a8bdb2df-eb11-4961-9b0c-b01d07d5677a}" FolderPath="Manage\">
       <Declaration><![CDATA[METHOD m_Run : BOOL
 VAR_INPUT
 	eReqProc			: E_CIP_Usage;
@@ -4298,7 +4317,7 @@ IF eProcess=E_CIP_Client_Selector.eNone THEN;
 END_IF]]></ST>
       </Implementation>
     </Method>
-    <Method Name="m_Set_SFCFlags_Reference" Id="{6740c604-b51a-4401-88e7-e8f7ceec239c}">
+    <Method Name="m_Set_SFCFlags_Reference" Id="{6740c604-b51a-4401-88e7-e8f7ceec239c}" FolderPath="Manage\">
       <Declaration><![CDATA[METHOD m_Set_SFCFlags_Reference : BOOL
 ]]></Declaration>
       <Implementation>
@@ -4326,6 +4345,7 @@ m_SFC_Handle();]]></ST>
       <LineId Id="93" Count="2" />
       <LineId Id="154" Count="6" />
       <LineId Id="97" Count="0" />
+      <LineId Id="221" Count="0" />
       <LineId Id="55" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP_Client._aClose_active">
@@ -4529,6 +4549,13 @@ m_SFC_Handle();]]></ST>
       <LineId Id="10" Count="1" />
       <LineId Id="9" Count="0" />
       <LineId Id="7" Count="1" />
+    </LineIds>
+    <LineIds Name="FB_CIP_Client.m_Request_Reset">
+      <LineId Id="10" Count="0" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="6" Count="1" />
     </LineIds>
     <LineIds Name="FB_CIP_Client.m_Run">
       <LineId Id="17" Count="15" />

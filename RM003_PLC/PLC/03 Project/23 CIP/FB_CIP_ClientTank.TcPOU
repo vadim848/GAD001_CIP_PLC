@@ -29,6 +29,7 @@ VAR
 	stPis_Drain				: REFERENCE TO ST_Piston;
 
 	tonDrainTime: TON;
+	rt_Req_Reset: R_TRIG;
 END_VAR
 VAR_IN_OUT
 
@@ -51,10 +52,10 @@ THEN;
 	eReq:=E_CIP_ClientTank.eClose;
 END_IF
 
-]]></ST>
+m_Request_Reset(memo:=rt_Req_Reset);]]></ST>
     </Implementation>
     <Folder Name="Manage" Id="{75407563-912d-4908-b651-2f1b671d8753}" />
-    <Action Name="_aClose_active_1" Id="{92f6b6d1-b589-4a20-bcda-89bf8146bb5b}">
+    <Action Name="_aClose_active" Id="{92f6b6d1-b589-4a20-bcda-89bf8146bb5b}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
 IF TRUE 
@@ -78,7 +79,7 @@ END_IF
         </XmlArchive>
       </ObjectProperties>
     </Action>
-    <Action Name="_aClose_entry_1" Id="{e7dae316-3ace-4522-92c2-0cffa79ad812}">
+    <Action Name="_aClose_entry" Id="{e7dae316-3ace-4522-92c2-0cffa79ad812}">
       <Implementation>
         <ST><![CDATA[fbPis.m_SetByRecipe(stPis:=stPis_Tank_A, 				req:=E_Piston_Recipe_State.Release);
 fbPis.m_SetByRecipe(stPis:=stPis_Tank_A_Sprinkler, 		req:=E_Piston_Recipe_State.Release);
@@ -124,7 +125,7 @@ bDone:=TRUE;
         </XmlArchive>
       </ObjectProperties>
     </Action>
-    <Action Name="_aDrain_active_1" Id="{f6cebb11-b4ad-49db-9d93-c21a8948919a}">
+    <Action Name="_aDrain_active" Id="{f6cebb11-b4ad-49db-9d93-c21a8948919a}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
 IF TRUE 
@@ -147,7 +148,7 @@ END_IF]]></ST>
         </XmlArchive>
       </ObjectProperties>
     </Action>
-    <Action Name="_aDrain_entry_1" Id="{9d6fa881-c60b-4a07-bb86-a9b166160530}">
+    <Action Name="_aDrain_entry" Id="{9d6fa881-c60b-4a07-bb86-a9b166160530}">
       <Implementation>
         <ST><![CDATA[fbPis.m_SetByRecipe(stPis:=stPis_Tank_A, 				req:=E_Piston_Recipe_State.Release);
 fbPis.m_SetByRecipe(stPis:=stPis_Tank_A_Sprinkler, 		req:=E_Piston_Recipe_State.Release);
@@ -282,7 +283,7 @@ bDone:=FALSE;]]></ST>
         </XmlArchive>
       </ObjectProperties>
     </Action>
-    <Action Name="_aTank_A_active_1" Id="{86ddce0d-560e-43e6-8013-13a99078bfa4}">
+    <Action Name="_aTank_A_active" Id="{86ddce0d-560e-43e6-8013-13a99078bfa4}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
 IF TRUE 
@@ -305,7 +306,7 @@ END_IF]]></ST>
         </XmlArchive>
       </ObjectProperties>
     </Action>
-    <Action Name="_aTank_A_entry_1" Id="{951a57df-a15c-4fee-b116-bcded9db2564}">
+    <Action Name="_aTank_A_entry" Id="{951a57df-a15c-4fee-b116-bcded9db2564}">
       <Implementation>
         <ST><![CDATA[fbPis.m_SetByRecipe(stPis:=stPis_Tank_A, 				req:=E_Piston_Recipe_State.Act);
 fbPis.m_SetByRecipe(stPis:=stPis_Tank_A_Sprinkler, 		req:=E_Piston_Recipe_State.Release);
@@ -376,7 +377,7 @@ fbPis.m_SetByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release);
         </XmlArchive>
       </ObjectProperties>
     </Action>
-    <Action Name="_aTank_B_active_1" Id="{6b4bc092-8ce6-4648-a8ff-ad164d214ca2}">
+    <Action Name="_aTank_B_active" Id="{6b4bc092-8ce6-4648-a8ff-ad164d214ca2}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
 IF TRUE 
@@ -399,7 +400,7 @@ END_IF]]></ST>
         </XmlArchive>
       </ObjectProperties>
     </Action>
-    <Action Name="_aTank_B_entry_1" Id="{117ef39d-0a17-4a6d-aa08-2189f1a3d8a8}">
+    <Action Name="_aTank_B_entry" Id="{117ef39d-0a17-4a6d-aa08-2189f1a3d8a8}">
       <Implementation>
         <ST><![CDATA[fbPis.m_SetByRecipe(stPis:=stPis_Tank_A, 				req:=E_Piston_Recipe_State.Release);
 fbPis.m_SetByRecipe(stPis:=stPis_Tank_A_Sprinkler, 		req:=E_Piston_Recipe_State.Release);
@@ -1135,7 +1136,7 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                       <o>
                                         <v n="AttributeId">{700a583f-b4d4-43e4-8c14-629c7cd3bec8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"_aClose_active_1"</v>
+                                          <v n="Value">"_aClose_active"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">1437L</v>
@@ -1144,7 +1145,7 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                       <o>
                                         <v n="AttributeId">{a6b08bd8-b696-47e3-9cbf-7408b61c9ff8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"_aClose_entry_1"</v>
+                                          <v n="Value">"_aClose_entry"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">1438L</v>
@@ -1422,7 +1423,7 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                       <o>
                                         <v n="AttributeId">{700a583f-b4d4-43e4-8c14-629c7cd3bec8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"_aTank_A_active_1"</v>
+                                          <v n="Value">"_aTank_A_active"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">1449L</v>
@@ -1431,7 +1432,7 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                       <o>
                                         <v n="AttributeId">{a6b08bd8-b696-47e3-9cbf-7408b61c9ff8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"_aTank_A_entry_1"</v>
+                                          <v n="Value">"_aTank_A_entry"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">1450L</v>
@@ -1996,7 +1997,7 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                       <o>
                                         <v n="AttributeId">{700a583f-b4d4-43e4-8c14-629c7cd3bec8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"_aTank_B_active_1"</v>
+                                          <v n="Value">"_aTank_B_active"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">1461L</v>
@@ -2005,7 +2006,7 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                       <o>
                                         <v n="AttributeId">{a6b08bd8-b696-47e3-9cbf-7408b61c9ff8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"_aTank_B_entry_1"</v>
+                                          <v n="Value">"_aTank_B_entry"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">1462L</v>
@@ -2570,7 +2571,7 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                       <o>
                                         <v n="AttributeId">{700a583f-b4d4-43e4-8c14-629c7cd3bec8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"_aDrain_active_1"</v>
+                                          <v n="Value">"_aDrain_active"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">1473L</v>
@@ -2579,7 +2580,7 @@ stPis_Drain					REF= g_Piston.stPis[valDrain];]]></ST>
                                       <o>
                                         <v n="AttributeId">{a6b08bd8-b696-47e3-9cbf-7408b61c9ff8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"_aDrain_entry_1"</v>
+                                          <v n="Value">"_aDrain_entry"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">1474L</v>
@@ -3452,7 +3453,7 @@ ELSE;
 END_IF]]></ST>
       </Implementation>
     </Action>
-    <Method Name="m_CheckStatus" Id="{cd38da1d-87fa-4c25-8cd1-074243f17cb1}">
+    <Method Name="m_CheckStatus" Id="{cd38da1d-87fa-4c25-8cd1-074243f17cb1}" FolderPath="Manage\">
       <Declaration><![CDATA[METHOD m_CheckStatus : BOOL
 VAR_INPUT
 	eReqStatus		: E_CIP_ClientTank;
@@ -3470,7 +3471,22 @@ THEN;
 END_IF]]></ST>
       </Implementation>
     </Method>
-    <Method Name="m_Run" Id="{ec4b68e6-5819-4865-ba29-867baa0dec5e}">
+    <Method Name="m_Request_Reset" Id="{ea357b7e-42a7-4b81-9b8a-30befe36872d}" FolderPath="Manage\">
+      <Declaration><![CDATA[METHOD m_Request_Reset : BOOL
+VAR_IN_OUT
+	memo: R_TRIG;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[memo(CLK:=eReq=0);
+IF TRUE 
+AND memo.Q
+THEN;
+	SFCReset:=TRUE;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_Run" Id="{ec4b68e6-5819-4865-ba29-867baa0dec5e}" FolderPath="Manage\">
       <Declaration><![CDATA[METHOD m_Run : BOOL
 VAR_INPUT
 	eReqProc			: E_CIP_ClientTank;
@@ -3484,7 +3500,7 @@ END_VAR
 END_IF]]></ST>
       </Implementation>
     </Method>
-    <Method Name="m_Set_SFCFlags_Reference" Id="{7e38792a-dc64-4fa1-bbd1-b9c8a5df9f5d}">
+    <Method Name="m_Set_SFCFlags_Reference" Id="{7e38792a-dc64-4fa1-bbd1-b9c8a5df9f5d}" FolderPath="Manage\">
       <Declaration><![CDATA[METHOD m_Set_SFCFlags_Reference : BOOL
 ]]></Declaration>
       <Implementation>
@@ -3516,11 +3532,11 @@ m_SFC_Handle();]]></ST>
       <LineId Id="97" Count="0" />
       <LineId Id="55" Count="0" />
     </LineIds>
-    <LineIds Name="FB_CIP_ClientTank._aClose_active_1">
+    <LineIds Name="FB_CIP_ClientTank._aClose_active">
       <LineId Id="2" Count="5" />
       <LineId Id="1" Count="0" />
     </LineIds>
-    <LineIds Name="FB_CIP_ClientTank._aClose_entry_1">
+    <LineIds Name="FB_CIP_ClientTank._aClose_entry">
       <LineId Id="2" Count="0" />
       <LineId Id="6" Count="1" />
       <LineId Id="4" Count="0" />
@@ -3533,11 +3549,11 @@ m_SFC_Handle();]]></ST>
       <LineId Id="6" Count="1" />
       <LineId Id="2" Count="0" />
     </LineIds>
-    <LineIds Name="FB_CIP_ClientTank._aDrain_active_1">
+    <LineIds Name="FB_CIP_ClientTank._aDrain_active">
       <LineId Id="6" Count="4" />
       <LineId Id="1" Count="0" />
     </LineIds>
-    <LineIds Name="FB_CIP_ClientTank._aDrain_entry_1">
+    <LineIds Name="FB_CIP_ClientTank._aDrain_entry">
       <LineId Id="10" Count="5" />
       <LineId Id="1" Count="0" />
     </LineIds>
@@ -3577,11 +3593,11 @@ m_SFC_Handle();]]></ST>
       <LineId Id="2" Count="0" />
       <LineId Id="1" Count="0" />
     </LineIds>
-    <LineIds Name="FB_CIP_ClientTank._aTank_A_active_1">
+    <LineIds Name="FB_CIP_ClientTank._aTank_A_active">
       <LineId Id="2" Count="4" />
       <LineId Id="1" Count="0" />
     </LineIds>
-    <LineIds Name="FB_CIP_ClientTank._aTank_A_entry_1">
+    <LineIds Name="FB_CIP_ClientTank._aTank_A_entry">
       <LineId Id="10" Count="5" />
       <LineId Id="1" Count="0" />
     </LineIds>
@@ -3593,11 +3609,11 @@ m_SFC_Handle();]]></ST>
       <LineId Id="2" Count="5" />
       <LineId Id="1" Count="0" />
     </LineIds>
-    <LineIds Name="FB_CIP_ClientTank._aTank_B_active_1">
+    <LineIds Name="FB_CIP_ClientTank._aTank_B_active">
       <LineId Id="2" Count="4" />
       <LineId Id="1" Count="0" />
     </LineIds>
-    <LineIds Name="FB_CIP_ClientTank._aTank_B_entry_1">
+    <LineIds Name="FB_CIP_ClientTank._aTank_B_entry">
       <LineId Id="10" Count="5" />
       <LineId Id="1" Count="0" />
     </LineIds>
@@ -3660,6 +3676,13 @@ m_SFC_Handle();]]></ST>
       <LineId Id="10" Count="1" />
       <LineId Id="9" Count="0" />
       <LineId Id="7" Count="1" />
+    </LineIds>
+    <LineIds Name="FB_CIP_ClientTank.m_Request_Reset">
+      <LineId Id="10" Count="0" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="6" Count="1" />
     </LineIds>
     <LineIds Name="FB_CIP_ClientTank.m_Run">
       <LineId Id="5" Count="0" />

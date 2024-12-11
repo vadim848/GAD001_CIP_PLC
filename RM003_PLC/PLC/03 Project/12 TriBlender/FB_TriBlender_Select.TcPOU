@@ -29,7 +29,7 @@ VAR
 	stPis_OutColor		: REFERENCE TO ST_Piston;
 
 	tonDrainTime: TON;
-	
+	rt_Req_Reset: R_TRIG;
 	//bRun: BOOL;
 	//bDone: BOOL;
 	SFCReset: BOOL;
@@ -55,6 +55,8 @@ AND eProcess=E_TriBlenderSelect.eNone
 THEN;
 	eReq:=E_TriBlenderSelect.eMarinade;
 END_IF
+
+m_Request_Reset(memo:=rt_Req_Reset);//
 ]]></ST>
     </Implementation>
     <Folder Name="Manage" Id="{e20a7cbd-7252-4410-8f32-fdf6c8d5cc66}" />
@@ -2382,6 +2384,21 @@ THEN;
 END_IF]]></ST>
       </Implementation>
     </Method>
+    <Method Name="m_Request_Reset" Id="{6dfb826e-0c5a-4b01-8291-56a11557903f}" FolderPath="Manage\">
+      <Declaration><![CDATA[METHOD m_Request_Reset : BOOL
+VAR_IN_OUT
+	memo: R_TRIG;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[memo(CLK:=eReq=0);
+IF TRUE 
+AND memo.Q
+THEN;
+	SFCReset:=TRUE;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="m_Run" Id="{a8b44bf2-fd16-4b21-9c83-6e8184bbb941}" FolderPath="Manage\">
       <Declaration><![CDATA[METHOD m_Run : BOOL
 VAR_INPUT
@@ -2422,6 +2439,8 @@ m_SFC_Handle();]]></ST>
     </Method>
     <LineIds Name="FB_TriBlender_Select">
       <LineId Id="48" Count="13" />
+      <LineId Id="101" Count="0" />
+      <LineId Id="100" Count="0" />
       <LineId Id="9" Count="0" />
     </LineIds>
     <LineIds Name="FB_TriBlender_Select._aColor_active">
@@ -2503,6 +2522,13 @@ m_SFC_Handle();]]></ST>
       <LineId Id="10" Count="1" />
       <LineId Id="9" Count="0" />
       <LineId Id="7" Count="1" />
+    </LineIds>
+    <LineIds Name="FB_TriBlender_Select.m_Request_Reset">
+      <LineId Id="10" Count="0" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="6" Count="1" />
     </LineIds>
     <LineIds Name="FB_TriBlender_Select.m_Run">
       <LineId Id="5" Count="0" />

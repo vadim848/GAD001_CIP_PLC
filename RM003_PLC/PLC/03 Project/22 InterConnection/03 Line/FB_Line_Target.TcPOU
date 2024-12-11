@@ -28,6 +28,7 @@ VAR
 	
 	stPis_Outlet: ST_Piston;
 	tonDrainTime: TON;
+	rt_Req_Reset: R_TRIG;
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -44,7 +45,9 @@ AND eReq=E_Line_Target.eNone
 AND eProcess=E_Line_Target.eNone
 THEN;
 	eReq:=E_Line_Target.eClose;
-END_IF]]></ST>
+END_IF
+
+m_Request_Reset(memo:=rt_Req_Reset);//]]></ST>
     </Implementation>
     <Folder Name="Manage" Id="{e5743553-9439-4305-9e84-949d6d5f1f58}" />
     <Action Name="_aCIP_active" Id="{1c5f0b2c-a2c3-4aa0-90cb-5189c5a6156b}">
@@ -3070,7 +3073,7 @@ ELSE;
 END_IF ]]></ST>
       </Implementation>
     </Action>
-    <Method Name="m_CheckStatus" Id="{a95850ca-15b2-4e7e-a635-56b44d398318}">
+    <Method Name="m_CheckStatus" Id="{a95850ca-15b2-4e7e-a635-56b44d398318}" FolderPath="Manage\">
       <Declaration><![CDATA[METHOD m_CheckStatus : BOOL
 VAR_INPUT
 	eReqStatus		: E_Line_Target;
@@ -3088,7 +3091,22 @@ THEN;
 END_IF]]></ST>
       </Implementation>
     </Method>
-    <Method Name="m_Run" Id="{4181f26e-983c-4e66-bf41-bf25464233de}">
+    <Method Name="m_Request_Reset" Id="{95945eb0-2ad1-49de-8030-be298be214ee}" FolderPath="Manage\">
+      <Declaration><![CDATA[METHOD m_Request_Reset : BOOL
+VAR_IN_OUT
+	memo: R_TRIG;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[memo(CLK:=eReq=0);
+IF TRUE 
+AND memo.Q
+THEN;
+	SFCReset:=TRUE;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_Run" Id="{4181f26e-983c-4e66-bf41-bf25464233de}" FolderPath="Manage\">
       <Declaration><![CDATA[METHOD m_Run : BOOL
 VAR_INPUT
 	eReqProc			: E_Line_Target;
@@ -3102,7 +3120,7 @@ END_VAR
 END_IF]]></ST>
       </Implementation>
     </Method>
-    <Method Name="m_Set_SFCFlags_Reference" Id="{98131e4f-ae98-4828-8ba6-dcfb4bcb3c2f}">
+    <Method Name="m_Set_SFCFlags_Reference" Id="{98131e4f-ae98-4828-8ba6-dcfb4bcb3c2f}" FolderPath="Manage\">
       <Declaration><![CDATA[METHOD m_Set_SFCFlags_Reference : BOOL
 ]]></Declaration>
       <Implementation>
@@ -3129,6 +3147,8 @@ m_SFC_Handle();]]></ST>
       <LineId Id="35" Count="5" />
       <LineId Id="64" Count="6" />
       <LineId Id="9" Count="0" />
+      <LineId Id="100" Count="0" />
+      <LineId Id="99" Count="0" />
     </LineIds>
     <LineIds Name="FB_Line_Target._aCIP_active">
       <LineId Id="2" Count="4" />
@@ -3258,6 +3278,13 @@ m_SFC_Handle();]]></ST>
       <LineId Id="10" Count="1" />
       <LineId Id="9" Count="0" />
       <LineId Id="7" Count="1" />
+    </LineIds>
+    <LineIds Name="FB_Line_Target.m_Request_Reset">
+      <LineId Id="10" Count="0" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="6" Count="1" />
     </LineIds>
     <LineIds Name="FB_Line_Target.m_Run">
       <LineId Id="5" Count="0" />
