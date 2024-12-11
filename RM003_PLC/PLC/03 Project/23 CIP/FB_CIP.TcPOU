@@ -91,10 +91,30 @@ VAR
 	
 	//colar marinade 
 	//pressure
-	stPressure						:	REFERENCE TO ST_ProcessControl	;
-	pcPressure						: 	REFERENCE TO FB_ProcessControl	;//CIP //Client	
-
+	stP1001_Pressure				:	REFERENCE TO ST_ProcessControl	;
+	pcP1001_Pressure				: 	REFERENCE TO FB_ProcessControl	;//CIP //Client
+(*
+	stP3001_Pressure				:	REFERENCE TO ST_ProcessControl	;
+	pcP3001_Pressure				: 	REFERENCE TO FB_ProcessControl	;
 	
+	stP3002_Pressure				:	REFERENCE TO ST_ProcessControl	;
+	pcP3002_Pressure				: 	REFERENCE TO FB_ProcessControl	;	
+	
+	stP4001_Pressure				:	REFERENCE TO ST_ProcessControl	;
+	pcP4001_Pressure				: 	REFERENCE TO FB_ProcessControl	;
+	
+	stP4002_Pressure				:	REFERENCE TO ST_ProcessControl	;
+	pcP4002_Pressure				: 	REFERENCE TO FB_ProcessControl	;	
+	
+	stTriBlender_Flow				:	REFERENCE TO ST_ProcessControl	;
+	pcTriBlender_Flow				: 	REFERENCE TO FB_ProcessControl	;	
+	
+	stColor_TriB_Conc				:	REFERENCE TO ST_ProcessControl	;
+	pcColor_TriB_Conc				: 	REFERENCE TO FB_ProcessControl	;	
+	
+	stColor_Line_Conc				:	REFERENCE TO ST_ProcessControl	;
+	pcColor_Line_Conc				: 	REFERENCE TO FB_ProcessControl	;	
+*)	
 	
 		//OldOne to be deleted
 		iStepDone: INT;
@@ -5432,12 +5452,32 @@ END_IF
 		pcMarinada_Level(stProcessControl:=stMarinada_Level );
 		
 //Presure
-		stPressure.rValue:=g_AnalogSensor.stAnalogSensor[E_ASense_Name.PT1001].Value;
-		//###stPressure.ToleranceHigh:=1;
-		//###stPressure.ToleravceLow:=1;
-		//stFlow_Rate.rSetPoint:=150;
-		pcPressure(stProcessControl:=stPressure );
+		stP1001_Pressure.rValue:=g_AnalogSensor.stAnalogSensor[E_ASense_Name.PT1001].Value;
+		pcP1001_Pressure(stProcessControl:=stP1001_Pressure );
+(*		
+		stP3001_Pressure.rValue:=g_AnalogSensor.stAnalogSensor[E_ASense_Name.PT3001].Value;
+		pcP3001_Pressure(stProcessControl:=stP3001_Pressure );
+		
+		stP3002_Pressure.rValue:=g_AnalogSensor.stAnalogSensor[E_ASense_Name.PT3002].Value;
+		pcP3002_Pressure(stProcessControl:=stP3002_Pressure );
+		
+		stP4001_Pressure.rValue:=g_AnalogSensor.stAnalogSensor[E_ASense_Name.PT4001].Value;
+		pcP4001_Pressure(stProcessControl:=stP4001_Pressure );
+		
+		stP4002_Pressure.rValue:=g_AnalogSensor.stAnalogSensor[E_ASense_Name.PT4002].Value;
+		pcP4002_Pressure(stProcessControl:=stP4002_Pressure );
+			
+//TriBlender Flow
+		stTriBlender_Flow.rValue:=g_AnalogSensor.stAnalogSensor[E_ASense_Name.FT9011].Value;
+		pcTriBlender_Flow(stProcessControl:=stTriBlender_Flow );
 
+//Color skid Concentration
+		stColor_TriB_Conc.rValue:=g_AnalogSensor.stAnalogSensor[E_ASense_Name.CT4101].Value;
+		pcColor_TriB_Conc(stProcessControl:=stColor_TriB_Conc );		
+
+		stColor_Line_Conc.rValue:=g_AnalogSensor.stAnalogSensor[E_ASense_Name.CT4101].Value;
+		pcColor_Line_Conc(stProcessControl:=stColor_Line_Conc );		
+*)
 
 //Load def set points
 IF bLoadDefSetPoints THEN
@@ -5484,48 +5524,47 @@ stPis_FillWater_T92 REF= stPis[valFillWater_T92];
 stPis_FillWater_T93 REF= stPis[valFillWater_T93];
 stPis_FillWater_T94 REF= stPis[valFillWater_T94];
 
-//Structure
 	//concentration
 stDetergent 	REF=g_ProcControl.arr_stProcCntrl[E_ProcessControl_Name.eDetergentConc];
+pcDetergent 	REF=g_ProcControl.arr_fbProcCntrl[E_ProcessControl_Name.eDetergentConc];
+
 stDisInfectant 	REF=g_ProcControl.arr_stProcCntrl[E_ProcessControl_Name.eDisinfectionConc];
+pcDisInfectant 	REF=g_ProcControl.arr_fbProcCntrl[E_ProcessControl_Name.eDisinfectionConc];
+
 	//Temperature
 stTemperature_Deterg REF=g_ProcControl.arr_stProcCntrl[E_ProcessControl_Name.eDeterTemp];
+pcTemperature_Deterg REF=g_ProcControl.arr_fbProcCntrl[E_ProcessControl_Name.eDeterTemp];
+
 stTemperature_Dis 	 REF=g_ProcControl.arr_stProcCntrl[E_ProcessControl_Name.eDisTemp];
+pcTemperature_Dis 	 REF=g_ProcControl.arr_fbProcCntrl[E_ProcessControl_Name.eDisTemp];
 	//Flow rate
 stFlow1_Rate REF=g_ProcControl.arr_stProcCntrl[E_ProcessControl_Name.eCIP_Flow_1];
+pcFlow1_Rate REF=g_ProcControl.arr_fbProcCntrl[E_ProcessControl_Name.eCIP_Flow_1];
+
 stFlow2_Rate REF=g_ProcControl.arr_stProcCntrl[E_ProcessControl_Name.eCIP_Flow_2];
+pcFlow2_Rate REF=g_ProcControl.arr_fbProcCntrl[E_ProcessControl_Name.eCIP_Flow_2];
+
 stFlow3_Rate REF=g_ProcControl.arr_stProcCntrl[E_ProcessControl_Name.eCIP_Flow_3];
+pcFlow3_Rate REF=g_ProcControl.arr_fbProcCntrl[E_ProcessControl_Name.eCIP_Flow_3];
 
 	//Level
 stColor_Level    REF=g_ProcControl.arr_stProcCntrl[E_ProcessControl_Name.eColor_Level];
-stMarinada_Level REF=g_ProcControl.arr_stProcCntrl[E_ProcessControl_Name.eMarin_Level];
-	//Pressure
-stPressure 	REF=g_ProcControl.arr_stProcCntrl[E_ProcessControl_Name.eCIP_Pressure];
-//temperature control
-stTemp_ClntReturn REF=g_ProcControl.arr_stProcCntrl[E_ProcessControl_Name.eClientReturn_Temp];
-stHeatExchanger REF=g_ProcControl.arr_stProcCntrl[E_ProcessControl_Name.eHeatExchanger];
-
-//Function block
-	//concentration
-pcDetergent 	REF=g_ProcControl.arr_fbProcCntrl[E_ProcessControl_Name.eDetergentConc];
-pcDisInfectant 	REF=g_ProcControl.arr_fbProcCntrl[E_ProcessControl_Name.eDisinfectionConc];
-	//Temperature
-pcTemperature_Deterg REF=g_ProcControl.arr_fbProcCntrl[E_ProcessControl_Name.eDeterTemp];
-pcTemperature_Dis 	 REF=g_ProcControl.arr_fbProcCntrl[E_ProcessControl_Name.eDisTemp];
-	//Flow rate
-pcFlow1_Rate REF=g_ProcControl.arr_fbProcCntrl[E_ProcessControl_Name.eCIP_Flow_1];
-pcFlow2_Rate REF=g_ProcControl.arr_fbProcCntrl[E_ProcessControl_Name.eCIP_Flow_2];
-pcFlow3_Rate REF=g_ProcControl.arr_fbProcCntrl[E_ProcessControl_Name.eCIP_Flow_3];
-	//Level
 pcColor_Level    REF=g_ProcControl.arr_fbProcCntrl[E_ProcessControl_Name.eColor_Level];
+
+stMarinada_Level REF=g_ProcControl.arr_stProcCntrl[E_ProcessControl_Name.eMarin_Level];
 pcMarinada_Level REF=g_ProcControl.arr_fbProcCntrl[E_ProcessControl_Name.eMarin_Level];
 	//Pressure
-pcPressure 	REF=g_ProcControl.arr_fbProcCntrl[E_ProcessControl_Name.eCIP_Pressure];
+stP1001_Pressure 	REF=g_ProcControl.arr_stProcCntrl[E_ProcessControl_Name.eCIP_Pressure];
+pcP1001_Pressure 	REF=g_ProcControl.arr_fbProcCntrl[E_ProcessControl_Name.eCIP_Pressure];
 
 //temperature control
-pcTemp_ClntReturn 	REF=g_ProcControl.arr_fbProcCntrl[E_ProcessControl_Name.eClientReturn_Temp];
+stTemp_ClntReturn REF=g_ProcControl.arr_stProcCntrl[E_ProcessControl_Name.eClientReturn_Temp];
+pcTemp_ClntReturn REF=g_ProcControl.arr_fbProcCntrl[E_ProcessControl_Name.eClientReturn_Temp];
 
-pcHeatExchanger 	REF=g_ProcControl.arr_fbProcCntrl[E_ProcessControl_Name.eHeatExchanger];
+stHeatExchanger REF=g_ProcControl.arr_stProcCntrl[E_ProcessControl_Name.eHeatExchanger];
+pcHeatExchanger REF=g_ProcControl.arr_fbProcCntrl[E_ProcessControl_Name.eHeatExchanger];
+
+
 
 
 
@@ -35494,8 +35533,8 @@ END_VAR
 	stColor_Level.ToleravceLow:=10;
 	stMarinada_Level.ToleranceHigh:=10;
 	stMarinada_Level.ToleravceLow:=10;
-	stPressure.ToleranceHigh:=1;
-	stPressure.ToleravceLow:=1;
+	stP1001_Pressure.ToleranceHigh:=1;
+	stP1001_Pressure.ToleravceLow:=1;
 	]]></ST>
       </Implementation>
     </Method>
@@ -37065,39 +37104,60 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="837" Count="0" />
       <LineId Id="835" Count="1" />
       <LineId Id="834" Count="0" />
-      <LineId Id="763" Count="57" />
+      <LineId Id="763" Count="16" />
+      <LineId Id="783" Count="0" />
+      <LineId Id="860" Count="0" />
+      <LineId Id="868" Count="11" />
+      <LineId Id="862" Count="0" />
+      <LineId Id="864" Count="0" />
+      <LineId Id="863" Count="0" />
+      <LineId Id="881" Count="2" />
+      <LineId Id="880" Count="0" />
+      <LineId Id="884" Count="2" />
+      <LineId Id="784" Count="36" />
       <LineId Id="101" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP.act_GetReference">
       <LineId Id="3" Count="3" />
       <LineId Id="2" Count="0" />
-      <LineId Id="36" Count="0" />
       <LineId Id="60" Count="0" />
       <LineId Id="35" Count="0" />
+      <LineId Id="95" Count="0" />
+      <LineId Id="94" Count="0" />
       <LineId Id="37" Count="0" />
+      <LineId Id="96" Count="1" />
       <LineId Id="39" Count="0" />
       <LineId Id="38" Count="0" />
+      <LineId Id="98" Count="0" />
+      <LineId Id="100" Count="0" />
       <LineId Id="40" Count="0" />
+      <LineId Id="99" Count="0" />
       <LineId Id="42" Count="0" />
       <LineId Id="76" Count="0" />
-      <LineId Id="92" Count="1" />
+      <LineId Id="101" Count="0" />
+      <LineId Id="104" Count="0" />
+      <LineId Id="92" Count="0" />
+      <LineId Id="102" Count="0" />
+      <LineId Id="105" Count="0" />
+      <LineId Id="93" Count="0" />
+      <LineId Id="103" Count="0" />
       <LineId Id="75" Count="0" />
       <LineId Id="58" Count="0" />
       <LineId Id="57" Count="0" />
+      <LineId Id="106" Count="0" />
+      <LineId Id="108" Count="0" />
       <LineId Id="59" Count="0" />
+      <LineId Id="107" Count="0" />
       <LineId Id="44" Count="0" />
       <LineId Id="43" Count="0" />
+      <LineId Id="109" Count="1" />
       <LineId Id="84" Count="0" />
-      <LineId Id="88" Count="1" />
-      <LineId Id="61" Count="8" />
-      <LineId Id="78" Count="0" />
-      <LineId Id="90" Count="1" />
-      <LineId Id="71" Count="3" />
-      <LineId Id="46" Count="0" />
-      <LineId Id="81" Count="0" />
-      <LineId Id="80" Count="0" />
-      <LineId Id="82" Count="0" />
-      <LineId Id="86" Count="1" />
+      <LineId Id="88" Count="0" />
+      <LineId Id="111" Count="1" />
+      <LineId Id="89" Count="0" />
+      <LineId Id="113" Count="0" />
+      <LineId Id="61" Count="0" />
+      <LineId Id="86" Count="0" />
       <LineId Id="47" Count="5" />
       <LineId Id="45" Count="0" />
     </LineIds>
