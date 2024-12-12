@@ -3,7 +3,8 @@
   <POU Name="FB_Pump" Id="{85164826-ad0f-4589-97dc-725e0f6c34e4}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_Pump
 VAR_INPUT
-	Pump_ID: E_Pump_List:=E_Pump_List.eNotSelected;
+	Pump_ID				: E_Pump_List:=E_Pump_List.eNotSelected;
+	PressureSensor_ID	: E_ASense_Name:=E_ASense_Name.eNotSelected;
 END_VAR
 VAR
 	sID: STRING(6);
@@ -31,6 +32,10 @@ VAR
 
 	bInitConnect: BOOL;
 	ton_RPM_feedback_lag_monitoring: TON;
+	ton_Pressure_feedback_monitoring: TON;
+	
+	fbPressureSensor: REFERENCE TO FB_AnalogSensor;
+
 END_VAR
 VAR_OUTPUT
 	DriveReady	:   BOOL;
@@ -204,6 +209,42 @@ IF NOT DriveReady THEN;
 	RETURN;
 END_IF
 
+
+IF 	PressureSensor_ID <> E_ASense_Name.eNotSelected THEN;
+	fbPressureSensor REF= fbAnalogSensor[PressureSensor_ID];
+	IF __ISVALIDREF(fbPressureSensor) THEN;	
+		ton_Pressure_feedback_monitoring(PT:=T#10S);
+		IF bRun AND ( fbPressureSensor.bHH_Alarm 
+					OR fbPressureSensor.bHH_Warning
+					OR fbPressureSensor.bLL_Warning 
+					OR fbPressureSensor.bLL_Alarm) 
+		THEN;
+			ton_Pressure_feedback_monitoring.IN:=TRUE;
+		ELSE;
+			ton_Pressure_feedback_monitoring.IN:=FALSE;
+		END_IF	
+		
+		IF fbPressureSensor.bHH_Alarm AND ton_Pressure_feedback_monitoring.Q THEN;
+			m_Error:=concat(sID,'x004');
+			stOperation.bSetPause:=TRUE;
+			RETURN;
+		END_IF
+		IF fbPressureSensor.bHH_Warning AND ton_Pressure_feedback_monitoring.Q THEN;
+			m_Error:=concat(sID,'x005');
+			RETURN;
+		END_IF
+		IF fbPressureSensor.bLL_Warning AND ton_Pressure_feedback_monitoring.Q THEN;
+			m_Error:=concat(sID,'x006');
+			RETURN;
+		END_IF
+		IF fbPressureSensor.bLL_Alarm AND ton_Pressure_feedback_monitoring.Q THEN;
+			m_Error:=concat(sID,'x007');
+			stOperation.bSetPause:=TRUE;
+			RETURN;
+		END_IF		
+	END_IF	
+END_IF
+ 
 m_Error:='';]]></ST>
       </Implementation>
     </Method>
@@ -458,6 +499,28 @@ m_Stop:=TRUE;]]></ST>
       <LineId Id="12" Count="1" />
       <LineId Id="52" Count="4" />
       <LineId Id="51" Count="0" />
+      <LineId Id="99" Count="0" />
+      <LineId Id="73" Count="0" />
+      <LineId Id="72" Count="0" />
+      <LineId Id="98" Count="0" />
+      <LineId Id="76" Count="0" />
+      <LineId Id="110" Count="0" />
+      <LineId Id="101" Count="0" />
+      <LineId Id="105" Count="2" />
+      <LineId Id="103" Count="0" />
+      <LineId Id="108" Count="1" />
+      <LineId Id="102" Count="0" />
+      <LineId Id="100" Count="0" />
+      <LineId Id="111" Count="0" />
+      <LineId Id="80" Count="1" />
+      <LineId Id="112" Count="0" />
+      <LineId Id="83" Count="0" />
+      <LineId Id="82" Count="0" />
+      <LineId Id="86" Count="9" />
+      <LineId Id="113" Count="0" />
+      <LineId Id="96" Count="1" />
+      <LineId Id="78" Count="0" />
+      <LineId Id="75" Count="0" />
       <LineId Id="67" Count="0" />
       <LineId Id="11" Count="0" />
     </LineIds>
