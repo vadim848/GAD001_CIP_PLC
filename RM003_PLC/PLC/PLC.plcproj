@@ -485,6 +485,7 @@
     <Compile Include="01 Instance\04-Messages\ERROR_HISTORY.TcVIS">
       <SubType>Code</SubType>
       <DependentUpon>Visualization Manager.TcVMO</DependentUpon>
+      <ExcludeFromBuild>true</ExcludeFromBuild>
     </Compile>
     <Compile Include="01 Instance\04-Messages\Error_List.TcGVL">
       <SubType>Code</SubType>
@@ -509,14 +510,20 @@
     <Compile Include="01 Instance\04-Messages\vis_Error_Act.TcVIS">
       <SubType>Code</SubType>
       <DependentUpon>Visualization Manager.TcVMO</DependentUpon>
+      <External>false</External>
+      <ExcludeFromBuild>false</ExcludeFromBuild>
     </Compile>
     <Compile Include="01 Instance\04-Messages\vis_Error_History.TcVIS">
       <SubType>Code</SubType>
       <DependentUpon>Visualization Manager.TcVMO</DependentUpon>
+      <External>false</External>
+      <ExcludeFromBuild>false</ExcludeFromBuild>
     </Compile>
     <Compile Include="01 Instance\04-Messages\vis_Error_Search.TcVIS">
       <SubType>Code</SubType>
       <DependentUpon>Visualization Manager.TcVMO</DependentUpon>
+      <External>false</External>
+      <ExcludeFromBuild>false</ExcludeFromBuild>
     </Compile>
     <Compile Include="01 Instance\06-Visu\ERRORS_OPER_16_9.TcVIS">
       <SubType>Code</SubType>
@@ -525,6 +532,10 @@
     <Compile Include="01 Instance\06-Visu\ES_INT_OPER_16_9.TcVIS">
       <SubType>Code</SubType>
       <DependentUpon>Visualization Manager.TcVMO</DependentUpon>
+    </Compile>
+    <Compile Include="01 Instance\06-Visu\g_Common.TcGVL">
+      <SubType>Code</SubType>
+      <LinkAlways>true</LinkAlways>
     </Compile>
     <Compile Include="01 Instance\06-Visu\Recipe_16_9.TcVIS">
       <SubType>Code</SubType>
@@ -535,10 +546,6 @@
       <DependentUpon>Visualization Manager.TcVMO</DependentUpon>
     </Compile>
     <Compile Include="01 Instance\06-Visu\Template16-9\TEMP16_9_00_1.TcVIS">
-      <SubType>Code</SubType>
-      <DependentUpon>Visualization Manager.TcVMO</DependentUpon>
-    </Compile>
-    <Compile Include="01 Instance\06-Visu\Template16-9\TEMP16_9_00_2_Ujjett.TcVIS">
       <SubType>Code</SubType>
       <DependentUpon>Visualization Manager.TcVMO</DependentUpon>
     </Compile>
@@ -1090,6 +1097,10 @@
         </Parameter>
       </Parameters>
     </PlaceholderReference>
+    <PlaceholderReference Include="VisuDialogs">
+      <DefaultResolution>VisuDialogs, * (System)</DefaultResolution>
+      <Namespace>VisuDialogs</Namespace>
+    </PlaceholderReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="PLC.tmc">
@@ -1126,7 +1137,7 @@
   </ItemGroup>
   <ItemGroup>
     <PlaceholderResolution Include="RecipeManagement">
-      <Resolution>Recipe Management, 3.5.13.0 (System)</Resolution>
+      <Resolution>Recipe Management, * (System)</Resolution>
     </PlaceholderResolution>
   </ItemGroup>
   <ItemGroup>
