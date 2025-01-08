@@ -213,7 +213,7 @@ END_IF
 IF 	PressureSensor_ID <> E_ASense_Name.eNotSelected THEN;
 	fbPressureSensor REF= fbAnalogSensor[PressureSensor_ID];
 	IF __ISVALIDREF(fbPressureSensor) THEN;	
-		ton_Pressure_feedback_monitoring(PT:=T#10S);
+		ton_Pressure_feedback_monitoring(PT:=T#30S);
 		IF bRun AND ( fbPressureSensor.bHH_Alarm 
 					OR fbPressureSensor.bHH_Warning
 					OR fbPressureSensor.bLL_Warning 
