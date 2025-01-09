@@ -1035,6 +1035,9 @@
 				<Task Id="5" Priority="21" CycleTime="100000" AmsPort="352" AdtTasks="true">
 					<Name>PlcTask1</Name>
 				</Task>
+				<Task Id="6" Priority="30" CycleTime="2000000" AmsPort="353" DisableFpExceptions="true" AdtTasks="true">
+					<Name>VISU_TASK</Name>
+				</Task>
 			</Tasks>
 		</System>
 		<Plc>
@@ -1411,7 +1414,7 @@
 				</Instance>
 			</Project>
 			<Project GUID="{E00FAC4C-0BC4-4F72-B79F-97B61CFC5710}" Name="VISU_plc" PrjFilePath="VISU_plc\VISU_plc.plcproj" TmcFilePath="VISU_plc\VISU_plc.tmc" ReloadTmc="true" AmsPort="852" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502040" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="VISU_plc\VISU_plc.tmc" TmcHash="{D55B4613-97D3-EC14-23FE-B4603DC1658C}">
+				<Instance Id="#x08502040" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="VISU_plc\VISU_plc.tmc" TmcHash="{17582DB6-0028-DFF9-F2FE-87A03A61928F}">
 					<Name>VISU_plc Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Contexts>
@@ -1424,9 +1427,19 @@
 							<Priority>21</Priority>
 							<CycleTime>10000000</CycleTime>
 						</Context>
+						<Context>
+							<Id>1</Id>
+							<Name>VISU_TASK</Name>
+							<ManualConfig>
+								<OTCID>#x02010060</OTCID>
+							</ManualConfig>
+							<Priority>30</Priority>
+							<CycleTime>200000000</CycleTime>
+						</Context>
 					</Contexts>
 					<TaskPouOids>
 						<TaskPouOid Prio="21" OTCID="#x08502041"/>
+						<TaskPouOid Prio="30" OTCID="#x08502042"/>
 					</TaskPouOids>
 				</Instance>
 			</Project>
