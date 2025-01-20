@@ -1,0 +1,121 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="FB_PrintErrMessageByID" Id="{de7e0d23-675d-4ea9-a0d9-8197fedc41de}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_PrintErrMessageByID
+VAR_INPUT
+	sActErrorID			: STRING;
+	iFB_Num				: INT:=0;
+	sModuleDescription	:STRING:='';
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	cFound				: INT;
+	i					: INT;
+	iFound				: INT;
+	bNewMeasege			: BOOL;
+	rtrig1				: R_TRIG;
+	sLastErrorID		: STRING;
+	j: INT;
+	sFB_Num: STRING(3);
+
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[
+
+
+	
+	IF sActErrorID<>'000x000x000'  AND sActErrorID<>'' THEN
+		IF iFB_Num>0 THEN;
+			sFB_Num:=F_iFB_Num_sFB_Num(iFB_Num:=iFB_Num);
+			sLastErrorID:=REPLACE(sActErrorID,sFB_Num,3,5);
+		ELSE;
+			sLastErrorID:=sActErrorID;
+		END_IF			
+		
+		bNewMeasege:=TRUE;
+		FOR i:=1 TO 100 DO
+			IF Buffer_Act_Message[i].sErrID=sLastErrorID THEN;//sActErrorID
+				//IF Buffer_Act_Message[i].sModuleDescription = sFB_ModuleDescription THEN
+					bNewMeasege:=FALSE;
+					EXIT; 
+				//END_IF
+			END_IF
+		END_FOR
+	ELSE
+		bNewMeasege:=FALSE;
+	END_IF
+	
+	IF bNewMeasege THEN;
+		FOR i:=100 TO 2 BY -1 DO
+			Buffer_Act_Message[i].sDateTime:=Buffer_Act_Message[i-1].sDateTime;
+			Buffer_Act_Message[i].sErrID:=Buffer_Act_Message[i-1].sErrID;
+			Buffer_Act_Message[i].sErrorMessage:=Buffer_Act_Message[i-1].sErrorMessage;
+			Buffer_Act_Message[i].sLevel:=Buffer_Act_Message[i-1].sLevel;
+			Buffer_Act_Message[i].sModuleDescription:=Buffer_Act_Message[i-1].sModuleDescription;
+		END_FOR
+		
+		Buffer_Act_Message[1].sDateTime:=prg_RealClock.sRealTime_Date;
+		Buffer_Act_Message[1].sErrID:=sLastErrorID;//sActErrorID
+		Buffer_Act_Message[1].sModuleDescription:=sModuleDescription;
+
+		//IF sActErrorID='000x000x999' THEN;
+		//	Buffer_Act_Message[1].sErrorMessage:='General Error';	(*	Error description Not Found	*)
+		//ELSE
+			cFound:=0;
+			FOR i:=1 TO C_Max_ErrorList DO
+				IF ar_ErrorList[i,eErrID]=sActErrorID THEN
+					iFound:=i;
+					ar_ErrorActive[iFound]:=TRUE;
+					cFound:=cFound+1;
+				END_IF
+			END_FOR
+	
+			IF cFound=1 THEN;
+				Buffer_Act_Message[1].sErrorMessage:=ar_ErrorList[iFound,eErrMeassage];	(*	Error from the List	*)
+				Buffer_Act_Message[1].sLevel:=ar_ErrorList[iFound,eErrLevel];	(*	Error Level from the List	*)
+			ELSIF cFound=0 THEN; //(*	Error ID not Foud on the Error_List*)
+				Buffer_Act_Message[1].sErrorMessage:='Error ID not found on the "Error_List"';	
+				Buffer_Act_Message[1].sLevel:='Unknown';
+			ELSIF cFound>1 THEN; //(*	More then one Errors Foud with the same  ID*)
+				Buffer_Act_Message[1].sErrorMessage:='More then one error with the same ID  found on the "Error_list"';	
+				Buffer_Act_Message[1].sLevel:='Unknown';
+			END_IF
+		//END_IF
+		FUN_Write_Line_To_History();
+	END_IF
+	
+]]></ST>
+    </Implementation>
+    <LineIds Name="FB_PrintErrMessageByID">
+      <LineId Id="346" Count="1" />
+      <LineId Id="210" Count="0" />
+      <LineId Id="282" Count="0" />
+      <LineId Id="142" Count="0" />
+      <LineId Id="351" Count="1" />
+      <LineId Id="355" Count="0" />
+      <LineId Id="354" Count="0" />
+      <LineId Id="353" Count="0" />
+      <LineId Id="349" Count="0" />
+      <LineId Id="143" Count="3" />
+      <LineId Id="302" Count="1" />
+      <LineId Id="305" Count="0" />
+      <LineId Id="304" Count="0" />
+      <LineId Id="148" Count="5" />
+      <LineId Id="156" Count="7" />
+      <LineId Id="264" Count="0" />
+      <LineId Id="164" Count="0" />
+      <LineId Id="169" Count="1" />
+      <LineId Id="173" Count="2" />
+      <LineId Id="177" Count="11" />
+      <LineId Id="194" Count="2" />
+      <LineId Id="322" Count="0" />
+      <LineId Id="197" Count="1" />
+      <LineId Id="323" Count="0" />
+      <LineId Id="199" Count="2" />
+      <LineId Id="207" Count="0" />
+      <LineId Id="140" Count="0" />
+      <LineId Id="211" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

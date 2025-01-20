@@ -1,20 +1,76 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
   <POU Name="FB_HeatExchanger" Id="{a552b9b2-c3a1-4da2-ba19-b259dcf3d943}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_HeatExchanger
 VAR_IN_OUT
-	ST_HeatExchanger	:	ST_HeatExchanger	;
+	stHeatExchanger	:	ST_HeatExchanger	;
 END_VAR
 VAR_INPUT
+	nValveID		:	E_Pis_Name 	;	
+	nAnalogValveID	:	E_Pis_Name 	;
+
+	nProcCntrlID	:	E_ProcessControl_Name	;
 END_VAR
 VAR_OUTPUT
+	nAlagonValveCntrOut	:	INT	;//output for analog valve opening
 END_VAR
 VAR
+	stPis			:	REFERENCE TO ST_Piston;
+	stPisAnalog		:	REFERENCE TO ST_Piston;
+	
+	stProcessControl		:	REFERENCE TO ST_ProcessControl	;
+	fbProcessControl		: 	REFERENCE TO FB_ProcessControl	;
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[]]></ST>
+      <ST><![CDATA[act_GetReference();
+//act_AnalogOutScaling();
+
+stProcessControl.fCtrlOutput_Min:=0;
+stProcessControl.fCtrlOutput_Max:=100;
+stProcessControl.fCtrlOutput_Manual;
+stProcessControl.rValue_Min_To_ReleaseControl:=15; //Degrees
+
+IF stHeatExchanger.bManual THEN;
+	fbProcessControl.mRun_PID(Set_Point:=stProcessControl.fCtrlOutput_Manual , controlManual:=TRUE);
+	//nAlagonValveCntrOut:=mCMD_to_Analog(fControl:=stHeatExchanger.fManualControl);
+ELSE;
+	IF stProcessControl.bActiveCntr AND NOT stPis.st_Open THEN
+		stPis.req_Open:=TRUE;
+	ELSIF NOT stProcessControl.bActiveCntr AND NOT stPis.st_Close THEN
+		stPis.req_Close:=TRUE;
+	END_IF
+	//nAlagonValveCntrOut:=mCMD_to_Analog(fControl:=stProcessControl.fCtrlOutput);	
+END_IF
+nAlagonValveCntrOut:=mCMD_to_Analog(fControl:=stProcessControl.fCtrlOutput);
+IF nAlagonValveCntrOut=0 AND NOT stPisAnalog.st_Close THEN;
+	stPisAnalog.req_Close:=TRUE;
+ELSIF nAlagonValveCntrOut<>0 AND NOT stPisAnalog.st_Open THEN;
+	stPisAnalog.req_Open:=TRUE;
+END_IF
+
+
+]]></ST>
     </Implementation>
+    <Action Name="act_AnalogOutScaling" Id="{3066c111-d337-406a-9a79-f8a55347b485}">
+      <Implementation>
+        <ST><![CDATA[IF (stHeatExchanger.cntrlVal_Max-stHeatExchanger.cntrlVal_Min)<>0 THEN
+	nAlagonValveCntrOut:=DINT_TO_INT((TRUNC((stProcessControl.fCtrlOutput*
+		(stHeatExchanger.outVal_Max-stHeatExchanger.outVal_Min)/(stHeatExchanger.cntrlVal_Max-stHeatExchanger.cntrlVal_Min))+
+		stHeatExchanger.outOffset)));
+END_IF]]></ST>
+      </Implementation>
+    </Action>
+    <Action Name="act_GetReference" Id="{e298de8b-73e5-4293-9611-13e0901ac69a}">
+      <Implementation>
+        <ST><![CDATA[//On-Off walve structure
+stPis REF= g_Piston.stPis[nValveID];
+stPisAnalog REF= g_Piston.stPis[nAnalogValveID];
+
+stProcessControl REF=g_ProcControl.arr_stProcCntrl[nProcCntrlID];
+fbProcessControl REF=g_ProcControl.arr_fbProcCntrl[nProcCntrlID];]]></ST>
+      </Implementation>
+    </Action>
     <Method Name="m_Auto" Id="{0597b9e2-3cdd-4483-bbe1-b8f6f1a63d50}">
       <Declaration><![CDATA[METHOD m_Auto : BOOL
 VAR_INPUT
@@ -42,8 +98,41 @@ END_VAR
         <ST><![CDATA[]]></ST>
       </Implementation>
     </Method>
+    <Method Name="mCMD_to_Analog" Id="{560014a2-19b1-4d00-9b7a-c42a2745f37a}">
+      <Declaration><![CDATA[METHOD mCMD_to_Analog : INT
+VAR_INPUT
+	fControl: LREAL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF (stHeatExchanger.cntrlVal_Max-stHeatExchanger.cntrlVal_Min)<>0 THEN
+	mCMD_to_Analog:=DINT_TO_INT((TRUNC((fControl*
+		(stHeatExchanger.outVal_Max-stHeatExchanger.outVal_Min)/(stHeatExchanger.cntrlVal_Max-stHeatExchanger.cntrlVal_Min))+
+		stHeatExchanger.outOffset)));
+ELSE;
+	mCMD_to_Analog:=0;
+END_IF
+
+//nAlagonValveCntrOut]]></ST>
+      </Implementation>
+    </Method>
     <LineIds Name="FB_HeatExchanger">
-      <LineId Id="9" Count="0" />
+      <LineId Id="104" Count="2" />
+      <LineId Id="128" Count="1" />
+      <LineId Id="151" Count="1" />
+      <LineId Id="130" Count="0" />
+      <LineId Id="109" Count="18" />
+      <LineId Id="55" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_HeatExchanger.act_AnalogOutScaling">
+      <LineId Id="7" Count="3" />
+      <LineId Id="3" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_HeatExchanger.act_GetReference">
+      <LineId Id="2" Count="0" />
+      <LineId Id="11" Count="1" />
+      <LineId Id="6" Count="0" />
+      <LineId Id="9" Count="1" />
     </LineIds>
     <LineIds Name="FB_HeatExchanger.m_Auto">
       <LineId Id="5" Count="0" />
@@ -53,6 +142,13 @@ END_VAR
     </LineIds>
     <LineIds Name="FB_HeatExchanger.m_Stop">
       <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_HeatExchanger.mCMD_to_Analog">
+      <LineId Id="6" Count="3" />
+      <LineId Id="11" Count="1" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="13" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>

@@ -1,8 +1,30 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
   <GVL Name="g_Data" Id="{d323a574-dba5-4513-95f5-99a87722cf92}">
     <Declaration><![CDATA[//{attribute 'qualified_only'}
 VAR_GLOBAL PERSISTENT
+	gCIP_ValvUL			:	ARRAY [1..8,1..6] OF E_Pis_Name	:=[
+																E_Pis_Name.V3004,E_Pis_Name.V3017,E_Pis_Name.V3023,E_Pis_Name.e0_not_in_use,E_Pis_Name.e0_not_in_use,E_Pis_Name.e0_not_in_use,
+																E_Pis_Name.V3010,E_Pis_Name.V3027,E_Pis_Name.V3028,E_Pis_Name.e0_not_in_use,E_Pis_Name.e0_not_in_use,E_Pis_Name.e0_not_in_use,
+																E_Pis_Name.V4034,E_Pis_Name.V4004,E_Pis_Name.V4017,E_Pis_Name.v4023,E_Pis_Name.e0_not_in_use,E_Pis_Name.e0_not_in_use,
+																E_Pis_Name.V4033,E_Pis_Name.V4010,E_Pis_Name.V4027,E_Pis_Name.V4028,E_Pis_Name.e0_not_in_use,E_Pis_Name.e0_not_in_use,
+																
+																E_Pis_Name.V3113,E_Pis_Name.V3004,E_Pis_Name.V3010,E_Pis_Name.V3023,E_Pis_Name.V3028,E_Pis_Name.e0_not_in_use,
+																E_Pis_Name.v2114,E_Pis_Name.V4004,E_Pis_Name.V4010,E_Pis_Name.V2116,E_Pis_Name.V4023,E_Pis_Name.V4028,
+																E_Pis_Name.V3017,E_Pis_Name.V3027,E_Pis_Name.e0_not_in_use,E_Pis_Name.e0_not_in_use,E_Pis_Name.e0_not_in_use,E_Pis_Name.e0_not_in_use,
+																E_Pis_Name.V4017,E_Pis_Name.v4027,E_Pis_Name.V2115,E_Pis_Name.V4034,E_Pis_Name.V4033,E_Pis_Name.e0_not_in_use														
+															];	
+	gCIP_ValvUL_Seat	:	ARRAY [1..8,1..6] OF BOOL :=[
+															0,1,1,0,0,0, // Client 1 eTank_1,
+															0,1,1,0,0,0, // Client 2 eTank_2,
+															0,0,1,1,0,0, // Client 3 eTank_3,
+															0,0,1,1,0,0, // Client 4 eTank_4,
+															0,1,1,0,0,0, // Client 5
+															0,1,1,0,0,0, // Client 6
+															0,0,0,0,0,0, // Client 7
+															0,0,0,1,1,0 // Client 8 
+														]	;	//0-Low, 1-Up
+
 	fbElement: ARRAY[1..8] OF FB_Element;
 	
 	fbIntCon_TriB_T1_Marin	: FB_InterConnection;
@@ -43,8 +65,9 @@ VAR_GLOBAL PERSISTENT
 	fbCIP_ClientTank_Marinade	: FB_CIP_ClientTank;
 	fbCIP_ClientTank_Color		: FB_CIP_ClientTank;
 
-	
+	fbTriBlender_Select			: FB_TriBlender_Select;
 	eTriBlenderUsage	: E_TriBlenderUsage;
+	
 	eTriBlenderPipe		: E_TriBlenderPipe;
 	eTriBlenderPipe_In	: E_TriBlenderPipe;
 	eTriBlenderPipe_Out	: E_TriBlenderPipe;
@@ -59,7 +82,8 @@ VAR_GLOBAL PERSISTENT
 	
 	arCIP_RequestBufer: ARRAY [0..9] OF ST_CIP_Request;
 
-	stDev			: 	ARRAY[0..E_OwnerDevice.common] OF 	ST_DeviceErrorHandeling;
+	//stDev			: 	ARRAY[0..E_OwnerDevice.common] OF 	ST_DeviceErrorHandeling;
+	//stDev			: 	ARRAY[0..E_OwnerDevice.common] OF 	ST_OperationButtons;
 	
 	//Valves
 	arr_TankValves					:	ARRAY [1..4] OF st_TankValves		;
@@ -96,6 +120,23 @@ VAR_GLOBAL PERSISTENT
 	////////////////////////////////////////////////////////////////
 	arrTanksSens	:	ARRAY [0..E_Tank_Name.last] OF FB_TankSensors;
 	stTanksSens		:	ARRAY [0..E_Tank_Name.last] OF ST_Tank_Level;
-END_VAR]]></Declaration>
+	
+	////////////////////////////////////////////////////////////////
+	arr_CIP_Param		:	ARRAY [0..E_CIP_Usage.eLocal] OF ST_CIP_Param		;//9-local, 1..8 cleints
+	
+	//additional variables
+	b_CIP_Run	:	BOOL	;
+	bDisolvingProcess_Active: BOOL;
+	bDisolvingProcess_Done: BOOL;
+	
+	arr_ProdTank		:	ARRAY [0..E_Tank_Name.last] OF ST_ProdParams;
+	
+	stTriBlender		: ST_TriBlender;		
+	arrProductionComponents	: ARRAY [0..g_Data.MaxCompInProduct-1] OF ST_Component;
+END_VAR
+VAR_GLOBAL CONSTANT
+	MaxCompInProduct	: USINT:= 10;
+END_VAR
+]]></Declaration>
   </GVL>
 </TcPlcObject>

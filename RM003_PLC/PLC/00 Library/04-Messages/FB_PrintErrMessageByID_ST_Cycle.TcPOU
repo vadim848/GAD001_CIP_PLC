@@ -1,0 +1,150 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="FB_PrintErrMessageByID_ST_Cycle" Id="{7210b048-f149-44ba-9ddd-a0ac8a733d4f}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_PrintErrMessageByID_ST_Cycle
+VAR_INPUT
+	pstCycle			:POINTER TO ST_BasicCycle;
+	sActErrorID			: STRING;
+	ErrorToPrint		: STRING;
+	iFB_Num				: INT:=0;
+	sFB_ModuleDescription	:STRING(30):='';
+	bResumeAll		: BOOL;
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	cFound				: INT;
+	i					: INT;
+	iFound				: INT;
+	//r_trigPrintMessage	: R_TRIG;
+	bNewMeasege			: BOOL;
+	sActErrorID_AA		: STRING;
+	iErrorID_Flag		: INT;
+	sAA					: STRING;
+	sActErrorID_Message	: STRING;
+	iAAPos				: INT;
+	rtrig1				: R_TRIG;
+	
+	sLastErrorID: STRING;
+	j: INT;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[
+IF pstCycle^.bFault THEN
+	IF sActErrorID<>'000x000x000'  AND sActErrorID<>'' THEN //to print or not to print the massage???
+		sLastErrorID:=sActErrorID;
+		bNewMeasege:=TRUE;
+		FOR i:=1 TO 100 DO
+			IF Buffer_Act_Message[i].sErrID=sActErrorID THEN;
+				IF Buffer_Act_Message[i].sModuleDescription = sFB_ModuleDescription THEN
+					bNewMeasege:=FALSE;
+					EXIT;
+				END_IF
+			END_IF
+		END_FOR
+	ELSE
+		bNewMeasege:=FALSE;
+	END_IF
+	
+	IF bNewMeasege AND NOT bResumeAll THEN;
+		FOR i:=100 TO 2 BY -1 DO
+			Buffer_Act_Message[i].sDateTime:=Buffer_Act_Message[i-1].sDateTime;
+			Buffer_Act_Message[i].sErrID:=Buffer_Act_Message[i-1].sErrID;
+			Buffer_Act_Message[i].sErrorMessage:=Buffer_Act_Message[i-1].sErrorMessage;
+			Buffer_Act_Message[i].sLevel:=Buffer_Act_Message[i-1].sLevel;
+			Buffer_Act_Message[i].sModuleDescription:=Buffer_Act_Message[i-1].sModuleDescription;
+		END_FOR
+		
+		Buffer_Act_Message[1].sDateTime:=prg_RealClock.sRealTime_Date;
+		Buffer_Act_Message[1].sErrID:=sActErrorID;
+		Buffer_Act_Message[1].sModuleDescription:=sFB_ModuleDescription;
+
+		IF sActErrorID='000x000x999' THEN;
+			Buffer_Act_Message[1].sErrorMessage:=CONCAT('Cycle message: ',ErrorToPrint);
+		ELSE
+			cFound:=0;
+			FOR i:=1 TO C_Max_ErrorList DO
+				IF ar_ErrorList[i,eErrID]=sActErrorID THEN
+					iFound:=i;
+					ar_ErrorActive[iFound]:=TRUE;
+					cFound:=cFound+1;
+				END_IF
+			END_FOR
+	
+			IF cFound=1 THEN;
+				Buffer_Act_Message[1].sErrorMessage:=ar_ErrorList[iFound,eErrMeassage];	(*	Error from the List	*)
+				pstCycle^.sFailedMessage := Buffer_Act_Message[1].sErrorMessage;
+				Buffer_Act_Message[1].sLevel:=ar_ErrorList[iFound,eErrLevel];	(*	Error Level from the List	*)
+			ELSIF cFound=0 THEN; //(*	Error ID not Foud on the List	*)
+				//Buffer_Act_Message[1].sErrorMessage:='Error ID not found on the "Error List"';
+				Buffer_Act_Message[1].sErrorMessage:=CONCAT('Cycle message[1]: ',ErrorToPrint);
+				Buffer_Act_Message[1].sLevel:='Error';
+			ELSIF cFound>1 THEN; //(*	More then one Errors Foud with the same  ID		*)
+				//Buffer_Act_Message[1].sErrorMessage:='More then one error with the same ID  found on the "Error list"';
+				Buffer_Act_Message[1].sErrorMessage:=CONCAT('Cycle message[2]: ',ErrorToPrint);
+				Buffer_Act_Message[1].sLevel:='Error';
+			END_IF
+		END_IF
+		FUN_Write_Line_To_History();
+	END_IF
+	
+	
+	IF bResumeAll THEN
+		sActErrorID:='';
+	END_IF
+	
+END_IF
+
+(*
+//for delete message if no fault
+rtrig1(CLK:= NOT pstCycle^.bFault, Q=> );
+IF rtrig1.Q THEN  // if cycle not in pause
+	FOR i:= 2 TO 100 DO //loop for search 
+		IF Buffer_Act_Message[i-1].sErrID = sLastErrorID THEN // search if last error id = buffer which it error table.
+			FOR j:= i TO 100 DO //if found message id then delete it.
+				Buffer_Act_Message[j-1]:=Buffer_Act_Message[j];//delete
+			END_FOR
+		END_IF
+	END_FOR
+END_IF
+*)
+
+]]></ST>
+    </Implementation>
+    <LineIds Name="FB_PrintErrMessageByID_ST_Cycle">
+      <LineId Id="210" Count="0" />
+      <LineId Id="87" Count="0" />
+      <LineId Id="142" Count="2" />
+      <LineId Id="293" Count="6" />
+      <LineId Id="149" Count="4" />
+      <LineId Id="156" Count="7" />
+      <LineId Id="264" Count="0" />
+      <LineId Id="164" Count="0" />
+      <LineId Id="169" Count="1" />
+      <LineId Id="173" Count="1" />
+      <LineId Id="176" Count="12" />
+      <LineId Id="232" Count="0" />
+      <LineId Id="194" Count="2" />
+      <LineId Id="384" Count="0" />
+      <LineId Id="326" Count="0" />
+      <LineId Id="197" Count="1" />
+      <LineId Id="385" Count="0" />
+      <LineId Id="327" Count="0" />
+      <LineId Id="199" Count="8" />
+      <LineId Id="140" Count="0" />
+      <LineId Id="138" Count="0" />
+      <LineId Id="355" Count="0" />
+      <LineId Id="354" Count="0" />
+      <LineId Id="212" Count="1" />
+      <LineId Id="216" Count="0" />
+      <LineId Id="219" Count="0" />
+      <LineId Id="223" Count="0" />
+      <LineId Id="233" Count="2" />
+      <LineId Id="226" Count="0" />
+      <LineId Id="224" Count="0" />
+      <LineId Id="218" Count="0" />
+      <LineId Id="214" Count="1" />
+      <LineId Id="211" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

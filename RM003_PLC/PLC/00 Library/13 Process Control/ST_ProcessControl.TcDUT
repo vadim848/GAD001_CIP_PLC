@@ -1,10 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
   <DUT Name="ST_ProcessControl" Id="{605fc618-bf0d-4beb-8cbb-bff86f34391d}">
     <Declaration><![CDATA[TYPE ST_ProcessControl :
 STRUCT
+	idName			: STRING;
+
 	rValue			: REAL;
 	rSetPoint		: REAL;
+	Deviation		: REAL;
+	rValue_Min_To_ReleaseControl		: REAL;
+	
 	ToleravceLow	: REAL:=0;  // min=0
 	ToleranceHigh	: REAL:=0;  // min=0
 
@@ -12,7 +17,33 @@ STRUCT
 	Control_ON		: BOOL;
 	OverFlow		: BOOL;	
 	
+	//PID parameters
+	bPause			: 	BOOL	;
+	bManual			: 	BOOL	;
+	bReset			: 	BOOL	;
+	fCtrlCycleTime	: 	REAL	; 
+	fKp				:	REAL	; 
+	fTn				:	REAL	; 
+	fTv				:	REAL	;
+	fTd				:	REAL	; // not in use
+	fCtrlOutput		:	LREAL	; 
+	fCtrlOutput_Manual		:	LREAL	; 
+	fCtrlOutput_Min			:	LREAL:=300	; 
+	fCtrlOutput_Max			:	LREAL:=3000	; 
+
+	nErrorStatus 	: 	UINT	;
+	
+	//Hysteresis
+	fHystHigh		:	REAL	;
+	fHystLow		:	REAL	;
+	bHystOut		:	BOOL	;
+	rHystOutLow		:	REAL:=1200	;
+	rHystOutHigh	:	REAL:=2500	;
+	
 	bDone			:	BOOL	;
+	bActiveCntr		:	BOOL	;
+	
+	nNumberOfDcNum	:	INT	;//Number of number after decimal point
 END_STRUCT
 END_TYPE
 ]]></Declaration>

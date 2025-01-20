@@ -1,14 +1,29 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
   <GVL Name="g_HMI" Id="{7ec2270c-5899-4e72-a3ef-a067a4e58080}">
-    <Declaration><![CDATA[{attribute 'qualified_only'}
+    <Declaration><![CDATA[//{attribute 'qualified_only'}
 VAR_GLOBAL
 	eLed_Color: E_Led_Color;
+	
+	eProcessControl_Name	: E_ProcessControl_Name	;
+	
+	eCIP_DashStage			: E_CIP_DashStage	;
+	eCIP_DashStage_actual	: E_CIP_DashStage_List;
+	sCIP_DashStage_actual	: STRING	;
+
+	arCIP_DashStage_list	: ARRAY[0..E_CIP_DashStage_List.eLast] OF E_CIP_DashStage;
+	arCIP_DashStage_string	: ARRAY[0..E_CIP_DashStage_List.eLast] OF STRING;
+	arCIP_DashStage_MixProof: ARRAY[1..8] OF ST_MixProof_state;
+
 	
 	stT91_Sens		: ST_Tank_Level;
 	stT92_Sens		: ST_Tank_Level;
 	stT93_Sens		: ST_Tank_Level;
 	stT94_Sens		: ST_Tank_Level;
+	stT1_Sens		: ST_Tank_Level;
+	stT2_Sens		: ST_Tank_Level;
+	stT3_Sens		: ST_Tank_Level;
+	stT4_Sens		: ST_Tank_Level;
 END_VAR]]></Declaration>
   </GVL>
 </TcPlcObject>

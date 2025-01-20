@@ -1,34 +1,124 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
   <POU Name="FB_Piston_U_L" Id="{f6df062b-8dd7-4dca-98fe-56ea9e281485}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK PUBLIC FB_Piston_U_L// EXTENDS FB_Piston
 VAR_INPUT
-	enable: BOOL;
+	enable		: BOOL	;
+	sen_Upper	: BOOL	;
+	sen_Lower	: BOOL	;
+
 END_VAR
 VAR_OUTPUT
 	valve_Upper		:BOOL;
 	valve_Lower		:BOOL;	
 END_VAR
 VAR
+	tOn: TIME:=T#1S;
+	tOff: TIME:=T#1S;
+	Call_RTrig_ReqUp: R_TRIG;
+	Call_RTrig_ReqLow: R_TRIG;
+	
+	b_Memo_ReqUp	:	BOOL	;
+	b_Memo_ReqLow	:	BOOL	;
+	Call_FTrig_Error: 	F_TRIG	;
+	stPis			:	REFERENCE TO ST_Piston;
+	ton_req_Upper: TON;
+	ton_req_Lower: TON;
+	tOperation: TIME := T#2S;
+	ton_err_Upper: TON;
+	ton_err_Lower: TON;
+	tError: TIME := T#5s;
 END_VAR
 VAR_IN_OUT
 	st_Piston_U_L	:	ST_Piston_U_L	;
+	stOperation		: ST_OperationButtons;
 END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[act_Get_Reference();
 act_SetOutputs();
 
+IF stPis.b_Error THEN;
+	stOperation.bSetPause:=TRUE;
+END_IF
+
+ton_req_Upper(PT:=tOperation, IN:=st_Piston_U_L.req_Upper);
+ton_req_Lower(PT:=tOperation, IN:=st_Piston_U_L.req_Lower);
+
+ton_err_Upper(PT:=tError);
+ton_err_Lower(PT:=tError);
+
+IF TRUE 
+AND st_Piston_U_L.req_Upper
+AND (NOT st_Piston_U_L.st_Upper)
+AND (NOT FALSE) // reset error
+THEN;
+	ton_err_Upper.IN:=TRUE;
+ELSE;
+	ton_err_Upper.IN:=FALSE;
+END_IF
+
+IF TRUE 
+AND st_Piston_U_L.req_Lower
+AND (NOT st_Piston_U_L.st_Lower)
+AND (NOT FALSE) // reset error
+THEN;
+	ton_err_Lower.IN:=TRUE;
+ELSE;
+	ton_err_Lower.IN:=FALSE;
+END_IF
+
+IF ton_err_Upper.Q OR ton_err_Lower.Q THEN;
+	stPis.b_Error:=TRUE;
+END_IF
+
 ]]></ST>
     </Implementation>
     <Action Name="act_Get_Reference" Id="{60607663-ce4f-44c4-8288-4340f34ed98c}">
       <Implementation>
-        <ST><![CDATA[//st_Piston_U_L.str_Piston REF= g_Piston.stPis[iFB_Num];]]></ST>
+        <ST><![CDATA[//st_Piston_U_L.str_Piston REF= g_Piston.stPis[iFB_Num];
+stPis REF= g_Piston.stPis[st_Piston_U_L.iFB_Num];]]></ST>
       </Implementation>
     </Action>
     <Action Name="act_SetOutputs" Id="{fe9d830e-c8cb-470f-9da2-a61c532c4f0f}">
       <Implementation>
-        <ST><![CDATA[IF enable THEN;
+        <ST><![CDATA[(*IF st_Piston_U_L.bError THEN
+	IF st_Piston_U_L.req_Upper THEN
+		b_Memo_ReqUp:=TRUE;
+	END_IF
+	IF st_Piston_U_L.req_Lower THEN
+		b_Memo_ReqLow:=TRUE;
+	END_IF
+	st_Piston_U_L.req_Upper:=FALSE;
+	st_Piston_U_L.req_Lower:=FALSE;
+END_IF*)
+
+(*
+Call_FTrig_Error(CLK:=st_Piston_U_L.bError , Q=> );
+
+IF Call_FTrig_Error.Q THEN
+	st_Piston_U_L.req_Upper:=b_Memo_ReqUp;
+	st_Piston_U_L.req_Lower:=b_Memo_ReqLow;
+	b_Memo_ReqUp:=FALSE;
+	b_Memo_ReqLow:=FALSE;
+END_IF*)
+
+//Resseting opposite signal
+//***************************************************************
+Call_RTrig_ReqUp(CLK:=st_Piston_U_L.req_Upper , Q=> );
+Call_RTrig_ReqLow(CLK:=st_Piston_U_L.req_Lower, Q=> );
+IF Call_RTrig_ReqUp.Q THEN
+	st_Piston_U_L.req_Lower:=FALSE;
+END_IF
+
+IF Call_RTrig_ReqLow.Q THEN
+	st_Piston_U_L.req_Upper :=FALSE;
+END_IF
+//***************************************************************
+
+IF enable AND stPis.valve_Close THEN;
+	st_Piston_U_L.exist:=TRUE;
+	
 	IF st_Piston_U_L.req_Upper THEN;
 		valve_Upper:=TRUE;
 		valve_Lower:=FALSE;		
@@ -40,67 +130,116 @@ act_SetOutputs();
 		valve_Lower:=FALSE;		
 	END_IF
 ELSE;
+	st_Piston_U_L.exist:=FALSE;
+	st_Piston_U_L.req_Upper:=FALSE;
+	st_Piston_U_L.req_Lower:=FALSE;
 	valve_Upper:=FALSE;
 	valve_Lower:=FALSE;
 END_IF
 
+//outputs for hmi
+st_Piston_U_L.out_Upper:=valve_Upper;
+st_Piston_U_L.out_Lower:=valve_Lower;
 
-(*
-IF st_Piston_U_L.str_Piston.st_Open AND st_Piston_U_L.req_Lower THEN
-	st_Piston_U_L.out_Lower:=TRUE;
-	st_Piston_U_L.out_Upper:=FALSE;
-	
-	st_Piston_U_L.st_OpenLower:=TRUE;
-	st_Piston_U_L.st_OpenUpper:=FALSE;
-	st_Piston_U_L.st_CloseLower:=FALSE;
-	st_Piston_U_L.st_CloseUpper:=FALSE;
-	
-	st_Piston_U_L.req_Lower:=FALSE;
-ELSIF st_Piston_U_L.str_Piston.st_Open AND st_Piston_U_L.req_Upper THEN
-	st_Piston_U_L.out_Lower:=FALSE;
-	st_Piston_U_L.out_Upper:=TRUE;
-	
-	st_Piston_U_L.st_OpenLower:=FALSE;
-	st_Piston_U_L.st_OpenUpper:=TRUE;
-	st_Piston_U_L.st_CloseLower:=FALSE;
-	st_Piston_U_L.st_CloseUpper:=FALSE;
-	
-	st_Piston_U_L.req_Upper:=FALSE;
-ELSIF st_Piston_U_L.str_Piston.st_Close AND st_Piston_U_L.req_Upper THEN
-	st_Piston_U_L.out_Lower:=FALSE;
-	st_Piston_U_L.out_Upper:=TRUE;
-	
-	st_Piston_U_L.st_OpenLower:=FALSE;
-	st_Piston_U_L.st_OpenUpper:=FALSE;
-	st_Piston_U_L.st_CloseLower:=FALSE;
-	st_Piston_U_L.st_CloseUpper:=TRUE;
-	
-	st_Piston_U_L.req_Upper:=FALSE;
-ELSIF st_Piston_U_L.str_Piston.st_Close AND st_Piston_U_L.req_Lower THEN
-	st_Piston_U_L.out_Lower:=TRUE;
-	st_Piston_U_L.out_Upper:=FALSE;
-	
-	st_Piston_U_L.st_OpenLower:=FALSE;
-	st_Piston_U_L.st_OpenUpper:=FALSE;
-	st_Piston_U_L.st_CloseLower:=TRUE;
-	st_Piston_U_L.st_CloseUpper:=FALSE;
-	
-	st_Piston_U_L.req_Lower:=FALSE;
-END_IF
-*)]]></ST>
+//Status
+st_Piston_U_L.st_Upper:=m_sen_Upper();
+st_Piston_U_L.st_Lower:=m_sen_Lower();
+st_Piston_U_L.st_Released:=(NOT m_sen_Upper() AND NOT m_sen_Lower());
+
+st_Piston_U_L.sen_Upper:=sen_Upper;
+st_Piston_U_L.sen_Lower:=sen_Lower;]]></ST>
       </Implementation>
     </Action>
+    <Method Name="m_sen_Lower" Id="{87f5513f-eed4-4f44-8483-3e0613ae32b6}">
+      <Declaration><![CDATA[METHOD m_sen_Lower : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF st_Piston_U_L.sen_Lower_exist THEN; // sensor exist
+	m_sen_Lower:=sen_Lower;
+ELSE;
+	m_sen_Lower:=ton_req_Lower.Q;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_sen_Upper" Id="{2404f77a-a933-4805-88d7-69cc1f20bd1a}">
+      <Declaration><![CDATA[METHOD m_sen_Upper : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF st_Piston_U_L.sen_Upper_exist THEN; // sensor exist
+	m_sen_Upper:=sen_Upper;
+ELSE;
+	m_sen_Upper:=ton_req_Upper.Q;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
     <LineIds Name="FB_Piston_U_L">
       <LineId Id="9" Count="0" />
       <LineId Id="16" Count="0" />
       <LineId Id="20" Count="0" />
+      <LineId Id="49" Count="1" />
       <LineId Id="22" Count="0" />
+      <LineId Id="79" Count="0" />
+      <LineId Id="83" Count="1" />
+      <LineId Id="87" Count="1" />
+      <LineId Id="80" Count="0" />
+      <LineId Id="94" Count="0" />
+      <LineId Id="93" Count="0" />
+      <LineId Id="103" Count="2" />
+      <LineId Id="101" Count="0" />
+      <LineId Id="95" Count="0" />
+      <LineId Id="98" Count="0" />
+      <LineId Id="97" Count="0" />
+      <LineId Id="96" Count="0" />
+      <LineId Id="110" Count="8" />
+      <LineId Id="107" Count="0" />
+      <LineId Id="119" Count="0" />
+      <LineId Id="106" Count="0" />
+      <LineId Id="108" Count="1" />
+      <LineId Id="89" Count="0" />
+      <LineId Id="51" Count="0" />
     </LineIds>
     <LineIds Name="FB_Piston_U_L.act_Get_Reference">
       <LineId Id="1" Count="0" />
+      <LineId Id="3" Count="0" />
     </LineIds>
     <LineIds Name="FB_Piston_U_L.act_SetOutputs">
+      <LineId Id="78" Count="0" />
+      <LineId Id="130" Count="0" />
+      <LineId Id="119" Count="0" />
+      <LineId Id="131" Count="1" />
+      <LineId Id="120" Count="0" />
+      <LineId Id="133" Count="0" />
+      <LineId Id="79" Count="0" />
+      <LineId Id="81" Count="0" />
+      <LineId Id="80" Count="0" />
+      <LineId Id="110" Count="0" />
+      <LineId Id="127" Count="0" />
+      <LineId Id="121" Count="0" />
+      <LineId Id="123" Count="0" />
+      <LineId Id="122" Count="0" />
+      <LineId Id="124" Count="0" />
+      <LineId Id="126" Count="0" />
+      <LineId Id="134" Count="1" />
+      <LineId Id="125" Count="0" />
+      <LineId Id="138" Count="0" />
+      <LineId Id="137" Count="0" />
+      <LineId Id="139" Count="0" />
+      <LineId Id="136" Count="0" />
+      <LineId Id="112" Count="0" />
+      <LineId Id="111" Count="0" />
+      <LineId Id="113" Count="1" />
+      <LineId Id="116" Count="0" />
+      <LineId Id="115" Count="0" />
+      <LineId Id="117" Count="1" />
+      <LineId Id="140" Count="0" />
+      <LineId Id="82" Count="0" />
       <LineId Id="47" Count="0" />
+      <LineId Id="76" Count="0" />
+      <LineId Id="103" Count="0" />
       <LineId Id="52" Count="0" />
       <LineId Id="64" Count="0" />
       <LineId Id="58" Count="1" />
@@ -108,27 +247,29 @@ END_IF
       <LineId Id="60" Count="2" />
       <LineId Id="54" Count="1" />
       <LineId Id="53" Count="0" />
+      <LineId Id="77" Count="0" />
+      <LineId Id="73" Count="1" />
       <LineId Id="48" Count="1" />
       <LineId Id="45" Count="0" />
-      <LineId Id="51" Count="0" />
-      <LineId Id="50" Count="0" />
-      <LineId Id="46" Count="0" />
-      <LineId Id="1" Count="1" />
-      <LineId Id="10" Count="0" />
-      <LineId Id="13" Count="0" />
-      <LineId Id="11" Count="1" />
-      <LineId Id="17" Count="1" />
-      <LineId Id="20" Count="0" />
-      <LineId Id="19" Count="0" />
-      <LineId Id="4" Count="0" />
-      <LineId Id="21" Count="7" />
-      <LineId Id="5" Count="1" />
-      <LineId Id="29" Count="7" />
-      <LineId Id="7" Count="1" />
-      <LineId Id="37" Count="7" />
-      <LineId Id="9" Count="0" />
-      <LineId Id="3" Count="0" />
+      <LineId Id="70" Count="0" />
+      <LineId Id="69" Count="0" />
+      <LineId Id="71" Count="1" />
+      <LineId Id="66" Count="0" />
       <LineId Id="65" Count="0" />
+      <LineId Id="67" Count="0" />
+      <LineId Id="144" Count="1" />
+      <LineId Id="142" Count="1" />
+      <LineId Id="141" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Piston_U_L.m_sen_Lower">
+      <LineId Id="5" Count="0" />
+      <LineId Id="8" Count="2" />
+      <LineId Id="7" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Piston_U_L.m_sen_Upper">
+      <LineId Id="5" Count="0" />
+      <LineId Id="8" Count="2" />
+      <LineId Id="7" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>

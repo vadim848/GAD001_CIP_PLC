@@ -1,0 +1,290 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <GVL Name="Error_List" Id="{7bed808b-49e7-4fec-9c4e-1846c953597e}">
+    <Declaration><![CDATA[VAR_GLOBAL
+
+END_VAR
+
+VAR_GLOBAL CONSTANT
+	
+	ar_ErrorList					:ARRAY[1..C_Max_ErrorList,0..2] 	OF STRING[80]:= [
+(*	Error ID				Error ID		Error Message_ _ _ _ _ _  _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _*)
+		(*8888888888888888888888888888888888888888888*)					
+
+
+		                  (************************************ General *****************************************)
+
+'000x000xPUZ',   'Message',   'Pause requested',
+
+'000x000x999',	  'Error',	  'General Error',
+'000x000x777',	  'Error',	  'EtherCAT Com Fault - Chack Hardware Configuration',
+'777x777x777',	  'Error',	  'Loading Carrier Is Ready to move without Top Plate - logic conflict',
+
+'SMTx000x001',	  'Error',	  'Servo motor General Error',
+'SMTx000x002',	  'Error',	  'Servo motor Power Not OK',
+
+'050x000x001',  'Error',   'Air Pressure Too Low',
+'050x000x002',  'Message', 'Production Finished',
+'050x000x003',  'Error',   'Not able to change to Semi or Auto mode befor General initialization done',
+'050x000x004',  'Error',   'Unknown carrier status detected',
+'050x000x005',  'Error',   'Suction Tank Over Flow',
+'050x000x300',	'Warning',	'Manual mode request rejected - first pause automation',
+'050x000x301',	'Warning',	'Semi mode request rejected - first pause automation',
+'050x000x302',	'Warning',	'Auto mode request rejected - first pause automation',
+'050x000x303',	'Warning',	'Manual mode request rejected - Pistion not in last auto pisition',
+'050x000x304',	'Warning',	'Semi mode request rejected - Pistion not in last auto pisition',
+'050x000x305',	'Warning',	'Auto mode request rejected - Pistion not in last auto pisition',
+'050x000x306',	'Warning',	'Semi/Auto mode request rejected - automation lock failed',
+
+'050x000x350',	'Warning',	'Semi/Auto mode request rejected - initialize all system first',
+'050x000x351',	'Warning',	'Interlock Paused Operation',
+
+    (*CIP Tanks Overweight and overflow*)
+'101x000x000',   'Warning',      'CIP Tanks Overweight >> 1500 liter',
+'101x000x001',   'Warning',      'CIP Tank T91 overflow',
+'101x000x002',   'Warning',      'CIP Tank T92 overflow',
+'101x000x003',   'Warning',      'CIP Tank T93 overflow',
+'101x000x004',   'Warning',      'CIP Tank T94 overflow',
+
+	(*CIP Tanks concentration delution*)
+'101x000x101',   'Warning',      'CIP - Detergent concentration delution requered',
+'101x000x102',   'Warning',      'CIP - Detergent concentration delution limited by tank max volume',
+'101x000x103',   'Error',      	 'CIP - Detergent concentration delution limited by tank max volume',
+
+'101x000x111',   'Warning',      'CIP - DisInfection concentration delution requered',
+'101x000x112',   'Warning',      'CIP - DisInfection concentration delution limited by tank max volume',
+'101x000x113',   'Error',      	 'CIP - DisInfection concentration delution limited by tank max volume',
+
+	(*Pumps*)
+'P1001x001',   	'Error',      'Motor driver is not ready at run',
+'P3001x001',   	'Error',      'Motor driver is not ready at run',
+'P3002x001',   	'Error',      'Motor driver is not ready at run',
+'AG3001x001',   'Error',      'Motor driver is not ready at run',
+'AG3002x001',   'Error',      'Motor driver is not ready at run',
+'P4001x001',   	'Error',      'Motor driver is not ready at run',
+'P4002x001',   	'Error',      'Motor driver is not ready at run',
+'AG4001x001',   'Error',      'Motor driver is not ready at run',
+'AG4002x001',   'Error',      'Motor driver is not ready at run',
+'TB0001x001',   'Error',      'Motor driver is not ready at run',
+
+'P1001x002',   	'Warning',      'Motor speed feedback lag monitoring',
+'P3001x002',   	'Warning',      'Motor speed feedback lag monitoring',
+'P3002x002',   	'Warning',      'Motor speed feedback lag monitoring',
+'AG3001x002',   'Warning',      'Motor speed feedback lag monitoring',
+'AG3002x002',   'Warning',      'Motor speed feedback lag monitoring',
+'P4001x002',   	'Warning',      'Motor speed feedback lag monitoring',
+'P4002x002',   	'Warning',      'Motor speed feedback lag monitoring',
+'AG4001x002',   'Warning',      'Motor speed feedback lag monitoring',
+'AG4002x002',   'Warning',      'Motor speed feedback lag monitoring',
+'TB0001x002',   'Warning',      'Motor speed feedback lag monitoring',
+
+'P1001x003',   	'Warning',      'Motor driver is not ready',
+'P3001x003',   	'Warning',      'Motor driver is not ready',
+'P3002x003',   	'Warning',      'Motor driver is not ready',
+'AG3001x003',   'Warning',      'Motor driver is not ready',
+'AG3002x003',   'Warning',      'Motor driver is not ready',
+'P4001x003',   	'Warning',      'Motor driver is not ready',
+'P4002x003',   	'Warning',      'Motor driver is not ready',
+'AG4001x003',   'Warning',      'Motor driver is not ready',
+'AG4002x003',   'Warning',      'Motor driver is not ready',
+'TB0001x003',   'Warning',      'Motor driver is not ready',
+
+
+// Pump Pressure is dangerously high
+'P1001x004',   	'Error',      'Pump Pressure is dangerously high',
+'P3001x004',   	'Error',      'Pump Pressure is dangerously high',
+'P3002x004',   	'Error',      'Pump Pressure is dangerously high',
+'P4001x004',   	'Error',      'Pump Pressure is dangerously high',
+'P4002x004',   	'Error',      'Pump Pressure is dangerously high',
+// Pump Pressure is above normal
+'P1001x005',   	'Warning',      'Pump Pressure is above normal',
+'P3001x005',   	'Warning',      'Pump Pressure is above normal',
+'P3002x005',   	'Warning',      'Pump Pressure is above normal',
+'P4001x005',   	'Warning',      'Pump Pressure is above normal',
+'P4002x005',   	'Warning',      'Pump Pressure is above normal',
+// Pump Pressure is below normal
+'P1001x006',   	'Warning',      'Pump Pressure is below normal',
+'P3001x006',   	'Warning',      'Pump Pressure is below normal',
+'P3002x006',   	'Warning',      'Pump Pressure is below normal',
+'P4001x006',   	'Warning',      'Pump Pressure is below normal',
+'P4002x006',   	'Warning',      'Pump Pressure is below normal',
+// Pump Pressure is critically low
+'P1001x007',   	'Error',      'Pump Pressure is critically low',
+'P3001x007',   	'Error',      'Pump Pressure is critically low',
+'P3002x007',   	'Error',      'Pump Pressure is critically low',
+'P4001x007',   	'Error',      'Pump Pressure is critically low',
+'P4002x007',   	'Error',      'Pump Pressure is critically low',
+
+
+
+'101x001x001',   'Error',      'Message num 1, non cyclic',
+'101x001x002',   'Message',    'Waiting for Operator to Start Single Cycle',
+'101x001x003',   'Error',      'Stepper did not found paper',
+'101x001x004',   'Warning',    'Gripper Cycle without moving Stepper',
+'101x001x005',   'Error',      'Multiple Gripper Cycles without moving Stepper',
+'101x001x006',   'Warning',    'Paper Ended in Run mode',
+'101x001x007',   'Warning',    'Paper Stacker Empty on Paper Check',
+'101x001x008',   'Error',      'Paper Stacker Column hight diference exceeds allowed limit',
+'101x001x009',   'Warning',     'System is waiting for Resume or Play activation from Operator',
+'101x001x010',   'Error',     	'Gripper Encoder is over 25000 the limit',
+'101x001x011',   'Warning',     'Stepper stopped, did not found papper',
+
+ (*Tanks Interlock*)
+'101x002xT91',   'Error',      'CIP Tank T91 in not locked',
+'101x002xT92',   'Error',      'CIP Tank T92 in not locked',
+'101x002xT93',   'Error',      'CIP Tank T93 in not locked',
+'101x002xT94',   'Error',      'CIP Tank T94 in not locked',
+
+'101x002xT01',   'Warning',      'Marinade Tank T01 in not locked',
+'101x002xT02',   'Warning',      'Marinade Tank T02 in not locked',
+
+'101x002xT03',   'Error',      'Color Tank T03 in not locked',
+'101x002xT04',   'Error',      'Color Tank T04 in not locked',
+
+ (*Air Pressure*)
+'101x003x011',   'Warning',      'Zone 1 CIP - Air pressure is Low',
+'101x003x012',   'Warning',      'Zone 2 Color - Air pressure is Low',
+'101x003x013',   'Warning',      'Zone 3 Marinade - Air pressure is Low',
+'101x003x014',   'Warning',      'Zone 4 TriBlender - Air pressure is Low',
+
+'101x003x021',   'Warning',      'Zone 1 CIP - Air pressure is High',
+'101x003x022',   'Warning',      'Zone 2 Color - Air pressure is High',
+'101x003x023',   'Warning',      'Zone 3 Marinade - Air pressure is High',
+'101x003x024',   'Warning',      'Zone 4 TriBlender - Air pressure is High',
+
+'101x003x111',   'Error',      'Zone 1 CIP - Air pressure is Low',
+'101x003x112',   'Error',      'Zone 2 Color - Air pressure is Low',
+'101x003x113',   'Error',      'Zone 3 Marinade - Air pressure is Low',
+'101x003x114',   'Error',      'Zone 4 TriBlender - Air pressure is Low',
+
+'101x003x121',   'Error',      'Zone 1 CIP - Air pressure is High',
+'101x003x122',   'Error',      'Zone 2 Color - Air pressure is High',
+'101x003x123',   'Error',      'Zone 3 Marinade - Air pressure is High',
+'101x003x124',   'Error',      'Zone 4 TriBlender - Air pressure is High',
+
+
+  
+    (*Emergency*)
+'106x001x001',   'Error',      'Emergency cycle 1 (CIP) circuit interrupted',
+'106x002x001',   'Error',      'Emergency cycle 2 (Color) circuit interrupted',
+'106x003x001',   'Error',      'Emergency cycle 3 (TriBlender) circuit interrupted',
+'106x004x001',   'Error',      'Emergency cycle 4 (Marinade) circuit interrupted',
+
+'106x001x002',   'Warning',    'Emergency PB1 Pressed',
+'106x002x002',   'Warning',    'Emergency PB2 Pressed',
+'106x003x002',   'Warning',    'Emergency PB3_1 Pressed',
+'106x003x003',   'Warning',    'Emergency PB3_2 Pressed',
+'106x004x002',   'Warning',    'Emergency PB4 Pressed',
+'106x000x060',   'Message',    'Emergency Bypass activated',	
+
+
+
+
+
+
+
+
+    (*Doors*)
+	
+'107x000x101',   'Warning',    'Door Num 1 Not Closed',
+'107x000x102',   'Warning',    'Door Num 2 Not Closed',
+'107x000x103',   'Warning',    'Door Num 3 Not Closed',
+'107x000x104',   'Warning',    'Door Num 4 Not Closed',
+
+'107x000x121',   'Warning',    'Door Num 1 Not Locked',
+'107x000x122',   'Warning',    'Door Num 2 Not Locked',
+'107x000x123',   'Warning',    'Door Num 3 Not Locked',
+'107x000x124',   'Warning',    'Door Num 4 Not Locked',
+
+
+
+    (*Inter lock Zone*)
+	
+'108x000x141',   'Warning',    'Interlock Zone 1 Robots and Table … doors not locked',
+'108x000x142',   'Warning',    'Interlock Zone 2 Load Conveyor … doors not locked',
+'108x000x143',   'Warning',    'Interlock Zone 3 Unload Conveyor … doors not locked',
+'108x000x144',   'Warning',    'Interlock Zone 4 Manipulator … doors not locked',
+
+
+      (* Axis ->  FB_Axis *)
+'001x000x001',   'Error',   'Motor Power Not OK',
+'001x000x002',   'Error',   'Waiting axis reach target',
+'001x000x003',   'Error',   'Axis in position check function failed',
+'001x000x004',   'Error',   'Limit Detected',
+'001x000x005',   'Error',   'Stop Axis',
+ 
+
+      (* Emergency&Interlock -> prg_Safety *)						  
+'002x000x001',   'Error',   'Check EMO devices State',	  
+'002x000x002',   'Error',   'TwinSAFE error',	  
+'002x000x003',   'Error',   'Check Motors Error',	  
+'002x000x004',   'Error',   'check Estop state',	  
+
+ 
+      (* Initialise -> prg_Initialise *)
+'004x000x001',   'Error',   'Wating For Emergency OK',
+'004x000x002',   'Error',   'Wating For Interlock OK',
+'004x000x003',   'Error',   'Wating For Motors OK',
+'004x000x004',   'Error',   'Check Init Station Done',
+'004x000x005',   'Error',   'Station Initialization',
+'004x000x006',   'Error',   'Loader Initialization',
+'004x000x007',   'Error',   'Unload Station',
+'004x000x008',   'Error',   'Measuring Station',
+'004x000x009',   'Error',   'Gripper Oriantation',
+'004x000x010',   'Error',   'index table did not reach home position',
+'004x000x012',   'Error',   'carriage position check failed',
+'004x000x023',   'Error',   'Wating for Cover Station Init done - check if Robot in safe position',
+
+  
+
+      (* Pneomatic ->  FB_Piston *)
+'007x000x001',   'Error',   'Waiting for Sensor Open at Open command',
+'007x000x002',   'Error',   'Waiting for Sensor NotClose at Open command',
+'007x000x003',   'Error',   'Waiting for Sensor Close at Close command',
+'007x000x004',   'Error',   'Waiting for Sensor NotOpen at Close command',
+'007x000x005',   'Error',   'No Status',
+'007x000x006',   'Error',   'No Valve Operation',
+'007x000x007',   'Error',   'Not synchronized with last auto-cycle command',
+'007x000x008',   'Error',   'Sensors Checking',
+
+      (* Pneomatic ->  FB_Piston *)
+'2AAx001',   'Error',   'Waiting for Sensor Open at Open command',
+'2AAx002',   'Error',   'Waiting for Sensor NotClose at Open command',
+'2AAx003',   'Error',   'Waiting for Sensor Close at Close command',
+'2AAx004',   'Error',   'Waiting for Sensor NotOpen at Close command',
+'2AAx005',   'Error',   'No Status',
+'2AAx006',   'Error',   'No Valve Operation',
+'2AAx007',   'Error',   'Not synchronized with last auto-cycle command',
+'2AAx008',   'Error',   'Sensors Checking',	 
+		(*Process elementts*)
+'109x000x001',   'Warning',   'Conveyor 5 is full',
+'109x000x002',   'Error',     'Conveyor 5 is full and Conveyor 4 is ready to output full stack',
+
+'109x000x003',   'Warning',   'Slices Stack is Too Light',
+'109x000x004',   'Error',     'Slices Stack is Too Light',
+
+'109x000x005',   'Warning',   'Slices Stack is Too Heavy',
+'109x000x006',   'Error',     'Slices Stack is Too Heavy',
+ 
+'555x000x001',   'Error',     'Hello world from NIV',
+
+'985x000x001',   'Warning',     'X lens Constant velocity did not reach during coating',
+
+
+
+(*Niv Section*)
+(*Cycle X Curtain*)
+(*Cycle X & Y*)
+(*Cycle X & Theta)
+(*Nozzle Operation*)
+(*Cycle X Curtain*)
+(*Cycle X Curtain*)*)
+
+
+
+
+''];		
+END_VAR		
+]]></Declaration>
+  </GVL>
+</TcPlcObject>

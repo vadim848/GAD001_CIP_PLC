@@ -1,9 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
   <DUT Name="ST_Piston_U_L" Id="{b9eedc0d-0f21-48c9-bd0f-9c836f73c0a0}">
     <Declaration><![CDATA[TYPE ST_Piston_U_L :
 STRUCT
-	exist		: BOOL; // true if device exist
+	exist		: 	BOOL	; // true if device exist
+	bError		:	BOOL	;
+	iFB_Num		: E_Pis_Name;//Parent valve ID number
 
 	//request
 	req_Open	:	BOOL	;
@@ -13,19 +15,22 @@ STRUCT
 	req_None		:	BOOL	;
 	
 	//status
-	st_Close	:	BOOL	;
-	st_Open		:	BOOL	;
-	st_CloseUpper	:	BOOL	;
-	st_CloseLower	:	BOOL	;
-	st_OpenUpper	:	BOOL	;
-	st_OpenLower	:	BOOL	;
+	st_Upper		:	BOOL	;
+	st_Lower		:	BOOL	;
+	st_Released		:	BOOL	;
+	
 	
 	//Output
 	out_Lower	:	BOOL	;
 	out_Upper	:	BOOL	;
 	
+	//sensors
+	sen_Upper			:	BOOL	;
+	sen_Lower			:	BOOL	;	
+	sen_Upper_exist		:	BOOL	;
+	sen_Lower_exist		:	BOOL	;	
 	//getting the structure of piston
-	str_Piston	:	REFERENCE TO ST_Piston	;
+	//str_Piston	:	REFERENCE TO ST_Piston	;
 END_STRUCT
 END_TYPE
 ]]></Declaration>

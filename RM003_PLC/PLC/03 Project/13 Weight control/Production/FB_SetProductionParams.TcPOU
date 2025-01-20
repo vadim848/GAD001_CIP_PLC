@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_SetProductionParams" Id="{ff5743fe-ea81-4a32-8911-c3e1bb7e3f67}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_SetProductionParams
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+	rCompActualWeight	: REAL;
+	iCoun: INT;
+	i:INT;
+END_VAR
+VAR_IN_OUT
+	stProdParams		: ST_ProdParams;
+	stTriBlender		: ST_TriBlender;
+	bTankInProduction	: BOOL;
+END_VAR
+VAR_INPUT
+	iActualWaterAmount	: UINT;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[
+rCompActualWeight:=(TO_REAL(iActualWaterAmount)/100)*stProdParams.arrComponents[i].rCompWeightFor100L;]]></ST>
+    </Implementation>
+    <Action Name="act_SetProdVal" Id="{8ebefc7d-d02a-4fa4-a699-82a4ac452993}">
+      <Implementation>
+        <ST><![CDATA[]]></ST>
+      </Implementation>
+    </Action>
+    <LineIds Name="FB_SetProductionParams">
+      <LineId Id="9" Count="0" />
+      <LineId Id="20" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_SetProductionParams.act_SetProdVal">
+      <LineId Id="18" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

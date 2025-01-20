@@ -1,12 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
   <POU Name="FB_Pump" Id="{85164826-ad0f-4589-97dc-725e0f6c34e4}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_Pump
 VAR_INPUT
-	Pump_ID: E_Pump_List:=E_Pump_List.eNotSelected;
-
+	Pump_ID				: E_Pump_List:=E_Pump_List.eNotSelected;
+	PressureSensor_ID	: E_ASense_Name:=E_ASense_Name.eNotSelected;
 END_VAR
 VAR
+	sID: STRING(6);
+
 	stNidec: REFERENCE TO ST_Nidec;
 	status_word: WORD;
 	control_word: WORD;
@@ -20,28 +22,37 @@ VAR
 	bRun_Auto	:	BOOL	;
 	bRun_Man	:	BOOL	;
 
-	nRPM_Auto	:	INT		;//Pump RPM 
-	nRPM_Man	:	INT		;//Pump RPM 
+	//nRPM_Auto	:	REAL		;//Pump RPM 
+	//nRPM_Man	:	REAL		;//Pump RPM 
 	//feedback
 	nRPM_fdbk	:	INT	;	
 	rtManual: R_TRIG;
 	ton_Drive_init: TON;
 	state_init: (OFF,stage1,stage2,stage3,stage4, Ready);
 
+	bInitConnect: BOOL;
+	ton_RPM_feedback_lag_monitoring: TON;
+	ton_Pressure_feedback_monitoring: TON;
+	
+	fbPressureSensor: REFERENCE TO FB_AnalogSensor;
+
 END_VAR
 VAR_OUTPUT
 	DriveReady	:   BOOL;
 	bRun		: 	BOOL;
-	nRPM		:	INT		;//Pump RPM 
+	nRPM		:	REAL		;//Pump RPM 
 	
 END_VAR
 VAR_IN_OUT
-	ST_Pump	:	st_Pump	;
+	stPump			: ST_Pump	;
+	stOperation		: ST_OperationButtons;
 END_VAR
 
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[stNidec REF= gIO.Nidec[Pump_ID];
+sID:=TO_STRING(Pump_ID);
+nRPM:=stPump.nRPM;
 IF __ISVALIDREF(stNidec) THEN;
 	//run
 	status_word:=stNidec.StatusWord;
@@ -50,7 +61,7 @@ IF __ISVALIDREF(stNidec) THEN;
 	control_word:=m_Map_ControlWord(cwStruct:=ControlWord);
 	StatusWord:=m_Map_StatusWord(wordInput:=status_word);
 	
-	stNidec.targetVelocity:=nRPM;	
+	stNidec.targetVelocity:=DINT_TO_INT(TRUNC(stPump.nRPM));	
 	nRPM_fdbk:=stNidec.actVelocity;	
 	
 	m_Nidec_Init();
@@ -60,34 +71,51 @@ IF __ISVALIDREF(stNidec) THEN;
 		ControlWord.EnableOperation:=bRun;
 	ELSE;
 		DriveReady:=FALSE;
-		bRun:=bRun_Man:=bRun_Auto:=FALSE;
+		//bRun:=bRun_Man:=bRun_Auto:=FALSE;
 		ControlWord.EnableOperation:=FALSE;
 	END_IF	
-
+	stPump.DriveReady:=DriveReady;
 ELSE;
 	//RETURN;
 END_IF
 
-
 IF modeAuto THEN;
-	bRun:=bRun_Auto;
-	nRPM:=nRPM_Auto;
+	//bRun:=bRun_Auto;
+	IF bRun_Auto AND m_CheckOper() THEN;
+		bRun:=TRUE;
+	ELSE;
+		bRun:=FALSE;
+	END_IF
+	stPump.nRPM:=stPump.nRPM_Auto;
 ELSE;
-	bRun:=bRun_Man;
-	nRPM:=nRPM_Man;
+	//bRun:=bRun_Man;
+	IF bRun_Man AND m_CheckOper() THEN;
+		bRun:=TRUE;
+	ELSE;
+		bRun:=FALSE;
+	END_IF	
+	stPump.nRPM:=stPump.nRPM_Man;
 END_IF
 
 rtManual(CLK:=NOT modeAuto);
 IF rtManual.Q THEN;
 	bRun:=bRun_Man:=bRun_Auto;
-	nRPM:=nRPM_Man:=nRPM_Auto;
+	//stPump.nRPM:=stPump.nRPM_Man:=stPump.nRPM_Auto;
 END_IF
 
-IF nRPM>3000 THEN;
-	nRPM:=3000;
+IF stPump.nRPM>3000 THEN;
+	stPump.nRPM:=3000;
 END_IF
 
+stPump.bRun_Man:=bRun_Man;
+stPump.bRun_Auto:=bRun_Auto;
+stPump.bRun:=bRun;
 
+IF m_Error()<>'' THEN;
+	//stOperation.bSetPause:=TRUE;
+	//print error
+	//fbPrintErrMessageByID(sModuleDescription:='Pump',sActErrorID:='101x000x001');	
+END_IF
 
 
 ]]></ST>
@@ -95,13 +123,129 @@ END_IF
     <Method Name="m_Auto" Id="{80bcb1da-caaf-4610-b5db-3ec5b0ee5d69}">
       <Declaration><![CDATA[METHOD m_Auto : BOOL
 VAR_INPUT
+	control: LREAL; // RPM
 END_VAR
+
+VAR
+	RPM: INT;
+END_VAR
+
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[//ST_Pump.bRun_Auto:=TRUE;
 m_Auto:=TRUE;
+RPM:=DINT_TO_INT(TRUNC(control));
+IF RPM>3000 THEN;
+	stPump.nRPM_Auto:=3000;
+ELSIF RPM<200 THEN;
+	stPump.nRPM_Auto:=200;
+ELSE;
+	stPump.nRPM_Auto:=RPM;
+END_IF
+
 bRun_Auto:=TRUE;
 //need to be set up an set point so the pump could keep the needed value in automatic mode]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_CheckOper" Id="{6a5ac2f6-04be-4f30-9c45-ef254ec3bf61}">
+      <Declaration><![CDATA[METHOD INTERNAL m_CheckOper : BOOL
+VAR_INPUT
+END_VAR
+
+VAR
+	sMotorTypeAgrigate_to_check: STRING(2);
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[sMotorTypeAgrigate_to_check:=TO_STRING(Pump_ID);
+
+IF sMotorTypeAgrigate_to_check='AG' THEN;
+	m_CheckOper:=TRUE;
+ELSE;
+	IF stOperation.iActOperation=E_OperationButtons.ePlayAll THEN;
+		m_CheckOper:=TRUE;
+	ELSE;
+		m_CheckOper:=FALSE;
+	END_IF
+END_IF
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_Error" Id="{68a99073-1da5-4a02-9be0-3cdcd2d323d9}">
+      <Declaration><![CDATA[METHOD m_Error : STRING(11)
+VAR_INPUT
+	
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[ton_RPM_feedback_lag_monitoring(PT:=T#10S);
+IF __ISVALIDREF(stNidec) THEN;
+	IF bRun
+	AND ABS(stNidec.targetVelocity - nRPM_fdbk) > 10 
+	THEN;
+		ton_RPM_feedback_lag_monitoring.IN:=TRUE;
+	ELSE;
+		ton_RPM_feedback_lag_monitoring.IN:=FALSE;
+	END_IF	
+END_IF
+
+
+
+IF bRun THEN;
+	IF NOT DriveReady THEN;
+		m_Error:=concat(sID,'x001');
+		stOperation.bSetPause:=TRUE;
+		RETURN;
+	END_IF	
+
+	IF ton_RPM_feedback_lag_monitoring.Q THEN;
+		m_Error:=concat(sID,'x002');
+		RETURN;
+	END_IF
+END_IF
+
+IF NOT DriveReady THEN;
+	m_Error:=concat(sID,'x003');
+	//stOperation.bSetPause:=TRUE;
+	RETURN;
+END_IF
+
+
+IF 	PressureSensor_ID <> E_ASense_Name.eNotSelected THEN;
+	fbPressureSensor REF= fbAnalogSensor[PressureSensor_ID];
+	IF __ISVALIDREF(fbPressureSensor) THEN;	
+		ton_Pressure_feedback_monitoring(PT:=T#30S);
+		IF bRun AND ( fbPressureSensor.bHH_Alarm 
+					OR fbPressureSensor.bHH_Warning
+					OR fbPressureSensor.bLL_Warning 
+					OR fbPressureSensor.bLL_Alarm) 
+		THEN;
+			ton_Pressure_feedback_monitoring.IN:=TRUE;
+		ELSE;
+			ton_Pressure_feedback_monitoring.IN:=FALSE;
+		END_IF	
+		
+		IF fbPressureSensor.bHH_Alarm AND ton_Pressure_feedback_monitoring.Q THEN;
+			m_Error:=concat(sID,'x004');
+			stOperation.bSetPause:=TRUE;
+			RETURN;
+		END_IF
+		IF fbPressureSensor.bHH_Warning AND ton_Pressure_feedback_monitoring.Q THEN;
+			m_Error:=concat(sID,'x005');
+			RETURN;
+		END_IF
+		IF fbPressureSensor.bLL_Warning AND ton_Pressure_feedback_monitoring.Q THEN;
+			m_Error:=concat(sID,'x006');
+			RETURN;
+		END_IF
+		IF fbPressureSensor.bLL_Alarm AND ton_Pressure_feedback_monitoring.Q THEN;
+			m_Error:=concat(sID,'x007');
+			stOperation.bSetPause:=TRUE;
+			RETURN;
+		END_IF		
+	END_IF	
+END_IF
+ 
+m_Error:='';]]></ST>
       </Implementation>
     </Method>
     <Method Name="m_Map_ControlWord" Id="{de707bea-2c05-4e8e-8763-cf6ec1f146fa}">
@@ -169,7 +313,10 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF  NOT StatusWord.VoltageEnabled OR StatusWord.Fault THEN;
+        <ST><![CDATA[IF  NOT StatusWord.VoltageEnabled 
+OR StatusWord.Fault 
+OR (state_init=Ready AND NOT StatusWord.ReadyToSwitchOn )
+THEN;
 	ControlWord.SwitchOn:=FALSE;
 	ControlWord.EnableVoltage:=FALSE;
 	ControlWord.QuickStop:=FALSE;
@@ -231,7 +378,9 @@ CASE state_init OF
 		IF ton_Drive_init.Q THEN;
 			state_init:=Ready;
 			ton_Drive_init(IN:=FALSE);
-		END_IF		
+		END_IF	
+
+	
 	
 END_CASE]]></ST>
       </Implementation>
@@ -239,12 +388,12 @@ END_CASE]]></ST>
     <Method Name="m_Run" Id="{c021bce4-07f3-44e5-a920-e4b2f00640f2}">
       <Declaration><![CDATA[METHOD m_Run : BOOL
 VAR_INPUT
-	RPM: INT;
+	RPM: REAL;
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[bRun_Auto:=TRUE;
-nRPM_Auto:=RPM;
+stPump.nRPM_Auto:=RPM;
 m_Run:=TRUE;]]></ST>
       </Implementation>
     </Method>
@@ -261,6 +410,8 @@ m_Stop:=TRUE;]]></ST>
     </Method>
     <LineIds Name="FB_Pump">
       <LineId Id="157" Count="0" />
+      <LineId Id="621" Count="0" />
+      <LineId Id="398" Count="0" />
       <LineId Id="160" Count="1" />
       <LineId Id="178" Count="6" />
       <LineId Id="177" Count="0" />
@@ -276,12 +427,16 @@ m_Stop:=TRUE;]]></ST>
       <LineId Id="187" Count="0" />
       <LineId Id="163" Count="1" />
       <LineId Id="162" Count="0" />
-      <LineId Id="168" Count="0" />
       <LineId Id="171" Count="0" />
       <LineId Id="9" Count="0" />
-      <LineId Id="42" Count="0" />
+      <LineId Id="487" Count="0" />
+      <LineId Id="482" Count="1" />
+      <LineId Id="485" Count="1" />
+      <LineId Id="484" Count="0" />
       <LineId Id="146" Count="0" />
       <LineId Id="44" Count="1" />
+      <LineId Id="489" Count="3" />
+      <LineId Id="488" Count="0" />
       <LineId Id="147" Count="0" />
       <LineId Id="43" Count="0" />
       <LineId Id="71" Count="0" />
@@ -293,16 +448,81 @@ m_Stop:=TRUE;]]></ST>
       <LineId Id="190" Count="0" />
       <LineId Id="189" Count="0" />
       <LineId Id="191" Count="1" />
+      <LineId Id="439" Count="0" />
+      <LineId Id="438" Count="0" />
+      <LineId Id="440" Count="1" />
       <LineId Id="195" Count="0" />
       <LineId Id="144" Count="0" />
+      <LineId Id="533" Count="0" />
+      <LineId Id="535" Count="0" />
+      <LineId Id="577" Count="0" />
+      <LineId Id="534" Count="0" />
       <LineId Id="107" Count="0" />
       <LineId Id="145" Count="0" />
       <LineId Id="109" Count="0" />
     </LineIds>
     <LineIds Name="FB_Pump.m_Auto">
       <LineId Id="18" Count="1" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="46" Count="1" />
+      <LineId Id="51" Count="1" />
+      <LineId Id="49" Count="1" />
+      <LineId Id="48" Count="0" />
+      <LineId Id="27" Count="0" />
       <LineId Id="23" Count="0" />
       <LineId Id="14" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Pump.m_CheckOper">
+      <LineId Id="5" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="14" Count="2" />
+      <LineId Id="18" Count="1" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="6" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Pump.m_Error">
+      <LineId Id="16" Count="0" />
+      <LineId Id="57" Count="0" />
+      <LineId Id="60" Count="5" />
+      <LineId Id="58" Count="1" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="46" Count="3" />
+      <LineId Id="44" Count="1" />
+      <LineId Id="37" Count="1" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="12" Count="1" />
+      <LineId Id="52" Count="4" />
+      <LineId Id="51" Count="0" />
+      <LineId Id="99" Count="0" />
+      <LineId Id="73" Count="0" />
+      <LineId Id="72" Count="0" />
+      <LineId Id="98" Count="0" />
+      <LineId Id="76" Count="0" />
+      <LineId Id="110" Count="0" />
+      <LineId Id="101" Count="0" />
+      <LineId Id="105" Count="2" />
+      <LineId Id="103" Count="0" />
+      <LineId Id="108" Count="1" />
+      <LineId Id="102" Count="0" />
+      <LineId Id="100" Count="0" />
+      <LineId Id="111" Count="0" />
+      <LineId Id="80" Count="1" />
+      <LineId Id="112" Count="0" />
+      <LineId Id="83" Count="0" />
+      <LineId Id="82" Count="0" />
+      <LineId Id="86" Count="9" />
+      <LineId Id="113" Count="0" />
+      <LineId Id="96" Count="1" />
+      <LineId Id="78" Count="0" />
+      <LineId Id="75" Count="0" />
+      <LineId Id="67" Count="0" />
+      <LineId Id="11" Count="0" />
     </LineIds>
     <LineIds Name="FB_Pump.m_Map_ControlWord">
       <LineId Id="9" Count="21" />
@@ -314,6 +534,9 @@ m_Stop:=TRUE;]]></ST>
     </LineIds>
     <LineIds Name="FB_Pump.m_Nidec_Init">
       <LineId Id="5" Count="0" />
+      <LineId Id="95" Count="0" />
+      <LineId Id="97" Count="0" />
+      <LineId Id="96" Count="0" />
       <LineId Id="19" Count="0" />
       <LineId Id="15" Count="2" />
       <LineId Id="23" Count="0" />
@@ -339,6 +562,8 @@ m_Stop:=TRUE;]]></ST>
       <LineId Id="76" Count="8" />
       <LineId Id="86" Count="1" />
       <LineId Id="72" Count="0" />
+      <LineId Id="94" Count="0" />
+      <LineId Id="93" Count="0" />
       <LineId Id="52" Count="0" />
       <LineId Id="34" Count="0" />
     </LineIds>

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
   <POU Name="FB_Tank_Target" Id="{e77bc243-ef67-4877-849d-f4a841448420}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_Tank_Target EXTENDS FB_SFC_Cycle IMPLEMENTS ITF_FB_SFC_Cycle
 VAR_INPUT
@@ -27,6 +27,8 @@ VAR
 	stPis_CIP			: REFERENCE TO ST_Piston;
 
 	tonDrainTime: TON;
+	rt_Req_Reset: R_TRIG;
+	stTankLevel			:	ST_Tank_Level	;
 END_VAR
 VAR_IN_OUT
 
@@ -41,13 +43,18 @@ IF NOT Init.x THEN;
 	act_Status();
 END_IF
 
-tonDrainTime(PT:=T#1M, IN:=eStatus=E_Tank_Target.eDrain OR eStatus=E_Tank_Target.eClose_DrainPipe);
+tonDrainTime(PT:=T#1M, 
+	IN:=(eStatus=E_Tank_Target.eDrain AND stTankLevel.e_state=E_Tank_Level.eEmpty)
+			OR 
+		eStatus=E_Tank_Target.eClose_DrainPipe);
 IF tonDrainTime.Q 
 AND eReq=E_Tank_Target.eNone
 AND eProcess=E_Tank_Target.eNone
 THEN;
 	eReq:=E_Tank_Target.eClose;
-END_IF]]></ST>
+END_IF
+
+m_Request_Reset(memo:=rt_Req_Reset);//]]></ST>
     </Implementation>
     <Folder Name="Manage" Id="{e461fcff-545d-4d57-a27d-4174ff6e3a51}" />
     <Action Name="_aCIP_active" Id="{e16ca9a6-461a-481e-961d-0ed26f76e308}">
@@ -3089,7 +3096,7 @@ ELSE;
 END_IF]]></ST>
       </Implementation>
     </Action>
-    <Method Name="m_CheckStatus" Id="{730e0eab-fcbe-441f-8132-795becd278a2}">
+    <Method Name="m_CheckStatus" Id="{730e0eab-fcbe-441f-8132-795becd278a2}" FolderPath="Manage\">
       <Declaration><![CDATA[METHOD m_CheckStatus : BOOL
 VAR_INPUT
 	eReqStatus		: E_Tank_Target;
@@ -3107,7 +3114,22 @@ THEN;
 END_IF]]></ST>
       </Implementation>
     </Method>
-    <Method Name="m_Run" Id="{7ffc4675-e14a-4e0d-a035-300d182aa227}">
+    <Method Name="m_Request_Reset" Id="{06b07d97-a5cd-434a-8128-1378a573a1f8}" FolderPath="Manage\">
+      <Declaration><![CDATA[METHOD m_Request_Reset : BOOL
+VAR_IN_OUT
+	memo: R_TRIG;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[memo(CLK:=eReq=0);
+IF TRUE 
+AND memo.Q
+THEN;
+	SFCReset:=TRUE;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_Run" Id="{7ffc4675-e14a-4e0d-a035-300d182aa227}" FolderPath="Manage\">
       <Declaration><![CDATA[METHOD m_Run : BOOL
 VAR_INPUT
 	eReqProc			: E_Tank_Target;
@@ -3121,7 +3143,7 @@ END_VAR
 END_IF]]></ST>
       </Implementation>
     </Method>
-    <Method Name="m_Set_SFCFlags_Reference" Id="{f4d4034f-fbcd-4ba0-9568-d6c2136b33ee}">
+    <Method Name="m_Set_SFCFlags_Reference" Id="{f4d4034f-fbcd-4ba0-9568-d6c2136b33ee}" FolderPath="Manage\">
       <Declaration><![CDATA[METHOD m_Set_SFCFlags_Reference : BOOL
 ]]></Declaration>
       <Implementation>
@@ -3144,12 +3166,26 @@ refSFC.SFCTipMode REF= SFCTipMode;
 m_SFC_Handle();]]></ST>
       </Implementation>
     </Method>
+    <Method Name="set_TankLevel" Id="{2976f91a-4f21-42e1-852d-f74c3c86612b}" FolderPath="Manage\">
+      <Declaration><![CDATA[METHOD set_TankLevel : BOOL
+VAR_INPUT
+	set_stTankLevel			:	ST_Tank_Level	;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[stTankLevel:=set_stTankLevel;]]></ST>
+      </Implementation>
+    </Method>
     <LineIds Name="FB_Tank_Target">
       <LineId Id="89" Count="2" />
       <LineId Id="93" Count="2" />
       <LineId Id="97" Count="0" />
-      <LineId Id="128" Count="5" />
+      <LineId Id="128" Count="0" />
+      <LineId Id="165" Count="2" />
+      <LineId Id="129" Count="4" />
       <LineId Id="55" Count="0" />
+      <LineId Id="201" Count="0" />
+      <LineId Id="200" Count="0" />
     </LineIds>
     <LineIds Name="FB_Tank_Target._aCIP_active">
       <LineId Id="2" Count="6" />
@@ -3284,6 +3320,13 @@ m_SFC_Handle();]]></ST>
       <LineId Id="9" Count="0" />
       <LineId Id="7" Count="1" />
     </LineIds>
+    <LineIds Name="FB_Tank_Target.m_Request_Reset">
+      <LineId Id="10" Count="0" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="6" Count="1" />
+    </LineIds>
     <LineIds Name="FB_Tank_Target.m_Run">
       <LineId Id="5" Count="0" />
       <LineId Id="7" Count="0" />
@@ -3293,6 +3336,9 @@ m_SFC_Handle();]]></ST>
     <LineIds Name="FB_Tank_Target.m_Set_SFCFlags_Reference">
       <LineId Id="5" Count="15" />
       <LineId Id="4" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Tank_Target.set_TankLevel">
+      <LineId Id="5" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>

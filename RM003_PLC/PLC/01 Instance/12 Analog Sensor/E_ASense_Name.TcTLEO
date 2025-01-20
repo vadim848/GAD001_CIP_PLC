@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
   <EnumerationTextList Name="E_ASense_Name" Id="{58e6c96c-1337-4953-b9cd-57c742ebe203}">
     <Declaration><![CDATA[{attribute 'qualified_only'}
 {attribute 'strict'}
 {attribute 'to_string'}
 TYPE E_ASense_Name :
 (
-	enum_member := 0,
+	eNotSelected := 0,
 	//level sensors CIP	
 	LT1004,	
 	LT1003,	
@@ -15,11 +15,13 @@ TYPE E_ASense_Name :
 	//Flow  sensors
 	FT1001,
 	FT1002,
+
+	
 	
 	//conductivity sensors
 	CT1101,
-	//CT3101,	
-	
+	CT3101,//not exist	
+		
 	//temperature sensors
 	TT1001,
 	TT1002,
@@ -29,6 +31,7 @@ TYPE E_ASense_Name :
 	TT1105,
 	CT1101_2,
 	CT1101_3,
+	CT1101_4,
 	TT2001,
 	TT3001,
 	TT3002,
@@ -53,11 +56,25 @@ TYPE E_ASense_Name :
 	PT4002,
 	PT9001,
 	PT9002,
-	
+	PT9011,
 
+	FT4001,
+	FT4002,	
+	FT9011,
+	
+	//Air Pressure
+	AP1001, //CIP
+	AP2001, // TriBlender
+	AP3001, //Marinade
+	AP4001, //Color
+	
+	CT4101,	
+	CT4102,	
+
+	FT9012,
 	
 	//virtual list
-	last:=30
+	last
 );
 END_TYPE
 ]]></Declaration>
@@ -66,7 +83,7 @@ END_TYPE
         <o xml:space="preserve" t="TextListEnumerationTextListObject">
           <l n="TextList" t="ArrayList" cet="TextListRow">
             <o>
-              <v n="TextID">"enum_member"</v>
+              <v n="TextID">"eNotSelected"</v>
               <v n="TextDefault">"0"</v>
               <l n="LanguageTexts" t="ArrayList" />
             </o>
@@ -102,6 +119,11 @@ END_TYPE
             </o>
             <o>
               <v n="TextID">"CT1101"</v>
+              <v n="TextDefault">""</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"CT3101"</v>
               <v n="TextDefault">""</v>
               <l n="LanguageTexts" t="ArrayList" />
             </o>
@@ -142,6 +164,11 @@ END_TYPE
             </o>
             <o>
               <v n="TextID">"CT1101_3"</v>
+              <v n="TextDefault">""</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"CT1101_4"</v>
               <v n="TextDefault">""</v>
               <l n="LanguageTexts" t="ArrayList" />
             </o>
@@ -236,8 +263,63 @@ END_TYPE
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>
+              <v n="TextID">"PT9011"</v>
+              <v n="TextDefault">""</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"FT4001"</v>
+              <v n="TextDefault">""</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"FT4002"</v>
+              <v n="TextDefault">""</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"FT9011"</v>
+              <v n="TextDefault">""</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"AP1001"</v>
+              <v n="TextDefault">""</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"AP2001"</v>
+              <v n="TextDefault">""</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"AP3001"</v>
+              <v n="TextDefault">""</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"AP4001"</v>
+              <v n="TextDefault">""</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"CT4101"</v>
+              <v n="TextDefault">""</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"CT4102"</v>
+              <v n="TextDefault">""</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
+              <v n="TextID">"FT9012"</v>
+              <v n="TextDefault">""</v>
+              <l n="LanguageTexts" t="ArrayList" />
+            </o>
+            <o>
               <v n="TextID">"last"</v>
-              <v n="TextDefault">"30"</v>
+              <v n="TextDefault">""</v>
               <l n="LanguageTexts" t="ArrayList" />
             </o>
             <o>

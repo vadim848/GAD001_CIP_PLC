@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="F_iFB_Num_sFB_Num" Id="{0fc1480b-3d38-49c4-85cc-de6fbc710349}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION F_iFB_Num_sFB_Num : STRING(3)
+VAR_INPUT
+	iFB_Num: INT;
+END_VAR
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IF iFB_Num<10 THEN;
+	F_iFB_Num_sFB_Num:=CONCAT(STR1:='00',STR2:=INT_TO_STRING(iFB_Num));
+ELSIF iFB_Num<100 THEN;
+	F_iFB_Num_sFB_Num:=CONCAT(STR1:='0',STR2:=INT_TO_STRING(iFB_Num));
+ELSE;
+	F_iFB_Num_sFB_Num:=CONCAT(STR1:='',STR2:=INT_TO_STRING(iFB_Num));
+END_IF]]></ST>
+    </Implementation>
+    <LineIds Name="F_iFB_Num_sFB_Num">
+      <LineId Id="7" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="12" Count="3" />
+      <LineId Id="11" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

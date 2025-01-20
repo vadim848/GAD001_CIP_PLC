@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
   <POU Name="FB_SFC_Cycle" Id="{2eff1a57-7803-4790-acb1-7416be6b3b39}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_SFC_Cycle
 VAR_INPUT
@@ -37,6 +37,11 @@ VAR
 	
 	ErrorSFC: BOOL;
 
+	tonResetCycle: TON;
+	
+	stMode_zone	: REFERENCE TO ST_Mode;
+	stOper_zone	: REFERENCE TO ST_OperationButtons;
+	ftStateSafe : F_TRIG;
 	
 END_VAR
 ]]></Declaration>
@@ -63,18 +68,28 @@ END_VAR
         <ST><![CDATA[sLastStepBefore_Error:=refSFC.SFCCurrentStep;]]></ST>
       </Implementation>
     </Method>
+    <Method Name="m_Set_Mode_Reference" Id="{8c28502d-c713-429a-acdc-275818e4ceaf}">
+      <Declaration><![CDATA[METHOD m_Set_Mode_Reference : BOOL
+VAR_INPUT
+	inMoedeZone: E_ModeZone;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[stMode_zone REF=(stMode[inMoedeZone]);
+stOper_zone REF=(stOper[inMoedeZone]);
+]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="m_SFC_Handle" Id="{46532f38-5120-4137-ac00-dcc259f13a38}">
       <Declaration><![CDATA[METHOD m_SFC_Handle : BOOL
 VAR_INPUT
 END_VAR
 
 VAR
-	tonResetCycle: TON;
+	
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[
-
-IF NOT __ISVALIDREF(refSFC.SFCInit) 
+        <ST><![CDATA[IF NOT __ISVALIDREF(refSFC.SFCInit) 
 OR NOT  __ISVALIDREF(refSFC.SFCReset) 
 OR NOT  __ISVALIDREF(refSFC.SFCError) 
 OR NOT  __ISVALIDREF(refSFC.SFCEnableLimit) 
@@ -141,10 +156,23 @@ IF bResume THEN;
 	bResume:=FALSE;
 END_IF
 
-tonResetCycle(PT:=T#0.5S);
+IF NOT __ISVALIDREF(stMode_zone)
+OR NOT __ISVALIDREF(stOper_zone)
+THEN;
+	RETURN;
+ELSE;
+	//IF prg_Safety.ftStateSafe.Q THEN;
+	ftStateSafe(CLK:=stMode_zone.bStateSafe_mode);
+	IF ftStateSafe.Q THEN;
+		//bResetCycle:=TRUE;
+	END_IF	
+END_IF
+ 
+
+tonResetCycle(PT:=T#0.5S,IN:=bResetCycle);
 IF bResetCycle THEN;
 	refSFC.SFCReset:=TRUE;
-	tonResetCycle.IN:=TRUE;
+	//tonResetCycle.IN:=TRUE;
 END_IF
 IF tonResetCycle.Q THEN;
 	bResetCycle:=FALSE;
@@ -152,6 +180,8 @@ IF tonResetCycle.Q THEN;
 END_IF
 
 StepByStep();
+
+
 
 
 
@@ -187,6 +217,7 @@ refSFC.SFCReset:=TRUE;]]></ST>
     <Method Name="mRun" Id="{0552b8ba-1fe7-4c0f-8dc3-c440bb8dda21}">
       <Declaration><![CDATA[METHOD mRun : BOOL
 VAR_INPUT
+	
 END_VAR
 ]]></Declaration>
       <Implementation>
@@ -240,61 +271,15 @@ END_IF]]></ST>
     <LineIds Name="FB_SFC_Cycle.m_Set_LastStepBeforeError">
       <LineId Id="5" Count="0" />
     </LineIds>
-    <LineIds Name="FB_SFC_Cycle.m_SFC_Handle">
-      <LineId Id="91" Count="1" />
-      <LineId Id="76" Count="2" />
-      <LineId Id="83" Count="5" />
-      <LineId Id="93" Count="1" />
-      <LineId Id="90" Count="0" />
-      <LineId Id="80" Count="1" />
-      <LineId Id="75" Count="0" />
-      <LineId Id="82" Count="0" />
-      <LineId Id="32" Count="0" />
-      <LineId Id="6" Count="4" />
-      <LineId Id="5" Count="0" />
-      <LineId Id="15" Count="0" />
-      <LineId Id="14" Count="0" />
-      <LineId Id="16" Count="0" />
+    <LineIds Name="FB_SFC_Cycle.m_Set_Mode_Reference">
       <LineId Id="18" Count="1" />
-      <LineId Id="17" Count="0" />
-      <LineId Id="21" Count="0" />
-      <LineId Id="20" Count="0" />
-      <LineId Id="22" Count="0" />
-      <LineId Id="28" Count="1" />
-      <LineId Id="23" Count="0" />
-      <LineId Id="25" Count="2" />
-      <LineId Id="30" Count="1" />
-      <LineId Id="64" Count="1" />
-      <LineId Id="24" Count="0" />
-      <LineId Id="34" Count="0" />
-      <LineId Id="33" Count="0" />
-      <LineId Id="35" Count="0" />
-      <LineId Id="37" Count="1" />
-      <LineId Id="36" Count="0" />
-      <LineId Id="45" Count="0" />
-      <LineId Id="40" Count="2" />
-      <LineId Id="39" Count="0" />
-      <LineId Id="55" Count="0" />
-      <LineId Id="54" Count="0" />
-      <LineId Id="59" Count="1" />
-      <LineId Id="98" Count="1" />
-      <LineId Id="103" Count="0" />
-      <LineId Id="105" Count="2" />
-      <LineId Id="100" Count="1" />
-      <LineId Id="116" Count="0" />
-      <LineId Id="112" Count="0" />
-      <LineId Id="111" Count="0" />
-      <LineId Id="113" Count="0" />
-      <LineId Id="115" Count="0" />
-      <LineId Id="114" Count="0" />
-      <LineId Id="120" Count="1" />
-      <LineId Id="123" Count="0" />
-      <LineId Id="122" Count="0" />
-      <LineId Id="69" Count="0" />
-      <LineId Id="73" Count="1" />
-      <LineId Id="70" Count="0" />
-      <LineId Id="52" Count="0" />
-      <LineId Id="47" Count="4" />
+      <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_SFC_Cycle.m_SFC_Handle">
+      <LineId Id="149" Count="66" />
+      <LineId Id="254" Count="9" />
+      <LineId Id="218" Count="16" />
+      <LineId Id="241" Count="6" />
       <LineId Id="46" Count="0" />
     </LineIds>
     <LineIds Name="FB_SFC_Cycle.mInit">

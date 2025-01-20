@@ -1,0 +1,156 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="prg_Messages" Id="{c3335614-63d2-4275-bedd-5d1ddf12cc2c}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM prg_Messages
+VAR
+	Pis: INT;
+	c_PisError: INT;
+	mask_PisEr: ARRAY [1..C_Max_Pistons] OF BOOL;
+	mask_LatEr: ARRAY [1..24] OF BOOL;
+	Mess: INT;
+	ResetErrors: BOOL;
+	(*ResumeAll: BOOL;*)
+	r_trig_prg_Stepper: R_TRIG;
+	r_trig_StepperErrorSFC: R_TRIG;
+	ton_ActMessCheck: TON;
+	sel_FB: INT;
+	PauseAll: BOOL;
+	Lat: INT;
+
+	HighLightErrorPB: BOOL;
+	HighLightWarningPB: BOOL;
+	
+	Clear: STRING := '';
+	ton_BitMapBlink: TON;
+	stBitMap: STRING;
+	r_trig_ResetError: R_trig;
+	i_Reset: INT;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[ton_ActMessCheck(IN:=NOT ton_ActMessCheck.Q, PT:=T#0.5S);
+
+prg_Messages.act_ResetErrors();
+prg_Messages.act_ResumeSFC();
+
+
+IF iActErrors<>0 THEN
+	HighLightErrorPB:=TRUE;
+ELSE
+	HighLightErrorPB:=FALSE;
+END_IF
+
+IF iActWarning<>0 THEN
+	HighLightWarningPB:=TRUE;
+ELSE
+	HighLightWarningPB:=FALSE;
+END_IF
+
+ton_BitMapBlink(PT:=T#1S,IN:=NOT ton_BitMapBlink.Q);
+IF HighLightErrorPB THEN
+	IF ton_BitMapBlink.ET>T#0.5S THEN
+		 s_Error_BitmapID:='ImagePool.Error_Yel';
+	ELSE
+		 s_Error_BitmapID:='ImagePool.Error_Red';
+	END_IF
+ELSIF HighLightWarningPB THEN
+	IF ton_BitMapBlink.ET>T#0.5S THEN
+		 s_Error_BitmapID:='ImagePool.Error_Yel';
+	ELSE
+		 s_Error_BitmapID:='ImagePool.Error_No';
+	END_IF
+ELSE
+		 s_Error_BitmapID:='ImagePool.Error_No';
+END_IF]]></ST>
+    </Implementation>
+    <Action Name="act_ResetErrors" Id="{c2624c95-fe16-453f-bdd4-a54849ebbfde}">
+      <Implementation>
+        <ST><![CDATA[r_trig_ResetError(CLK:=ResetErrors OR
+						stOpMain.bResetError );
+
+IF r_trig_ResetError.Q THEN
+	(*	 Pistons		*)
+	FOR Pis:=1 TO C_Max_Pistons BY 1 DO
+		stPis[Pis].b_Resume:=TRUE;
+	END_FOR
+	FOR i_Reset:=1 TO 100 BY 1 DO
+		Buffer_Act_Message[i_Reset].sDateTime:='';
+		Buffer_Act_Message[i_Reset].sErrID:='';
+		Buffer_Act_Message[i_Reset].sLevel:='';
+		Buffer_Act_Message[i_Reset].sErrorMessage:='';
+		Buffer_Act_Message[i_Reset].sModuleDescription:='';
+	END_FOR
+END_IF
+
+IF ResetErrors THEN
+
+(*		 Pistons		*)
+	FOR Pis:=1 TO C_Max_Pistons BY 1 DO
+		stPis[Pis].b_Resume:=TRUE;
+	END_FOR
+
+(*		Latches		*)
+	(*FOR Pis:=1 TO 24 BY 1 DO
+		db_Lat[Pis].req_Resume:=TRUE;
+	END_FOR*)
+
+	//prg_Safety.ResetError:=TRUE;
+
+	ResetErrors:=FALSE;
+END_IF]]></ST>
+      </Implementation>
+    </Action>
+    <Action Name="act_ResumeSFC" Id="{f4d1ea8e-bdf9-4593-b8db-b80b4b799e1d}">
+      <Implementation>
+        <ST><![CDATA[IF ResumeAll THEN
+
+(*		 Pistons		*)
+	FOR Pis:=1 TO C_Max_Pistons BY 1 DO
+		stPis[Pis].b_Resume:=TRUE;
+	END_FOR
+
+
+(*		Latches		*)
+	(*FOR Pis:=1 TO 24 BY 1 DO
+		db_Lat[Pis].req_Resume:=TRUE;
+	END_FOR*)
+
+
+
+	ResetErrors:=TRUE;
+END_IF]]></ST>
+      </Implementation>
+    </Action>
+    <LineIds Name="prg_Messages">
+      <LineId Id="95" Count="10" />
+      <LineId Id="141" Count="4" />
+      <LineId Id="106" Count="0" />
+      <LineId Id="146" Count="0" />
+      <LineId Id="107" Count="6" />
+      <LineId Id="147" Count="4" />
+      <LineId Id="114" Count="0" />
+      <LineId Id="152" Count="0" />
+      <LineId Id="115" Count="0" />
+      <LineId Id="49" Count="0" />
+    </LineIds>
+    <LineIds Name="prg_Messages.act_ResetErrors">
+      <LineId Id="76" Count="0" />
+      <LineId Id="98" Count="0" />
+      <LineId Id="77" Count="0" />
+      <LineId Id="79" Count="9" />
+      <LineId Id="95" Count="0" />
+      <LineId Id="89" Count="0" />
+      <LineId Id="91" Count="0" />
+      <LineId Id="75" Count="0" />
+      <LineId Id="0" Count="5" />
+      <LineId Id="7" Count="4" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="66" Count="2" />
+    </LineIds>
+    <LineIds Name="prg_Messages.act_ResumeSFC">
+      <LineId Id="0" Count="12" />
+      <LineId Id="68" Count="2" />
+      <LineId Id="72" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

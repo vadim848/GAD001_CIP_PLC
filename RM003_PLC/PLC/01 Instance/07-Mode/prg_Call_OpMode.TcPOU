@@ -1,0 +1,141 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="prg_Call_OpMode" Id="{37ea252d-f7d6-4416-870e-8e42ec6784ac}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM prg_Call_OpMode
+VAR
+	fbModeMain:FB_ModeSelect;
+	
+	rt_HMI_Resume: R_TRIG;
+	rt_ActError: R_TRIG;
+	
+	eModeZone: E_ModeZone;
+
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[fbModeMain(sModuleDescription:='Mode Select - Main',
+	bInterlockBypass:=TRUE, //bIntZoneBypass[1]
+	bLockedFB:=TRUE, //bIntZoneLocked[1]
+	bPistonCheck:=FALSE,	
+	bLockRequest=>,	//bReq_LockZone[1]
+	eModeZone:=E_ModeZone.eMain,
+	stMode:=stModeMain,
+	stOperation:=stOpMain, 
+	bStateSafe_mode:=bStateSafe);
+	
+FOR eModeZone:=	E_ModeZone.eMain TO E_ModeZone.eLast DO
+	fbMode[eModeZone](sModuleDescription:='Mode Select - ',
+		bInterlockBypass:=TRUE, //bIntZoneBypass[eModeZone]
+		bLockedFB:=TRUE, //bIntZoneLocked[eModeZone]
+		bPistonCheck:=FALSE,	
+		bLockRequest=>,	//bReq_LockZone[eModeZone]
+		eModeZone:=eModeZone,
+		stMode:=stMode[eModeZone],
+		stOperation:=stOper[eModeZone],
+		bStateSafe_mode:=m_Get_StateSafe_by_ModeZone(eMoZone:=eModeZone));	
+END_FOR
+	
+PauseAll:=stOpMain.iActOperation=E_OperationButtons.ePauseAll;	
+PauseAllDelayed:=stOpMain.bPauseOnDelayed;	
+	
+rt_HMI_Resume(CLK:=ResumeAll);
+IF rt_HMI_Resume.Q THEN;
+	stOpMain.bSetPlay:=TRUE;
+	prg_Messages.act_ResumeSFC();	
+	FOR eModeZone:=	E_ModeZone.eMain TO E_ModeZone.eLast DO;
+		stOper[eModeZone].bSetPlay:=TRUE;
+	END_FOR
+	ResumeAll:=FALSE;
+END_IF
+
+rt_ActError(CLK:=iActErrors<>0);
+IF iActErrors<>0 THEN;
+	stOpMain.bSetPause:=TRUE;
+END_IF
+
+prg_LightTower(
+	bBuzzerBypass:=bBuzzerMute , 
+	qLedGreen=> , //q_EL16[2].ch11
+	qLedYellow=> , //q_EL16[2].ch10
+	qLedRed=> , //q_EL16[2].ch9
+	qBuzzer=> );//q_EL16[2].ch12
+
+	]]></ST>
+    </Implementation>
+    <Method Name="m_Get_StateSafe_by_ModeZone" Id="{fdafcf64-1d55-4ecf-a98a-8debd67a4d40}">
+      <Declaration><![CDATA[METHOD INTERNAL m_Get_StateSafe_by_ModeZone : BOOL
+VAR_INPUT
+	eMoZone: E_ModeZone;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE eMoZone OF
+	E_ModeZone.eCIP:;
+		m_Get_StateSafe_by_ModeZone:=bStateSafe_ES1;
+
+	E_ModeZone.eTank3,
+	E_ModeZone.eTank4,
+	E_ModeZone.eProduction_Color:;
+		m_Get_StateSafe_by_ModeZone:=bStateSafe_ES2;		
+
+	E_ModeZone.eTriBlender_Color,
+	E_ModeZone.eTriBlender_Marinade:;
+		m_Get_StateSafe_by_ModeZone:=bStateSafe_ES3;
+		
+	E_ModeZone.eTank1,
+	E_ModeZone.eTank2,
+	E_ModeZone.eProduction_Marinade:;
+		m_Get_StateSafe_by_ModeZone:=bStateSafe_ES4;
+		
+ELSE;
+		m_Get_StateSafe_by_ModeZone:=FALSE;
+		
+END_CASE
+(*
+bStateSafe_ES1:=arSafe[1].stSafetyIn.ES1_State;
+bStateSafe_ES2:=arSafe[1].stSafetyIn.ES2_State;
+bStateSafe_ES3:=arSafe[1].stSafetyIn.ES3_State;
+bStateSafe_ES4:=arSafe[1].stSafetyIn.ES4_State;
+*)]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="prg_Call_OpMode">
+      <LineId Id="202" Count="7" />
+      <LineId Id="285" Count="0" />
+      <LineId Id="242" Count="1" />
+      <LineId Id="249" Count="6" />
+      <LineId Id="247" Count="0" />
+      <LineId Id="284" Count="0" />
+      <LineId Id="248" Count="0" />
+      <LineId Id="210" Count="2" />
+      <LineId Id="223" Count="3" />
+      <LineId Id="256" Count="0" />
+      <LineId Id="269" Count="0" />
+      <LineId Id="271" Count="1" />
+      <LineId Id="257" Count="0" />
+      <LineId Id="227" Count="13" />
+      <LineId Id="186" Count="0" />
+    </LineIds>
+    <LineIds Name="prg_Call_OpMode.m_Get_StateSafe_by_ModeZone">
+      <LineId Id="7" Count="1" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="22" Count="1" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="37" Count="2" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="40" Count="0" />
+      <LineId Id="25" Count="2" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="14" Count="3" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="33" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

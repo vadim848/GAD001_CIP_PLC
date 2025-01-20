@@ -1,0 +1,427 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="prg_LightTower" Id="{f02147ec-0518-45ea-a1e9-951e541f9e2a}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM prg_LightTower
+VAR_INPUT
+	bBuzzerBypass: BOOL;
+END_VAR
+VAR
+
+	ton_Blink				: TON;
+	ton_Buzzer				: TON;
+	t_Buzzer				: TIME:=T#2S;
+	t_BuzzerShort			: TIME:=T#0.5S;
+	t_BuzzerErrorDelay		: TIME:=T#10S;
+	t_BuzzerWarningDelay	: TIME:=T#30S;
+	//eLightTowerState_Last	: E_LightTowerState;
+	bBuzzerMuteMemo: BOOL;	
+	ton_MuteBuzzer: TON;
+	ton_NoMessage: TON;
+	ton_BuzzerLongTimeOn: TON;
+END_VAR
+
+VAR_OUTPUT
+	qLedGreen	: BOOL;
+	qLedYellow	: BOOL;
+	qLedRed		: BOOL;
+	qBuzzer		: BOOL;	
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[// Interface
+(*
+q_EL[1].ch1:=qLedGreen;
+q_EL[1].ch2:=qLedYellow;
+q_EL[1].ch3:=qLedRed;
+q_EL[1].ch4:=qBuzzer;
+*)
+//.....................
+(*
+TYPE E_LightTowerState :
+(
+	eLightsOff := 0,
+	eRed,				//Error
+	eYellow,			//Pause
+	eGreen,				//Run
+	eGreenYellowBlink	//Run and warning
+);
+END_TYPE
+*)
+act_Operation();
+ton_Blink(IN:=NOT ton_Blink.Q);
+CASE eLightTowerState OF
+	eLightsOff:;
+		qLedGreen	:=FALSE;
+		qLedYellow	:=FALSE;
+		qLedRed		:=FALSE;
+		eBuzzerMode:=eBuzzerOff;	
+		
+	eGreen:;
+		qLedGreen	:=TRUE;
+		qLedYellow	:=FALSE;
+		qLedRed		:=FALSE;
+		eBuzzerMode:=eBuzzerOff;	
+		
+	eGreen_YellowBlink:;
+		qLedGreen	:=TRUE;
+		qLedYellow	:=TRUE;
+		qLedRed		:=FALSE;
+		IF bBuzzerMuteMemo THEN;
+			eBuzzerMode:=eBuzzerOff;
+		ELSE
+			eBuzzerMode:=eBuzzerWarning;
+		END_IF
+		ton_Blink.PT:=T#1S;
+		IF ton_Blink.ET>T#0.5S THEN; qLedYellow:=FALSE; ELSE;qLedGreen:=FALSE; END_IF	
+		
+	eGreenBlink:;
+		qLedGreen	:=TRUE;
+		qLedYellow	:=FALSE;
+		qLedRed		:=FALSE;
+		eBuzzerMode:=eBuzzerOff;		
+		ton_Blink.PT:=T#1S;
+		IF ton_Blink.ET>T#0.5S THEN; qLedGreen:=FALSE; END_IF	
+
+	eGreenBlink_YellowBlink:;
+		qLedGreen	:=TRUE;
+		qLedYellow	:=TRUE;
+		qLedRed		:=FALSE;
+		IF bBuzzerMuteMemo THEN;
+			eBuzzerMode:=eBuzzerOff;
+		ELSE
+			eBuzzerMode:=eBuzzerWarning;
+		END_IF
+		ton_Blink.PT:=T#1S;
+		IF ton_Blink.ET>T#0.5S THEN; qLedYellow:=FALSE; ELSE;qLedGreen:=FALSE; END_IF
+
+	eGreenBlink_RedBlink:;
+		qLedGreen	:=TRUE;
+		qLedYellow	:=FALSE;
+		qLedRed		:=TRUE;
+		IF bBuzzerMuteMemo THEN;
+			eBuzzerMode:=eBuzzerOff;
+		ELSE
+			eBuzzerMode:=eBuzzerError;
+		END_IF
+		ton_Blink.PT:=T#1S;
+		IF ton_Blink.ET>T#0.5S THEN; qLedRed:=FALSE; ELSE;qLedGreen:=FALSE; END_IF
+		
+	eYellow:;
+		qLedGreen	:=FALSE;
+		qLedYellow	:=TRUE;
+		qLedRed		:=FALSE;
+		eBuzzerMode:=eBuzzerOff;	
+		
+	eRed:;
+		qLedGreen	:=FALSE;
+		qLedYellow	:=FALSE;
+		qLedRed		:=TRUE;
+		IF bBuzzerMuteMemo THEN;
+			eBuzzerMode:=eBuzzerOff;
+		ELSE
+			eBuzzerMode:=eBuzzerError;
+		END_IF
+END_CASE
+
+ton_NoMessage(PT:=T#5S,IN:=bBuzzerMuteMemo AND iActErrors=0 AND iActWarning=0);
+
+IF (stOpMain.bSetPlay
+	(*OR stOpLoad.bSetPlay
+	OR stOpUnload.bSetPlay
+	OR stOpManip.bSetPlay
+	OR stOpHMI.bSetPlay
+	OR prg_Call_OpMode.fbModeIndex.rt_Play.Q
+	OR prg_Call_OpMode.fbModeLoad.rt_Play.Q
+	OR prg_Call_OpMode.fbModeUnload.rt_Play.Q
+	OR prg_Call_OpMode.fbModeManip.rt_Play.Q*)
+	OR ton_NoMessage.Q	
+)
+THEN;
+	ton_MuteBuzzer.IN:=TRUE;
+END_IF
+IF ton_MuteBuzzer.IN THEN;
+	bBuzzerMuteMemo:=FALSE;
+END_IF
+ton_MuteBuzzer(PT:=T#1S);
+IF ton_MuteBuzzer.Q THEN
+	ton_MuteBuzzer.IN:=FALSE;
+END_IF
+IF prg_Messages.ResetErrors OR ton_BuzzerLongTimeOn.Q THEN;// iActErrors=0 AND iActWarning=0
+	bBuzzerMuteMemo:=TRUE;
+END_IF
+ton_BuzzerLongTimeOn(PT:=T#30M,IN:=eBuzzerMode<>eBuzzerOff);
+
+(*
+TYPE E_BuzzerMode :
+(
+	eBuzzerOff := 0,
+	eBuzzerError,		//Short Delay Off
+	eBuzzerWarning		//Long Delay Off
+);
+END_TYPE
+*)
+
+IF NOT bBuzzerBypass THEN
+	ton_Buzzer();
+	CASE eBuzzerMode OF
+		eBuzzerOff :;
+			qBuzzer:=FALSE;
+			
+			ton_Buzzer.IN:=FALSE;
+		eBuzzerError:;			//Short Delay Off
+			qBuzzer:=TRUE;
+			ton_Buzzer.PT:=t_BuzzerErrorDelay;
+			ton_Buzzer.IN:=NOT ton_Buzzer.Q;
+			IF ton_Buzzer.ET>t_Buzzer THEN; qBuzzer:=FALSE; END_IF
+		eBuzzerWarning:;		//Long Delay Off
+			qBuzzer:=TRUE;
+			ton_Buzzer.PT:=t_BuzzerWarningDelay;
+			ton_Buzzer.IN:=NOT ton_Buzzer.Q;
+			IF ton_Buzzer.ET>t_BuzzerShort THEN; qBuzzer:=FALSE; END_IF
+	END_CASE	
+ELSE
+	qBuzzer:=FALSE;
+END_IF
+]]></ST>
+    </Implementation>
+    <Action Name="act_Operation" Id="{8d6c7f2a-28a2-4a68-b801-679d7d75691a}">
+      <Implementation>
+        <ST><![CDATA[IF 		stOpMain.iActOperation=E_OperationButtons.ePauseAll
+	AND iActErrors<>0
+	THEN;	
+	eLightTowerState:=E_LightTowerState.eRed;
+ 						//7
+ELSIF 	stOpMain.iActOperation=E_OperationButtons.ePauseAll
+	AND iActErrors=0
+	THEN;
+	eLightTowerState:=E_LightTowerState.eYellow;					//6	
+	
+ELSIF 	stOpMain.iActOperation=E_OperationButtons.ePlayAll
+	AND iActErrors=0
+ 	AND iActWarning<>0
+	THEN;
+	eLightTowerState:=E_LightTowerState.eGreenBlink_YellowBlink;	//4
+		
+ELSIF 	stOpMain.iActOperation=E_OperationButtons.ePlayAll
+	AND iActErrors=0 
+	AND iActWarning=0 
+	THEN;
+	eLightTowerState:=E_LightTowerState.eGreen;						//1
+END_IF]]></ST>
+      </Implementation>
+    </Action>
+    <Action Name="act_Operation_Multi" Id="{bd77fe55-28e8-42fd-84e0-4c32f2e825d2}">
+      <Implementation>
+        <ST><![CDATA[IF 		stOpMain.iActOperation=E_OperationButtons.ePauseAll
+	//AND stOpLoad.iActOperation=E_OperationButtons.ePauseAll
+	//AND stOpUnload.iActOperation=E_OperationButtons.ePauseAll
+	//AND stOpManip.iActOperation=E_OperationButtons.ePauseAll
+	//AND stOpHMI.iActOperation=E_OperationButtons.ePauseAll
+	AND iActErrors<>0
+	THEN;	
+	eLightTowerState:=E_LightTowerState.eRed;
+ 						//7
+ELSIF 	stOpMain.iActOperation=E_OperationButtons.ePauseAll
+	//AND stOpLoad.iActOperation=E_OperationButtons.ePauseAll
+	//AND stOpUnload.iActOperation=E_OperationButtons.ePauseAll
+	//AND stOpManip.iActOperation=E_OperationButtons.ePauseAll
+	//AND stOpHMI.iActOperation=E_OperationButtons.ePauseAll
+	AND iActErrors=0
+	THEN;
+	eLightTowerState:=E_LightTowerState.eYellow;					//6
+	
+ELSIF 	(stOpMain.iActOperation=E_OperationButtons.ePlayAll
+	(*OR stOpLoad.iActOperation=E_OperationButtons.ePlayAll
+	OR stOpUnload.iActOperation=E_OperationButtons.ePlayAll
+	OR stOpManip.iActOperation=E_OperationButtons.ePlayAll
+	OR stOpHMI.iActOperation=E_OperationButtons.ePlayAll*))
+	AND iActErrors<>0 
+	THEN;
+	eLightTowerState:=E_LightTowerState.eGreenBlink_RedBlink;		//5
+	
+ELSIF 	(stOpMain.iActOperation=E_OperationButtons.ePlayAll
+	(*OR stOpLoad.iActOperation=E_OperationButtons.ePlayAll
+	OR stOpUnload.iActOperation=E_OperationButtons.ePlayAll
+	OR stOpManip.iActOperation=E_OperationButtons.ePlayAll
+	OR stOpHMI.iActOperation=E_OperationButtons.ePlayAll*))
+	AND iActErrors=0
+ 	AND iActWarning<>0
+	THEN;
+	eLightTowerState:=E_LightTowerState.eGreenBlink_YellowBlink;	//4
+	
+ELSIF  	(stOpMain.iActOperation=E_OperationButtons.ePlayAll
+	(*OR stOpLoad.iActOperation=E_OperationButtons.ePlayAll
+	OR stOpUnload.iActOperation=E_OperationButtons.ePlayAll
+	OR stOpManip.iActOperation=E_OperationButtons.ePlayAll
+	OR stOpHMI.iActOperation=E_OperationButtons.ePlayAll*))
+	AND  (stOpMain.iActOperation=E_OperationButtons.ePauseAll
+	(*OR stOpLoad.iActOperation=E_OperationButtons.ePauseAll
+	OR stOpUnload.iActOperation=E_OperationButtons.ePauseAll
+	OR stOpManip.iActOperation=E_OperationButtons.ePauseAll
+	OR stOpHMI.iActOperation=E_OperationButtons.ePauseAll*))	
+	AND iActErrors=0
+ 	AND iActWarning=0
+	THEN;
+	eLightTowerState:=E_LightTowerState.eGreenBlink;				//3
+	
+ELSIF 	stOpMain.iActOperation=E_OperationButtons.ePlayAll
+	(*AND stOpLoad.iActOperation=E_OperationButtons.ePlayAll
+	AND stOpUnload.iActOperation=E_OperationButtons.ePlayAll
+	AND stOpManip.iActOperation=E_OperationButtons.ePlayAll
+	AND stOpHMI.iActOperation=E_OperationButtons.ePlayAll*)
+	AND iActErrors=0 
+	AND iActWarning<>0
+	THEN;
+	eLightTowerState:=E_LightTowerState.eGreen_YellowBlink;			//2
+	
+ELSIF 	stOpMain.iActOperation=E_OperationButtons.ePlayAll
+	(*AND stOpLoad.iActOperation=E_OperationButtons.ePlayAll
+	AND stOpUnload.iActOperation=E_OperationButtons.ePlayAll
+	AND stOpManip.iActOperation=E_OperationButtons.ePlayAll
+	AND stOpHMI.iActOperation=E_OperationButtons.ePlayAll*)
+	AND iActErrors=0 
+	AND iActWarning=0 
+	THEN;
+	eLightTowerState:=E_LightTowerState.eGreen;						//1
+END_IF]]></ST>
+      </Implementation>
+    </Action>
+    <LineIds Name="prg_LightTower">
+      <LineId Id="25" Count="6" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="39" Count="7" />
+      <LineId Id="38" Count="0" />
+      <LineId Id="37" Count="0" />
+      <LineId Id="264" Count="0" />
+      <LineId Id="54" Count="0" />
+      <LineId Id="32" Count="1" />
+      <LineId Id="51" Count="2" />
+      <LineId Id="128" Count="0" />
+      <LineId Id="203" Count="0" />
+      <LineId Id="205" Count="4" />
+      <LineId Id="226" Count="0" />
+      <LineId Id="210" Count="8" />
+      <LineId Id="227" Count="0" />
+      <LineId Id="204" Count="0" />
+      <LineId Id="228" Count="4" />
+      <LineId Id="220" Count="0" />
+      <LineId Id="234" Count="0" />
+      <LineId Id="233" Count="0" />
+      <LineId Id="236" Count="0" />
+      <LineId Id="238" Count="9" />
+      <LineId Id="237" Count="0" />
+      <LineId Id="248" Count="10" />
+      <LineId Id="235" Count="0" />
+      <LineId Id="259" Count="0" />
+      <LineId Id="221" Count="3" />
+      <LineId Id="219" Count="0" />
+      <LineId Id="225" Count="0" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="60" Count="2" />
+      <LineId Id="152" Count="1" />
+      <LineId Id="155" Count="1" />
+      <LineId Id="154" Count="0" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="360" Count="0" />
+      <LineId Id="296" Count="0" />
+      <LineId Id="362" Count="0" />
+      <LineId Id="269" Count="3" />
+      <LineId Id="268" Count="0" />
+      <LineId Id="329" Count="0" />
+      <LineId Id="333" Count="2" />
+      <LineId Id="359" Count="0" />
+      <LineId Id="328" Count="0" />
+      <LineId Id="182" Count="0" />
+      <LineId Id="301" Count="0" />
+      <LineId Id="150" Count="0" />
+      <LineId Id="302" Count="2" />
+      <LineId Id="165" Count="0" />
+      <LineId Id="297" Count="0" />
+      <LineId Id="299" Count="1" />
+      <LineId Id="162" Count="2" />
+      <LineId Id="81" Count="0" />
+      <LineId Id="368" Count="0" />
+      <LineId Id="78" Count="0" />
+      <LineId Id="84" Count="5" />
+      <LineId Id="83" Count="0" />
+      <LineId Id="82" Count="0" />
+      <LineId Id="97" Count="0" />
+      <LineId Id="107" Count="0" />
+      <LineId Id="127" Count="0" />
+      <LineId Id="110" Count="14" />
+      <LineId Id="108" Count="0" />
+      <LineId Id="125" Count="1" />
+      <LineId Id="109" Count="0" />
+      <LineId Id="366" Count="0" />
+    </LineIds>
+    <LineIds Name="prg_LightTower.act_Operation">
+      <LineId Id="1" Count="0" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="2" Count="0" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="4" Count="0" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="50" Count="0" />
+      <LineId Id="43" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="48" Count="0" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="51" Count="0" />
+      <LineId Id="73" Count="0" />
+      <LineId Id="78" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="37" Count="0" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="3" Count="0" />
+    </LineIds>
+    <LineIds Name="prg_LightTower.act_Operation_Multi">
+      <LineId Id="1" Count="0" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="22" Count="2" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="2" Count="0" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="27" Count="4" />
+      <LineId Id="4" Count="0" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="49" Count="0" />
+      <LineId Id="38" Count="4" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="50" Count="0" />
+      <LineId Id="43" Count="4" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="48" Count="0" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="51" Count="0" />
+      <LineId Id="55" Count="4" />
+      <LineId Id="62" Count="3" />
+      <LineId Id="61" Count="0" />
+      <LineId Id="60" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="52" Count="0" />
+      <LineId Id="67" Count="4" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="72" Count="0" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="53" Count="0" />
+      <LineId Id="73" Count="5" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="37" Count="0" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="3" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

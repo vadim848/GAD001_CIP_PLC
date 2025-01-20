@@ -1,0 +1,94 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <DUT Name="ST_CIP_Param" Id="{b17efe25-078f-4e49-b240-422f7de8e21c}">
+    <Declaration><![CDATA[TYPE ST_CIP_Param :
+STRUCT	//st_CIP_Param
+	//New parameters
+	sName: STRING;
+	r_Tank91_Volume			:	REAL:=300	;	//volume in litres
+	r_Tank92_Volume			:	REAL:=300	;	//volume in litres
+	r_Tank93_Volume			:	REAL:=300	;	//volume in litres
+	r_Tank94_Volume			:	REAL:=300	;	//volume in litres
+	
+	r_CIP_Pump				:	REAL:=200	;
+	r_CIP_Client_Pump		:	REAL:=200	;
+	
+(**)r_Flow_Pipe				:	REAL:=160	;
+(**)r_Flow_Sprinkler		:	REAL:=100	;
+	
+	r_Pressure				:	REAL:=0.5	;
+	
+	r_DetergentConcentration		:	REAL:=0.3	;//concentration in percents
+	r_DisInfectionConcentration		:	REAL:=0.3	;//concentration in percents
+	
+	t_Measure_Delay						:	INT:=60		;//concentration measurment delay in seconds
+(**)t_ConditionR_Water					:	INT:=60		;//concentration CIP time in seconds
+(**)t_ConditionR_Water_Sprinkler		:	INT:=60		;//concentration CIP time in seconds
+(**)t_ConditionDetergent				:	INT:=60		;//concentration CIP time in seconds
+(**)t_ConditionDetergent_Sprinkler		:	INT:=60		;//concentration CIP time in seconds
+(**)t_ConditionDisInfection				:	INT:=60		;//concentration CIP time in seconds
+(**)t_ConditionDisInfection_Sprinkler	:	INT:=60		;//concentration CIP time in seconds
+(**)t_ConditionWater					:	INT:=60		;//concentration CIP time in seconds
+(**)t_ConditionWater_Sprinkler			:	INT:=60		;//concentration CIP time in seconds	
+	r_Temper_Detergent					:	REAL:=65	;//temperature set point for local client in celsius
+	r_Temper_DisInfection				:	REAL:=65	;//temperature set point for local client in celsius
+(**)//r_Temper_ClientReturn				:	REAL:=65	;//Client return temperature
+	t_PumpInitRun						:	INT:=20		;//pump initial run with constant RPM, time in seconds
+(**)t_PumpInitRun_old					:	INT:=60		;(*not in use*)//pump start time in R_Water, time in seconds
+	
+(**)r_Volume_Sprinkler_Ratio		:	REAL:=0.7	;//in case of CIP Client Tanks, 0.7=70% of Volume to  sprinkler direction 
+(**)r_Volume_Solution_Fill			:	REAL:=60	;//Client pipe volume displacement 
+(**)r_Volume_Drain_R_Water			:	REAL:=20	;//Client pipe volume displacement 
+	r_Volume_Collect_Detergent		:	REAL:=20	;//Client pipe volume displacement 
+	r_Volume_Drain_Detergent		:	REAL:=20	;//Client pipe volume displacement 
+	r_Volume_Recycle_Detergent		:	REAL:=20	;//Client pipe volume displacement 
+	r_Volume_Collect_DisInfection	:	REAL:=20	;//Client pipe volume displacement 
+	r_Volume_Drain_DisInfection		:	REAL:=20	;//Client pipe volume displacement 
+	r_Volume_Recycle_DisInfection	:	REAL:=20	;//Client pipe volume displacement 
+
+	(*//R_Water
+		r_RWater_93_TankLvl	:	REAL:=150	;
+		t_RWater_Pump_01	:	INT:=30		;//time in seconds
+	
+	//Detergent
+		r_Deter_92_TankLvl_1	:	REAL:=250	;
+		r_Deter_92_TankLvl_2	:	REAL:=300	;
+		r_Deter_Flow_Pmp1_1		:	REAL:=200	;
+		r_Deter_Flow_Pmp1_2		:	REAL:=200	;
+		r_Deter_Pressure_Pmp1_1	:	REAL:=0.5	;
+		n_Deter_PumpCIP_RPM		:	INT:=1500	;
+		n_Deter_PumpClient_RPM	:	INT:=1500	;
+		n_Deter_PumpCIP_RPM_1		:	INT:=1000	;
+		n_Deter_PumpClient_RPM_1	:	INT:=1000	;
+		
+		//local
+		st_Deter_Local			:	str_ConcParam	;
+		//client
+		st_Deter_Client			:	str_ConcParam	;
+	
+	//DisInfection
+		r_DisInf_PumpCIP_RPM_1		:	INT:=1000	;
+		r_DisInf_PumpCIP_RPM_2		:	INT:=1000	;
+		r_DisInf_PumpClient_RPM_2	:	INT:=1000	;
+		r_DisInf_PumpCIP_RPM_3		:	INT:=1000	;
+		r_DisInf_PumpClient_RPM_3	:	INT:=1000	;
+		//local
+		st_DisInf_Local			:	str_ConcParam	;
+		//client
+		st_DisInf_Client		:	str_ConcParam	;
+		
+	//Water
+		r_Water_TankLvl_Lcl_1		:	REAL:=250		;
+		r_Water_TankLvl_Client_1	:	REAL:=250		;
+		
+		r_Water_PumpCIP_1		:	INT:=100	;
+		r_Water_PumpClient_1	:	INT:=100	;
+		
+	*)
+
+
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

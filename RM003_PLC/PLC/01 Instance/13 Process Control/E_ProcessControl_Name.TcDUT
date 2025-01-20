@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <DUT Name="E_ProcessControl_Name" Id="{2d2c496f-0737-4b8d-9dd9-12b31d2207b1}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+{attribute 'to_string'}
+TYPE E_ProcessControl_Name :
+(
+	(*
+	888888
+	888888 NOTE !!! add new element ONLY before the last element <eProcCntrl_Last>!!!
+	888888
+	*)
+	e0_not_in_use := 0,
+	//Concentration
+	eDetergentConc,		//Detergent concentration
+	eDisinfectionConc,	//Disinfection concentration
+	//Temperature
+	eDeterTemp, //Detergent temperature
+	eDisTemp,	//Disinfection temperature
+	eMarinTank1_Temp,
+	eMarinTank2_Temp,
+	eColorTank1_Temp,
+	eColorTank2_Temp,
+	eClientReturn_Temp,
+	//Flow rate
+	eCIP_Flow_1,//**FT1001 CIP
+	eCIP_Flow_2,//**FT1002 CIP Client return pipe
+	eCIP_Flow_3,//**FT1002 CIP Client return sprinkler
+	
+	//Level
+	eMarin_Level,
+	eColor_Level,
+	//Pressure
+	eCIP_Pressure,
+	
+	eHeatExchanger,
+(*	
+	eTriBlender_Flow,//**FT9011
+	
+	eColor_TriB_Conc,//**CT4101
+	eColor_Line_Conc,//**CT4102
+
+	eP3001_Pressure,//**PT3001
+	eP3002_Pressure,//**PT3002
+	eP4001_Pressure,//**PT4001
+	eP4002_Pressure,//**PT4002
+*)	
+	
+	// add new element ONLY hire !!!
+	eProcCntrl_Last
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

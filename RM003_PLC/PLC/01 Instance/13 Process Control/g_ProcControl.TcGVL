@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <GVL Name="g_ProcControl" Id="{c82ce01a-6aba-42a9-9df3-37461452ee95}">
+    <Declaration><![CDATA[//{attribute 'qualified_only'}
+VAR_GLOBAL
+	//concentration
+	(*stDetergent					:	ST_ProcessControl	;
+	pcDetergent					: 	FB_ProcessControl	;	//detergent local
+	stDisinfectant				:	ST_ProcessControl	;
+	pcDisinfectant				: 	FB_ProcessControl	;	//detergent local
+    //temperature
+	stTemperature_Deterg			:	ST_ProcessControl	;
+	pcTemperature_Deterg			: 	FB_ProcessControl	;	//detergent Client	
+	stTemperature_Dis				:	ST_ProcessControl	;
+	pcTemperature_Dis				: 	FB_ProcessControl	;//disinfectant local/client
+	
+	//flow rate
+	stFlow_Rate						:	ST_ProcessControl	;//CIP
+	pcFlow_Rate						: 	FB_ProcessControl	;//disinfectant local/client
+	stFlow_Rate_2					:	ST_ProcessControl	;//CLient CIP //level control 
+	pcFlow_Rate_2					: 	FB_ProcessControl	;//disinfectant local/client //level control 
+	
+	//colar marinade 
+	//pressure
+	stPressure						:	ST_ProcessControl	;
+	pcPressure						: 	FB_ProcessControl	;//CIP //Client	
+	*)
+	
+	///////////////////ARRAYS///////////////////
+	arr_fbProcCntrl			:	ARRAY [0..E_ProcessControl_Name.eProcCntrl_Last] OF FB_ProcessControl	;
+	arr_ProcCntrl_NameList	:	ARRAY [0..E_ProcessControl_Name.eProcCntrl_Last] OF STRING	;
+	eProcCntrl_Name			: E_ProcessControl_Name;
+END_VAR
+VAR_GLOBAL PERSISTENT
+	arr_stProcCntrl			:	ARRAY [0..E_ProcessControl_Name.eProcCntrl_Last] OF ST_ProcessControl	;
+END_VAR
+]]></Declaration>
+  </GVL>
+</TcPlcObject>

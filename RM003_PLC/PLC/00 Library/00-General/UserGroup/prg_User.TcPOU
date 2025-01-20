@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="prg_User" Id="{49511ea2-8d20-4905-945a-e7de46b8a3d2}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM prg_User
+VAR
+	actUser: E_userGroup:=1;
+		
+	ton_UserLoged: TON;
+	Password: INT;
+	ton_Password: TON;
+	PT: BOOL;
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[ton_UserLoged(IN:=actUser<>Group1, PT:=T#10M);
+
+IF ton_UserLoged.Q OR Password=1  THEN
+	actUser:=1;
+END_IF
+
+IF Password=726 THEN
+	actUser:=2;
+END_IF
+
+IF Password=345 THEN
+	actUser:=3;
+END_IF
+
+IF Password=888 THEN
+	actUser:=4;
+END_IF
+
+
+ton_Password(IN:=Password<> 0, PT:=T#1s);
+IF ton_Password.Q THEN
+	Password:=0;
+END_IF
+;]]></ST>
+    </Implementation>
+    <LineIds Name="prg_User">
+      <LineId Id="11" Count="12" />
+      <LineId Id="40" Count="2" />
+      <LineId Id="39" Count="0" />
+      <LineId Id="24" Count="6" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

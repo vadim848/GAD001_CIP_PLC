@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <GVL Name="GVL_CycleMessages" Id="{b6c8e884-be33-491e-9b6c-1f0ed6b67392}">
+    <Declaration><![CDATA[//{attribute 'qualified_only'}
+VAR_GLOBAL
+	Buffer_Act_Message				:ARRAY[1..C_Max_Buffer_Act_list] OF stMessageFormat;
+	Buffer_Act_Warning				:ARRAY[1..C_Max_Buffer_Act_list] OF stMessageFormat;
+	Buffer_Act_History				:ARRAY[1..C_Max_Buffer_Act_list] OF stMessageFormat;
+	Buffer_Search_Messages			:ARRAY[1..1000] OF stMessageFormat;
+	Buffer_Act_Display				:ARRAY[1..20] 	OF stMessageFormat;
+
+	fbPrintErrMessageByID			:FB_PrintErrMessageByID;	
+
+	s_Error_BitmapID	       		:STRING;
+	
+	ar_ErrorActive					:ARRAY[1..C_Max_ErrorList] 	OF BOOL;	
+	
+
+	
+END_VAR
+VAR_GLOBAL CONSTANT
+	C_Max_ErrorList: INT:=200;
+	C_Max_Buffer_Act_list: INT:=100;
+
+END_VAR]]></Declaration>
+  </GVL>
+</TcPlcObject>
