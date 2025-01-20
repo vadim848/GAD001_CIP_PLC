@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+  <POU Name="prg_PLCs_communication" Id="{c8c750e4-a3d0-48e9-b735-13193bff0498}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM prg_PLCs_communication
+VAR
+	fbAdsRead: ADSREAD;
+	fbAdsWrite: ADSWRITE;
+
+	ton_Update: TON;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[ton_Update(PT:=T#50MS, IN:=NOT ton_Update.Q);
+
+IF ton_Update.Q THEN;
+	fbAdsRead(
+	NETID:= , 
+	PORT:= 852, 
+	IDXGRP:= , 
+	IDXOFFS:= , 
+	LEN:= SIZEOF(g_HMI_Panel.stVisuPLC_To_PLC), 
+	DESTADDR:= ADR(g_HMI_Panel.stVisuPLC_To_PLC), 
+	READ:= , 
+	TMOUT:= , 
+	BUSY=> , 
+	ERR=> , 
+	ERRID=> );
+	
+	fbAdsWrite(
+	NETID:= , 
+	PORT:= 852, 
+	IDXGRP:= , 
+	IDXOFFS:= , 
+	LEN:= SIZEOF(g_HMI_Panel.stPLC_To_VisuPLC), 
+	SRCADDR:= ADR(g_HMI_Panel.stPLC_To_VisuPLC), 
+	WRITE:= , 
+	TMOUT:= , 
+	BUSY=> , 
+	ERR=> , 
+	ERRID=> );
+END_IF]]></ST>
+    </Implementation>
+    <LineIds Name="prg_PLCs_communication">
+      <LineId Id="5" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="14" Count="10" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="27" Count="10" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="13" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>
