@@ -3,15 +3,33 @@
   <POU Name="MAIN" Id="{97de8132-b6af-4a2c-b014-8f1e8c1f4c6b}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM MAIN
 VAR
-	k: INT;
+	k: REAL;
+	ton_Life: TON;
 END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[k:=k+1;
+
+g_HMI_Panel.stVisuPLC_To_PLC.RPM_setPoint:=k;
+
+ton_Life(PT:=T#1S, IN:=NOT ton_Life.Q);
+IF ton_Life.ET>T#0.5S THEN;
+	g_HMI_Panel.stVisuPLC_To_PLC.lifeBit:=TRUE;
+ELSE;
+	g_HMI_Panel.stVisuPLC_To_PLC.lifeBit:=FALSE;
+END_IF
 ]]></ST>
     </Implementation>
     <LineIds Name="MAIN">
       <LineId Id="2" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="19" Count="1" />
+      <LineId Id="18" Count="0" />
       <LineId Id="6" Count="0" />
     </LineIds>
   </POU>
