@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
   <POU Name="FB_CIP" Id="{14cc32b0-9432-4cf7-99d2-9b696d5c02b0}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_CIP EXTENDS FB_SFC_Cycle IMPLEMENTS ITF_FB_SFC_Cycle
 VAR_INPUT
@@ -35603,7 +35603,9 @@ END_CASE
 IF nStep_Vlv<>0 
 AND (NOT Ready.x)
 AND (stOper[E_ModeZone.eCIP].iActOperation=E_OperationButtons.ePauseAll
-	OR (NOT tonr_CIP_Condition.IN AND NOT(bClientTypeIs_Tank AND bSprinkler)))
+	//OR (NOT tonr_CIP_Condition.IN AND NOT(bClientTypeIs_Tank AND bSprinkler)))
+	OR ton_Concentration_Filter.ET>T#3S
+	OR bCIP_Condition_Failed)
 THEN;
 	m_MixProof_Release_All();
 	nStep_Vlv:=0;
@@ -38384,6 +38386,7 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="345" Count="0" />
       <LineId Id="352" Count="0" />
       <LineId Id="350" Count="1" />
+      <LineId Id="464" Count="1" />
       <LineId Id="349" Count="0" />
       <LineId Id="347" Count="0" />
       <LineId Id="354" Count="0" />
