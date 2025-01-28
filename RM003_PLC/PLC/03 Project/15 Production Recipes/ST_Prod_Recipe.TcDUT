@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <DUT Name="ST_Prod_Recipe" Id="{30f796b6-4ad6-4488-9821-178c2ff4e475}">
+    <Declaration><![CDATA[TYPE ST_Prod_Recipe :
+STRUCT
+	
+// General
+	Description				: STRING(30);
+	prodType				: E_Prod_Type;
+	Temperature				: REAL;
+	
+	StirrerDissolving		: ST_Prod_Param_Stirrer;
+	StirrerProduction		: ST_Prod_Param_Stirrer;
+	StirrerStorage			: ST_Prod_Param_Stirrer;
+
+	ExperationTime			: TIME;
+	Conductivity			: REAL;		// mSimons
+
+	
+// Water
+	WaterPercentage			: REAL;
+	WaterExperationTime		: TIME;
+	
+// Component
+	arr_Component			: ARRAY [1..g_Data.MaxCompInProduct] OF ST_Prod_Ingredient;
+	
+// Water push to triblender color(Blood)
+	Weight_to_Collect		: REAL; // Kg
+	Weight_to_Drain			: REAL; // Kg
+	Conductivity_limit		: REAL; //mSimons
+	
+	
+	FlowRate_Production		: REAL; //RPM
+	FlowRate_WaterPushing	: REAL; //RPM
+	FlowRate_Storage		: REAL; //RPM
+
+
+
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>
