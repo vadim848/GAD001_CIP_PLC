@@ -1,0 +1,122 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <POU Name="FB_ProdRecipe_Manage" Id="{6d224ab8-fc12-45df-bf04-9b71c4fddbfa}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_ProdRecipe_Manage
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	bReInit: BOOL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[mPercentage_Calculation();
+IF bReInit THEN;
+	FB_INIT(bInCopyCode:=FALSE,bInitRetains:=FALSE);
+	bReInit:=FALSE;
+	//FB_INIT.bInitRetains:=TRUE;
+END_IF]]></ST>
+    </Implementation>
+    <Method Name="FB_INIT" Id="{829a4d5a-b2e2-488a-be22-05f2cbbb07cb}">
+      <Declaration><![CDATA[METHOD FB_INIT : BOOL
+VAR_INPUT
+END_VAR
+VAR_INPUT
+    bInitRetains : BOOL; // TRUE if the FB is being initialized after a warm restart
+    bInCopyCode : BOOL;  // TRUE if the FB is being initialized in copy code
+END_VAR
+VAR
+	i: INT;
+	k: INT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[FOR i:=0 TO g_Prod.cMax_Prod_Recipe DO
+	
+	g_Prod.arrRecipeMarinade[i].prodType:=E_Prod_Type.Marinade;
+	g_Prod.arrRecipeColor[i].prodType:=E_Prod_Type.Color;
+	
+	g_Prod.arrRecipeMarinade[i].arr_Component[1].sDescription:='Water';
+	g_Prod.arrRecipeColor[i].arr_Component[1].sDescription:='Water';
+	
+	g_Prod.arrRecipeMarinade[i].arr_Component[1].eIngredientType:=E_Ingredient_type.eWater;
+	g_Prod.arrRecipeColor[i].arr_Component[1].eIngredientType:=E_Ingredient_type.eWater;
+
+	FOR k:=2 TO g_Prod.cMaxCompInProduct-1 DO
+		//g_Prod.arrRecipeMarinade[i].arr_Component[k].sDescription:='Powder';
+		//g_Prod.arrRecipeColor[i].arr_Component[k].sDescription:='Powder';
+		
+		g_Prod.arrRecipeMarinade[i].arr_Component[k].eIngredientType:=E_Ingredient_type.ePowder;
+		g_Prod.arrRecipeColor[i].arr_Component[k].eIngredientType:=E_Ingredient_type.ePowder;		
+	END_FOR
+	
+	
+	
+	g_Prod.arrRecipeMarinade[i].arr_Component[10].sDescription:='Oil';
+	g_Prod.arrRecipeColor[i].arr_Component[10].sDescription:='Oil';
+	
+	g_Prod.arrRecipeMarinade[i].arr_Component[10].eIngredientType:=E_Ingredient_type.eOil;
+	g_Prod.arrRecipeColor[i].arr_Component[10].eIngredientType:=E_Ingredient_type.eOil;	
+
+END_FOR]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="mPercentage_Calculation" Id="{f4c275b1-d3ea-444b-987c-802362ed0562}">
+      <Declaration><![CDATA[METHOD mPercentage_Calculation : BOOL
+VAR_INPUT
+END_VAR
+
+VAR
+	i: INT;
+	tempPercentage_M: REAL;
+	tempPercentage_C: REAL;
+	k: INT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[
+FOR i:=1 TO g_Prod.cMax_Prod_Recipe DO
+	tempPercentage_M:=0;
+	tempPercentage_C:=0;	
+	FOR k:=2 TO g_Prod.cMaxCompInProduct DO
+		tempPercentage_M:=tempPercentage_M + g_Prod.arrRecipeMarinade[i].arr_Component[k].rWeightPercentage;
+		tempPercentage_C:=tempPercentage_C + g_Prod.arrRecipeColor[i].arr_Component[k].rWeightPercentage;
+	END_FOR
+	g_Prod.arrRecipeMarinade[i].arr_Component[1].rWeightPercentage:=100-tempPercentage_M;
+	g_Prod.arrRecipeColor[i].arr_Component[1].rWeightPercentage:=100-tempPercentage_C;
+END_FOR]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_ProdRecipe_Manage">
+      <LineId Id="9" Count="1" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="13" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ProdRecipe_Manage.FB_INIT">
+      <LineId Id="35" Count="9" />
+      <LineId Id="53" Count="0" />
+      <LineId Id="46" Count="0" />
+      <LineId Id="59" Count="3" />
+      <LineId Id="57" Count="1" />
+      <LineId Id="56" Count="0" />
+      <LineId Id="54" Count="0" />
+      <LineId Id="47" Count="0" />
+      <LineId Id="49" Count="3" />
+      <LineId Id="48" Count="0" />
+      <LineId Id="45" Count="0" />
+      <LineId Id="7" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ProdRecipe_Manage.mPercentage_Calculation">
+      <LineId Id="36" Count="0" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="41" Count="0" />
+      <LineId Id="39" Count="0" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="33" Count="1" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="37" Count="1" />
+      <LineId Id="7" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

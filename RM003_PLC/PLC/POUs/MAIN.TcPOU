@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
   <POU Name="MAIN" Id="{3441d04c-1b6a-45f8-92c9-effbc902d265}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM MAIN
 VAR
@@ -48,6 +48,7 @@ prg_InterCon_Usage();
 act_Sensors();
 act_HeatExchenger();
 act_Call_CIP();
+act_Call_Production();
 
 act_Call_For_HMI();
 
@@ -5693,6 +5694,12 @@ g_HMI.stT4_Sens:=g_Data.stTanksSens[E_Tank_Name.T4];
             </TypeList>
           </XmlArchive>
         </NWL>
+      </Implementation>
+    </Action>
+    <Action Name="act_Call_Production" Id="{79d1bbce-16ed-4247-ba1c-9331ab9baef9}">
+      <Implementation>
+        <ST><![CDATA[
+g_Prod.fbProdRecipe_Manage();]]></ST>
       </Implementation>
     </Action>
     <Action Name="act_Call_Pumps" Id="{250d1796-6961-486b-9de7-1fb9e6e9ab7d}">
@@ -20653,7 +20660,9 @@ END_FOR]]></ST>
       <LineId Id="443" Count="0" />
       <LineId Id="327" Count="0" />
       <LineId Id="459" Count="3" />
-      <LineId Id="328" Count="27" />
+      <LineId Id="328" Count="15" />
+      <LineId Id="478" Count="0" />
+      <LineId Id="344" Count="11" />
       <LineId Id="419" Count="0" />
       <LineId Id="356" Count="1" />
       <LineId Id="423" Count="1" />
@@ -20678,6 +20687,10 @@ END_FOR]]></ST>
       <LineId Id="2" Count="1" />
       <LineId Id="5" Count="8" />
       <LineId Id="4" Count="0" />
+    </LineIds>
+    <LineIds Name="MAIN.act_Call_Production">
+      <LineId Id="2" Count="0" />
+      <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="MAIN.act_ClientPump_Select">
       <LineId Id="1" Count="1" />
