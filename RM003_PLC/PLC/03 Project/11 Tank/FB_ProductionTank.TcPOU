@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
   <POU Name="FB_ProductionTank" Id="{7ce7ab69-2020-4b39-9932-dc5de2cb0022}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_ProductionTank EXTENDS FB_SFC_Cycle IMPLEMENTS ITF_FB_SFC_Cycle
 VAR_INPUT
@@ -64,6 +64,10 @@ VAR
 	bRunCIP			: BOOL	;
 	
 	ref_fbTankSensors			: REFERENCE TO FB_TankSensors;
+	
+	//888888888888888888888888888888888888888888
+	stProdParam		: ST_Production_Parameter;
+	//888888888888888888888888888888888888888888
 END_VAR
 VAR_IN_OUT
 
@@ -91,6 +95,18 @@ IF bTestingMode THEN;
 ELSE;
 	bMoveStep:=TRUE; 
 END_IF
+
+
+IF stProdParam.bGetRecipe THEN;
+	stProdParam.bGetRecipe:=FALSE;
+	mGet_Recipe(indexRecipe:=stProdParam.hmiRecipeIndex+1);
+END_IF
+CASE eElementID	OF 
+	E_Element_List.eTank_1,E_Element_List.eTank_2:;
+		stProdParam.listRecipe:=g_Prod.listRecipe_Marinade;
+	E_Element_List.eTank_3,E_Element_List.eTank_4:;
+  		stProdParam.listRecipe:=g_Prod.listRecipe_Color;
+END_CASE
 ]]></ST>
     </Implementation>
     <Folder Name="Manage" Id="{4859bb81-2525-4c2b-a781-1bdd74a1527c}" />
@@ -19133,6 +19149,34 @@ refSFC.SFCTipMode REF= SFCTipMode;
 m_SFC_Handle();]]></ST>
       </Implementation>
     </Method>
+    <Method Name="mGet_Recipe" Id="{b8cd2ec5-ec05-4d19-a0b3-16991b77e5a1}" FolderPath="Manage\">
+      <Declaration><![CDATA[METHOD mGet_Recipe : BOOL
+VAR_INPUT
+	indexRecipe: INT;
+
+END_VAR
+
+VAR
+	i: INT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF indexRecipe <0 OR indexRecipe > g_Prod.cMax_Prod_Recipe THEN;
+	RETURN;
+END_IF
+
+CASE eElementID	OF 
+	E_Element_List.eTank_1,E_Element_List.eTank_2:;
+		stProdParam.stRecipe:=g_Prod.arrRecipeMarinade[indexRecipe];
+	E_Element_List.eTank_3,E_Element_List.eTank_4:;
+  		stProdParam.stRecipe:=g_Prod.arrRecipeColor[indexRecipe];
+END_CASE
+
+FOR i:=1 TO g_Prod.cMaxCompInProduct DO
+	stProdParam.arrWeightIng[i]:=stProdParam.stRecipe.arr_Component[i].rWeightPercentage/100 * stProdParam.WeightOrder;
+	stProdParam.stRecipe.arr_Component[i].rWeight:=stProdParam.stRecipe.arr_Component[i].rWeightPercentage/100 * stProdParam.WeightOrder;
+END_FOR]]></ST>
+      </Implementation>
+    </Method>
     <Transition Name="trn_Tank_A" Id="{7f0e7518-f66a-4b4a-b16b-a3f65f501415}">
       <Implementation>
         <ST><![CDATA[trn_Tank_A:=(eElementID=E_Element_List.eTank_1 OR eElementID=E_Element_List.eTank_3) AND bStepDone;]]></ST>
@@ -19153,6 +19197,13 @@ m_SFC_Handle();]]></ST>
       <LineId Id="142" Count="0" />
       <LineId Id="146" Count="1" />
       <LineId Id="143" Count="0" />
+      <LineId Id="286" Count="1" />
+      <LineId Id="285" Count="0" />
+      <LineId Id="288" Count="0" />
+      <LineId Id="290" Count="0" />
+      <LineId Id="289" Count="0" />
+      <LineId Id="292" Count="4" />
+      <LineId Id="291" Count="0" />
       <LineId Id="138" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank._aBlending_Prod_active">
@@ -19664,6 +19715,20 @@ m_SFC_Handle();]]></ST>
     <LineIds Name="FB_ProductionTank.m_Set_SFCFlags_Reference">
       <LineId Id="5" Count="15" />
       <LineId Id="4" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ProductionTank.mGet_Recipe">
+      <LineId Id="5" Count="0" />
+      <LineId Id="8" Count="1" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="17" Count="1" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="25" Count="1" />
+      <LineId Id="24" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank.trn_Tank_A">
       <LineId Id="1" Count="0" />
