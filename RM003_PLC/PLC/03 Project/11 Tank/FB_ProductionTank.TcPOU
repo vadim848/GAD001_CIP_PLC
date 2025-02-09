@@ -107,6 +107,8 @@ CASE eElementID	OF
 	E_Element_List.eTank_3,E_Element_List.eTank_4:;
   		stProdParam.listRecipe:=g_Prod.listRecipe_Color;
 END_CASE
+
+stProdParam.timeRemainToStart:=mTimeRemainToStart();
 ]]></ST>
     </Implementation>
     <Folder Name="Manage" Id="{4859bb81-2525-4c2b-a781-1bdd74a1527c}" />
@@ -19177,6 +19179,19 @@ FOR i:=1 TO g_Prod.cMaxCompInProduct DO
 END_FOR]]></ST>
       </Implementation>
     </Method>
+    <Method Name="mTimeRemainToStart" Id="{7d6f306c-e772-4eb3-a87e-556a8ea27eb4}" FolderPath="Manage\">
+      <Declaration><![CDATA[METHOD mTimeRemainToStart : TIME
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF stProdParam.prodDT > dtRealTime THEN;
+	mTimeRemainToStart:=stProdParam.prodDT - dtRealTime;
+ELSE;
+	mTimeRemainToStart:=T#0S;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
     <Transition Name="trn_Tank_A" Id="{7f0e7518-f66a-4b4a-b16b-a3f65f501415}">
       <Implementation>
         <ST><![CDATA[trn_Tank_A:=(eElementID=E_Element_List.eTank_1 OR eElementID=E_Element_List.eTank_3) AND bStepDone;]]></ST>
@@ -19204,6 +19219,8 @@ END_FOR]]></ST>
       <LineId Id="289" Count="0" />
       <LineId Id="292" Count="4" />
       <LineId Id="291" Count="0" />
+      <LineId Id="378" Count="0" />
+      <LineId Id="377" Count="0" />
       <LineId Id="138" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank._aBlending_Prod_active">
@@ -19729,6 +19746,11 @@ END_FOR]]></ST>
       <LineId Id="12" Count="0" />
       <LineId Id="25" Count="1" />
       <LineId Id="24" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ProductionTank.mTimeRemainToStart">
+      <LineId Id="5" Count="1" />
+      <LineId Id="8" Count="1" />
+      <LineId Id="7" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank.trn_Tank_A">
       <LineId Id="1" Count="0" />
