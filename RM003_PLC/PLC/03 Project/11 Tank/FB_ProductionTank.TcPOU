@@ -109,6 +109,7 @@ CASE eElementID	OF
 END_CASE
 
 stProdParam.timeRemainToStart:=mTimeRemainToStart();
+stProdParam.timeProductionDuration:=mTimeProductionDuration();
 ]]></ST>
     </Implementation>
     <Folder Name="Manage" Id="{4859bb81-2525-4c2b-a781-1bdd74a1527c}" />
@@ -19179,17 +19180,44 @@ FOR i:=1 TO g_Prod.cMaxCompInProduct DO
 END_FOR]]></ST>
       </Implementation>
     </Method>
+    <Method Name="mTimeProductionDuration" Id="{b2a492d8-93d6-4df6-bd37-f2e46985a2d9}" FolderPath="Manage\">
+      <Declaration><![CDATA[METHOD mTimeProductionDuration : TIME
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF dtRealTime > stProdParam.prodDT 
+AND stProdParam.eStatus=E_Prod_Status.Active
+THEN;
+	mTimeProductionDuration:=dtRealTime - stProdParam.prodDT;
+ELSE;
+	mTimeProductionDuration:=T#0S;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="mTimeRemainToStart" Id="{7d6f306c-e772-4eb3-a87e-556a8ea27eb4}" FolderPath="Manage\">
       <Declaration><![CDATA[METHOD mTimeRemainToStart : TIME
 VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF stProdParam.prodDT > dtRealTime THEN;
-	mTimeRemainToStart:=stProdParam.prodDT - dtRealTime;
+        <ST><![CDATA[IF stProdParam.eStatus=E_Prod_Status.Activation_Pending_Shift THEN;
+	stProdParam.eStatus:=E_Prod_Status.Activation_Pending;
+	stProdParam.prodDT:=g_Prod.dtProdTimePicker+T#2h;
+END_IF
+
+
+IF stProdParam.eStatus=E_Prod_Status.Activation_Pending THEN;
+	IF stProdParam.prodDT > dtRealTime THEN;
+		mTimeRemainToStart:=stProdParam.prodDT - dtRealTime;
+	ELSE;
+		stProdParam.eStatus:=E_Prod_Status.Active;
+		eReq:=E_Request_List.eWaterPrepare;
+	END_IF
 ELSE;
 	mTimeRemainToStart:=T#0S;
-END_IF]]></ST>
+END_IF
+]]></ST>
       </Implementation>
     </Method>
     <Transition Name="trn_Tank_A" Id="{7f0e7518-f66a-4b4a-b16b-a3f65f501415}">
@@ -19222,6 +19250,7 @@ END_IF]]></ST>
       <LineId Id="378" Count="0" />
       <LineId Id="377" Count="0" />
       <LineId Id="138" Count="0" />
+      <LineId Id="459" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank._aBlending_Prod_active">
       <LineId Id="2" Count="0" />
@@ -19747,9 +19776,28 @@ END_IF]]></ST>
       <LineId Id="25" Count="1" />
       <LineId Id="24" Count="0" />
     </LineIds>
-    <LineIds Name="FB_ProductionTank.mTimeRemainToStart">
-      <LineId Id="5" Count="1" />
+    <LineIds Name="FB_ProductionTank.mTimeProductionDuration">
+      <LineId Id="5" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="6" Count="0" />
       <LineId Id="8" Count="1" />
+      <LineId Id="7" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ProductionTank.mTimeRemainToStart">
+      <LineId Id="30" Count="0" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="20" Count="2" />
+      <LineId Id="24" Count="1" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="17" Count="0" />
       <LineId Id="7" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank.trn_Tank_A">
