@@ -1744,17 +1744,26 @@ CASE refElement.eState_Long OF
 			IF eReq=E_Request_List.eDissolve THEN;
 				eProcess:=E_Element_Process.eDissolving;
 			END_IF	
-
+			IF eReq=E_Request_List.eFinish THEN;
+				mClearProduction();
+			END_IF
 	E_Element_State_Long.eReady:;
 			IF eReq=E_Request_List.eProduction THEN;
 				eProcess:=E_Element_Process.eConnectionToLine;
 			END_IF	
+			IF eReq=E_Request_List.eFinish THEN;
+				mClearProduction();
+			END_IF			
 
 	E_Element_State_Long.eProduction:;
 			IF eReq=E_Request_List.eDisconnectTank THEN;
 				eProcess:=E_Element_Process.eDisconnection;
 			END_IF			
 
+	E_Element_State_Long.eEmpty:;
+			IF eReq=E_Request_List.eFinish THEN;
+				mClearProduction();
+			END_IF			
 END_CASE
 		
 ]]></ST>
@@ -19152,6 +19161,23 @@ refSFC.SFCTipMode REF= SFCTipMode;
 m_SFC_Handle();]]></ST>
       </Implementation>
     </Method>
+    <Method Name="mClearProduction" Id="{58c4c9c9-8cf2-41f1-b206-eaacde8cd18f}" FolderPath="Manage\">
+      <Declaration><![CDATA[METHOD mClearProduction : BOOL
+VAR_INPUT
+END_VAR
+
+VAR
+	stRecipeEmpty: ST_Prod_Recipe;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[stProdParam.eStatus:=E_Prod_Status.Not_Active;
+stProdParam.stRecipe:=stRecipeEmpty;
+
+refState_Long:=E_Element_State_Long.eStandby;
+eReq:=E_Request_List.eNone;]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="mGet_Recipe" Id="{b8cd2ec5-ec05-4d19-a0b3-16991b77e5a1}" FolderPath="Manage\">
       <Declaration><![CDATA[METHOD mGet_Recipe : BOOL
 VAR_INPUT
@@ -19565,10 +19591,15 @@ END_IF
       <LineId Id="18" Count="0" />
       <LineId Id="20" Count="2" />
       <LineId Id="19" Count="0" />
+      <LineId Id="41" Count="1" />
       <LineId Id="24" Count="3" />
       <LineId Id="23" Count="0" />
+      <LineId Id="39" Count="1" />
+      <LineId Id="38" Count="0" />
       <LineId Id="29" Count="3" />
       <LineId Id="28" Count="0" />
+      <LineId Id="33" Count="2" />
+      <LineId Id="37" Count="0" />
       <LineId Id="8" Count="0" />
       <LineId Id="7" Count="0" />
       <LineId Id="5" Count="0" />
@@ -19761,6 +19792,12 @@ END_IF
     <LineIds Name="FB_ProductionTank.m_Set_SFCFlags_Reference">
       <LineId Id="5" Count="15" />
       <LineId Id="4" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ProductionTank.mClearProduction">
+      <LineId Id="5" Count="1" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="14" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank.mGet_Recipe">
       <LineId Id="5" Count="0" />
