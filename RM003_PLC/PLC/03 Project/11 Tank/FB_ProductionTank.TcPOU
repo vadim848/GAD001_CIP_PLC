@@ -19236,7 +19236,7 @@ END_IF
 IF stProdParam.eStatus=E_Prod_Status.Activation_Pending THEN;
 	IF stProdParam.prodDT > dtRealTime THEN;
 		mTimeRemainToStart:=stProdParam.prodDT - dtRealTime;
-	ELSE;
+	ELSIF eStatus=E_Element_State_Long.eCIP_5_Done THEN;
 		stProdParam.eStatus:=E_Prod_Status.Active;
 		eReq:=E_Request_List.eWaterPrepare;
 	END_IF
