@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
   <POU Name="FB_TriBlender_Select" Id="{9eeca8ec-03ab-4735-83e4-c97ea5515e09}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_TriBlender_Select EXTENDS FB_SFC_Cycle IMPLEMENTS ITF_FB_SFC_Cycle
 VAR_INPUT
@@ -2369,13 +2369,13 @@ END_IF;]]></ST>
     <Method Name="m_CheckStatus" Id="{3903e6c5-5909-4217-872b-04f94cc50c95}" FolderPath="Manage\">
       <Declaration><![CDATA[METHOD m_CheckStatus : BOOL
 VAR_INPUT
-	eReqStatus		: E_CIP_Return;
+	eReqStatus		: E_TriBlenderSelect;
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF eStatus=eReqStatus 
-AND eProcess=E_CIP_Return.eNone
-AND eReq=E_CIP_Return.eNone
+AND eProcess=E_TriBlenderSelect.eNone
+AND eReq=E_TriBlenderSelect.eNone
 AND bReady
 AND bDone
 AND NOT bRun
@@ -2411,6 +2411,17 @@ END_VAR
 	bDone:=FALSE;
 	m_Run:=TRUE;
 END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_Set_Request" Id="{a1fa741f-11b0-4781-a2c4-c8fa2ef789ea}" FolderPath="Manage\">
+      <Declaration><![CDATA[METHOD m_Set_Request : BOOL
+VAR_INPUT
+	eSetReg		: E_TriBlenderSelect;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[eReq:=eSetReg;
+]]></ST>
       </Implementation>
     </Method>
     <Method Name="m_Set_SFCFlags_Reference" Id="{40d7e9fd-d4fa-45bd-88e4-d85c0e80f0bc}" FolderPath="Manage\">
@@ -2535,6 +2546,10 @@ m_SFC_Handle();]]></ST>
       <LineId Id="7" Count="0" />
       <LineId Id="9" Count="1" />
       <LineId Id="8" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_TriBlender_Select.m_Set_Request">
+      <LineId Id="5" Count="0" />
+      <LineId Id="7" Count="0" />
     </LineIds>
     <LineIds Name="FB_TriBlender_Select.m_Set_SFCFlags_Reference">
       <LineId Id="7" Count="15" />
