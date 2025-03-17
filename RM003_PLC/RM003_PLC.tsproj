@@ -36,8 +36,8 @@
 			</ArrayInfo>
 		</DataType>
 		<DataType>
-			<Name GUID="{1A9CDFD8-8B7F-7A3C-9E26-81D22D640103}" AutoDeleteType="true">ST_VisuPLC_To_PLC</Name>
-			<BitSize>64</BitSize>
+			<Name GUID="{8337191F-A112-5453-0643-1189EF3D2122}" AutoDeleteType="true">ST_VisuPLC_To_PLC</Name>
+			<BitSize>96</BitSize>
 			<SubItem>
 				<Name>lifeBit</Name>
 				<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
@@ -49,6 +49,18 @@
 				<Type GUID="{18071995-0000-0000-0000-00000000000D}">REAL</Type>
 				<BitSize>32</BitSize>
 				<BitOffs>32</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>bPauseTriBlender</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+				<BitSize>8</BitSize>
+				<BitOffs>64</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>bActualComponentDisolving_Done</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+				<BitSize>8</BitSize>
+				<BitOffs>72</BitOffs>
 			</SubItem>
 		</DataType>
 		<DataType>
@@ -495,8 +507,114 @@
 			</SubItem>
 		</DataType>
 		<DataType>
-			<Name GUID="{7B6669BB-65D1-661E-4D1C-5095BD5FCD65}" AutoDeleteType="true">ST_PLC_To_VisuPLC</Name>
-			<BitSize>64</BitSize>
+			<Name GUID="{24C90CA1-76E9-2CC1-BDE2-50ABE5C8D163}" AutoDeleteType="true">E_Prod_Type</Name>
+			<BitSize>16</BitSize>
+			<BaseType GUID="{18071995-0000-0000-0000-000000000006}">INT</BaseType>
+			<EnumInfo>
+				<Text><![CDATA[Marinade]]></Text>
+				<Enum>0</Enum>
+			</EnumInfo>
+			<EnumInfo>
+				<Text><![CDATA[Color]]></Text>
+				<Enum>1</Enum>
+			</EnumInfo>
+			<Properties>
+				<Property>
+					<Name>qualified_only</Name>
+				</Property>
+				<Property>
+					<Name>strict</Name>
+				</Property>
+				<Property>
+					<Name>generate_implicit_init_function</Name>
+				</Property>
+			</Properties>
+		</DataType>
+		<DataType>
+			<Name GUID="{47D254CD-B2B0-2273-E25E-CF0C0BB2323B}" AutoDeleteType="true">E_Ingredient_type</Name>
+			<BitSize>16</BitSize>
+			<BaseType GUID="{18071995-0000-0000-0000-000000000006}">INT</BaseType>
+			<EnumInfo>
+				<Text><![CDATA[eNone]]></Text>
+				<Enum>0</Enum>
+			</EnumInfo>
+			<EnumInfo>
+				<Text><![CDATA[eWater]]></Text>
+				<Enum>1</Enum>
+			</EnumInfo>
+			<EnumInfo>
+				<Text><![CDATA[ePowder]]></Text>
+				<Enum>2</Enum>
+			</EnumInfo>
+			<EnumInfo>
+				<Text><![CDATA[eOil]]></Text>
+				<Enum>3</Enum>
+			</EnumInfo>
+			<Properties>
+				<Property>
+					<Name>qualified_only</Name>
+				</Property>
+				<Property>
+					<Name>strict</Name>
+				</Property>
+				<Property>
+					<Name>generate_implicit_init_function</Name>
+				</Property>
+			</Properties>
+		</DataType>
+		<DataType>
+			<Name GUID="{759D8112-E463-2D30-AB96-E5FF81F3FBC1}" AutoDeleteType="true">ST_Prod_Ingredient</Name>
+			<BitSize>832</BitSize>
+			<SubItem>
+				<Name>sDescription</Name>
+				<Type GUID="{18071995-0000-0000-0000-000100000050}">STRING(80)</Type>
+				<BitSize>648</BitSize>
+				<BitOffs>0</BitOffs>
+				<Default>
+					<String><![CDATA[Ingredient Name]]></String>
+				</Default>
+			</SubItem>
+			<SubItem>
+				<Name>eIngredientType</Name>
+				<Type GUID="{47D254CD-B2B0-2273-E25E-CF0C0BB2323B}">E_Ingredient_type</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>656</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>rWeight</Name>
+				<Type GUID="{18071995-0000-0000-0000-00000000000D}">REAL</Type>
+				<Comment><![CDATA[ kg]]></Comment>
+				<BitSize>32</BitSize>
+				<BitOffs>672</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>rWeightPercentage</Name>
+				<Type GUID="{18071995-0000-0000-0000-00000000000D}">REAL</Type>
+				<BitSize>32</BitSize>
+				<BitOffs>704</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>rFlowRate_Dissolving</Name>
+				<Type GUID="{18071995-0000-0000-0000-00000000000D}">REAL</Type>
+				<BitSize>32</BitSize>
+				<BitOffs>736</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>rFlowRate_Blending</Name>
+				<Type GUID="{18071995-0000-0000-0000-00000000000D}">REAL</Type>
+				<BitSize>32</BitSize>
+				<BitOffs>768</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>tBlendingDuration</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000048}">TIME</Type>
+				<BitSize>32</BitSize>
+				<BitOffs>800</BitOffs>
+			</SubItem>
+		</DataType>
+		<DataType>
+			<Name GUID="{A9B757D3-E766-6304-77D5-5D96866A5E86}" AutoDeleteType="true">ST_PLC_To_VisuPLC</Name>
+			<BitSize>8672</BitSize>
 			<SubItem>
 				<Name>lifeBit</Name>
 				<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
@@ -504,10 +622,46 @@
 				<BitOffs>0</BitOffs>
 			</SubItem>
 			<SubItem>
-				<Name>RPM_feedBack</Name>
+				<Name>Description</Name>
+				<Type GUID="{18071995-0000-0000-0000-00010000001E}">STRING(30)</Type>
+				<Comment><![CDATA[ General]]></Comment>
+				<BitSize>248</BitSize>
+				<BitOffs>8</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>prodType</Name>
+				<Type GUID="{24C90CA1-76E9-2CC1-BDE2-50ABE5C8D163}">E_Prod_Type</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>256</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>RPM_FeedBack</Name>
 				<Type GUID="{18071995-0000-0000-0000-00000000000D}">REAL</Type>
 				<BitSize>32</BitSize>
-				<BitOffs>32</BitOffs>
+				<BitOffs>288</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>arr_Component</Name>
+				<Type GUID="{759D8112-E463-2D30-AB96-E5FF81F3FBC1}">ST_Prod_Ingredient</Type>
+				<ArrayInfo>
+					<LBound>1</LBound>
+					<Elements>10</Elements>
+				</ArrayInfo>
+				<Comment><![CDATA[ Component]]></Comment>
+				<BitSize>8320</BitSize>
+				<BitOffs>320</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>iActual_Component</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000006}">INT</Type>
+				<BitSize>16</BitSize>
+				<BitOffs>8640</BitOffs>
+			</SubItem>
+			<SubItem>
+				<Name>bDisolving_Active</Name>
+				<Type GUID="{18071995-0000-0000-0000-000000000030}">BOOL</Type>
+				<BitSize>8</BitSize>
+				<BitOffs>8656</BitOffs>
 			</SubItem>
 		</DataType>
 		<DataType>
@@ -1053,8 +1207,8 @@
 			<Licenses>
 				<Target>
 					<ManualSelect>{FDE02854-39A7-440C-9EAE-C234A16A3CED}</ManualSelect>
-					<ManualSelect>{99A3CF49-FFBF-49D4-BA30-F4C0593B5161}</ManualSelect>
 					<ManualSelect>{7AFD0713-1333-4A3B-938C-7B9BD0418C8D}</ManualSelect>
+					<ManualSelect>{99A3CF49-FFBF-49D4-BA30-F4C0593B5161}</ManualSelect>
 				</Target>
 			</Licenses>
 			<Tasks>
@@ -1074,7 +1228,7 @@
 		</System>
 		<Plc>
 			<Project GUID="{AD98C8E8-1161-4C5F-BAB4-CA4317288767}" Name="PLC" PrjFilePath="PLC\PLC.plcproj" TmcFilePath="PLC\PLC.tmc" ReloadTmc="true" AmsPort="851" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="PLC\PLC.tmc" TmcHash="{C273390C-CBA3-78EB-F935-524A67D5C476}">
+				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="PLC\PLC.tmc" TmcHash="{D620F8BA-ABD1-98C0-9E42-19A80CF060A4}">
 					<Name>PLC Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Vars VarGrpType="1" ContextId="1" AreaNo="16">
@@ -1090,7 +1244,7 @@
 						</Var>
 						<Var>
 							<Name>g_HMI_Panel.i_stVisuPLC_To_PLC</Name>
-							<Type GUID="{1A9CDFD8-8B7F-7A3C-9E26-81D22D640103}">ST_VisuPLC_To_PLC</Type>
+							<Type GUID="{8337191F-A112-5453-0643-1189EF3D2122}">ST_VisuPLC_To_PLC</Type>
 						</Var>
 						<Var>
 							<Name>gIO.i_EL</Name>
@@ -1244,7 +1398,7 @@
 						</Var>
 						<Var>
 							<Name>g_HMI_Panel.q_stPLC_To_VisuPLC</Name>
-							<Type GUID="{7B6669BB-65D1-661E-4D1C-5095BD5FCD65}">ST_PLC_To_VisuPLC</Type>
+							<Type GUID="{A9B757D3-E766-6304-77D5-5D96866A5E86}">ST_PLC_To_VisuPLC</Type>
 						</Var>
 						<Var>
 							<Name>gIO.q_EL</Name>
@@ -1454,21 +1608,21 @@
 				</Instance>
 			</Project>
 			<Project GUID="{E00FAC4C-0BC4-4F72-B79F-97B61CFC5710}" Name="VISU_plc" PrjFilePath="VISU_plc\VISU_plc.plcproj" TmcFilePath="VISU_plc\VISU_plc.tmc" ReloadTmc="true" AmsPort="852" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502040" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="VISU_plc\VISU_plc.tmc" TmcHash="{01E88172-7FDA-10B8-D789-C9C1C787B69B}">
+				<Instance Id="#x08502040" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcPath="VISU_plc\VISU_plc.tmc" TmcHash="{8E73CAC3-BC48-9417-3B45-C28D7E03F500}">
 					<Name>VISU_plc Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Vars VarGrpType="1">
 						<Name>PlcTask Inputs</Name>
 						<Var>
 							<Name>g_HMI_Panel.i_stPLC_To_VisuPLC</Name>
-							<Type GUID="{7B6669BB-65D1-661E-4D1C-5095BD5FCD65}">ST_PLC_To_VisuPLC</Type>
+							<Type GUID="{A9B757D3-E766-6304-77D5-5D96866A5E86}">ST_PLC_To_VisuPLC</Type>
 						</Var>
 					</Vars>
 					<Vars VarGrpType="2" AreaNo="1">
 						<Name>PlcTask Outputs</Name>
 						<Var>
 							<Name>g_HMI_Panel.q_stVisuPLC_To_PLC</Name>
-							<Type GUID="{1A9CDFD8-8B7F-7A3C-9E26-81D22D640103}">ST_VisuPLC_To_PLC</Type>
+							<Type GUID="{8337191F-A112-5453-0643-1189EF3D2122}">ST_VisuPLC_To_PLC</Type>
 						</Var>
 					</Vars>
 					<Contexts>
