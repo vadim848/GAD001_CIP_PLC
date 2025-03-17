@@ -56,9 +56,39 @@ act_Get_From_HMI();
       <Implementation>
         <ST><![CDATA[
 
-g_HMI_Panel.q_stPLC_To_VisuPLC.Description:=;]]></ST>
+CASE eTriBlenderUsage OF
+	E_TriBlenderUsage.eMarinada_T1:;
+		(*g_HMI_Panel.q_stPLC_To_VisuPLC.Description:=fbTank1.stProdParam.stRecipe.Description;
+		g_HMI_Panel.q_stPLC_To_VisuPLC.prodType:=fbTank1.stProdParam.stRecipe.prodType;
+		g_HMI_Panel.q_stPLC_To_VisuPLC.arr_Component:=fbTank1.stProdParam.stRecipe.arr_Component;
+		g_HMI_Panel.q_stPLC_To_VisuPLC.:=fbTank1.stProdParam.stRecipe.Description;*)
+		m_GetProductionInfo(fbProductionTank:=fbTank1);		
+	E_TriBlenderUsage.eMarinada_T2:;
+		m_GetProductionInfo(fbProductionTank:=fbTank2);
+	E_TriBlenderUsage.eColor_T3:;
+		m_GetProductionInfo(fbProductionTank:=fbTank3);
+	E_TriBlenderUsage.eColor_T4:;
+		m_GetProductionInfo(fbProductionTank:=fbTank4);
+	
+END_CASE]]></ST>
       </Implementation>
     </Action>
+    <Method Name="m_GetProductionInfo" Id="{17a1c15b-386c-4d7d-93da-5898c98b49c8}">
+      <Declaration><![CDATA[METHOD m_GetProductionInfo : BOOL
+VAR_INPUT
+	fbProductionTank: FB_ProductionTank;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[g_HMI_Panel.q_stPLC_To_VisuPLC.Description:=fbProductionTank.stProdParam.stRecipe.Description;
+g_HMI_Panel.q_stPLC_To_VisuPLC.prodType:=fbProductionTank.stProdParam.stRecipe.prodType;
+g_HMI_Panel.q_stPLC_To_VisuPLC.arr_Component:=fbProductionTank.stProdParam.stRecipe.arr_Component;
+		
+g_HMI_Panel.stPLC_To_VisuPLC.Description:=fbProductionTank.stProdParam.stRecipe.Description;
+g_HMI_Panel.stPLC_To_VisuPLC.prodType:=fbProductionTank.stProdParam.stRecipe.prodType;
+g_HMI_Panel.stPLC_To_VisuPLC.arr_Component:=fbProductionTank.stProdParam.stRecipe.arr_Component;		]]></ST>
+      </Implementation>
+    </Method>
     <LineIds Name="prg_PLCs_communication">
       <LineId Id="5" Count="0" />
       <LineId Id="11" Count="0" />
@@ -80,8 +110,29 @@ g_HMI_Panel.q_stPLC_To_VisuPLC.Description:=;]]></ST>
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="prg_PLCs_communication.act_Send_To_HMI">
-      <LineId Id="4" Count="1" />
-      <LineId Id="1" Count="0" />
+      <LineId Id="4" Count="0" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="6" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="26" Count="1" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="13" Count="0" />
+    </LineIds>
+    <LineIds Name="prg_PLCs_communication.m_GetProductionInfo">
+      <LineId Id="9" Count="1" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="17" Count="1" />
+      <LineId Id="16" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>
