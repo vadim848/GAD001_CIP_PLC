@@ -69,10 +69,30 @@ CASE eTriBlenderUsage OF
 		m_GetProductionInfo(fbProductionTank:=fbTank3);
 	E_TriBlenderUsage.eColor_T4:;
 		m_GetProductionInfo(fbProductionTank:=fbTank4);
+		
+ELSE;
 	
+	m_CleanProductionInfo();
 END_CASE]]></ST>
       </Implementation>
     </Action>
+    <Method Name="m_CleanProductionInfo" Id="{0d301ac4-158d-40ed-9874-25c8549a2e45}">
+      <Declaration><![CDATA[METHOD m_CleanProductionInfo : BOOL
+VAR
+	stRecipe_Clean: ST_Prod_Recipe;	
+	i: INT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[
+g_HMI_Panel.stPLC_To_VisuPLC.Description:='Not Loaded';
+//g_HMI_Panel.stPLC_To_VisuPLC.prodType:=E_Prod_Type.Marinade;
+FOR i:=1 TO 10 DO
+	stRecipe_Clean.arr_Component[i].sDescription:='-*-*-';
+END_FOR
+g_HMI_Panel.stPLC_To_VisuPLC.arr_Component:=stRecipe_Clean.arr_Component;]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="m_GetProductionInfo" Id="{17a1c15b-386c-4d7d-93da-5898c98b49c8}">
       <Declaration><![CDATA[METHOD m_GetProductionInfo : BOOL
 VAR_INPUT
@@ -124,8 +144,13 @@ g_HMI_Panel.stPLC_To_VisuPLC.arr_Component:=fbProductionTank.stProdParam.stRecip
       <LineId Id="24" Count="0" />
       <LineId Id="18" Count="0" />
       <LineId Id="25" Count="0" />
+      <LineId Id="30" Count="2" />
       <LineId Id="14" Count="0" />
       <LineId Id="13" Count="0" />
+    </LineIds>
+    <LineIds Name="prg_PLCs_communication.m_CleanProductionInfo">
+      <LineId Id="7" Count="5" />
+      <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="prg_PLCs_communication.m_GetProductionInfo">
       <LineId Id="9" Count="1" />
