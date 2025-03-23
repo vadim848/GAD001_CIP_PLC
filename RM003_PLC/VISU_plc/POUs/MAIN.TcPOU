@@ -22,7 +22,11 @@ END_IF
 
 
 IF memo_last_component_Index <> stPLC_To_VisuPLC.iActual_Component THEN;
-	stVisuPLC_To_PLC.RPM_setPoint:=stPLC_To_VisuPLC.arr_Component[stPLC_To_VisuPLC.iActual_Component].rFlowRate_Dissolving;
+	IF stPLC_To_VisuPLC.iActual_Component>=1 AND stPLC_To_VisuPLC.iActual_Component<=10 THEN;
+		stVisuPLC_To_PLC.RPM_setPoint:=stPLC_To_VisuPLC.arr_Component[stPLC_To_VisuPLC.iActual_Component].rFlowRate_Dissolving;
+	ELSE;
+		stVisuPLC_To_PLC.RPM_setPoint:=0;
+	END_IF	
 	memo_last_component_Index:= stPLC_To_VisuPLC.iActual_Component;
 END_IF]]></ST>
     </Implementation>
@@ -38,7 +42,9 @@ END_IF]]></ST>
       <LineId Id="18" Count="0" />
       <LineId Id="26" Count="1" />
       <LineId Id="6" Count="0" />
-      <LineId Id="28" Count="0" />
+      <LineId Id="38" Count="1" />
+      <LineId Id="41" Count="1" />
+      <LineId Id="40" Count="0" />
       <LineId Id="31" Count="0" />
       <LineId Id="29" Count="0" />
     </LineIds>
