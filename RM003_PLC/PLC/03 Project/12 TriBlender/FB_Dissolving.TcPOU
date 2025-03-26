@@ -45,6 +45,7 @@ END_IF]]></ST>
         <ST><![CDATA[bStepDone:=FALSE;
 IF Component_Blending.t > g_HMI_Panel.stPLC_To_VisuPLC.arr_Component[g_HMI_Panel.stPLC_To_VisuPLC.iActual_Component].tBlendingDuration THEN;
 	bStepDone:=TRUE;
+	g_HMI_Panel.stPLC_To_VisuPLC.bBlending_Active:=FALSE;
 END_IF
 
 fb_TriBlender.m_Run(RPM:=g_HMI_Panel.stPLC_To_VisuPLC.arr_Component[g_HMI_Panel.stPLC_To_VisuPLC.iActual_Component].rFlowRate_Blending);]]></ST>
@@ -83,11 +84,30 @@ g_HMI_Panel.stPLC_To_VisuPLC.bBlending_Active:=TRUE;
         </XmlArchive>
       </ObjectProperties>
     </Action>
+    <Action Name="_aDissolving_Done_entry" Id="{fb0791ee-288b-493f-9dec-4045da4634b4}">
+      <Implementation>
+        <ST><![CDATA[bDisolvingProcess_Done:=TRUE;]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
     <Action Name="_aInit_Dissolve_exit" Id="{d2eef2f7-7f78-404f-8147-d7c62309e56f}">
       <Implementation>
         <ST><![CDATA[step:=0;
 g_HMI_Panel.stPLC_To_VisuPLC.iActual_Component:=0;
 g_HMI_Panel.stPLC_To_VisuPLC.bDissolving_Active:=FALSE;
+g_HMI_Panel.stPLC_To_VisuPLC.bBlending_Active:=FALSE;
 bRun:=FALSE;]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -130,7 +150,11 @@ IF g_HMI_Panel.stVisuPLC_To_PLC.bActualComponentDisolving_Done THEN;
 	bStepDone:=TRUE;
 END_IF
 
-fb_TriBlender.m_Run(RPM:=g_HMI_Panel.stVisuPLC_To_PLC.RPM_setPoint);
+IF g_HMI_Panel.stVisuPLC_To_PLC.bPauseTriBlender THEN;
+	fb_TriBlender.m_Stop();
+ELSE;
+	fb_TriBlender.m_Run(RPM:=g_HMI_Panel.stVisuPLC_To_PLC.RPM_setPoint);
+END_IF
 ]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -151,9 +175,10 @@ fb_TriBlender.m_Run(RPM:=g_HMI_Panel.stVisuPLC_To_PLC.RPM_setPoint);
       <Implementation>
         <ST><![CDATA[g_HMI_Panel.stPLC_To_VisuPLC.bDissolving_Active:=FALSE;
 g_HMI_Panel.stPLC_To_VisuPLC.bBlending_Active:=FALSE;
+g_HMI_Panel.stPLC_To_VisuPLC.iActual_Component:=g_HMI_Panel.stPLC_To_VisuPLC.iActual_Component+1;
 
 FOR i:=g_HMI_Panel.stPLC_To_VisuPLC.iActual_Component TO 10 DO
-	IF g_HMI_Panel.stPLC_To_VisuPLC.arr_Component[g_HMI_Panel.stPLC_To_VisuPLC.iActual_Component].rWeight>0 THEN;
+	IF g_HMI_Panel.stPLC_To_VisuPLC.arr_Component[i].rWeight>0 THEN;
 		g_HMI_Panel.stPLC_To_VisuPLC.iActual_Component:=i;
 		g_HMI_Panel.stPLC_To_VisuPLC.bDissolving_Active:=TRUE;
 		EXIT;
@@ -802,7 +827,7 @@ END_FOR]]></ST>
                           <o>
                             <v n="AttributeId">{cacf1a68-236e-47c2-b7b1-1cf9199718cb}</v>
                             <o n="Value" t="StringValue">
-                              <v n="Value">"T#3s"</v>
+                              <v n="Value">""</v>
                               <v n="DefaultValue">""</v>
                             </o>
                             <v n="Id">70L</v>
@@ -1038,7 +1063,7 @@ END_FOR]]></ST>
                               <o n="ElementList" t="SFCElementList">
                                 <l2 n="InnerList" cet="SFCTransition">
                                   <o>
-                                    <v n="VariableName">"Branch0__Chek_if_Done__to__Init_Dissolve"</v>
+                                    <v n="VariableName">"Branch0__Chek_if_Done__to__Dissolving_Done"</v>
                                     <n n="EmbeddedTransition" />
                                     <l2 n="EmbeddedTransitionProperties" />
                                     <l2 n="Attributes" cet="SFCAttribute">
@@ -1499,6 +1524,189 @@ END_FOR]]></ST>
                           </o>
                         </l2>
                         <v n="Id">142L</v>
+                        <v n="IdParent">1L</v>
+                      </o>
+                      <o t="SFCStep">
+                        <n n="EmbeddedMainAction" />
+                        <n n="EmbeddedEntryAction" />
+                        <n n="EmbeddedExitAction" />
+                        <l2 n="EmbeddedMainActionProperties" />
+                        <l2 n="EmbeddedEntryActionProperties" />
+                        <l2 n="EmbeddedExitActionProperties" />
+                        <o n="ElementList" t="SFCElementList">
+                          <l2 n="InnerList" />
+                        </o>
+                        <l2 n="Attributes" cet="SFCAttribute">
+                          <o>
+                            <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
+                            <o n="Value" t="StringValue">
+                              <v n="Value">"Dissolving_Done"</v>
+                              <v n="DefaultValue">""</v>
+                            </o>
+                            <v n="Id">193L</v>
+                            <v n="IdParent">192L</v>
+                          </o>
+                          <o>
+                            <v n="AttributeId">{7d894980-aeea-405c-a0f6-e2b26429c58f}</v>
+                            <o n="Value" t="StringValue">
+                              <v n="Value">""</v>
+                              <v n="DefaultValue">""</v>
+                            </o>
+                            <v n="Id">194L</v>
+                            <v n="IdParent">192L</v>
+                          </o>
+                          <o>
+                            <v n="AttributeId">{01580b27-6378-448b-8ecb-0e4b795b58d6}</v>
+                            <o n="Value" t="BoolValue">
+                              <v n="Value">"FALSE"</v>
+                              <v n="DefaultValue">"FALSE"</v>
+                            </o>
+                            <v n="Id">195L</v>
+                            <v n="IdParent">192L</v>
+                          </o>
+                          <o>
+                            <v n="AttributeId">{bc882c11-1e91-4dd8-a6b8-2075724ed18b}</v>
+                            <o n="Value" t="EnumValue">
+                              <v n="TemplateGuid">{79a4fdd5-c859-4de4-aa8d-c03372c880c2}</v>
+                              <n n="BaseType" />
+                              <v n="Value">"0"</v>
+                              <v n="DefaultValue">"0"</v>
+                            </o>
+                            <v n="Id">196L</v>
+                            <v n="IdParent">192L</v>
+                          </o>
+                          <o>
+                            <v n="AttributeId">{6844a48e-46c2-4cc8-a185-a478f3b99cc0}</v>
+                            <o n="Value" t="BoolValue">
+                              <v n="Value">"FALSE"</v>
+                              <v n="DefaultValue">"FALSE"</v>
+                            </o>
+                            <v n="Id">197L</v>
+                            <v n="IdParent">192L</v>
+                          </o>
+                          <o>
+                            <v n="AttributeId">{62e1754b-7629-4e63-9cec-10ae0c536f1f}</v>
+                            <o n="Value" t="BoolValue">
+                              <v n="Value">"FALSE"</v>
+                              <v n="DefaultValue">"FALSE"</v>
+                            </o>
+                            <v n="Id">198L</v>
+                            <v n="IdParent">192L</v>
+                          </o>
+                          <o>
+                            <v n="AttributeId">{cacf1a68-236e-47c2-b7b1-1cf9199718cb}</v>
+                            <o n="Value" t="StringValue">
+                              <v n="Value">""</v>
+                              <v n="DefaultValue">""</v>
+                            </o>
+                            <v n="Id">199L</v>
+                            <v n="IdParent">192L</v>
+                          </o>
+                          <o>
+                            <v n="AttributeId">{b693554c-1b01-4a8d-afde-9e3a46f7465d}</v>
+                            <o n="Value" t="StringValue">
+                              <v n="Value">""</v>
+                              <v n="DefaultValue">""</v>
+                            </o>
+                            <v n="Id">200L</v>
+                            <v n="IdParent">192L</v>
+                          </o>
+                          <o>
+                            <v n="AttributeId">{700a583f-b4d4-43e4-8c14-629c7cd3bec8}</v>
+                            <o n="Value" t="StringValue">
+                              <v n="Value">""</v>
+                              <v n="DefaultValue">""</v>
+                            </o>
+                            <v n="Id">201L</v>
+                            <v n="IdParent">192L</v>
+                          </o>
+                          <o>
+                            <v n="AttributeId">{a6b08bd8-b696-47e3-9cbf-7408b61c9ff8}</v>
+                            <o n="Value" t="StringValue">
+                              <v n="Value">"_aDissolving_Done_entry"</v>
+                              <v n="DefaultValue">""</v>
+                            </o>
+                            <v n="Id">202L</v>
+                            <v n="IdParent">192L</v>
+                          </o>
+                          <o>
+                            <v n="AttributeId">{a2621e18-7de3-4ea6-ae6d-89e9e0b7befd}</v>
+                            <o n="Value" t="StringValue">
+                              <v n="Value">""</v>
+                              <v n="DefaultValue">""</v>
+                            </o>
+                            <v n="Id">203L</v>
+                            <v n="IdParent">192L</v>
+                          </o>
+                        </l2>
+                        <v n="Id">192L</v>
+                        <v n="IdParent">1L</v>
+                      </o>
+                      <o t="SFCTransition">
+                        <v n="VariableName">"Dissolving_Done__to__Init_Dissolve"</v>
+                        <n n="EmbeddedTransition" />
+                        <l2 n="EmbeddedTransitionProperties" />
+                        <l2 n="Attributes" cet="SFCAttribute">
+                          <o>
+                            <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
+                            <o n="Value" t="StringValue">
+                              <v n="Value">"TRUE"</v>
+                              <v n="DefaultValue">""</v>
+                            </o>
+                            <v n="Id">186L</v>
+                            <v n="IdParent">185L</v>
+                          </o>
+                          <o>
+                            <v n="AttributeId">{7d894980-aeea-405c-a0f6-e2b26429c58f}</v>
+                            <o n="Value" t="StringValue">
+                              <v n="Value">""</v>
+                              <v n="DefaultValue">""</v>
+                            </o>
+                            <v n="Id">187L</v>
+                            <v n="IdParent">185L</v>
+                          </o>
+                          <o>
+                            <v n="AttributeId">{01580b27-6378-448b-8ecb-0e4b795b58d6}</v>
+                            <o n="Value" t="BoolValue">
+                              <v n="Value">"FALSE"</v>
+                              <v n="DefaultValue">"FALSE"</v>
+                            </o>
+                            <v n="Id">188L</v>
+                            <v n="IdParent">185L</v>
+                          </o>
+                          <o>
+                            <v n="AttributeId">{bc882c11-1e91-4dd8-a6b8-2075724ed18b}</v>
+                            <o n="Value" t="EnumValue">
+                              <v n="TemplateGuid">{79a4fdd5-c859-4de4-aa8d-c03372c880c2}</v>
+                              <n n="BaseType" />
+                              <v n="Value">"0"</v>
+                              <v n="DefaultValue">"0"</v>
+                            </o>
+                            <v n="Id">189L</v>
+                            <v n="IdParent">185L</v>
+                          </o>
+                          <o>
+                            <v n="AttributeId">{62e1754b-7629-4e63-9cec-10ae0c536f1f}</v>
+                            <o n="Value" t="BoolValue">
+                              <v n="Value">"FALSE"</v>
+                              <v n="DefaultValue">"FALSE"</v>
+                            </o>
+                            <v n="Id">190L</v>
+                            <v n="IdParent">185L</v>
+                          </o>
+                          <o>
+                            <v n="AttributeId">{8294df19-5962-4dee-a874-1051dabb0e3e}</v>
+                            <o n="Value" t="EnumValue">
+                              <v n="TemplateGuid">{6ecff51c-9b8f-4338-aab0-67c2b31b07e9}</v>
+                              <n n="BaseType" />
+                              <v n="Value">"0"</v>
+                              <v n="DefaultValue">"0"</v>
+                            </o>
+                            <v n="Id">191L</v>
+                            <v n="IdParent">185L</v>
+                          </o>
+                        </l2>
+                        <v n="Id">185L</v>
                         <v n="IdParent">1L</v>
                       </o>
                       <o t="SFCJump">
@@ -1983,17 +2191,22 @@ m_SFC_Handle();]]></ST>
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_Dissolving._aComponent_Blending_active">
-      <LineId Id="2" Count="4" />
+      <LineId Id="2" Count="2" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="5" Count="1" />
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_Dissolving._aComponent_Blending_entry">
       <LineId Id="3" Count="1" />
       <LineId Id="2" Count="0" />
     </LineIds>
+    <LineIds Name="FB_Dissolving._aDissolving_Done_entry">
+      <LineId Id="1" Count="0" />
+    </LineIds>
     <LineIds Name="FB_Dissolving._aInit_Dissolve_exit">
       <LineId Id="1" Count="0" />
       <LineId Id="3" Count="0" />
-      <LineId Id="2" Count="0" />
+      <LineId Id="5" Count="1" />
       <LineId Id="4" Count="0" />
     </LineIds>
     <LineIds Name="FB_Dissolving._aReady_exit">
@@ -2001,13 +2214,17 @@ m_SFC_Handle();]]></ST>
     </LineIds>
     <LineIds Name="FB_Dissolving._aSet_Next_Component_active">
       <LineId Id="1" Count="3" />
+      <LineId Id="8" Count="0" />
       <LineId Id="6" Count="0" />
-      <LineId Id="5" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="11" Count="1" />
+      <LineId Id="10" Count="0" />
       <LineId Id="7" Count="0" />
     </LineIds>
     <LineIds Name="FB_Dissolving._aSet_Next_Component_entry">
       <LineId Id="14" Count="1" />
       <LineId Id="13" Count="0" />
+      <LineId Id="16" Count="0" />
       <LineId Id="3" Count="0" />
       <LineId Id="5" Count="0" />
       <LineId Id="12" Count="0" />

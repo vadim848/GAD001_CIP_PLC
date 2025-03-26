@@ -1044,10 +1044,35 @@ bDisolvingProcess_Active:=FALSE;]]></ST>
         </XmlArchive>
       </ObjectProperties>
     </Action>
+    <Action Name="_aDissolving_Proc_active" Id="{e2eea203-140a-4f5a-bd30-6adbaa1cdec2}">
+      <Implementation>
+        <ST><![CDATA[bStepDone:=FALSE;
+
+IF bDisolvingProcess_Done 
+//AND fbDissolving.bD
+THEN;
+	
+END_IF]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
     <Action Name="_aDissolving_Proc_entry" Id="{28249149-8678-4a73-bb39-1576a05b85da}">
       <Implementation>
         <ST><![CDATA[
 bDisolvingProcess_Active:=TRUE;
+fbDissolving.mRun();
 ]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -10951,7 +10976,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{700a583f-b4d4-43e4-8c14-629c7cd3bec8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">""</v>
+                                          <v n="Value">"_aDissolving_Proc_active"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">646L</v>
@@ -21053,7 +21078,7 @@ END_IF]]></ST>
 fbPis.m_SetByRecipe(stPis:=stPis_FillWater, 			req:=E_Piston_Recipe_State.Act);]]></ST>
       </Implementation>
     </Action>
-    <Method Name="m_Set_SFCFlags_Reference" Id="{e572de0c-3d24-464d-bb17-5deb316affd4}">
+    <Method Name="m_Set_SFCFlags_Reference" Id="{e572de0c-3d24-464d-bb17-5deb316affd4}" FolderPath="Manage\">
       <Declaration><![CDATA[METHOD m_Set_SFCFlags_Reference : BOOL
 ]]></Declaration>
       <Implementation>
@@ -21380,9 +21405,17 @@ END_IF
       <LineId Id="2" Count="0" />
       <LineId Id="1" Count="0" />
     </LineIds>
-    <LineIds Name="FB_ProductionTank._aDissolving_Proc_entry">
+    <LineIds Name="FB_ProductionTank._aDissolving_Proc_active">
       <LineId Id="1" Count="0" />
       <LineId Id="3" Count="0" />
+      <LineId Id="2" Count="0" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="6" Count="0" />
+      <LineId Id="4" Count="1" />
+    </LineIds>
+    <LineIds Name="FB_ProductionTank._aDissolving_Proc_entry">
+      <LineId Id="1" Count="0" />
+      <LineId Id="3" Count="1" />
       <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank._aDissolving_Proc_exit">
