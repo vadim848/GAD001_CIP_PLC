@@ -12,6 +12,8 @@ VAR
 	ptTemp: DINT;
 	realTemp: REAL;
 	iProgressBarOfset: DINT;
+	iActualComponentDisolving_Done_lifetime: INT;
+	ftDissolvingActive: F_TRIG;
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -35,13 +37,14 @@ IF memo_last_component_Index <> stPLC_To_VisuPLC.iActual_Component THEN;
 		stVisuPLC_To_PLC.RPM_setPoint:=0;
 	END_IF	
 	memo_last_component_Index:= stPLC_To_VisuPLC.iActual_Component;
+	g_HMI_Panel.stVisuPLC_To_PLC.bActualComponentDisolving_Done:=FALSE;
 END_IF
 
 
 ton_BlendingTime();
 IF g_HMI_Panel.stPLC_To_VisuPLC.bBlending_Active THEN;
 	ton_BlendingTime.IN:=TRUE;
-	tBlendingRemainTime:=TIME_TO_DINT(ton_BlendingTime.PT - ton_BlendingTime.ET);	
+	tBlendingRemainTime:=TIME_TO_DINT(ton_BlendingTime.PT - ton_BlendingTime.ET);
 ELSE;
 	ton_BlendingTime.IN:=FALSE;
 END_IF
@@ -52,7 +55,22 @@ IF ton_BlendingTime.PT<>T#0S THEN;
 	fBlendingPercenatge:=TRUNC(realTemp);
 END_IF
 
-iProgressBarOfset:=TRUNC(stPLC_To_VisuPLC.iActual_Component*37.2);]]></ST>
+iProgressBarOfset:=TRUNC(stPLC_To_VisuPLC.iActual_Component*37.2);
+
+ftDissolvingActive(CLK:=g_HMI_Panel.stPLC_To_VisuPLC.bDissolving_Active);
+IF ftDissolvingActive.Q THEN;
+	g_HMI_Panel.stVisuPLC_To_PLC.bActualComponentDisolving_Done:=FALSE;
+END_IF
+
+(*
+IF iActualComponentDisolving_Done_lifetime>0 THEN;
+	iActualComponentDisolving_Done_lifetime:=0;
+	g_HMI_Panel.stVisuPLC_To_PLC.bActualComponentDisolving_Done:=FALSE;
+END_IF
+IF g_HMI_Panel.stVisuPLC_To_PLC.bActualComponentDisolving_Done THEN;
+	iActualComponentDisolving_Done_lifetime:=iActualComponentDisolving_Done_lifetime+1;	
+END_IF
+*)]]></ST>
     </Implementation>
     <LineIds Name="MAIN">
       <LineId Id="2" Count="0" />
@@ -71,6 +89,7 @@ iProgressBarOfset:=TRUNC(stPLC_To_VisuPLC.iActual_Component*37.2);]]></ST>
       <LineId Id="41" Count="1" />
       <LineId Id="40" Count="0" />
       <LineId Id="31" Count="0" />
+      <LineId Id="97" Count="0" />
       <LineId Id="29" Count="0" />
       <LineId Id="53" Count="1" />
       <LineId Id="50" Count="0" />
@@ -86,6 +105,17 @@ iProgressBarOfset:=TRUNC(stPLC_To_VisuPLC.iActual_Component*37.2);]]></ST>
       <LineId Id="65" Count="1" />
       <LineId Id="71" Count="0" />
       <LineId Id="61" Count="0" />
+      <LineId Id="100" Count="0" />
+      <LineId Id="99" Count="0" />
+      <LineId Id="101" Count="0" />
+      <LineId Id="103" Count="2" />
+      <LineId Id="95" Count="0" />
+      <LineId Id="93" Count="1" />
+      <LineId Id="96" Count="0" />
+      <LineId Id="85" Count="0" />
+      <LineId Id="84" Count="0" />
+      <LineId Id="86" Count="1" />
+      <LineId Id="92" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>
