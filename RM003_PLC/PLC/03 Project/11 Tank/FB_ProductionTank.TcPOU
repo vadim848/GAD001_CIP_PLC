@@ -70,6 +70,7 @@ VAR
 	//888888888888888888888888888888888888888888
 	tonStirrer_time: TON;
 	rTest: REAL := 16;
+	bStirrerDirectionPositive: BOOL;
 END_VAR
 VAR_IN_OUT
 
@@ -24468,13 +24469,28 @@ dint_temp:=param.tOFF*60000;
 time_off:=TO_TIME(dint_temp);
 time_cycle:=time_on+time_off;
 tonStirrer_time(PT:=time_cycle, IN:=NOT tonStirrer_time.Q);
-
+IF tonStirrer_time.Q THEN;
+	IF bStirrerDirectionPositive THEN;
+		bStirrerDirectionPositive:=FALSE;
+	ELSE;
+		bStirrerDirectionPositive:=TRUE;
+	END_IF
+END_IF
 CASE param.Mode OF 
 	E_Stirrer_mode.continues:;
 						fb_Stirrer.m_Run(RPM:=param.Speed);
 	E_Stirrer_mode.cyclic:;
 					IF tonStirrer_time.ET<time_on THEN;
-						fb_Stirrer.m_Run(RPM:=param.Speed);
+						IF param.Flip_mode THEN;
+							IF bStirrerDirectionPositive THEN;
+								fb_Stirrer.m_Run(RPM:=param.Speed);
+							ELSE;
+								fb_Stirrer.m_Run(RPM:=-param.Speed);
+							END_IF							
+						ELSE;
+							fb_Stirrer.m_Run(RPM:=param.Speed);
+						END_IF
+						
 					ELSE
 						fb_Stirrer.m_Stop();
 					END_IF
@@ -25262,8 +25278,16 @@ END_IF
       <LineId Id="33" Count="0" />
       <LineId Id="31" Count="0" />
       <LineId Id="22" Count="0" />
-      <LineId Id="47" Count="0" />
-      <LineId Id="36" Count="10" />
+      <LineId Id="69" Count="5" />
+      <LineId Id="58" Count="0" />
+      <LineId Id="36" Count="4" />
+      <LineId Id="52" Count="0" />
+      <LineId Id="75" Count="3" />
+      <LineId Id="56" Count="0" />
+      <LineId Id="53" Count="0" />
+      <LineId Id="55" Count="0" />
+      <LineId Id="54" Count="0" />
+      <LineId Id="41" Count="5" />
       <LineId Id="23" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank.mClearProduction">
