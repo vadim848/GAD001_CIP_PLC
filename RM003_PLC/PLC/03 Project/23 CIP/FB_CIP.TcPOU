@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.14">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
   <POU Name="FB_CIP" Id="{14cc32b0-9432-4cf7-99d2-9b696d5c02b0}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_CIP EXTENDS FB_SFC_Cycle IMPLEMENTS ITF_FB_SFC_Cycle
 VAR_INPUT
@@ -2794,6 +2794,10 @@ END_IF]]></ST>
 fbCIP_Usage.m_Run(eReqProc:=E_CIP_Usage.eLocal);
 fbCIP_Return.m_Run(eReqProc:=E_CIP_Return.eDrain);
 mCIP_Clients_command(command:=E_CIP_Client_Command.eDrain);
+
+IF bClientTypeIs_Tank THEN;
+	fb_Stirrer.m_Stop();
+END_IF
 
 CASE eReq.eClient OF
 
@@ -37302,6 +37306,8 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="2" Count="1" />
       <LineId Id="6" Count="0" />
       <LineId Id="4" Count="0" />
+      <LineId Id="39" Count="2" />
+      <LineId Id="38" Count="0" />
       <LineId Id="7" Count="11" />
       <LineId Id="5" Count="0" />
       <LineId Id="28" Count="1" />

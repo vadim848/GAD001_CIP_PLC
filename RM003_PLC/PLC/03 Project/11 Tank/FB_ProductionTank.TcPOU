@@ -68,6 +68,7 @@ VAR
 	//888888888888888888888888888888888888888888
 	stProdParam		: ST_Production_Parameter;
 	//888888888888888888888888888888888888888888
+	tonStirrer_time: TON;
 END_VAR
 VAR_IN_OUT
 
@@ -114,7 +115,8 @@ END_CASE
 
 stProdParam.timeRemainToStart:=mTimeRemainToStart();
 stProdParam.timeProductionDuration:=mTimeProductionDuration();
-]]></ST>
+
+m_Stirrer();]]></ST>
     </Implementation>
     <Folder Name="Manage" Id="{4859bb81-2525-4c2b-a781-1bdd74a1527c}" />
     <Action Name="_aCheck_Condition_TriB_1_active" Id="{3435a25e-e53b-4d72-86df-bdbaf94f0db9}">
@@ -21488,6 +21490,60 @@ refSFC.SFCTipMode REF= SFCTipMode;
 m_SFC_Handle();]]></ST>
       </Implementation>
     </Method>
+    <Method Name="m_Stirrer" Id="{1b833e49-1ddd-4651-b81e-debe24950272}" FolderPath="Manage\">
+      <Declaration><![CDATA[METHOD m_Stirrer : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF eStatus>=E_Element_State_Long.eWaterReady THEN;
+	IF stProdParam.eStatus=E_Prod_Status.Active THEN;
+		IF fbInterConnection_TriB.bActive THEN;
+			m_Stirrer_run(param:=stProdParam.stRecipe.StirrerDissolving);
+		ELSIF fbInterConnection_ProL.bActive THEN;
+			m_Stirrer_run(param:=stProdParam.stRecipe.StirrerProduction);
+		ELSE;
+			m_Stirrer_run(param:=stProdParam.stRecipe.StirrerStorage);
+		END_IF
+	ELSE;
+		fb_Stirrer.m_Run(RPM:=600);
+	END_IF
+	
+END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_Stirrer_run" Id="{307ad28f-b5d2-4fb4-8a9d-9a8b36372bf8}" FolderPath="Manage\">
+      <Declaration><![CDATA[METHOD m_Stirrer_run : BOOL
+VAR_INPUT
+	param: ST_Prod_Param_Stirrer;
+END_VAR
+
+VAR
+	time_on: TIME;
+	time_off: TIME;
+	time_cycle: TIME;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[
+time_on:=TO_TIME(param.tON*1000);
+time_off:=TO_TIME(param.tOFF*1000);
+time_cycle:=time_on+time_off;
+tonStirrer_time(PT:=time_cycle, IN:=NOT tonStirrer_time.Q);
+
+CASE param.Mode OF 
+	E_Stirrer_mode.continues:;
+						fb_Stirrer.m_Run(RPM:=param.Speed);
+	E_Stirrer_mode.cyclic:;
+					IF tonStirrer_time.ET<time_on THEN;
+						fb_Stirrer.m_Run(RPM:=param.Speed);
+					ELSE
+						fb_Stirrer.m_Stop();
+					END_IF
+	E_Stirrer_mode.off:;
+						fb_Stirrer.m_Stop();
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="mClearProduction" Id="{58c4c9c9-8cf2-41f1-b206-eaacde8cd18f}" FolderPath="Manage\">
       <Declaration><![CDATA[METHOD mClearProduction : BOOL
 VAR_INPUT
@@ -21613,6 +21669,7 @@ END_IF
       <LineId Id="378" Count="0" />
       <LineId Id="377" Count="0" />
       <LineId Id="138" Count="0" />
+      <LineId Id="545" Count="0" />
       <LineId Id="459" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank._aCheck_Condition_TriB_1_active">
@@ -22199,6 +22256,29 @@ END_IF
     <LineIds Name="FB_ProductionTank.m_Set_SFCFlags_Reference">
       <LineId Id="5" Count="15" />
       <LineId Id="4" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ProductionTank.m_Stirrer">
+      <LineId Id="5" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="15" Count="1" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="6" Count="1" />
+    </LineIds>
+    <LineIds Name="FB_ProductionTank.m_Stirrer_run">
+      <LineId Id="9" Count="0" />
+      <LineId Id="32" Count="1" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="47" Count="0" />
+      <LineId Id="36" Count="10" />
+      <LineId Id="23" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank.mClearProduction">
       <LineId Id="5" Count="1" />
