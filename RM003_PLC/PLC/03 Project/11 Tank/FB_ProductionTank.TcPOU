@@ -24458,11 +24458,14 @@ VAR
 	time_on: TIME;
 	time_off: TIME;
 	time_cycle: TIME;
+	
+	dint_temp: DINT;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[
-time_on:=TO_TIME(param.tON*1000);
-time_off:=TO_TIME(param.tOFF*1000);
+        <ST><![CDATA[dint_temp:=param.tON*60000;
+time_on:=TO_TIME(dint_temp);
+dint_temp:=param.tOFF*60000;
+time_off:=TO_TIME(dint_temp);
 time_cycle:=time_on+time_off;
 tonStirrer_time(PT:=time_cycle, IN:=NOT tonStirrer_time.Q);
 
@@ -25254,7 +25257,9 @@ END_IF
     </LineIds>
     <LineIds Name="FB_ProductionTank.m_Stirrer_run">
       <LineId Id="9" Count="0" />
-      <LineId Id="32" Count="1" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="51" Count="0" />
+      <LineId Id="33" Count="0" />
       <LineId Id="31" Count="0" />
       <LineId Id="22" Count="0" />
       <LineId Id="47" Count="0" />
