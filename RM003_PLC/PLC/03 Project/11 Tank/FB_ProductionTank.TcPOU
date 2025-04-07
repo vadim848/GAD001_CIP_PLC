@@ -71,6 +71,9 @@ VAR
 	tonStirrer_time: TON;
 	rTest: REAL := 16;
 	bStirrerDirectionPositive: BOOL;
+	
+	delta_Tank_Volume		: REAL;
+	memo_Tank_Level_start	: REAL;
 END_VAR
 VAR_IN_OUT
 
@@ -353,6 +356,31 @@ END_IF]]></ST>
     <Action Name="_aClose_Tank_entry" Id="{5cc86289-64c2-4c76-b9c5-e140752c2508}">
       <Implementation>
         <ST><![CDATA[fbTarget.m_Run(eReqProc:=E_Tank_Target.eClose_DrainPipe);]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
+    <Action Name="_aCollect_From_TriB_Line_active" Id="{5dcba99e-f46f-42f5-b819-941d4c3e4776}">
+      <Implementation>
+        <ST><![CDATA[bStepDone:=FALSE;
+delta_Tank_Volume:=ref_fbTankSensors.volume-memo_Tank_Level_start;
+IF FALSE 
+OR delta_Tank_Volume>=stProdParam.stRecipe.Weight_to_Collect
+OR Collect_From_TriB_Line.t>=T#15S
+THEN;
+	bStepDone:=TRUE;
+END_IF]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -1322,7 +1350,20 @@ IF fbTriBlenderTarget.m_CheckStatus(eReqStatus:=E_Line_Target.eDrain) THEN;
 END_IF
 IF Call_TON.Q THEN
 	bStepDone:=TRUE;
-END_IF]]></ST>
+END_IF
+
+(*
+delta_Tank_Volume:=ref_fbTankSensors.volume-memo_Tank_Level_start;
+IF bStepDone
+AND  
+AND (delta_Tank_Volume>=stProdParam.stRecipe.Weight_to_Drain
+	OR Drain_Tri_ToDrain.t>=T#30S)
+THEN;
+	//bStepDone:=TRUE;
+ELSE;
+	bStepDone:=FALSE;
+END_IF
+*)]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -2409,7 +2450,8 @@ bDone:=FALSE;
     </Action>
     <Action Name="_aStart_TriPump_3_entry" Id="{2651facf-f787-4997-a939-c7348845452e}">
       <Implementation>
-        <ST><![CDATA[fb_PumpTriBlender.m_Run(RPM:=stProdParam.stRecipe.FlowRate_WaterPushing);]]></ST>
+        <ST><![CDATA[fb_PumpTriBlender.m_Run(RPM:=stProdParam.stRecipe.FlowRate_WaterPushing);
+memo_Tank_Level_start:=ref_fbTankSensors.volume;]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -15750,7 +15792,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                                   <o>
                                                     <v n="AttributeId">{cacf1a68-236e-47c2-b7b1-1cf9199718cb}</v>
                                                     <o n="Value" t="StringValue">
-                                                      <v n="Value">"T#15s"</v>
+                                                      <v n="Value">""</v>
                                                       <v n="DefaultValue">""</v>
                                                     </o>
                                                     <v n="Id">1714L</v>
@@ -15768,7 +15810,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                                   <o>
                                                     <v n="AttributeId">{700a583f-b4d4-43e4-8c14-629c7cd3bec8}</v>
                                                     <o n="Value" t="StringValue">
-                                                      <v n="Value">""</v>
+                                                      <v n="Value">"_aCollect_From_TriB_Line_active"</v>
                                                       <v n="DefaultValue">""</v>
                                                     </o>
                                                     <v n="Id">1716L</v>
@@ -15804,7 +15846,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                                   <o>
                                                     <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                                     <o n="Value" t="StringValue">
-                                                      <v n="Value">"TRUE"</v>
+                                                      <v n="Value">"bStepDone"</v>
                                                       <v n="DefaultValue">""</v>
                                                     </o>
                                                     <v n="Id">1720L</v>
@@ -24677,6 +24719,14 @@ END_IF
     <LineIds Name="FB_ProductionTank._aClose_Tank_entry">
       <LineId Id="1" Count="0" />
     </LineIds>
+    <LineIds Name="FB_ProductionTank._aCollect_From_TriB_Line_active">
+      <LineId Id="1" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="2" Count="0" />
+      <LineId Id="7" Count="1" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="3" Count="1" />
+    </LineIds>
     <LineIds Name="FB_ProductionTank._aConn_Line_Source_TankA_active">
       <LineId Id="3" Count="2" />
       <LineId Id="2" Count="0" />
@@ -24875,9 +24925,19 @@ END_IF
       <LineId Id="2" Count="1" />
       <LineId Id="7" Count="3" />
       <LineId Id="1" Count="0" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="14" Count="1" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="17" Count="2" />
+      <LineId Id="22" Count="1" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="11" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank._aDrain_Tri_ToDrain_entry">
-      <LineId Id="1" Count="1" />
+      <LineId Id="1" Count="0" />
+      <LineId Id="3" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank._aDrain_Tri_ToTankA_active">
       <LineId Id="2" Count="1" />
@@ -25089,7 +25149,7 @@ END_IF
       <LineId Id="4" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank._aStart_TriPump_3_entry">
-      <LineId Id="1" Count="0" />
+      <LineId Id="1" Count="1" />
     </LineIds>
     <LineIds Name="FB_ProductionTank._aState_Update_01_entry">
       <LineId Id="1" Count="1" />
