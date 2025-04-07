@@ -149,7 +149,9 @@ END_IF
     <Action Name="_aCheck_Condition_TriB_2_active" Id="{3435a25e-e53b-4d72-86df-bdbaf94f0db9}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
-IF fbInterConnection_TriB.bAvalableToConnect THEN;
+IF fbInterConnection_TriB.bAvalableToConnect 
+AND stProdParam.eStatus=E_Prod_Status.Active
+THEN;
 	bStepDone:=TRUE;
 END_IF
 ]]></ST>
@@ -1326,7 +1328,28 @@ bTON_Active:=FALSE;]]></ST>
     </Action>
     <Action Name="_aDrain_Tri_Line_active" Id="{81d134cd-a182-4f22-906b-f3879f9c0975}">
       <Implementation>
-        <ST><![CDATA[bStepDone:=TRUE;]]></ST>
+        <ST><![CDATA[bStepDone:=FALSE;
+IF fbTriBlenderTarget.m_CheckStatus(eReqStatus:=E_Line_Target.eDrain) THEN;
+	bStepDone:=TRUE;
+END_IF]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
+    <Action Name="_aDrain_Tri_Line_entry" Id="{1cbc5bf8-c1d3-405d-8d26-d1075d5f6701}">
+      <Implementation>
+        <ST><![CDATA[fbTriBlenderTarget.m_Run(eReqProc:=E_Line_Target.eDrain);]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -12484,7 +12507,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{cacf1a68-236e-47c2-b7b1-1cf9199718cb}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"T#20s"</v>
+                                          <v n="Value">"T#10s"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">950L</v>
@@ -12511,7 +12534,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{a6b08bd8-b696-47e3-9cbf-7408b61c9ff8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">""</v>
+                                          <v n="Value">"_aDrain_Tri_Line_entry"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">953L</v>
@@ -24384,6 +24407,10 @@ IF bCntrlTemp AND NOT bRunCIP THEN
 		stPis_CWOut.req_Close:=TRUE;
 		
 	END_IF
+		
+	IF NOT stPis_CWIn.st_Open THEN
+		stPis_CWIn.req_Open:=TRUE;
+	END_IF
 	
 ELSE
 	IF NOT stPis_CWOut.st_Close THEN;
@@ -24475,7 +24502,7 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF eStatus>=E_Element_State_Long.eWaterReady THEN;
+        <ST><![CDATA[IF eStatus>=E_Element_State_Long.eCIP_5_Done THEN;
 	IF stProdParam.eStatus=E_Prod_Status.Active THEN;
 		IF fbInterConnection_TriB.bActive THEN;
 			m_Stirrer_run(param:=stProdParam.stRecipe.StirrerDissolving);
@@ -24485,9 +24512,12 @@ END_VAR
 			m_Stirrer_run(param:=stProdParam.stRecipe.StirrerStorage);
 		END_IF
 	ELSE;
-		fb_Stirrer.m_Run(RPM:=600);
+		fb_Stirrer.m_Run(RPM:=stProdParam.stRecipe.StirrerStorage.Speed);
 	END_IF
-	
+ELSIF refElement.m_Get_InterConnection()=E_InterConnection.ConnToCIP THEN;
+	// controled by CIP
+ELSE;
+	fb_Stirrer.m_Stop();
 END_IF]]></ST>
       </Implementation>
     </Method>
@@ -24677,6 +24707,8 @@ END_IF
     </LineIds>
     <LineIds Name="FB_ProductionTank._aCheck_Condition_TriB_2_active">
       <LineId Id="2" Count="1" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="9" Count="0" />
       <LineId Id="8" Count="0" />
       <LineId Id="5" Count="0" />
       <LineId Id="1" Count="0" />
@@ -24919,6 +24951,10 @@ END_IF
       <LineId Id="1" Count="1" />
     </LineIds>
     <LineIds Name="FB_ProductionTank._aDrain_Tri_Line_active">
+      <LineId Id="2" Count="2" />
+      <LineId Id="1" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ProductionTank._aDrain_Tri_Line_entry">
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank._aDrain_Tri_ToDrain_active">
@@ -25281,7 +25317,11 @@ END_IF
       <LineId Id="88" Count="0" />
       <LineId Id="65" Count="1" />
       <LineId Id="58" Count="0" />
-      <LineId Id="70" Count="1" />
+      <LineId Id="89" Count="0" />
+      <LineId Id="91" Count="1" />
+      <LineId Id="70" Count="0" />
+      <LineId Id="93" Count="0" />
+      <LineId Id="71" Count="0" />
       <LineId Id="73" Count="1" />
       <LineId Id="72" Count="0" />
       <LineId Id="76" Count="3" />
@@ -25329,6 +25369,8 @@ END_IF
       <LineId Id="9" Count="0" />
       <LineId Id="11" Count="0" />
       <LineId Id="10" Count="0" />
+      <LineId Id="27" Count="1" />
+      <LineId Id="26" Count="0" />
       <LineId Id="6" Count="1" />
     </LineIds>
     <LineIds Name="FB_ProductionTank.m_Stirrer_run">
