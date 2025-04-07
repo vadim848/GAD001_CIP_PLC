@@ -75,8 +75,16 @@ ELSE;
 	m_CleanProductionInfo();
 END_CASE
 
-g_HMI_Panel.stPLC_To_VisuPLC.RPM_FeedBack:=g_Pump.fbPump[E_Pump_List.TB0001].nRPM;
+g_HMI_Panel.stPLC_To_VisuPLC.RPM_FeedBack:=g_Pump.fbPump[E_Pump_List.TB0001].m_Get_Speed();
 g_HMI_Panel.stPLC_To_VisuPLC.Flow_FeedBack:=g_AnalogSensor.stAnalogSensor[E_ASense_Name.FT9012].Value;
+
+CASE g_Data.eTriBlenderUsage OF
+	E_TriBlenderUsage.eMarinada_T1,E_TriBlenderUsage.eMarinada_T2:;
+			g_HMI_Panel.stPLC_To_VisuPLC.bMainPause_Active:=stOper[E_ModeZone.eTriBlender_Marinade].iActOperation=E_OperationButtons.ePauseAll;
+	E_TriBlenderUsage.eColor_T3,E_TriBlenderUsage.eColor_T4:;
+			g_HMI_Panel.stPLC_To_VisuPLC.bMainPause_Active:=stOper[E_ModeZone.eTriBlender_Color].iActOperation=E_OperationButtons.ePauseAll;
+END_CASE
+
 ]]></ST>
       </Implementation>
     </Action>
@@ -154,7 +162,15 @@ g_HMI_Panel.stPLC_To_VisuPLC.arr_Component:=fbProductionTank.stProdParam.stRecip
       <LineId Id="34" Count="0" />
       <LineId Id="33" Count="0" />
       <LineId Id="36" Count="0" />
-      <LineId Id="35" Count="0" />
+      <LineId Id="40" Count="0" />
+      <LineId Id="39" Count="0" />
+      <LineId Id="41" Count="0" />
+      <LineId Id="45" Count="0" />
+      <LineId Id="43" Count="0" />
+      <LineId Id="46" Count="0" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="38" Count="0" />
+      <LineId Id="37" Count="0" />
     </LineIds>
     <LineIds Name="prg_PLCs_communication.m_CleanProductionInfo">
       <LineId Id="7" Count="5" />
