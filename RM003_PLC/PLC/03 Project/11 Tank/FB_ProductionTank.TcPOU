@@ -127,7 +127,10 @@ m_Stirrer();]]></ST>
     <Action Name="_aCheck_Condition_TriB_1_active_1" Id="{2514b68e-c981-4423-bfd3-97d54b3557f9}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
-IF fbInterConnection_TriB.bAvalableToConnect THEN;
+IF fbInterConnection_TriB.bAvalableToConnect
+AND stProdParam.eStatus=E_Prod_Status.Active
+AND m_Get_TriBlender_Clean()
+THEN;
 	bStepDone:=TRUE;
 END_IF
 ]]></ST>
@@ -151,6 +154,7 @@ END_IF
         <ST><![CDATA[bStepDone:=FALSE;
 IF fbInterConnection_TriB.bAvalableToConnect 
 AND stProdParam.eStatus=E_Prod_Status.Active
+AND m_Get_TriBlender_Clean()
 THEN;
 	bStepDone:=TRUE;
 END_IF
@@ -24473,6 +24477,23 @@ END_IF]]></ST>
 fbPis.m_SetByRecipe(stPis:=stPis_FillWater, 			req:=E_Piston_Recipe_State.Act);]]></ST>
       </Implementation>
     </Action>
+    <Method Name="m_Get_TriBlender_Clean" Id="{13b7f4ac-db6a-45d8-9c4a-691ded0763a9}" FolderPath="Manage\">
+      <Declaration><![CDATA[METHOD m_Get_TriBlender_Clean : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE eElementID OF
+	E_Element_List.eTank_1,E_Element_List.eTank_2:;
+		m_Get_TriBlender_Clean:=fbElement[E_Element_List.eLine_Color].m_Get_State()=E_Element_State_Long.eCIP_5_Done;
+	E_Element_List.eTank_3,E_Element_List.eTank_4:;
+		m_Get_TriBlender_Clean:=fbElement[E_Element_List.eTriBlender_Marinada].m_Get_State()=E_Element_State_Long.eCIP_5_Done;
+	
+ELSE;
+	m_Get_TriBlender_Clean:=FALSE;
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="m_Set_SFCFlags_Reference" Id="{e572de0c-3d24-464d-bb17-5deb316affd4}" FolderPath="Manage\">
       <Declaration><![CDATA[METHOD m_Set_SFCFlags_Reference : BOOL
 ]]></Declaration>
@@ -24701,13 +24722,16 @@ END_IF
     </LineIds>
     <LineIds Name="FB_ProductionTank._aCheck_Condition_TriB_1_active_1">
       <LineId Id="2" Count="1" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="9" Count="0" />
       <LineId Id="8" Count="0" />
       <LineId Id="5" Count="0" />
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank._aCheck_Condition_TriB_2_active">
       <LineId Id="2" Count="1" />
-      <LineId Id="10" Count="0" />
+      <LineId Id="10" Count="1" />
       <LineId Id="9" Count="0" />
       <LineId Id="8" Count="0" />
       <LineId Id="5" Count="0" />
@@ -25352,6 +25376,17 @@ END_IF
     </LineIds>
     <LineIds Name="FB_ProductionTank.Drain_Water_entry">
       <LineId Id="1" Count="1" />
+    </LineIds>
+    <LineIds Name="FB_ProductionTank.m_Get_TriBlender_Clean">
+      <LineId Id="5" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="7" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank.m_Set_SFCFlags_Reference">
       <LineId Id="5" Count="15" />
