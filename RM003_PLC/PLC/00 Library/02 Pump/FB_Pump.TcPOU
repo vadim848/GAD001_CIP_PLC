@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
   <POU Name="FB_Pump" Id="{85164826-ad0f-4589-97dc-725e0f6c34e4}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_Pump
 VAR_INPUT
@@ -30,7 +30,7 @@ VAR
 	ton_Drive_init: TON;
 	state_init: (OFF,stage1,stage2,stage3,stage4, Ready);
 
-	bInitConnect: BOOL;
+	bInitiated: BOOL;
 	ton_RPM_feedback_lag_monitoring: TON;
 	ton_Pressure_feedback_monitoring: TON;
 	
@@ -117,7 +117,7 @@ IF m_Error()<>'' THEN;
 	//fbPrintErrMessageByID(sModuleDescription:='Pump',sActErrorID:='101x000x001');	
 END_IF
 
-
+bInitiated:=TRUE;
 ]]></ST>
     </Implementation>
     <Method Name="m_Auto" Id="{80bcb1da-caaf-4610-b5db-3ec5b0ee5d69}">
@@ -392,7 +392,10 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[bRun_Auto:=TRUE;
+        <ST><![CDATA[IF NOT bInitiated THEN;
+	RETURN;
+END_IF
+bRun_Auto:=TRUE;
 stPump.nRPM_Auto:=RPM;
 m_Run:=TRUE;]]></ST>
       </Implementation>
@@ -568,6 +571,7 @@ m_Stop:=TRUE;]]></ST>
       <LineId Id="34" Count="0" />
     </LineIds>
     <LineIds Name="FB_Pump.m_Run">
+      <LineId Id="21" Count="2" />
       <LineId Id="5" Count="0" />
       <LineId Id="16" Count="0" />
       <LineId Id="10" Count="0" />
