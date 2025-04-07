@@ -73,7 +73,11 @@ CASE eTriBlenderUsage OF
 ELSE;
 	
 	m_CleanProductionInfo();
-END_CASE]]></ST>
+END_CASE
+
+g_HMI_Panel.stPLC_To_VisuPLC.RPM_FeedBack:=g_Pump.fbPump[E_Pump_List.TB0001].nRPM;
+g_HMI_Panel.stPLC_To_VisuPLC.Flow_FeedBack:=g_AnalogSensor.stAnalogSensor[E_ASense_Name.FT9012].Value;
+]]></ST>
       </Implementation>
     </Action>
     <Method Name="m_CleanProductionInfo" Id="{0d301ac4-158d-40ed-9874-25c8549a2e45}">
@@ -147,6 +151,10 @@ g_HMI_Panel.stPLC_To_VisuPLC.arr_Component:=fbProductionTank.stProdParam.stRecip
       <LineId Id="30" Count="2" />
       <LineId Id="14" Count="0" />
       <LineId Id="13" Count="0" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="35" Count="0" />
     </LineIds>
     <LineIds Name="prg_PLCs_communication.m_CleanProductionInfo">
       <LineId Id="7" Count="5" />
