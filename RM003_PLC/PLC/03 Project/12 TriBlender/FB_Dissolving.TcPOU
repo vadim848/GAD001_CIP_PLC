@@ -9,6 +9,13 @@ END_VAR
 VAR
 	step: INT;
 	i: INT;
+	ton_Blending_Speed: TON;
+	tBlending: TIME;
+	tBlending_count: TIME;
+	ptTemp: DINT;
+	tBlendingRemainTime: DINT;
+	realTemp: REAL;
+	fBlendingPercenatge: DINT;
 END_VAR
 
 VAR_IN_OUT
@@ -17,7 +24,14 @@ END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[m_Set_SFCFlags_Reference();
-act_Oper();]]></ST>
+act_Oper();
+
+ptTemp:=TIME_TO_DINT(g_HMI_Panel.stPLC_To_VisuPLC.arr_Component[g_HMI_Panel.stPLC_To_VisuPLC.iActual_Component].tBlendingDuration);
+tBlendingRemainTime:=ptTemp - TIME_TO_DINT(tBlending);
+IF ptTemp<>0 THEN;
+	realTemp:=(DINT_TO_REAL(tBlendingRemainTime)/DINT_TO_REAL(ptTemp)*100.0);
+	fBlendingPercenatge:=TRUNC(realTemp);
+END_IF]]></ST>
     </Implementation>
     <Action Name="_aChek_if_Done_active" Id="{28a6cd2f-fcb4-4026-979e-d8afebb2d7fb}">
       <Implementation>
@@ -43,12 +57,28 @@ END_IF]]></ST>
     <Action Name="_aComponent_Blending_active" Id="{49c635d9-8cb2-43c9-af22-31b599cbdffb}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
-IF Component_Blending.t > g_HMI_Panel.stPLC_To_VisuPLC.arr_Component[g_HMI_Panel.stPLC_To_VisuPLC.iActual_Component].tBlendingDuration THEN;
+IF tBlending > g_HMI_Panel.stPLC_To_VisuPLC.arr_Component[g_HMI_Panel.stPLC_To_VisuPLC.iActual_Component].tBlendingDuration THEN;
 	bStepDone:=TRUE;
 	g_HMI_Panel.stPLC_To_VisuPLC.bBlending_Active:=FALSE;
 END_IF
 
-fb_TriBlender.m_Run(RPM:=g_HMI_Panel.stPLC_To_VisuPLC.arr_Component[g_HMI_Panel.stPLC_To_VisuPLC.iActual_Component].rFlowRate_Blending);]]></ST>
+fb_TriBlender.m_Run(RPM:=g_HMI_Panel.stPLC_To_VisuPLC.arr_Component[g_HMI_Panel.stPLC_To_VisuPLC.iActual_Component].rFlowRate_Blending);
+
+ton_Blending_Speed(PT:=T#2S);
+IF TRUE 
+AND fb_TriBlender.m_Get_Speed() >= g_HMI_Panel.stPLC_To_VisuPLC.arr_Component[g_HMI_Panel.stPLC_To_VisuPLC.iActual_Component].rFlowRate_Blending - 10
+AND fb_TriBlender.m_Get_Speed() <= g_HMI_Panel.stPLC_To_VisuPLC.arr_Component[g_HMI_Panel.stPLC_To_VisuPLC.iActual_Component].rFlowRate_Blending + 10
+THEN;
+	ton_Blending_Speed.IN:=TRUE;
+ELSE;
+	ton_Blending_Speed.IN:=FALSE;
+END_IF
+
+IF ton_Blending_Speed.Q THEN;
+	tBlending:=tBlending + T#10MS; // scan Time
+ELSE;
+	
+END_IF]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -201,7 +231,10 @@ FOR i:=g_HMI_Panel.stPLC_To_VisuPLC.iActual_Component TO 10 DO
 		g_HMI_Panel.stPLC_To_VisuPLC.bDissolving_Active:=TRUE;
 		EXIT;
 	END_IF
-END_FOR]]></ST>
+END_FOR
+
+tBlending:=T#0S;
+]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -2203,6 +2236,12 @@ m_SFC_Handle();]]></ST>
     <LineIds Name="FB_Dissolving">
       <LineId Id="10" Count="0" />
       <LineId Id="9" Count="0" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="30" Count="1" />
+      <LineId Id="38" Count="0" />
+      <LineId Id="27" Count="0" />
     </LineIds>
     <LineIds Name="FB_Dissolving._aChek_if_Done_active">
       <LineId Id="2" Count="2" />
@@ -2213,6 +2252,19 @@ m_SFC_Handle();]]></ST>
       <LineId Id="7" Count="0" />
       <LineId Id="5" Count="1" />
       <LineId Id="1" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="16" Count="1" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="18" Count="1" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="24" Count="1" />
+      <LineId Id="23" Count="0" />
     </LineIds>
     <LineIds Name="FB_Dissolving._aComponent_Blending_entry">
       <LineId Id="3" Count="1" />
@@ -2252,6 +2304,9 @@ m_SFC_Handle();]]></ST>
       <LineId Id="10" Count="0" />
       <LineId Id="7" Count="1" />
       <LineId Id="6" Count="0" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="19" Count="0" />
     </LineIds>
     <LineIds Name="FB_Dissolving.m_Set_SFCFlags_Reference">
       <LineId Id="5" Count="15" />
