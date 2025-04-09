@@ -29,6 +29,8 @@ VAR
 	sElementID			: STRING;
 	eInterConnect		: E_InterConnection;
 	bStataUpdate_Limited: BOOL;
+	memoDissolving_active: BOOL;
+
 
 	stCIP_Request		: ST_CIP_Request;
 	stCIP_RequestActive	: ST_CIP_Request;
@@ -154,10 +156,15 @@ CASE eState_Long OF
 	E_Element_State_Long.eCIP_4_Sanitized:;
 				eState_Short:=E_Element_State_Short.eNotClean;
 
-	E_Element_State_Long.eCIP_5_Done,	
-	E_Element_State_Long.eWaterReady:;	
+	E_Element_State_Long.eCIP_5_Done:;
 				eState_Short:=E_Element_State_Short.eClean;
-
+				
+	E_Element_State_Long.eWaterReady:;	
+				IF memoDissolving_active THEN;
+					eState_Short:=E_Element_State_Short.eProduct;
+				ELSE;
+					eState_Short:=E_Element_State_Short.eClean;
+				END_IF
 	E_Element_State_Long.eReady,
 	E_Element_State_Long.eProduction,
 	E_Element_State_Long.eEmpty,	
@@ -279,6 +286,15 @@ END_VAR
         <ST><![CDATA[m_Get_State:=eState_Long;]]></ST>
       </Implementation>
     </Method>
+    <Method Name="m_Get_State_Short" Id="{a4895e89-8af5-4844-8a6f-98d623177713}">
+      <Declaration><![CDATA[METHOD m_Get_State_Short : E_Element_State_Short
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[m_Get_State_Short:=eState_Short;]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="m_Get_Type" Id="{e3e31f5e-e6b1-403c-bb2b-b2d06d0264ea}">
       <Declaration><![CDATA[METHOD m_Get_Type : E_Element_Type
 VAR_INPUT
@@ -323,6 +339,15 @@ END_IF
 
 
 ]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_Set_Dissolveng_active_memo" Id="{55ab6cb4-4a2f-4aab-971f-9547041e4c7f}">
+      <Declaration><![CDATA[METHOD m_Set_Dissolveng_active_memo : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[memoDissolving_active:=TRUE;]]></ST>
       </Implementation>
     </Method>
     <Method Name="m_Set_Oper_Pause" Id="{31bfa777-0c86-4838-93b6-ec28e092b686}">
@@ -439,9 +464,13 @@ END_IF]]></ST>
       <LineId Id="7" Count="0" />
       <LineId Id="15" Count="0" />
       <LineId Id="18" Count="1" />
+      <LineId Id="33" Count="1" />
       <LineId Id="16" Count="0" />
-      <LineId Id="26" Count="0" />
-      <LineId Id="21" Count="0" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="32" Count="0" />
       <LineId Id="23" Count="2" />
       <LineId Id="22" Count="0" />
       <LineId Id="27" Count="0" />
@@ -497,6 +526,9 @@ END_IF]]></ST>
     <LineIds Name="FB_Element.m_Get_State">
       <LineId Id="5" Count="0" />
     </LineIds>
+    <LineIds Name="FB_Element.m_Get_State_Short">
+      <LineId Id="5" Count="0" />
+    </LineIds>
     <LineIds Name="FB_Element.m_Get_Type">
       <LineId Id="5" Count="0" />
     </LineIds>
@@ -517,6 +549,9 @@ END_IF]]></ST>
       <LineId Id="16" Count="0" />
       <LineId Id="5" Count="0" />
       <LineId Id="8" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Element.m_Set_Dissolveng_active_memo">
+      <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_Element.m_Set_Oper_Pause">
       <LineId Id="9" Count="2" />

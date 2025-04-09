@@ -1705,7 +1705,7 @@ END_IF]]></ST>
 fbTarget.m_Run(eReqProc:=E_Tank_Target.eClose_DrainPipe);
 fbLineSource.m_Run(eReqProc:=E_Line_Source.eDrain);
 fbLineTarget.m_Run(eReqProc:=E_Line_Target.eDrain);
-
+fbInterConnection_ProL.reqDisconnect:=TRUE;
 
 ]]></ST>
       </Implementation>
@@ -1879,7 +1879,14 @@ END_IF]]></ST>
     </Action>
     <Action Name="_aInterConnect_TriB_2_entry" Id="{c037fd38-a6e9-41af-b576-1838b786e3bb}">
       <Implementation>
-        <ST><![CDATA[fbInterConnection_TriB.reqConnect:=TRUE;]]></ST>
+        <ST><![CDATA[fbInterConnection_TriB.reqConnect:=TRUE;
+
+IF trn_Tank_Marinade THEN;
+	fbElement[E_Element_List.eTriBlender_Marinada].m_Set_Dissolveng_active_memo();
+ELSIF trn_Tank_Color THEN;
+	fbElement[E_Element_List.eTriBlender_Color].m_Set_Dissolveng_active_memo();
+END_IF
+]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -24637,9 +24644,9 @@ END_VAR
       <Implementation>
         <ST><![CDATA[CASE eElementID OF
 	E_Element_List.eTank_1,E_Element_List.eTank_2:;
-		m_Get_TriBlender_Clean:=fbElement[E_Element_List.eTriBlender_Color].m_Get_State()=E_Element_State_Long.eCIP_5_Done;
+		m_Get_TriBlender_Clean:=fbElement[E_Element_List.eTriBlender_Color].m_Get_State_Short()=E_Element_State_Short.eClean;
 	E_Element_List.eTank_3,E_Element_List.eTank_4:;
-		m_Get_TriBlender_Clean:=fbElement[E_Element_List.eTriBlender_Marinada].m_Get_State()=E_Element_State_Long.eCIP_5_Done;
+		m_Get_TriBlender_Clean:=fbElement[E_Element_List.eTriBlender_Marinada].m_Get_State_Short()=E_Element_State_Short.eClean;
 	
 ELSE;
 	m_Get_TriBlender_Clean:=FALSE;
@@ -25247,6 +25254,12 @@ END_IF
     </LineIds>
     <LineIds Name="FB_ProductionTank._aInterConnect_TriB_2_entry">
       <LineId Id="1" Count="0" />
+      <LineId Id="4" Count="0" />
+      <LineId Id="3" Count="0" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="7" Count="1" />
+      <LineId Id="6" Count="0" />
+      <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank._aInterConnect_TriB_Dis_1_active">
       <LineId Id="2" Count="2" />
