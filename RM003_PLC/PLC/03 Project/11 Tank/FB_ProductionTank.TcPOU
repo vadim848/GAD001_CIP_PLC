@@ -64,7 +64,8 @@ VAR
 	bRunCIP			: BOOL	;
 	
 	ref_fbTankSensors			: REFERENCE TO FB_TankSensors;
-	
+	stTank_Level				: ST_Tank_Level;
+
 	//888888888888888888888888888888888888888888
 	stProdParam		: ST_Production_Parameter;
 	//888888888888888888888888888888888888888888
@@ -1593,6 +1594,28 @@ END_IF
         </XmlArchive>
       </ObjectProperties>
     </Action>
+    <Action Name="_aDraining_Time_active" Id="{50646a45-4c33-4db3-a509-52254c9d0e39}">
+      <Implementation>
+        <ST><![CDATA[bStepDone:=FALSE;
+IF stTank_Level.e_state=E_Tank_Level.eEmpty THEN;
+	bStepDone:=TRUE;
+END_IF
+]]></ST>
+      </Implementation>
+      <ObjectProperties>
+        <XmlArchive>
+          <Data>
+            <o xml:space="preserve" t="ActionObjectDuplicationModeProperty">
+              <v n="Embedded">true</v>
+            </o>
+          </Data>
+          <TypeList>
+            <Type n="ActionObjectDuplicationModeProperty">{6a58c9ae-b0e2-4127-8d9c-cbfc36a09580}</Type>
+            <Type n="Boolean">System.Boolean</Type>
+          </TypeList>
+        </XmlArchive>
+      </ObjectProperties>
+    </Action>
     <Action Name="_aDrainOpen_01_active" Id="{411be806-3532-486d-8955-af87d4ed244b}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
@@ -1636,9 +1659,14 @@ END_IF]]></ST>
     <Action Name="_aDriin_Tank_active" Id="{26ac2563-987c-433e-82de-a748503c0934}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
-IF fbTarget.m_CheckStatus(eReqStatus:=E_Tank_Target.eDrain) THEN;
+IF stTank_Level.e_state=E_Tank_Level.eEmpty THEN;
 	bStepDone:=TRUE;
-END_IF]]></ST>
+END_IF
+
+
+// temp solution
+bStepDone:=TRUE;
+]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -4226,7 +4254,8 @@ refState_Long REF= fbElement[eElementID].eState_Long;
 //stPis_DrainTapWater REF= stPis[valDrainTapWater];
 
 ref_fbTankSensors REF= g_Data.arrTanksSens[eTank_Name];
-fbTarget.set_TankLevel(set_stTankLevel:=ref_fbTankSensors.get_stTankLevel());
+stTank_Level:=ref_fbTankSensors.get_stTankLevel();
+fbTarget.set_TankLevel(set_stTankLevel:=stTank_Level);
 
 stPis_CWIn REF= stPis[valCW_In];
 stPis_CWOut	 REF= stPis[valCW_Out];
@@ -5736,7 +5765,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{700a583f-b4d4-43e4-8c14-629c7cd3bec8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">""</v>
+                                          <v n="Value">"_aDraining_Time_active"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">380L</v>
@@ -5772,7 +5801,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"TRUE"</v>
+                                          <v n="Value">"bStepDone"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">384L</v>
@@ -6920,7 +6949,7 @@ stPis_CIP			REF= g_Piston.stPis[valOutlet];
                                       <o>
                                         <v n="AttributeId">{cacf1a68-236e-47c2-b7b1-1cf9199718cb}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"t#5s"</v>
+                                          <v n="Value">"t#2s"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">2138L</v>
@@ -25192,6 +25221,11 @@ END_IF
     <LineIds Name="FB_ProductionTank._aDrain_Trib_Line_02_entry">
       <LineId Id="1" Count="0" />
     </LineIds>
+    <LineIds Name="FB_ProductionTank._aDraining_Time_active">
+      <LineId Id="2" Count="2" />
+      <LineId Id="1" Count="0" />
+      <LineId Id="7" Count="0" />
+    </LineIds>
     <LineIds Name="FB_ProductionTank._aDrainOpen_01_active">
       <LineId Id="1" Count="3" />
     </LineIds>
@@ -25199,8 +25233,10 @@ END_IF
       <LineId Id="1" Count="1" />
     </LineIds>
     <LineIds Name="FB_ProductionTank._aDriin_Tank_active">
-      <LineId Id="2" Count="2" />
+      <LineId Id="13" Count="5" />
       <LineId Id="1" Count="0" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="19" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank._aDriin_Tank_entry">
       <LineId Id="1" Count="0" />
@@ -25474,6 +25510,7 @@ END_IF
       <LineId Id="14" Count="1" />
       <LineId Id="22" Count="0" />
       <LineId Id="21" Count="0" />
+      <LineId Id="25" Count="0" />
       <LineId Id="17" Count="0" />
       <LineId Id="23" Count="0" />
       <LineId Id="18" Count="0" />
