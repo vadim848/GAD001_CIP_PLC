@@ -3647,6 +3647,9 @@ eReq.eClient=E_CIP_Usage.eLocal
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
 IF __ISVALIDREF(eRefClient_fbElement) THEN
+	IF eRefClient_fbElement.ProdStatus=E_Prod_Status.Active THEN;
+		RETURN;
+	END_IF
 	CASE eReq.eType OF
 		E_CIP_Type.R_Water:;
 			CASE eRefClient_fbElement.eState_Long OF
@@ -6223,7 +6226,7 @@ END_CASE]]></ST>
                           <o>
                             <v n="AttributeId">{cacf1a68-236e-47c2-b7b1-1cf9199718cb}</v>
                             <o n="Value" t="StringValue">
-                              <v n="Value">"T#0.3s"</v>
+                              <v n="Value">"T#0.1s"</v>
                               <v n="DefaultValue">""</v>
                             </o>
                             <v n="Id">113L</v>
@@ -7065,7 +7068,7 @@ END_CASE]]></ST>
                                       <o>
                                         <v n="AttributeId">{cacf1a68-236e-47c2-b7b1-1cf9199718cb}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">""</v>
+                                          <v n="Value">"T#2s"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">7201L</v>
@@ -7112,7 +7115,7 @@ END_CASE]]></ST>
                                     <v n="IdParent">7141L</v>
                                   </o>
                                   <o t="SFCTransition">
-                                    <v n="VariableName">"ClientReference_IsNotValid__to__Ready"</v>
+                                    <v n="VariableName">"ClientReference_IsNotValid__to__init"</v>
                                     <n n="EmbeddedTransition" />
                                     <l2 n="EmbeddedTransitionProperties" />
                                     <l2 n="Attributes" cet="SFCAttribute">
@@ -7183,7 +7186,7 @@ END_CASE]]></ST>
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"Ready"</v>
+                                          <v n="Value">"init"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">7172L</v>
@@ -7834,7 +7837,7 @@ END_CASE]]></ST>
                                       <o>
                                         <v n="AttributeId">{cacf1a68-236e-47c2-b7b1-1cf9199718cb}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">""</v>
+                                          <v n="Value">"T#2s"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">7392L</v>
@@ -7881,7 +7884,7 @@ END_CASE]]></ST>
                                     <v n="IdParent">7374L</v>
                                   </o>
                                   <o t="SFCTransition">
-                                    <v n="VariableName">"Client_IsNotValid__to__Ready"</v>
+                                    <v n="VariableName">"Client_IsNotValid__to__init"</v>
                                     <n n="EmbeddedTransition" />
                                     <l2 n="EmbeddedTransitionProperties" />
                                     <l2 n="Attributes" cet="SFCAttribute">
@@ -7952,7 +7955,7 @@ END_CASE]]></ST>
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"Ready"</v>
+                                          <v n="Value">"init"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">7405L</v>
@@ -36197,6 +36200,7 @@ END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[IF stCIP_Request.eClient<>E_CIP_Usage.eNotInUse
 AND stCIP_Request.eType<>E_CIP_Type.NotSelected
+AND g_data.fbElement[stCIP_Request.eClient].ProdStatus<>E_Prod_Status.Active
 AND g_data.fbElement[stCIP_Request.eClient].eState_Long>E_Element_State_Long.eStandby 
 AND ((stCIP_Request.eType=E_CIP_Type.R_Water AND g_data.fbElement[stCIP_Request.eClient].eState_Long<E_Element_State_Long.eCIP_1_Rinzed)
 	OR (stCIP_Request.eType=E_CIP_Type.Detergent AND g_data.fbElement[stCIP_Request.eClient].eState_Long<E_Element_State_Long.eCIP_3_Deterged_Clean)
@@ -37561,6 +37565,7 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
     <LineIds Name="FB_CIP._aGet_Client_active">
       <LineId Id="143" Count="0" />
       <LineId Id="140" Count="0" />
+      <LineId Id="151" Count="2" />
       <LineId Id="3" Count="0" />
       <LineId Id="59" Count="0" />
       <LineId Id="130" Count="2" />
@@ -38626,6 +38631,7 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
     <LineIds Name="FB_CIP.m_TakePosInCIPBuffer">
       <LineId Id="14" Count="0" />
       <LineId Id="96" Count="0" />
+      <LineId Id="131" Count="0" />
       <LineId Id="95" Count="0" />
       <LineId Id="97" Count="0" />
       <LineId Id="102" Count="0" />
