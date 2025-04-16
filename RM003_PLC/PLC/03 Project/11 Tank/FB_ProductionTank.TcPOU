@@ -1734,7 +1734,6 @@ fbTarget.m_Run(eReqProc:=E_Tank_Target.eClose_DrainPipe);
 fbLineSource.m_Run(eReqProc:=E_Line_Source.eDrain);
 fbLineTarget.m_Run(eReqProc:=E_Line_Target.eDrain);
 fbInterConnection_ProL.reqDisconnect:=TRUE;
-
 ]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -1769,12 +1768,14 @@ fbInterConnection_ProL.reqDisconnect:=TRUE;
         </XmlArchive>
       </ObjectProperties>
     </Action>
-    <Action Name="_aInit_Tank_exit" Id="{33d510e9-50b3-4604-a23f-bad2ee4813a9}">
+    <Action Name="_aInit_Tank_exit" Id="{cb2d02c1-4749-4191-bf76-039f0904e47d}">
       <Implementation>
-        <ST><![CDATA[eProcess:=E_Element_Process.eNone;
-eReq:=E_Request_List.eNone;
-//bCntrlTemp:=FALSE;
+        <ST><![CDATA[IF eProcess=E_Element_Process.eFill_Water THEN;
+	mClearProduction(state:=E_Element_State_Long.eOff);
+END_IF
 
+eProcess:=E_Element_Process.eNone;
+eReq:=E_Request_List.eNone;
 ]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -1828,7 +1829,6 @@ fbTriBlenderTarget.m_Run(eReqProc:=E_Line_Target.eDrain);
 fbTriBlender_Select.m_Set_Request(eSetReg:=E_TriBlenderSelect.eDrain);
 fbInterConnection_TriB.reqDisconnect:=TRUE;
 fbDissolving.mResetCycle();
-
 ]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -2450,14 +2450,14 @@ CASE refElement.eState_Long OF
 				eProcess:=E_Element_Process.eDissolving;
 			END_IF	
 			IF eReq=E_Request_List.eFinish THEN;
-				mClearProduction();
+				mClearProduction(state:=E_Element_State_Long.eStandby);
 			END_IF
 	E_Element_State_Long.eReady:;
 			IF eReq=E_Request_List.eProduction THEN;
 				eProcess:=E_Element_Process.eConnectionToLine;
 			END_IF	
 			IF eReq=E_Request_List.eFinish THEN;
-				mClearProduction();
+				mClearProduction(state:=E_Element_State_Long.eStandby);
 			END_IF			
 
 	E_Element_State_Long.eProduction:;
@@ -2467,7 +2467,7 @@ CASE refElement.eState_Long OF
 
 	E_Element_State_Long.eEmpty:;
 			IF eReq=E_Request_List.eFinish THEN;
-				mClearProduction();
+				mClearProduction(state:=E_Element_State_Long.eStandby);
 			END_IF			
 END_CASE
 		
@@ -24783,6 +24783,8 @@ END_CASE]]></ST>
     <Method Name="mClearProduction" Id="{58c4c9c9-8cf2-41f1-b206-eaacde8cd18f}" FolderPath="Manage\">
       <Declaration><![CDATA[METHOD mClearProduction : BOOL
 VAR_INPUT
+	state: E_Element_State_Long:=E_Element_State_Long.eOff;
+
 END_VAR
 
 VAR
@@ -24792,9 +24794,13 @@ END_VAR
       <Implementation>
         <ST><![CDATA[stProdParam.eStatus:=E_Prod_Status.Not_Active;
 stProdParam.stRecipe:=stRecipeEmpty;
+eReq:=E_Request_List.eNone;
 
-refState_Long:=E_Element_State_Long.eStandby;
-eReq:=E_Request_List.eNone;]]></ST>
+IF state<>E_Element_State_Long.eOff THEN;
+	refState_Long:=state;
+END_IF
+
+]]></ST>
       </Implementation>
     </Method>
     <Method Name="mGet_Recipe" Id="{b8cd2ec5-ec05-4d19-a0b3-16991b77e5a1}" FolderPath="Manage\">
@@ -25252,16 +25258,14 @@ END_IF
       <LineId Id="5" Count="0" />
       <LineId Id="9" Count="0" />
       <LineId Id="6" Count="0" />
-      <LineId Id="4" Count="0" />
       <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank._aInit_Tank_active">
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank._aInit_Tank_exit">
+      <LineId Id="2" Count="5" />
       <LineId Id="1" Count="0" />
-      <LineId Id="3" Count="2" />
-      <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank._aInit_TriBlender_Line_active">
       <LineId Id="2" Count="0" />
@@ -25274,7 +25278,6 @@ END_IF
       <LineId Id="3" Count="0" />
       <LineId Id="5" Count="0" />
       <LineId Id="10" Count="0" />
-      <LineId Id="6" Count="0" />
       <LineId Id="4" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank._aInterConnect_TriB_1_active_1">
@@ -25629,6 +25632,9 @@ END_IF
     <LineIds Name="FB_ProductionTank.mClearProduction">
       <LineId Id="5" Count="1" />
       <LineId Id="13" Count="0" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="26" Count="1" />
       <LineId Id="12" Count="0" />
       <LineId Id="14" Count="0" />
     </LineIds>
