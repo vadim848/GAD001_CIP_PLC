@@ -75,6 +75,10 @@ VAR
 	
 	delta_Tank_Volume		: REAL;
 	memo_Tank_Level_start	: REAL;
+	bRunOffline: BOOL;
+	
+	event_state_Update: INT;
+
 END_VAR
 VAR_IN_OUT
 
@@ -122,7 +126,8 @@ END_CASE
 stProdParam.timeRemainToStart:=mTimeRemainToStart();
 stProdParam.timeProductionDuration:=mTimeProductionDuration();
 refElement.ProdStatus:=stProdParam.eStatus;
-m_Stirrer();]]></ST>
+m_Stirrer();
+m_HMI();]]></ST>
     </Implementation>
     <Folder Name="Manage" Id="{4859bb81-2525-4c2b-a781-1bdd74a1527c}" />
     <Action Name="_aCheck_Condition_TriB_1_active_1" Id="{2514b68e-c981-4423-bfd3-97d54b3557f9}">
@@ -2916,7 +2921,11 @@ THEN;
 //temp overweight protection
 ELSIF stT3_Sens.rTankLevel+stT4_Sens.rTankLevel>1000 THEN;
 	bStepDone:=TRUE;
-
+	
+ELSIF bRunOffline 
+AND Water_Fill.t>=T#10S
+THEN
+	bStepDone:=TRUE;
 END_IF]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -24682,6 +24691,19 @@ ELSE;
 END_CASE]]></ST>
       </Implementation>
     </Method>
+    <Method Name="m_HMI" Id="{eaa75ffd-8860-40ef-b20b-3b03fd8650af}" FolderPath="Manage\">
+      <Declaration><![CDATA[METHOD m_HMI : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TRUE THEN;
+	
+END_IF
+
+event_state_Update:= TO_INT(eStatus) + TO_INT(stProdParam.eStatus) + TO_INT(eProcess);]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="m_Set_SFCFlags_Reference" Id="{e572de0c-3d24-464d-bb17-5deb316affd4}" FolderPath="Manage\">
       <Declaration><![CDATA[METHOD m_Set_SFCFlags_Reference : BOOL
 ]]></Declaration>
@@ -24913,6 +24935,7 @@ END_IF
       <LineId Id="138" Count="0" />
       <LineId Id="545" Count="0" />
       <LineId Id="459" Count="0" />
+      <LineId Id="641" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank._aCheck_Condition_TriB_1_active_1">
       <LineId Id="2" Count="1" />
@@ -25504,6 +25527,9 @@ END_IF
       <LineId Id="5" Count="1" />
       <LineId Id="8" Count="1" />
       <LineId Id="11" Count="1" />
+      <LineId Id="14" Count="1" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="16" Count="0" />
       <LineId Id="10" Count="0" />
       <LineId Id="1" Count="0" />
     </LineIds>
@@ -25589,6 +25615,11 @@ END_IF
       <LineId Id="8" Count="0" />
       <LineId Id="12" Count="0" />
       <LineId Id="7" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ProductionTank.m_HMI">
+      <LineId Id="5" Count="2" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="8" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank.m_Set_SFCFlags_Reference">
       <LineId Id="5" Count="15" />
