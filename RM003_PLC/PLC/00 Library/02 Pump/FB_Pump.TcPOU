@@ -175,6 +175,9 @@ END_IF
 VAR_INPUT
 	
 END_VAR
+VAR
+	skipTemp: BOOL;
+END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[ton_RPM_feedback_lag_monitoring(PT:=T#10S);
@@ -188,9 +191,18 @@ IF __ISVALIDREF(stNidec) THEN;
 	END_IF	
 END_IF
 
+CASE Pump_ID OF
+	E_Pump_List.AG3001,
+	E_Pump_List.AG3002,
+	E_Pump_List.P3001,
+	E_Pump_List.P3002:;
+		skipTemp:=TRUE;
+ELSE;
+		skipTemp:=FALSE;
+END_CASE
 
 
-IF bRun THEN;
+IF bRun AND NOT skipTemp THEN;
 	IF NOT DriveReady THEN;
 		m_Error:=concat(sID,'x001');
 		stOperation.bSetPause:=TRUE;
@@ -203,7 +215,7 @@ IF bRun THEN;
 	END_IF
 END_IF
 
-IF NOT DriveReady THEN;
+IF NOT DriveReady AND NOT skipTemp THEN;
 	m_Error:=concat(sID,'x003');
 	//stOperation.bSetPause:=TRUE;
 	RETURN;
@@ -506,7 +518,13 @@ m_Stop:=TRUE;]]></ST>
       <LineId Id="57" Count="0" />
       <LineId Id="60" Count="5" />
       <LineId Id="58" Count="1" />
+      <LineId Id="132" Count="0" />
       <LineId Id="21" Count="0" />
+      <LineId Id="133" Count="0" />
+      <LineId Id="135" Count="2" />
+      <LineId Id="140" Count="0" />
+      <LineId Id="138" Count="1" />
+      <LineId Id="134" Count="0" />
       <LineId Id="17" Count="0" />
       <LineId Id="42" Count="0" />
       <LineId Id="9" Count="0" />
