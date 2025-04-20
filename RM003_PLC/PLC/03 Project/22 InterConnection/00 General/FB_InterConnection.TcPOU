@@ -264,13 +264,13 @@ END_CASE
 // To Disconnect
 CASE fbTargetElement.eType OF
 	E_Element_Type.eTriBlender:;
-		IF bActive AND fbTankElement.eState_Long<>E_Element_State_Long.eProduction THEN;
+		IF bActive THEN;// AND fbTankElement.eState_Long<>E_Element_State_Long.eProduction
 			bAvalableToDisconnect:=TRUE;
 		ELSE;
 			bAvalableToDisconnect:=FALSE;
 		END_IF
 	E_Element_Type.eLine:;
-		IF bActive AND fbTankElement.eState_Long<>E_Element_State_Long.eProduction THEN;
+		IF bActive AND fbTankElement.eState_Long=E_Element_State_Long.eProduction THEN;
 			bAvalableToDisconnect:=TRUE;
 		ELSE;
 			bAvalableToDisconnect:=FALSE;
