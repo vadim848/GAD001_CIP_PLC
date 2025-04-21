@@ -2784,9 +2784,11 @@ CASE refElement.eState_Long OF
 			END_IF	
 			
 			IF fbInterConnection_ProL.bAvalableToDisconnect 
-			AND stProdParam.eStatus=E_Prod_Status.Active
+			AND m_Production_Run_Pump()
 			THEN;
 				fb_PumpLine.m_Run(RPM:=stProdParam.stRecipe.FlowRate_Production);
+			ELSE;
+				fb_PumpLine.m_Stop();
 			END_IF		
 
 	E_Element_State_Long.eEmpty:;
@@ -26860,6 +26862,28 @@ END_IF
 event_state_Update:= TO_INT(eStatus) + TO_INT(stProdParam.eStatus) + TO_INT(eProcess);]]></ST>
       </Implementation>
     </Method>
+    <Method Name="m_Production_Run_Pump" Id="{f8a03de4-a449-4107-bdd3-bbaa65bdeb7f}" FolderPath="Manage\">
+      <Declaration><![CDATA[METHOD m_Production_Run_Pump : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF TRUE
+AND trn_Tank_Color
+AND refState_Long=E_Element_State_Long.eProduction
+AND fbTarget.m_CheckStatus(eReqStatus:=E_Tank_Target.eOpen) 
+AND ((fbLineSource.m_CheckStatus(eReqStatus:=E_Line_Source.eTank_A) AND fbLineTarget.m_CheckStatus(eReqStatus:=E_Line_Target.eTank_A))
+		OR
+	(fbLineSource.m_CheckStatus(eReqStatus:=E_Line_Source.eTank_B) AND fbLineTarget.m_CheckStatus(eReqStatus:=E_Line_Target.eTank_B)))		
+AND fbInterConnection_ProL.bActive
+AND TRUE
+THEN;
+	m_Production_Run_Pump:=TRUE;
+ELSE;
+	m_Production_Run_Pump:=FALSE;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="m_Set_SFCFlags_Reference" Id="{e572de0c-3d24-464d-bb17-5deb316affd4}" FolderPath="Manage\">
       <Declaration><![CDATA[METHOD m_Set_SFCFlags_Reference : BOOL
 ]]></Declaration>
@@ -27669,6 +27693,7 @@ END_IF
       <LineId Id="28" Count="0" />
       <LineId Id="48" Count="0" />
       <LineId Id="44" Count="3" />
+      <LineId Id="49" Count="1" />
       <LineId Id="43" Count="0" />
       <LineId Id="33" Count="2" />
       <LineId Id="37" Count="0" />
@@ -27860,6 +27885,15 @@ END_IF
       <LineId Id="5" Count="2" />
       <LineId Id="9" Count="0" />
       <LineId Id="8" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ProductionTank.m_Production_Run_Pump">
+      <LineId Id="6" Count="0" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="7" Count="2" />
+      <LineId Id="18" Count="1" />
+      <LineId Id="11" Count="3" />
+      <LineId Id="16" Count="1" />
+      <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank.m_Set_SFCFlags_Reference">
       <LineId Id="5" Count="15" />
