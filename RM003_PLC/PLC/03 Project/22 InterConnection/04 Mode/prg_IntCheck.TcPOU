@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <POU Name="prg_IntCheck" Id="{f443633c-d8e6-4cf8-886d-4a2ff198d0dd}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM prg_IntCheck
+VAR_OUTPUT
+	bActive_Marinade_TriB: BOOL;
+	bActive_Color_TriB: BOOL;
+	bActive_Marinade_Prod: BOOL;
+	bActive_Color_Prod: BOOL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IF fbIntCon_TriB_T1_Marin.bActive OR fbIntCon_TriB_T2_Marin.bActive THEN;
+	bActive_Marinade_TriB:=TRUE;
+ELSE;
+	bActive_Marinade_TriB:=FALSE;
+END_IF
+
+IF fbIntCon_TriB_T3_Color.bActive OR fbIntCon_TriB_T4_Color.bActive THEN;
+	bActive_Color_TriB:=TRUE;
+ELSE;
+	bActive_Color_TriB:=FALSE;
+END_IF
+
+IF fbIntCon_ProL_T1_Marin.bActive OR fbIntCon_ProL_T2_Marin.bActive THEN;
+	bActive_Marinade_Prod:=TRUE;
+ELSE;
+	bActive_Marinade_Prod:=FALSE;
+END_IF
+
+IF fbIntCon_ProL_T3_Color.bActive OR fbIntCon_ProL_T4_Color.bActive THEN;
+	bActive_Color_Prod:=TRUE;
+ELSE;
+	bActive_Color_Prod:=FALSE;
+END_IF
+]]></ST>
+    </Implementation>
+    <LineIds Name="prg_IntCheck">
+      <LineId Id="5" Count="1" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="12" Count="5" />
+      <LineId Id="19" Count="11" />
+      <LineId Id="11" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>
