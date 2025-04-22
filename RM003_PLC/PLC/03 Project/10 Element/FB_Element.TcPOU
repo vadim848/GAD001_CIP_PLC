@@ -7,6 +7,7 @@ VAR_INPUT
 
 END_VAR
 VAR_OUTPUT
+	event_StateUpdate	: INT; // for HMI
 END_VAR
 
 
@@ -41,6 +42,9 @@ VAR
 	bError: BOOL;	
 	
 	eProdStatus: E_Prod_Status;
+	
+	fbEvent_echo: FB_Event_echo;
+
 END_VAR
 
 
@@ -51,6 +55,7 @@ END_VAR]]></Declaration>
       <ST><![CDATA[i:=i+1;
 //m_Set_SFCFlags_Reference();
 //SUPER^();
+fbEvent_echo(echo=>event_StateUpdate);
 act_StateMachine();
 act_StateChange_WatchGog();
 
@@ -141,6 +146,7 @@ END_FOR
         <ST><![CDATA[IF eState_Long<>eState_Long_last THEN;
 	eState_Long_last:=eState_Long;
 	stStateChange:=stSystemTime;
+	fbEvent_echo.event();
 END_IF
 
 sState_Time:=prg_RealClock.m_DeltaTime(stStartTime:=stStateChange);]]></ST>
@@ -351,7 +357,8 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[memoDissolving_active:=TRUE;]]></ST>
+        <ST><![CDATA[memoDissolving_active:=TRUE;
+fbEvent_echo.event();]]></ST>
       </Implementation>
     </Method>
     <Method Name="m_Set_Oper_Pause" Id="{31bfa777-0c86-4838-93b6-ec28e092b686}">
@@ -456,7 +463,9 @@ END_VAR
     <LineIds Name="FB_Element">
       <LineId Id="839" Count="0" />
       <LineId Id="909" Count="0" />
-      <LineId Id="840" Count="11" />
+      <LineId Id="840" Count="0" />
+      <LineId Id="1007" Count="0" />
+      <LineId Id="841" Count="10" />
       <LineId Id="910" Count="0" />
       <LineId Id="852" Count="55" />
       <LineId Id="955" Count="0" />
@@ -476,6 +485,7 @@ END_VAR
     <LineIds Name="FB_Element.act_StateChange_WatchGog">
       <LineId Id="1" Count="1" />
       <LineId Id="4" Count="0" />
+      <LineId Id="9" Count="0" />
       <LineId Id="3" Count="0" />
       <LineId Id="7" Count="0" />
       <LineId Id="5" Count="0" />
@@ -575,6 +585,7 @@ END_VAR
     </LineIds>
     <LineIds Name="FB_Element.m_Set_Dissolveng_active_memo">
       <LineId Id="5" Count="0" />
+      <LineId Id="9" Count="0" />
     </LineIds>
     <LineIds Name="FB_Element.m_Set_Oper_Pause">
       <LineId Id="9" Count="2" />

@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <POU Name="FB_Event_echo" Id="{8e4667bf-577c-479e-878c-e91bfc8e7d87}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_Event_echo
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+	echo: INT;
+END_VAR
+VAR
+	ton_time: TON;
+	Puls: INT;
+	
+	memo: BOOL;
+
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[ton_time(PT:=T#2S,IN:=memo AND NOT ton_time.Q);
+IF ton_time.Q THEN;
+	echo:=echo+1;
+	
+	IF Puls>=5 THEN;
+		memo:=FALSE;
+	ELSE;
+		Puls:=Puls+1;
+	END_IF
+END_IF
+
+IF ton_time.Q THEN;
+	ton_time.IN:=FALSE;
+END_IF]]></ST>
+    </Implementation>
+    <Method Name="event" Id="{1489a449-054b-4248-87c6-4ec2e3069a24}">
+      <Declaration><![CDATA[METHOD event : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[memo:=TRUE;
+echo:=0;
+Puls:=0;
+]]></ST>
+      </Implementation>
+    </Method>
+    <LineIds Name="FB_Event_echo">
+      <LineId Id="9" Count="1" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="28" Count="1" />
+      <LineId Id="32" Count="1" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="17" Count="2" />
+      <LineId Id="16" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Event_echo.event">
+      <LineId Id="5" Count="3" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

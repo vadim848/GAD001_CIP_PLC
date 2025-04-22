@@ -2851,6 +2851,7 @@ IF __ISVALIDREF(eRefClient_fbElement) THEN;
 END_IF
 eRefClient_fbElement REF= fbElement_Blank;
 
+m_Disconnect_All_Client();
 m_DashState_MixProof_set();]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -35507,20 +35508,26 @@ CASE nStep_Vlv OF
 	1:
 		bClean_MixProof:=FALSE;
 		nI_2_act_pulses:=1; // 4 =>> 5 pulses
-
-		IF TRUE 
-		AND gCIP_ValvUL[nClient,nI_1_act_valve]<E_Pis_Name.last 
-		AND nI_1_act_valve<=nMaxValves THEN;
-			IF gCIP_ValvUL[nClient,nI_1_act_valve]>E_Pis_Name.e0_not_in_use THEN;
-				//existing step
-				nStep_Vlv:=2;			
-			ELSE;
-				nI_1_act_valve:=nI_1_act_valve+1;
-			END_IF
-		ELSE
-			//DONE
-			nStep_Vlv:=10;
+		
+		IF nI_1_act_valve<=6 THEN;
+			IF TRUE 
+			AND gCIP_ValvUL[nClient,nI_1_act_valve]<E_Pis_Name.last 
+			AND nI_1_act_valve<=nMaxValves THEN;
+				IF gCIP_ValvUL[nClient,nI_1_act_valve]>E_Pis_Name.e0_not_in_use THEN;
+					//existing step
+					nStep_Vlv:=2;			
+				ELSE;
+					nI_1_act_valve:=nI_1_act_valve+1;
+				END_IF
+			ELSE
+				//DONE
+				nStep_Vlv:=10;
+			END_IF		
+		ELSE;
+			nStep_Vlv:=10;	
 		END_IF
+		
+
 		
 	2:
 		ActvValve:=gCIP_ValvUL[nClient,nI_1_act_valve];
@@ -35965,6 +35972,21 @@ END_VAR]]></Declaration>
         <ST><![CDATA[FOR eDashboard_CIP_State:=0 TO E_CIP_DashStage_List.eLast DO
 	//g_HMI.arCIP_DashStage_list[eDashboard_CIP_State]:=E_CIP_DashStage.eCIPStage_NotInUse;
 	g_HMI.arCIP_DashStage_string[eDashboard_CIP_State]:=TO_STRING(eDashboard_CIP_State);
+END_FOR]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_Disconnect_All_Client" Id="{b57538c3-bdaa-43d5-948c-24f8c3e25c28}" FolderPath="Meth\">
+      <Declaration><![CDATA[METHOD m_Disconnect_All_Client : BOOL
+VAR
+	i: E_Element_List;
+END_VAR
+
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[FOR i:=E_Element_List.eTank_1 TO E_Element_List.eLine_Color DO
+	IF g_Data.fbElement[i].m_Get_InterConnection()=E_InterConnection.ConnToCIP THEN;
+		g_Data.fbElement[i].m_Disconnect();
+	END_IF
 END_FOR]]></ST>
       </Implementation>
     </Method>
@@ -37323,6 +37345,7 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
     <LineIds Name="FB_CIP._aDisconnect_Old_Client_entry">
       <LineId Id="2" Count="8" />
       <LineId Id="1" Count="0" />
+      <LineId Id="13" Count="0" />
       <LineId Id="12" Count="0" />
       <LineId Id="11" Count="0" />
     </LineIds>
@@ -38314,18 +38337,13 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="4" Count="0" />
       <LineId Id="20" Count="0" />
       <LineId Id="166" Count="0" />
+      <LineId Id="483" Count="0" />
       <LineId Id="7" Count="0" />
-      <LineId Id="23" Count="0" />
-      <LineId Id="326" Count="0" />
-      <LineId Id="324" Count="0" />
-      <LineId Id="458" Count="0" />
-      <LineId Id="462" Count="0" />
-      <LineId Id="459" Count="0" />
-      <LineId Id="461" Count="0" />
-      <LineId Id="463" Count="0" />
-      <LineId Id="460" Count="0" />
-      <LineId Id="34" Count="1" />
-      <LineId Id="47" Count="0" />
+      <LineId Id="471" Count="11" />
+      <LineId Id="467" Count="0" />
+      <LineId Id="469" Count="1" />
+      <LineId Id="468" Count="0" />
+      <LineId Id="466" Count="0" />
       <LineId Id="33" Count="0" />
       <LineId Id="44" Count="1" />
       <LineId Id="25" Count="0" />
@@ -38530,6 +38548,11 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
     </LineIds>
     <LineIds Name="FB_CIP.m_DashState_ToString_convertion">
       <LineId Id="18" Count="2" />
+      <LineId Id="7" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_CIP.m_Disconnect_All_Client">
+      <LineId Id="5" Count="1" />
+      <LineId Id="8" Count="1" />
       <LineId Id="7" Count="0" />
     </LineIds>
     <LineIds Name="FB_CIP.m_MeasureTimeToHMI">

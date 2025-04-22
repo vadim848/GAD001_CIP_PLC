@@ -78,7 +78,9 @@ VAR
 	bRunOffline: BOOL;
 	
 	event_state_Update: INT;
-
+	event_state_Update_sum: INT;
+	event_state_Update_sum_last: INT;
+	fbEvent_echo: FB_Event_echo;
 END_VAR
 VAR_IN_OUT
 
@@ -2192,6 +2194,14 @@ END_IF]]></ST>
         <ST><![CDATA[bStepDone:=FALSE;
 IF fbInterConnection_TriB.bActive THEN;
 	bStepDone:=TRUE;
+END_IF
+
+IF trn_Tank_Marinade THEN;
+	fbElement[E_Element_List.eTriBlender_Marinada].m_Set_Dissolveng_active_memo();
+ELSIF trn_Tank_Color THEN;
+	fbElement[E_Element_List.eTriBlender_Color].m_Set_Dissolveng_active_memo();
+ELSE;
+	bStepDone:=FALSE;
 END_IF]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -2211,12 +2221,6 @@ END_IF]]></ST>
     <Action Name="_aInterConnect_TriB_2_entry" Id="{c037fd38-a6e9-41af-b576-1838b786e3bb}">
       <Implementation>
         <ST><![CDATA[fbInterConnection_TriB.reqConnect:=TRUE;
-
-IF trn_Tank_Marinade THEN;
-	fbElement[E_Element_List.eTriBlender_Marinada].m_Set_Dissolveng_active_memo();
-ELSIF trn_Tank_Color THEN;
-	fbElement[E_Element_List.eTriBlender_Color].m_Set_Dissolveng_active_memo();
-END_IF
 ]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -26855,11 +26859,17 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF TRUE THEN;
-	
+        <ST><![CDATA[fbEvent_echo();
+event_state_Update_sum:= TO_INT(eStatus) + TO_INT(stProdParam.eStatus) + TO_INT(eProcess);
+
+IF event_state_Update_sum_last<>event_state_Update_sum THEN;
+	event_state_Update_sum_last:=event_state_Update_sum;
+	fbEvent_echo.event();
 END_IF
 
-event_state_Update:= TO_INT(eStatus) + TO_INT(stProdParam.eStatus) + TO_INT(eProcess);]]></ST>
+event_state_Update:=fbEvent_echo.echo;
+
+]]></ST>
       </Implementation>
     </Method>
     <Method Name="m_Production_Run_Pump" Id="{f8a03de4-a449-4107-bdd3-bbaa65bdeb7f}" FolderPath="Manage\">
@@ -27573,15 +27583,11 @@ END_IF
     <LineIds Name="FB_ProductionTank._aInterConnect_TriB_2_active">
       <LineId Id="2" Count="2" />
       <LineId Id="1" Count="0" />
+      <LineId Id="6" Count="6" />
+      <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank._aInterConnect_TriB_2_entry">
-      <LineId Id="1" Count="0" />
-      <LineId Id="4" Count="0" />
-      <LineId Id="3" Count="0" />
-      <LineId Id="5" Count="0" />
-      <LineId Id="7" Count="1" />
-      <LineId Id="6" Count="0" />
-      <LineId Id="2" Count="0" />
+      <LineId Id="1" Count="1" />
     </LineIds>
     <LineIds Name="FB_ProductionTank._aInterConnect_TriB_Dis_1_active">
       <LineId Id="2" Count="2" />
@@ -27886,9 +27892,16 @@ END_IF
       <LineId Id="7" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank.m_HMI">
-      <LineId Id="5" Count="2" />
       <LineId Id="9" Count="0" />
       <LineId Id="8" Count="0" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="19" Count="1" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="17" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank.m_Production_Run_Pump">
       <LineId Id="6" Count="0" />
