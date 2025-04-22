@@ -434,7 +434,7 @@ END_IF]]></ST>
     <Action Name="_aCollect_From_Prod_Line_active" Id="{771b979b-2440-42f1-b9e3-8aa05f11371c}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
-delta_Tank_Volume:=ref_fbTankSensors.volume-memo_Tank_Level_start;
+delta_Tank_Volume:=ref_fbTankSensors.act_Volume-memo_Tank_Level_start;
 IF FALSE 
 OR delta_Tank_Volume>=stProdParam.stRecipe.Weight_to_Collect
 OR Collect_From_Prod_Line.t>=T#40S
@@ -459,7 +459,7 @@ END_IF]]></ST>
     <Action Name="_aCollect_From_TriB_Line_active" Id="{5dcba99e-f46f-42f5-b819-941d4c3e4776}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
-delta_Tank_Volume:=ref_fbTankSensors.volume-memo_Tank_Level_start;
+delta_Tank_Volume:=ref_fbTankSensors.act_Volume-memo_Tank_Level_start;
 IF FALSE 
 OR delta_Tank_Volume>=stProdParam.stRecipe.Weight_to_Collect
 OR Collect_From_TriB_Line.t>=T#40S
@@ -1546,7 +1546,7 @@ IF Call_TON.Q THEN
 END_IF
 
 (*
-delta_Tank_Volume:=ref_fbTankSensors.volume-memo_Tank_Level_start;
+delta_Tank_Volume:=ref_fbTankSensors.act_Volume-memo_Tank_Level_start;
 IF bStepDone
 AND  
 AND (delta_Tank_Volume>=stProdParam.stRecipe.Weight_to_Drain
@@ -2657,7 +2657,7 @@ END_IF
     <Action Name="_aPumpLine_Start_2_entry" Id="{784a763c-4aaf-4759-b2cf-b5de98b7dc91}">
       <Implementation>
         <ST><![CDATA[fb_PumpLine.m_Run(RPM:=stProdParam.stRecipe.FlowRate_Production);
-memo_Tank_Level_start:=ref_fbTankSensors.volume;]]></ST>
+memo_Tank_Level_start:=ref_fbTankSensors.act_Volume;]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -2947,7 +2947,7 @@ bDone:=FALSE;
     <Action Name="_aStart_TriPump_3_entry" Id="{2651facf-f787-4997-a939-c7348845452e}">
       <Implementation>
         <ST><![CDATA[fb_PumpTriBlender.m_Run(RPM:=stProdParam.stRecipe.FlowRate_WaterPushing);
-memo_Tank_Level_start:=ref_fbTankSensors.volume;]]></ST>
+memo_Tank_Level_start:=ref_fbTankSensors.act_Volume;]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -26872,9 +26872,13 @@ END_VAR
 AND trn_Tank_Color
 AND refState_Long=E_Element_State_Long.eProduction
 AND fbTarget.m_CheckStatus(eReqStatus:=E_Tank_Target.eOpen) 
-AND ((fbLineSource.m_CheckStatus(eReqStatus:=E_Line_Source.eTank_A) AND fbLineTarget.m_CheckStatus(eReqStatus:=E_Line_Target.eTank_A))
+AND ((trn_Tank_A 
+	AND fbLineSource.m_CheckStatus(eReqStatus:=E_Line_Source.eTank_A) 
+	AND fbLineTarget.m_CheckStatus(eReqStatus:=E_Line_Target.eTank_A))
 		OR
-	(fbLineSource.m_CheckStatus(eReqStatus:=E_Line_Source.eTank_B) AND fbLineTarget.m_CheckStatus(eReqStatus:=E_Line_Target.eTank_B)))		
+	(trn_Tank_B 
+	AND fbLineSource.m_CheckStatus(eReqStatus:=E_Line_Source.eTank_B) 
+	AND fbLineTarget.m_CheckStatus(eReqStatus:=E_Line_Target.eTank_B)))		
 AND fbInterConnection_ProL.bActive
 AND TRUE
 THEN;
@@ -27890,7 +27894,11 @@ END_IF
       <LineId Id="6" Count="0" />
       <LineId Id="20" Count="0" />
       <LineId Id="7" Count="2" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="24" Count="0" />
       <LineId Id="18" Count="1" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="25" Count="0" />
       <LineId Id="11" Count="3" />
       <LineId Id="16" Count="1" />
       <LineId Id="5" Count="0" />

@@ -17,6 +17,7 @@ VAR_INPUT
 	nSensorTemp_Raw		:	INT		;
 END_VAR
 VAR_OUTPUT
+	act_Volume			: REAL;
 END_VAR
 VAR
 	stASensLvl			:	REFERENCE TO ST_AnalogSensor	;
@@ -31,7 +32,8 @@ END_VAR
     <Implementation>
       <ST><![CDATA[//Call_TankLevel(nSensorID:=nSensorLvl_ID, nRawSensor:=nSensorLvl_Raw );
 //Call_TankTemp(nSensorID:=nSensorTemp_ID, nRawSensor:=nSensorTemp_Raw );
-act_TankLvl();]]></ST>
+act_TankLvl();
+act_Volume:=stTankLevel.rTankLevel;]]></ST>
     </Implementation>
     <Action Name="act_TankLvl" Id="{97fbc1d5-579a-4896-bb72-4b1494685121}">
       <Implementation>
@@ -105,6 +107,7 @@ END_IF
       <LineId Id="50" Count="0" />
       <LineId Id="54" Count="0" />
       <LineId Id="56" Count="0" />
+      <LineId Id="85" Count="0" />
     </LineIds>
     <LineIds Name="FB_TankSensors.act_TankLvl">
       <LineId Id="2" Count="3" />
