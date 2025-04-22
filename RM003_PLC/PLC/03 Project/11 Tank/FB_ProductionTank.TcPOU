@@ -81,6 +81,7 @@ VAR
 	event_state_Update_sum: INT;
 	event_state_Update_sum_last: INT;
 	fbEvent_echo: FB_Event_echo;
+	memo_Production_Storage_Mode: BOOL;
 END_VAR
 VAR_IN_OUT
 
@@ -1996,7 +1997,7 @@ END_IF
 
 eProcess:=E_Element_Process.eNone;
 eReq:=E_Request_List.eNone;
-]]></ST>
+memo_Production_Storage_Mode:=FALSE;]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -2790,7 +2791,12 @@ CASE refElement.eState_Long OF
 			IF fbInterConnection_ProL.bAvalableToDisconnect 
 			AND m_Production_Run_Pump()
 			THEN;
-				fb_PumpLine.m_Run(RPM:=stProdParam.stRecipe.FlowRate_Production);
+				IF memo_Production_Storage_Mode THEN;
+					fb_PumpLine.m_Run(RPM:=stProdParam.stRecipe.FlowRate_Storage);
+				ELSE;
+					fb_PumpLine.m_Run(RPM:=stProdParam.stRecipe.FlowRate_Production);
+				END_IF
+				
 			ELSE;
 				fb_PumpLine.m_Stop();
 			END_IF		
@@ -27302,7 +27308,11 @@ END_VAR
 		IF fbInterConnection_TriB.bActive THEN;
 			m_Stirrer_run(param:=stProdParam.stRecipe.StirrerDissolving);
 		ELSIF fbInterConnection_ProL.bActive THEN;
-			m_Stirrer_run(param:=stProdParam.stRecipe.StirrerProduction);
+			IF memo_Production_Storage_Mode THEN;
+				m_Stirrer_run(param:=stProdParam.stRecipe.StirrerStorage);
+			ELSE;
+				m_Stirrer_run(param:=stProdParam.stRecipe.StirrerProduction);
+			END_IF	
 		ELSE;
 			m_Stirrer_run(param:=stProdParam.stRecipe.StirrerStorage);
 		END_IF
@@ -28072,7 +28082,11 @@ END_IF
       <LineId Id="29" Count="3" />
       <LineId Id="28" Count="0" />
       <LineId Id="48" Count="0" />
-      <LineId Id="44" Count="3" />
+      <LineId Id="44" Count="2" />
+      <LineId Id="51" Count="1" />
+      <LineId Id="54" Count="1" />
+      <LineId Id="53" Count="0" />
+      <LineId Id="47" Count="0" />
       <LineId Id="49" Count="1" />
       <LineId Id="43" Count="0" />
       <LineId Id="33" Count="2" />
@@ -28296,7 +28310,9 @@ END_IF
       <LineId Id="12" Count="0" />
       <LineId Id="22" Count="0" />
       <LineId Id="13" Count="0" />
-      <LineId Id="18" Count="0" />
+      <LineId Id="32" Count="1" />
+      <LineId Id="35" Count="1" />
+      <LineId Id="34" Count="0" />
       <LineId Id="15" Count="1" />
       <LineId Id="14" Count="0" />
       <LineId Id="9" Count="0" />
