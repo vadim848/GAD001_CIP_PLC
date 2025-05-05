@@ -27176,7 +27176,8 @@ st_TempCntrl.fHystHigh:=stProdParam.stRecipe.Temperature+0.5;
 
 
 
-bCntrlTemp:=stProdParam.eStatus=E_Prod_Status.Active;
+bCntrlTemp:=stProdParam.eStatus=E_Prod_Status.Active
+AND eStatus>=E_Element_State_Long.eWaterReady;
 
 IF bCntrlTemp AND NOT bRunCIP THEN
 	//pc_TempCntrl.mRun_Hyst();
@@ -27303,7 +27304,7 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF eStatus>=E_Element_State_Long.eCIP_5_Done THEN;
+        <ST><![CDATA[IF eStatus>=E_Element_State_Long.eWaterReady THEN;
 	IF stProdParam.eStatus=E_Prod_Status.Active THEN;
 		IF fbInterConnection_TriB.bActive THEN;
 			m_Stirrer_run(param:=stProdParam.stRecipe.StirrerDissolving);
@@ -28237,6 +28238,7 @@ END_IF
       <LineId Id="85" Count="1" />
       <LineId Id="83" Count="0" />
       <LineId Id="82" Count="0" />
+      <LineId Id="95" Count="0" />
       <LineId Id="52" Count="0" />
       <LineId Id="36" Count="0" />
       <LineId Id="50" Count="0" />
