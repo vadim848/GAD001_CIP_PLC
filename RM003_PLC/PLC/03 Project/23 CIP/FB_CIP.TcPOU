@@ -2745,10 +2745,36 @@ END_IF]]></ST>
         </XmlArchive>
       </ObjectProperties>
     </Action>
-    <Action Name="_aDisconnect_CIP_Client_active" Id="{0908cf68-67b7-4a91-b7fc-e2282fd9e163}">
+    <Action Name="_aDisconnect_n_Drain_CIP_Client_active" Id="{0908cf68-67b7-4a91-b7fc-e2282fd9e163}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
 
+IF fbCIP_Source.m_CheckStatus(eReqStatus:=E_CIP_Source.eClose) 
+AND fbCIP_Usage.m_CheckStatus(eReqStatus:=E_CIP_Usage.eLocal) 
+AND fbCIP_Return.m_CheckStatus(eReqStatus:=E_CIP_Return.eDrain)
+AND mCIP_Clients_status(command:=E_CIP_Client_Command.eClose)
+THEN
+
+	CASE eReq.eClient OF
+	
+		E_CIP_Usage.eTank_1:;
+					bStepDone:=fbCIP_ClientTank_Marinade.m_CheckStatus(eReqStatus:=E_CIP_ClientTank.eClose);
+		E_CIP_Usage.eTank_2:;
+					bStepDone:=fbCIP_ClientTank_Marinade.m_CheckStatus(eReqStatus:=E_CIP_ClientTank.eClose);	
+		E_CIP_Usage.eTank_3:;
+					bStepDone:=fbCIP_ClientTank_Color.m_CheckStatus(eReqStatus:=E_CIP_ClientTank.eClose);
+		E_CIP_Usage.eTank_4:;
+					bStepDone:=fbCIP_ClientTank_Color.m_CheckStatus(eReqStatus:=E_CIP_ClientTank.eClose);	
+		E_CIP_Usage.eTriBlender_Color,
+		E_CIP_Usage.eTriBlender_Marinada:;
+					bStepDone:=fbTriBlender_Select.m_CheckStatus(eReqStatus:=E_TriBlenderSelect.eMarinade);											
+	ELSE;				
+		bStepDone:=TRUE;
+	END_CASE
+	
+END_IF
+
+(* old, before drain done validation
 IF fbCIP_Source.m_CheckStatus(eReqStatus:=E_CIP_Source.eClose) 
 AND fbCIP_Usage.m_CheckStatus(eReqStatus:=E_CIP_Usage.eLocal) 
 AND fbCIP_Return.m_CheckStatus(eReqStatus:=E_CIP_Return.eDrain)
@@ -2772,7 +2798,8 @@ THEN
 		bStepDone:=TRUE;
 	END_CASE
 	
-END_IF]]></ST>
+END_IF
+*)]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -2788,7 +2815,7 @@ END_IF]]></ST>
         </XmlArchive>
       </ObjectProperties>
     </Action>
-    <Action Name="_aDisconnect_CIP_Client_entry" Id="{389c4393-cc6f-44b7-aa76-d6cd696fd6a2}">
+    <Action Name="_aDisconnect_n_Drain_CIP_Client_entry" Id="{389c4393-cc6f-44b7-aa76-d6cd696fd6a2}">
       <Implementation>
         <ST><![CDATA[fbCIP_Source.m_Run(eReqProc:=E_CIP_Source.eClose);
 fbCIP_Usage.m_Run(eReqProc:=E_CIP_Usage.eLocal);
@@ -34115,7 +34142,7 @@ END_CASE]]></ST>
                               <o n="ElementList" t="SFCElementList">
                                 <l2 n="InnerList" cet="SFCTransition">
                                   <o>
-                                    <v n="VariableName">"Branch0__End_Check__to__Disconnect_CIP_Client"</v>
+                                    <v n="VariableName">"Branch0__End_Check__to__Disconnect_n_Drain_CIP_Client"</v>
                                     <n n="EmbeddedTransition" />
                                     <l2 n="EmbeddedTransitionProperties" />
                                     <l2 n="Attributes" cet="SFCAttribute">
@@ -34409,7 +34436,7 @@ END_CASE]]></ST>
                           <o>
                             <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                             <o n="Value" t="StringValue">
-                              <v n="Value">"Disconnect_CIP_Client"</v>
+                              <v n="Value">"Disconnect_n_Drain_CIP_Client"</v>
                               <v n="DefaultValue">""</v>
                             </o>
                             <v n="Id">2554L</v>
@@ -34483,7 +34510,7 @@ END_CASE]]></ST>
                           <o>
                             <v n="AttributeId">{700a583f-b4d4-43e4-8c14-629c7cd3bec8}</v>
                             <o n="Value" t="StringValue">
-                              <v n="Value">"_aDisconnect_CIP_Client_active"</v>
+                              <v n="Value">"_aDisconnect_n_Drain_CIP_Client_active"</v>
                               <v n="DefaultValue">""</v>
                             </o>
                             <v n="Id">2562L</v>
@@ -34492,7 +34519,7 @@ END_CASE]]></ST>
                           <o>
                             <v n="AttributeId">{a6b08bd8-b696-47e3-9cbf-7408b61c9ff8}</v>
                             <o n="Value" t="StringValue">
-                              <v n="Value">"_aDisconnect_CIP_Client_entry"</v>
+                              <v n="Value">"_aDisconnect_n_Drain_CIP_Client_entry"</v>
                               <v n="DefaultValue">""</v>
                             </o>
                             <v n="Id">2563L</v>
@@ -34512,7 +34539,7 @@ END_CASE]]></ST>
                         <v n="IdParent">1L</v>
                       </o>
                       <o t="SFCTransition">
-                        <v n="VariableName">"Disconnect_CIP_Client__to__Done"</v>
+                        <v n="VariableName">"Disconnect_n_Drain_CIP_Client__to__Done"</v>
                         <n n="EmbeddedTransition" />
                         <l2 n="EmbeddedTransitionProperties" />
                         <l2 n="Attributes" cet="SFCAttribute">
@@ -36452,6 +36479,64 @@ ELSIF command=E_CIP_Client_Command.eCIP THEN;
 	ELSE;// local
 		mCIP_Clients_status:=TRUE;
 	END_CASE	
+	
+ELSIF command=E_CIP_Client_Command.eClose THEN;
+	CASE eReq.eClient OF
+		E_CIP_Usage.eTank_1:;
+			IF g_Data.fbTankTarget_1.m_CheckStatus(eReqStatus:=E_Tank_Target.eClose) THEN;
+				mCIP_Clients_status:=TRUE;
+			ELSE;
+				mCIP_Clients_status:=FALSE;	
+			END_IF
+		E_CIP_Usage.eTank_2:;
+			IF g_Data.fbTankTarget_2.m_CheckStatus(eReqStatus:=E_Tank_Target.eClose) THEN;
+				mCIP_Clients_status:=TRUE;
+			ELSE;
+				mCIP_Clients_status:=FALSE;	
+			END_IF	
+		E_CIP_Usage.eTank_3:;
+			IF g_Data.fbTankTarget_3.m_CheckStatus(eReqStatus:=E_Tank_Target.eClose) THEN;
+				mCIP_Clients_status:=TRUE;
+			ELSE;
+				mCIP_Clients_status:=FALSE;	
+			END_IF	
+		E_CIP_Usage.eTank_4:;
+			IF g_Data.fbTankTarget_4.m_CheckStatus(eReqStatus:=E_Tank_Target.eClose) THEN;
+				mCIP_Clients_status:=TRUE;
+			ELSE;
+				mCIP_Clients_status:=FALSE;	
+			END_IF	
+		E_CIP_Usage.eTriBlender_Marinada:;
+			IF  g_Data.fbTriBlenderSource_Marinade.m_CheckStatus(eReqStatus:=E_Line_Source.eClose) 
+			AND g_Data.fbTriBlenderTarget_Marinade.m_CheckStatus(eReqStatus:=E_Line_Target.eClose) THEN;
+				mCIP_Clients_status:=TRUE;
+			ELSE;
+				mCIP_Clients_status:=FALSE;	
+			END_IF
+		E_CIP_Usage.eTriBlender_Color:;
+			IF  g_Data.fbTriBlenderSource_Color.m_CheckStatus(eReqStatus:=E_Line_Source.eClose) 
+			AND g_Data.fbTriBlenderTarget_Color.m_CheckStatus(eReqStatus:=E_Line_Target.eClose) THEN;
+				mCIP_Clients_status:=TRUE;
+			ELSE;
+				mCIP_Clients_status:=FALSE;	
+			END_IF		
+		E_CIP_Usage.eLine_Marinada:;
+			IF  g_Data.fbLineSource_Marinade.m_CheckStatus(eReqStatus:=E_Line_Source.eClose) 
+			AND g_Data.fbLineTarget_Marinade.m_CheckStatus(eReqStatus:=E_Line_Target.eClose) THEN;
+				mCIP_Clients_status:=TRUE;
+			ELSE;
+				mCIP_Clients_status:=FALSE;	
+			END_IF	
+		E_CIP_Usage.eLine_Color:;
+			IF  g_Data.fbLineSource_Color.m_CheckStatus(eReqStatus:=E_Line_Source.eClose) 
+			AND g_Data.fbLineTarget_Color.m_CheckStatus(eReqStatus:=E_Line_Target.eClose) THEN;
+				mCIP_Clients_status:=TRUE;
+			ELSE;
+				mCIP_Clients_status:=FALSE;	
+			END_IF	
+	ELSE;// local
+		mCIP_Clients_status:=TRUE;
+	END_CASE		
 END_IF
 ]]></ST>
       </Implementation>
@@ -37314,7 +37399,7 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="14" Count="8" />
       <LineId Id="6" Count="0" />
     </LineIds>
-    <LineIds Name="FB_CIP._aDisconnect_CIP_Client_active">
+    <LineIds Name="FB_CIP._aDisconnect_n_Drain_CIP_Client_active">
       <LineId Id="2" Count="3" />
       <LineId Id="10" Count="0" />
       <LineId Id="9" Count="0" />
@@ -37328,8 +37413,12 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="7" Count="0" />
       <LineId Id="12" Count="0" />
       <LineId Id="1" Count="0" />
+      <LineId Id="55" Count="0" />
+      <LineId Id="30" Count="23" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="54" Count="0" />
     </LineIds>
-    <LineIds Name="FB_CIP._aDisconnect_CIP_Client_entry">
+    <LineIds Name="FB_CIP._aDisconnect_n_Drain_CIP_Client_entry">
       <LineId Id="2" Count="1" />
       <LineId Id="6" Count="0" />
       <LineId Id="4" Count="0" />
@@ -38708,6 +38797,9 @@ memo_T94_Level_start:=lvlTank_T94.rTankLevel;]]></ST>
       <LineId Id="150" Count="6" />
       <LineId Id="158" Count="0" />
       <LineId Id="39" Count="0" />
+      <LineId Id="219" Count="0" />
+      <LineId Id="221" Count="55" />
+      <LineId Id="220" Count="0" />
       <LineId Id="37" Count="0" />
       <LineId Id="5" Count="0" />
     </LineIds>
