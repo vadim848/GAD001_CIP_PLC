@@ -82,6 +82,7 @@ VAR
 	event_state_Update_sum_last: INT;
 	fbEvent_echo: FB_Event_echo;
 	memo_Production_Storage_Mode: BOOL;
+	memo_CIP_Pump_linked: BOOL;
 END_VAR
 VAR_IN_OUT
 
@@ -27213,6 +27214,27 @@ END_IF
 ]]></ST>
       </Implementation>
     </Action>
+    <Property Name="cip_Pump_linked" Id="{ac226185-1e07-4925-80ab-b5fd4481a15d}" FolderPath="Manage\">
+      <Declaration><![CDATA[PROPERTY cip_Pump_linked : BOOL]]></Declaration>
+      <Get Name="Get" Id="{f15d9d85-97fb-4143-b653-83a4b0989750}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[cip_Pump_linked:=memo_CIP_Pump_linked;
+]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{d4fd3cd6-885e-4e8b-b4a9-07e753923fb3}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[memo_CIP_Pump_linked:=cip_Pump_linked;
+]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
     <Method Name="m_Get_TriBlender_Clean" Id="{13b7f4ac-db6a-45d8-9c4a-691ded0763a9}" FolderPath="Manage\">
       <Declaration><![CDATA[METHOD m_Get_TriBlender_Clean : BOOL
 VAR_INPUT
@@ -27315,13 +27337,15 @@ END_VAR
 				m_Stirrer_run(param:=stProdParam.stRecipe.StirrerProduction);
 			END_IF	
 		ELSE;
-			m_Stirrer_run(param:=stProdParam.stRecipe.StirrerStorage);
+			fb_Stirrer.m_Run(RPM:=1203);
 		END_IF
 	ELSE;
 		fb_Stirrer.m_Run(RPM:=stProdParam.stRecipe.StirrerStorage.Speed);
 	END_IF
-ELSIF refElement.m_Get_InterConnection()=E_InterConnection.ConnToCIP THEN;
+ELSIF eStatus<E_Element_State_Long.eWaterReady
+AND refElement.m_Get_InterConnection()=E_InterConnection.ConnToCIP THEN;
 	// controled by CIP
+	m_Stirrer_run_CIP();
 ELSE;
 	fb_Stirrer.m_Stop();
 END_IF]]></ST>
@@ -27375,6 +27399,21 @@ CASE param.Mode OF
 	E_Stirrer_mode.off:;
 						fb_Stirrer.m_Stop();
 END_CASE]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_Stirrer_run_CIP" Id="{c8799238-5523-43fc-a069-a2104bf79383}" FolderPath="Manage\">
+      <Declaration><![CDATA[METHOD m_Stirrer_run_CIP : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF memo_CIP_Pump_linked
+AND g_Pump.fbPump[E_Pump_List.P1001].bRun
+THEN;
+	fb_Stirrer.m_Run(RPM:=1204);
+ELSE;
+	fb_Stirrer.m_Stop();
+END_IF]]></ST>
       </Implementation>
     </Method>
     <Method Name="mClearProduction" Id="{58c4c9c9-8cf2-41f1-b206-eaacde8cd18f}" FolderPath="Manage\">
@@ -28266,6 +28305,14 @@ END_IF
       <LineId Id="38" Count="0" />
       <LineId Id="2" Count="0" />
     </LineIds>
+    <LineIds Name="FB_ProductionTank.cip_Pump_linked.Get">
+      <LineId Id="2" Count="0" />
+      <LineId Id="6" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ProductionTank.cip_Pump_linked.Set">
+      <LineId Id="2" Count="0" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
     <LineIds Name="FB_ProductionTank.m_Get_TriBlender_Clean">
       <LineId Id="5" Count="0" />
       <LineId Id="9" Count="0" />
@@ -28320,7 +28367,10 @@ END_IF
       <LineId Id="9" Count="0" />
       <LineId Id="11" Count="0" />
       <LineId Id="10" Count="0" />
-      <LineId Id="27" Count="1" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="40" Count="0" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="41" Count="0" />
       <LineId Id="26" Count="0" />
       <LineId Id="6" Count="1" />
     </LineIds>
@@ -28342,6 +28392,10 @@ END_IF
       <LineId Id="54" Count="0" />
       <LineId Id="41" Count="5" />
       <LineId Id="23" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ProductionTank.m_Stirrer_run_CIP">
+      <LineId Id="10" Count="5" />
+      <LineId Id="7" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank.mClearProduction">
       <LineId Id="5" Count="1" />
