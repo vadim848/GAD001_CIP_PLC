@@ -9,6 +9,7 @@ VAR_INPUT
 	valOutSelect	: E_Pis_Name;	
 	valOutMarinade	: E_Pis_Name;
 	valOutColor		: E_Pis_Name;
+	valDrain		: E_Pis_Name;
 	
 END_VAR
 VAR_OUTPUT
@@ -27,6 +28,7 @@ VAR
 	stPis_OutSelect		: REFERENCE TO ST_Piston;
 	stPis_OutMarinade	: REFERENCE TO ST_Piston;
 	stPis_OutColor		: REFERENCE TO ST_Piston;
+	stPis_Drain			: REFERENCE TO ST_Piston;
 
 	tonDrainTime: TON;
 	rt_Req_Reset: R_TRIG;
@@ -92,7 +94,9 @@ fbPis.m_SetByRecipe(stPis:=stPis_InMarinade, 		req:=E_Piston_Recipe_State.Releas
 fbPis.m_SetByRecipe(stPis:=stPis_InColor, 			req:=E_Piston_Recipe_State.Release);
 fbPis.m_SetByRecipe(stPis:=stPis_OutSelect, 		req:=E_Piston_Recipe_State.Act);
 fbPis.m_SetByRecipe(stPis:=stPis_OutMarinade, 		req:=E_Piston_Recipe_State.Release);
-fbPis.m_SetByRecipe(stPis:=stPis_OutColor, 			req:=E_Piston_Recipe_State.Release);]]></ST>
+fbPis.m_SetByRecipe(stPis:=stPis_OutColor, 			req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_Drain, 			req:=E_Piston_Recipe_State.Release);
+]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -163,7 +167,9 @@ fbPis.m_SetByRecipe(stPis:=stPis_InMarinade, 		req:=E_Piston_Recipe_State.Act);
 fbPis.m_SetByRecipe(stPis:=stPis_InColor, 			req:=E_Piston_Recipe_State.Act);
 fbPis.m_SetByRecipe(stPis:=stPis_OutSelect, 		req:=E_Piston_Recipe_State.Release);
 fbPis.m_SetByRecipe(stPis:=stPis_OutMarinade, 		req:=E_Piston_Recipe_State.Act);
-fbPis.m_SetByRecipe(stPis:=stPis_OutColor, 			req:=E_Piston_Recipe_State.Act);]]></ST>
+fbPis.m_SetByRecipe(stPis:=stPis_OutColor, 			req:=E_Piston_Recipe_State.Act);
+fbPis.m_SetByRecipe(stPis:=stPis_Drain, 			req:=E_Piston_Recipe_State.Act);
+]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -229,7 +235,9 @@ fbPis.m_SetByRecipe(stPis:=stPis_InMarinade, 		req:=E_Piston_Recipe_State.Releas
 fbPis.m_SetByRecipe(stPis:=stPis_InColor, 			req:=E_Piston_Recipe_State.Release);
 fbPis.m_SetByRecipe(stPis:=stPis_OutSelect, 		req:=E_Piston_Recipe_State.Release);
 fbPis.m_SetByRecipe(stPis:=stPis_OutMarinade, 		req:=E_Piston_Recipe_State.Release);
-fbPis.m_SetByRecipe(stPis:=stPis_OutColor, 			req:=E_Piston_Recipe_State.Release);]]></ST>
+fbPis.m_SetByRecipe(stPis:=stPis_OutColor, 			req:=E_Piston_Recipe_State.Release);
+fbPis.m_SetByRecipe(stPis:=stPis_Drain, 			req:=E_Piston_Recipe_State.Release);
+]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -294,7 +302,9 @@ stPis_InColor	 REF= g_Piston.stPis[valInColor];
 
 stPis_OutSelect	  REF= g_Piston.stPis[valOutSelect];
 stPis_OutMarinade REF= g_Piston.stPis[valOutMarinade];
-stPis_OutColor	  REF= g_Piston.stPis[valOutColor];]]></ST>
+stPis_OutColor	  REF= g_Piston.stPis[valOutColor];
+
+stPis_Drain		  REF= g_Piston.stPis[valDrain];]]></ST>
       </Implementation>
     </Action>
     <Action Name="act_Oper" Id="{b80f5ade-5ea6-4341-a41a-f2c6d43c3182}" FolderPath="Manage\">
@@ -2337,6 +2347,7 @@ AND fbPis.m_CheckByRecipe(stPis:=stPis_InColor, 		req:=E_Piston_Recipe_State.Rel
 AND fbPis.m_CheckByRecipe(stPis:=stPis_OutSelect, 		req:=E_Piston_Recipe_State.Release)
 AND fbPis.m_CheckByRecipe(stPis:=stPis_OutMarinade, 	req:=E_Piston_Recipe_State.Release)
 AND fbPis.m_CheckByRecipe(stPis:=stPis_OutColor, 		req:=E_Piston_Recipe_State.Release)
+AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain	, 		req:=E_Piston_Recipe_State.Release)
 THEN;
 	eStatus:=E_TriBlenderSelect.eMarinade;
 	
@@ -2347,6 +2358,7 @@ AND fbPis.m_CheckByRecipe(stPis:=stPis_InColor, 		req:=E_Piston_Recipe_State.Rel
 AND fbPis.m_CheckByRecipe(stPis:=stPis_OutSelect, 		req:=E_Piston_Recipe_State.Act)
 AND fbPis.m_CheckByRecipe(stPis:=stPis_OutMarinade, 	req:=E_Piston_Recipe_State.Release)
 AND fbPis.m_CheckByRecipe(stPis:=stPis_OutColor, 		req:=E_Piston_Recipe_State.Release)
+AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain	, 		req:=E_Piston_Recipe_State.Release)
 THEN;
 	eStatus:=E_TriBlenderSelect.eColor;
 	
@@ -2357,6 +2369,7 @@ AND fbPis.m_CheckByRecipe(stPis:=stPis_InColor, 		req:=E_Piston_Recipe_State.Act
 AND fbPis.m_CheckByRecipe(stPis:=stPis_OutSelect, 		req:=E_Piston_Recipe_State.Release)
 AND fbPis.m_CheckByRecipe(stPis:=stPis_OutMarinade, 	req:=E_Piston_Recipe_State.Act)
 AND fbPis.m_CheckByRecipe(stPis:=stPis_OutColor, 		req:=E_Piston_Recipe_State.Act)
+AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain	, 		req:=E_Piston_Recipe_State.Act)
 THEN;
 	eStatus:=E_TriBlenderSelect.eDrain;
 	
@@ -2461,6 +2474,8 @@ m_SFC_Handle();]]></ST>
     <LineIds Name="FB_TriBlender_Select._aColor_entry">
       <LineId Id="6" Count="4" />
       <LineId Id="1" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="11" Count="0" />
     </LineIds>
     <LineIds Name="FB_TriBlender_Select._aDone_entry">
       <LineId Id="1" Count="0" />
@@ -2476,6 +2491,8 @@ m_SFC_Handle();]]></ST>
     <LineIds Name="FB_TriBlender_Select._aDrain_entry">
       <LineId Id="6" Count="4" />
       <LineId Id="1" Count="0" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="11" Count="0" />
     </LineIds>
     <LineIds Name="FB_TriBlender_Select._aInit_active">
       <LineId Id="1" Count="0" />
@@ -2487,7 +2504,8 @@ m_SFC_Handle();]]></ST>
     </LineIds>
     <LineIds Name="FB_TriBlender_Select._aMarinade_entry">
       <LineId Id="7" Count="4" />
-      <LineId Id="1" Count="0" />
+      <LineId Id="14" Count="1" />
+      <LineId Id="12" Count="0" />
     </LineIds>
     <LineIds Name="FB_TriBlender_Select._aReady_active">
       <LineId Id="2" Count="1" />
@@ -2513,15 +2531,23 @@ m_SFC_Handle();]]></ST>
       <LineId Id="41" Count="0" />
       <LineId Id="40" Count="0" />
       <LineId Id="42" Count="1" />
+      <LineId Id="45" Count="0" />
+      <LineId Id="44" Count="0" />
     </LineIds>
     <LineIds Name="FB_TriBlender_Select.act_Status">
-      <LineId Id="77" Count="7" />
+      <LineId Id="77" Count="5" />
+      <LineId Id="108" Count="1" />
+      <LineId Id="84" Count="0" />
       <LineId Id="74" Count="0" />
       <LineId Id="85" Count="0" />
-      <LineId Id="87" Count="7" />
+      <LineId Id="87" Count="6" />
+      <LineId Id="110" Count="0" />
+      <LineId Id="94" Count="0" />
       <LineId Id="86" Count="0" />
       <LineId Id="95" Count="0" />
-      <LineId Id="97" Count="7" />
+      <LineId Id="97" Count="6" />
+      <LineId Id="111" Count="0" />
+      <LineId Id="104" Count="0" />
       <LineId Id="96" Count="0" />
       <LineId Id="105" Count="2" />
       <LineId Id="75" Count="1" />
