@@ -114,7 +114,7 @@ END_VAR
       <Implementation>
         <ST><![CDATA[tDelta:=TO_TIME(SYSTEMTIME_TO_DT(stSystemTime)-SYSTEMTIME_TO_DT(stStartTime));
 
-m_DeltaTime:=mTime_to_String_HMI(tInputTime:=tDelta);
+m_DeltaTime:=mTime_to_String_HMI(tInputTime:=tDelta,iSecondDisplay:=FALSE);
 
 (*old
 todDelta:=TIME_TO_TOD(tDelta);
@@ -131,7 +131,8 @@ m_DeltaTime:=DELETE(m_DeltaTime,4,1);
     <Method Name="mTime_to_String_HMI" Id="{3b1224bb-1c81-4651-ba24-0d54cc3dd297}">
       <Declaration><![CDATA[METHOD mTime_to_String_HMI : STRING
 VAR_INPUT
-    tInputTime : TIME; // TIME type, stored internally as LTIME (ms)
+    tInputTime 		: TIME; // TIME type, stored internally as LTIME (ms)
+	iSecondDisplay	: BOOL;
 END_VAR
 VAR
     nTotalSeconds : UDINT;
@@ -154,16 +155,21 @@ nTotalHours := nMinutes / 60;
 nMinutes := nMinutes MOD 60;
 
 // Format output as HHHH:MM:SS (e.g., 0123:45:56)
-sFormatted := CONCAT(STR1:=UDINT_TO_STRING(nTotalHours), STR2:=':');
+sFormatted := CONCAT(UDINT_TO_STRING(nTotalHours),'h:');
 IF nMinutes < 10 THEN
     sFormatted := CONCAT(sFormatted, '0');
 END_IF
 sFormatted := CONCAT(sFormatted, UDINT_TO_STRING(nMinutes));
-sFormatted := CONCAT(sFormatted, ':');
-IF nSeconds < 10 THEN
-    sFormatted := CONCAT(sFormatted, '0');
+sFormatted := CONCAT(sFormatted, 'm');
+
+IF iSecondDisplay THEN;
+	sFormatted := CONCAT(sFormatted, ':');
+	IF nSeconds < 10 THEN
+		sFormatted := CONCAT(sFormatted, '0');
+	END_IF
+	sFormatted := CONCAT(sFormatted, UDINT_TO_STRING(nSeconds));
+	sFormatted := CONCAT(sFormatted, 's');	
 END_IF
-sFormatted := CONCAT(sFormatted, UDINT_TO_STRING(nSeconds));
 
 // Return formatted string
 mTime_to_String_HMI := sFormatted;
@@ -206,7 +212,13 @@ mTime_to_String_HMI := sFormatted;
       <LineId Id="31" Count="0" />
     </LineIds>
     <LineIds Name="prg_RealClock.mTime_to_String_HMI">
-      <LineId Id="16" Count="24" />
+      <LineId Id="16" Count="17" />
+      <LineId Id="53" Count="0" />
+      <LineId Id="45" Count="0" />
+      <LineId Id="52" Count="0" />
+      <LineId Id="48" Count="3" />
+      <LineId Id="46" Count="1" />
+      <LineId Id="38" Count="2" />
       <LineId Id="5" Count="0" />
     </LineIds>
   </POU>

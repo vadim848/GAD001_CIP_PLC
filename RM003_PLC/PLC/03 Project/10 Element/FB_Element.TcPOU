@@ -24,8 +24,11 @@ VAR
 
 
 	i: INT;
-	stStateChange		: TimeStruct;
 	sState_Time			: STRING;
+	sTimeToExparation	: STRING;
+	tTimeToExperation	: TIME;
+	tStateTime			: TIME;
+
 	
 	sElementID			: STRING;
 	eInterConnect		: E_InterConnection;
@@ -44,6 +47,12 @@ VAR
 	eProdStatus: E_Prod_Status;
 	
 	fbEvent_echo: FB_Event_echo;
+
+END_VAR
+
+VAR PERSISTENT
+	stStateChange		: TimeStruct;
+	tExperationTime		: TIME:=T#48H;
 
 END_VAR
 
@@ -133,6 +142,7 @@ FOR i:=0 TO 9 DO
 	END_IF
 END_FOR
 
+m_TimeToExperation();
 ]]></ST>
     </Implementation>
     <Folder Name="Manage" Id="{c1bad6aa-d321-46fa-921e-00f6b446e0b8}" />
@@ -149,7 +159,16 @@ END_FOR
 	fbEvent_echo.event(); // for HMI
 END_IF
 
-sState_Time:=prg_RealClock.m_DeltaTime(stStartTime:=stStateChange);]]></ST>
+tStateTime:=TO_TIME(SYSTEMTIME_TO_DT(stSystemTime)-SYSTEMTIME_TO_DT(stStateChange));
+
+sState_Time:=prg_RealClock.m_DeltaTime(stStartTime:=stStateChange);
+sTimeToExparation:=prg_RealClock.mTime_to_String_HMI(tInputTime:=tTimeToExperation, iSecondDisplay:=TRUE);
+
+sState_Time:= CONCAT(sState_Time, '(');
+sState_Time:= CONCAT(sState_Time, sTimeToExparation);
+sState_Time:= CONCAT(sState_Time, ')');
+
+]]></ST>
       </Implementation>
     </Action>
     <Action Name="act_StateMachine" Id="{f33c6159-2800-4ae4-981a-4a8c5e4774dd}" FolderPath="Manage\">
@@ -441,6 +460,21 @@ ELSE;
 END_IF]]></ST>
       </Implementation>
     </Method>
+    <Method Name="m_TimeToExperation" Id="{b592f2a7-8b80-4b25-9040-91bd7248992a}">
+      <Declaration><![CDATA[METHOD m_TimeToExperation : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF tExperationTime>tStateTime THEN;
+	tTimeToExperation:=tExperationTime-tStateTime;
+ELSE;
+	tTimeToExperation:=T#0S;
+END_IF
+
+]]></ST>
+      </Implementation>
+    </Method>
     <Property Name="ProdStatus" Id="{e4474016-ac40-43b2-890c-a624cfadb69e}">
       <Declaration><![CDATA[PROPERTY ProdStatus : E_Prod_Status]]></Declaration>
       <Get Name="Get" Id="{d8c98c4f-e4a7-4d29-8f1c-e4501e77bc63}">
@@ -476,6 +510,7 @@ END_VAR
       <LineId Id="956" Count="0" />
       <LineId Id="954" Count="0" />
       <LineId Id="952" Count="0" />
+      <LineId Id="1066" Count="0" />
       <LineId Id="908" Count="0" />
       <LineId Id="242" Count="0" />
     </LineIds>
@@ -487,8 +522,14 @@ END_VAR
       <LineId Id="4" Count="0" />
       <LineId Id="9" Count="0" />
       <LineId Id="3" Count="0" />
+      <LineId Id="11" Count="1" />
       <LineId Id="7" Count="0" />
       <LineId Id="5" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="17" Count="1" />
+      <LineId Id="20" Count="1" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="14" Count="0" />
     </LineIds>
     <LineIds Name="FB_Element.act_StateMachine">
       <LineId Id="2" Count="1" />
@@ -612,6 +653,14 @@ END_VAR
     <LineIds Name="FB_Element.m_StateUpdate_Limit">
       <LineId Id="6" Count="3" />
       <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Element.m_TimeToExperation">
+      <LineId Id="6" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="10" Count="1" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="7" Count="0" />
     </LineIds>
     <LineIds Name="FB_Element.ProdStatus.Get">
       <LineId Id="2" Count="0" />
