@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
   <POU Name="prg_RealClock" Id="{e1fe7cf5-42c6-4697-8de3-74e42c26da6a}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM prg_RealClock
 VAR
@@ -113,11 +113,60 @@ END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[tDelta:=TO_TIME(SYSTEMTIME_TO_DT(stSystemTime)-SYSTEMTIME_TO_DT(stStartTime));
+
+m_DeltaTime:=mTime_to_String_HMI(tInputTime:=tDelta);
+
+(*old
 todDelta:=TIME_TO_TOD(tDelta);
 m_DeltaTime:=TOD_TO_STRING(todDelta);
 m_DeltaTime:=DELETE(m_DeltaTime,4,1);
 //dtDelta:=TO_DT(SYSTEMTIME_TO_DT(stSystemTime)-SYSTEMTIME_TO_DT(stStartTime));
 //m_DeltaTime:=TIME_TO_STRING(dtDelta);
+*)
+
+
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="mTime_to_String_HMI" Id="{3b1224bb-1c81-4651-ba24-0d54cc3dd297}">
+      <Declaration><![CDATA[METHOD mTime_to_String_HMI : STRING
+VAR_INPUT
+    tInputTime : TIME; // TIME type, stored internally as LTIME (ms)
+END_VAR
+VAR
+    nTotalSeconds : UDINT;
+    nTotalHours : UDINT;
+    nMinutes : UDINT;
+    nSeconds : UDINT;
+    sFormatted : STRING(20);
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// Convert TIME to total seconds
+nTotalSeconds := TO_UDINT(tInputTime) / 1000;
+
+// Extract minutes and seconds
+nMinutes := nTotalSeconds / 60;
+nSeconds := nTotalSeconds MOD 60;
+
+// Convert to total hours
+nTotalHours := nMinutes / 60;
+nMinutes := nMinutes MOD 60;
+
+// Format output as HHHH:MM:SS (e.g., 0123:45:56)
+sFormatted := CONCAT(STR1:=UDINT_TO_STRING(nTotalHours), STR2:=':');
+IF nMinutes < 10 THEN
+    sFormatted := CONCAT(sFormatted, '0');
+END_IF
+sFormatted := CONCAT(sFormatted, UDINT_TO_STRING(nMinutes));
+sFormatted := CONCAT(sFormatted, ':');
+IF nSeconds < 10 THEN
+    sFormatted := CONCAT(sFormatted, '0');
+END_IF
+sFormatted := CONCAT(sFormatted, UDINT_TO_STRING(nSeconds));
+
+// Return formatted string
+mTime_to_String_HMI := sFormatted;
 ]]></ST>
       </Implementation>
     </Method>
@@ -145,10 +194,20 @@ m_DeltaTime:=DELETE(m_DeltaTime,4,1);
     </LineIds>
     <LineIds Name="prg_RealClock.m_DeltaTime">
       <LineId Id="28" Count="0" />
+      <LineId Id="54" Count="0" />
+      <LineId Id="57" Count="0" />
+      <LineId Id="59" Count="0" />
+      <LineId Id="58" Count="0" />
       <LineId Id="38" Count="0" />
       <LineId Id="19" Count="0" />
       <LineId Id="33" Count="2" />
+      <LineId Id="51" Count="1" />
+      <LineId Id="50" Count="0" />
       <LineId Id="31" Count="0" />
+    </LineIds>
+    <LineIds Name="prg_RealClock.mTime_to_String_HMI">
+      <LineId Id="16" Count="24" />
+      <LineId Id="5" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>
