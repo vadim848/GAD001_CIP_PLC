@@ -2199,6 +2199,7 @@ IF fbInterConnection_TriB.bActive THEN;
 	bStepDone:=TRUE;
 END_IF
 
+refElement.m_Set_Dissolveng_active_memo();
 IF trn_Tank_Marinade THEN;
 	fbElement[E_Element_List.eTriBlender_Marinada].m_Set_Dissolveng_active_memo();
 ELSIF trn_Tank_Color THEN;
@@ -4592,9 +4593,16 @@ END_IF]]></ST>
     <Action Name="act_ExpirationTime" Id="{232636e3-8fdc-4b48-9446-c1ccdd8dae25}" FolderPath="Manage\">
       <Implementation>
         <ST><![CDATA[IF stProdParam.eStatus=E_Prod_Status.Active THEN;
-	refElement.ExpirationTime:=stProdParam.stRecipe.ExpirationTime;
+	IF refElement.memoDissolving_active 
+	OR eStatus>=E_Element_State_Long.eReady
+	THEN
+		refElement.ExpirationTime:=stProdParam.stRecipe.ExpirationTime;
+	ELSE;
+		refElement.ExpirationTime:=stProdParam.stRecipe.WaterExpirationTime;
+	END_IF
+	
 ELSE;
-	refElement.ExpirationTime:=stProdParam.stRecipe.ExpirationTime;
+	refElement.ExpirationTime:=ExpirationTime_Default;
 END_IF]]></ST>
       </Implementation>
     </Action>
@@ -27993,6 +28001,7 @@ END_IF
     <LineIds Name="FB_ProductionTank._aInterConnect_TriB_2_active">
       <LineId Id="2" Count="2" />
       <LineId Id="1" Count="0" />
+      <LineId Id="13" Count="0" />
       <LineId Id="6" Count="6" />
       <LineId Id="5" Count="0" />
     </LineIds>
@@ -28223,7 +28232,14 @@ END_IF
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank.act_ExpirationTime">
-      <LineId Id="6" Count="3" />
+      <LineId Id="6" Count="0" />
+      <LineId Id="10" Count="0" />
+      <LineId Id="16" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="11" Count="0" />
+      <LineId Id="13" Count="1" />
+      <LineId Id="12" Count="0" />
+      <LineId Id="7" Count="2" />
       <LineId Id="3" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank.act_GetReference">
