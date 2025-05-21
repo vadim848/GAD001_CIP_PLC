@@ -15,6 +15,9 @@ VAR
 	bTemp_Water_Overweight_check: BOOL;
 	fbUPS: FB_S_UPS_CX51x0;
 
+	bSetExpeationTime: BOOL;
+	i: E_ELEMENT_LIST;
+	tExperationSet_Test: TIME := T#10s;
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -88,7 +91,13 @@ IF arrTanksSens[E_Tank_Name.T94].get_stTankLevel_OverFlow() THEN;
 	fbPrintErrMessageByID(sModuleDescription:='CIP',sActErrorID:='101x000x004');		
 END_IF
 	
-	
+IF bSetExpeationTime THEN;
+	bSetExpeationTime:=FALSE;
+	FOR i:=E_Element_List.eTank_1 TO E_Element_List.eLine_Color DO
+		fbElement[i].ExperationTime:=tExperationSet_Test;
+		
+	END_FOR
+END_IF
 	
 
 mElementList_SetName();
@@ -23809,7 +23818,13 @@ END_FOR]]></ST>
       <LineId Id="399" Count="3" />
       <LineId Id="422" Count="0" />
       <LineId Id="403" Count="0" />
-      <LineId Id="388" Count="2" />
+      <LineId Id="388" Count="1" />
+      <LineId Id="510" Count="0" />
+      <LineId Id="513" Count="1" />
+      <LineId Id="517" Count="0" />
+      <LineId Id="515" Count="0" />
+      <LineId Id="511" Count="0" />
+      <LineId Id="390" Count="0" />
       <LineId Id="359" Count="11" />
       <LineId Id="427" Count="0" />
       <LineId Id="16" Count="0" />

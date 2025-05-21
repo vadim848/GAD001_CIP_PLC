@@ -18,6 +18,7 @@ VAR
 	eState_Long			: E_Element_State_Long;
 	eState_Short		: E_Element_State_Short;
 	eState_Long_last	: E_Element_State_Long;
+	eState_Long_Expiered: E_Element_State_Long;
 
 
 
@@ -154,6 +155,11 @@ m_TimeToExperation();
     <Action Name="act_StateChange_WatchGog" Id="{4dafd2ba-8022-4674-a1d5-a6952dfd70bd}" FolderPath="Manage\">
       <Implementation>
         <ST><![CDATA[IF eState_Long<>eState_Long_last THEN;
+	IF eState_Long=E_Element_State_Long.eExpired THEN;
+		eState_Long_Expiered:=eState_Long_last;
+	ELSE;
+		eState_Long_Expiered:=E_Element_State_Long.eOff;
+	END_IF	
 	eState_Long_last:=eState_Long;
 	stStateChange:=stSystemTime;
 	fbEvent_echo.event(); // for HMI
@@ -224,6 +230,27 @@ END_IF
 *)]]></ST>
       </Implementation>
     </Action>
+    <Property Name="ExperationTime" Id="{2df3d745-ae6c-40b9-bacc-a56f4fe0173c}">
+      <Declaration><![CDATA[PROPERTY ExperationTime : TIME]]></Declaration>
+      <Get Name="Get" Id="{1b57346c-44cd-46d9-8e51-18e302aa4b85}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[ExperationTime:=tExperationTime;
+]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{1a5c7ea4-8b69-46ee-b373-941be47f8b05}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[tExperationTime:=ExperationTime;
+]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
     <Method Name="m_Disconnect" Id="{20e4c919-f24b-4fbd-ae5c-73c93cc7bd42}">
       <Declaration><![CDATA[METHOD m_Disconnect : BOOL
 VAR_INPUT
@@ -460,6 +487,64 @@ ELSE;
 END_IF]]></ST>
       </Implementation>
     </Method>
+    <Method Name="m_TimeExpiered" Id="{0e06182a-e09e-4ec2-920d-88b3137754d2}">
+      <Declaration><![CDATA[METHOD m_TimeExpiered : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE eType OF
+	E_Element_Type.eTank:;			
+	E_Element_Type.eTriBlender:;
+	E_Element_Type.eLine:;
+	
+END_CASE
+	
+
+CASE eInterConnect OF
+	E_InterConnection.NotConnected:;
+				m_TimeExpiredState_RollDown();
+	E_InterConnection.ConnToCIP:;
+				//do nothing
+	E_InterConnection.ConnToLine,
+	E_InterConnection.ConnToTriBlender:;
+				// Type Tank
+				m_TimeExpiredState_RollDown();
+	E_InterConnection.ConnToTank:;
+				//do nothing
+	
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_TimeExpiredState_RollDown" Id="{2f9443d7-fd06-45c2-8331-f1b6d4473c16}">
+      <Declaration><![CDATA[METHOD m_TimeExpiredState_RollDown : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE eState_Long OF
+	E_Element_State_Long.eCIP_1_Rinzed:;
+				//
+	E_Element_State_Long.eCIP_2_Deterged,
+	E_Element_State_Long.eCIP_3_Deterged_Clean,
+	E_Element_State_Long.eCIP_4_Sanitized,
+	E_Element_State_Long.eCIP_5_Done:;	
+				m_Set_State(eState_Long_Set:=E_Element_State_Long.eCIP_1_Rinzed);
+	E_Element_State_Long.eWaterReady,
+	E_Element_State_Long.eReady,
+	E_Element_State_Long.eProduction,
+	E_Element_State_Long.eEmpty:;	
+			IF eType=E_Element_Type.eTank THEN;
+				m_Set_State(eState_Long_Set:=E_Element_State_Long.eExpired);
+			ELSE;
+				m_Set_State(eState_Long_Set:=E_Element_State_Long.eCIP_1_Rinzed);
+			END_IF
+				
+END_CASE
+
+]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="m_TimeToExperation" Id="{b592f2a7-8b80-4b25-9040-91bd7248992a}">
       <Declaration><![CDATA[METHOD m_TimeToExperation : BOOL
 VAR_INPUT
@@ -470,6 +555,7 @@ END_VAR
 	tTimeToExperation:=tExperationTime-tStateTime;
 ELSE;
 	tTimeToExperation:=T#0S;
+	m_TimeExpiered();
 END_IF
 
 ]]></ST>
@@ -518,7 +604,10 @@ END_VAR
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_Element.act_StateChange_WatchGog">
-      <LineId Id="1" Count="1" />
+      <LineId Id="1" Count="0" />
+      <LineId Id="23" Count="3" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="2" Count="0" />
       <LineId Id="4" Count="0" />
       <LineId Id="9" Count="0" />
       <LineId Id="3" Count="0" />
@@ -565,6 +654,14 @@ END_VAR
       <LineId Id="7" Count="1" />
       <LineId Id="3" Count="0" />
       <LineId Id="10" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Element.ExperationTime.Get">
+      <LineId Id="2" Count="0" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Element.ExperationTime.Set">
+      <LineId Id="5" Count="0" />
+      <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="FB_Element.m_Disconnect">
       <LineId Id="7" Count="1" />
@@ -654,10 +751,47 @@ END_VAR
       <LineId Id="6" Count="3" />
       <LineId Id="5" Count="0" />
     </LineIds>
+    <LineIds Name="FB_Element.m_TimeExpiered">
+      <LineId Id="5" Count="0" />
+      <LineId Id="11" Count="2" />
+      <LineId Id="8" Count="1" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="17" Count="0" />
+      <LineId Id="22" Count="0" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="29" Count="0" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="31" Count="1" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="20" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Element.m_TimeExpiredState_RollDown">
+      <LineId Id="5" Count="0" />
+      <LineId Id="13" Count="0" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="8" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="22" Count="2" />
+      <LineId Id="27" Count="2" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="33" Count="1" />
+      <LineId Id="36" Count="1" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="12" Count="0" />
+    </LineIds>
     <LineIds Name="FB_Element.m_TimeToExperation">
       <LineId Id="6" Count="0" />
       <LineId Id="8" Count="0" />
       <LineId Id="10" Count="1" />
+      <LineId Id="15" Count="0" />
       <LineId Id="9" Count="0" />
       <LineId Id="5" Count="0" />
       <LineId Id="7" Count="0" />
