@@ -7,19 +7,19 @@ STRUCT
 // General
 	Description				: STRING(30);
 	prodType				: E_Prod_Type;
-	Temperature				: REAL;
+	Temperature				: REAL:=4.0;
 	
 	StirrerDissolving		: ST_Prod_Param_Stirrer;
 	StirrerProduction		: ST_Prod_Param_Stirrer;
 	StirrerStorage			: ST_Prod_Param_Stirrer;
 
-	ExperationTime			: TIME;
+	ExpirationTime			: TIME:=T#12H;
 	Conductivity			: REAL;		// mSimons
 
 	
 // Water
 	WaterPercentage			: REAL;
-	WaterExperationTime		: TIME:=T#2D;
+	WaterExpirationTime		: TIME:=T#2D;
 	
 // Component
 	arr_Component			: ARRAY [1..g_Prod.cMaxCompInProduct] OF ST_Prod_Ingredient;

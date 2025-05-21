@@ -106,6 +106,7 @@ END_VAR]]></Declaration>
 act_Oper();
 act_Call_Interface(); //There is no need to Call block if it comes from the outside
 act_TempCntrl();
+act_ExpirationTime();
 
 IF bTestingMode THEN;
 	IF bMoveStep THEN;
@@ -4586,6 +4587,15 @@ END_IF]]></ST>
             </TypeList>
           </XmlArchive>
         </NWL>
+      </Implementation>
+    </Action>
+    <Action Name="act_ExpirationTime" Id="{232636e3-8fdc-4b48-9446-c1ccdd8dae25}" FolderPath="Manage\">
+      <Implementation>
+        <ST><![CDATA[IF stProdParam.eStatus=E_Prod_Status.Active THEN;
+	refElement.ExpirationTime:=stProdParam.stRecipe.ExpirationTime;
+ELSE;
+	refElement.ExpirationTime:=stProdParam.stRecipe.ExpirationTime;
+END_IF]]></ST>
       </Implementation>
     </Action>
     <Action Name="act_GetReference" Id="{441efe70-cf26-4ab6-bfdc-65d8c989c307}" FolderPath="Manage\">
@@ -27528,27 +27538,7 @@ END_IF
       </Implementation>
     </Transition>
     <LineIds Name="FB_ProductionTank">
-      <LineId Id="9" Count="1" />
-      <LineId Id="32" Count="0" />
-      <LineId Id="204" Count="0" />
-      <LineId Id="139" Count="0" />
-      <LineId Id="81" Count="0" />
-      <LineId Id="144" Count="1" />
-      <LineId Id="142" Count="0" />
-      <LineId Id="146" Count="1" />
-      <LineId Id="143" Count="0" />
-      <LineId Id="286" Count="1" />
-      <LineId Id="285" Count="0" />
-      <LineId Id="288" Count="0" />
-      <LineId Id="290" Count="0" />
-      <LineId Id="289" Count="0" />
-      <LineId Id="292" Count="4" />
-      <LineId Id="291" Count="0" />
-      <LineId Id="378" Count="0" />
-      <LineId Id="377" Count="0" />
-      <LineId Id="138" Count="0" />
-      <LineId Id="545" Count="0" />
-      <LineId Id="459" Count="0" />
+      <LineId Id="742" Count="29" />
       <LineId Id="641" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank._aCheck_Condition_Prod_End_active">
@@ -28231,6 +28221,10 @@ END_IF
       <LineId Id="16" Count="0" />
       <LineId Id="10" Count="0" />
       <LineId Id="1" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ProductionTank.act_ExpirationTime">
+      <LineId Id="6" Count="3" />
+      <LineId Id="3" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank.act_GetReference">
       <LineId Id="1" Count="2" />

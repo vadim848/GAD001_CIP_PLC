@@ -26,8 +26,8 @@ VAR
 
 	i: INT;
 	sState_Time			: STRING;
-	sTimeToExparation	: STRING;
-	tTimeToExperation	: TIME;
+	sTimeToExpiration	: STRING;
+	tTimeToExpiration	: TIME;
 	tStateTime			: TIME;
 
 	
@@ -53,7 +53,7 @@ END_VAR
 
 VAR PERSISTENT
 	stStateChange		: TimeStruct;
-	tExperationTime		: TIME:=T#48H;
+	tExpirationTime		: TIME:=T#48H;
 
 END_VAR
 
@@ -143,7 +143,7 @@ FOR i:=0 TO 9 DO
 	END_IF
 END_FOR
 
-m_TimeToExperation();
+m_TimeToExpiration();
 ]]></ST>
     </Implementation>
     <Folder Name="Manage" Id="{c1bad6aa-d321-46fa-921e-00f6b446e0b8}" />
@@ -168,10 +168,10 @@ END_IF
 tStateTime:=TO_TIME(SYSTEMTIME_TO_DT(stSystemTime)-SYSTEMTIME_TO_DT(stStateChange));
 
 sState_Time:=prg_RealClock.m_DeltaTime(stStartTime:=stStateChange);
-sTimeToExparation:=prg_RealClock.mTime_to_String_HMI(tInputTime:=tTimeToExperation, iSecondDisplay:=TRUE);
+sTimeToExpiration:=prg_RealClock.mTime_to_String_HMI(tInputTime:=tTimeToExpiration, iSecondDisplay:=TRUE);
 
 sState_Time:= CONCAT(sState_Time, '(');
-sState_Time:= CONCAT(sState_Time, sTimeToExparation);
+sState_Time:= CONCAT(sState_Time, sTimeToExpiration);
 sState_Time:= CONCAT(sState_Time, ')');
 
 ]]></ST>
@@ -230,14 +230,14 @@ END_IF
 *)]]></ST>
       </Implementation>
     </Action>
-    <Property Name="ExperationTime" Id="{2df3d745-ae6c-40b9-bacc-a56f4fe0173c}">
-      <Declaration><![CDATA[PROPERTY ExperationTime : TIME]]></Declaration>
+    <Property Name="ExpirationTime" Id="{2df3d745-ae6c-40b9-bacc-a56f4fe0173c}">
+      <Declaration><![CDATA[PROPERTY ExpirationTime : TIME]]></Declaration>
       <Get Name="Get" Id="{1b57346c-44cd-46d9-8e51-18e302aa4b85}">
         <Declaration><![CDATA[VAR
 END_VAR
 ]]></Declaration>
         <Implementation>
-          <ST><![CDATA[ExperationTime:=tExperationTime;
+          <ST><![CDATA[ExpirationTime:=tExpirationTime;
 ]]></ST>
         </Implementation>
       </Get>
@@ -246,7 +246,7 @@ END_VAR
 END_VAR
 ]]></Declaration>
         <Implementation>
-          <ST><![CDATA[tExperationTime:=ExperationTime;
+          <ST><![CDATA[tExpirationTime:=ExpirationTime;
 ]]></ST>
         </Implementation>
       </Set>
@@ -545,16 +545,16 @@ END_CASE
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="m_TimeToExperation" Id="{b592f2a7-8b80-4b25-9040-91bd7248992a}">
-      <Declaration><![CDATA[METHOD m_TimeToExperation : BOOL
+    <Method Name="m_TimeToExpiration" Id="{b592f2a7-8b80-4b25-9040-91bd7248992a}">
+      <Declaration><![CDATA[METHOD m_TimeToExpiration : BOOL
 VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF tExperationTime>tStateTime THEN;
-	tTimeToExperation:=tExperationTime-tStateTime;
+        <ST><![CDATA[IF tExpirationTime>tStateTime THEN;
+	tTimeToExpiration:=tExpirationTime-tStateTime;
 ELSE;
-	tTimeToExperation:=T#0S;
+	tTimeToExpiration:=T#0S;
 	m_TimeExpiered();
 END_IF
 
@@ -581,23 +581,7 @@ END_VAR
       </Set>
     </Property>
     <LineIds Name="FB_Element">
-      <LineId Id="839" Count="0" />
-      <LineId Id="909" Count="0" />
-      <LineId Id="840" Count="0" />
-      <LineId Id="1007" Count="0" />
-      <LineId Id="841" Count="10" />
-      <LineId Id="910" Count="0" />
-      <LineId Id="852" Count="55" />
-      <LineId Id="955" Count="0" />
-      <LineId Id="950" Count="0" />
-      <LineId Id="949" Count="0" />
-      <LineId Id="951" Count="0" />
-      <LineId Id="953" Count="0" />
-      <LineId Id="956" Count="0" />
-      <LineId Id="954" Count="0" />
-      <LineId Id="952" Count="0" />
-      <LineId Id="1066" Count="0" />
-      <LineId Id="908" Count="0" />
+      <LineId Id="1245" Count="81" />
       <LineId Id="242" Count="0" />
     </LineIds>
     <LineIds Name="FB_Element.act_Line">
@@ -655,11 +639,11 @@ END_VAR
       <LineId Id="3" Count="0" />
       <LineId Id="10" Count="0" />
     </LineIds>
-    <LineIds Name="FB_Element.ExperationTime.Get">
+    <LineIds Name="FB_Element.ExpirationTime.Get">
       <LineId Id="2" Count="0" />
       <LineId Id="5" Count="0" />
     </LineIds>
-    <LineIds Name="FB_Element.ExperationTime.Set">
+    <LineIds Name="FB_Element.ExpirationTime.Set">
       <LineId Id="5" Count="0" />
       <LineId Id="2" Count="0" />
     </LineIds>
@@ -787,7 +771,7 @@ END_VAR
       <LineId Id="7" Count="0" />
       <LineId Id="12" Count="0" />
     </LineIds>
-    <LineIds Name="FB_Element.m_TimeToExperation">
+    <LineIds Name="FB_Element.m_TimeToExpiration">
       <LineId Id="6" Count="0" />
       <LineId Id="8" Count="0" />
       <LineId Id="10" Count="1" />
