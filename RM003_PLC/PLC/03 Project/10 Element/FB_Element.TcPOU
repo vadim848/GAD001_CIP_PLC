@@ -549,7 +549,30 @@ END_VAR
 	E_Element_State_Long.eProduction,
 	E_Element_State_Long.eEmpty:;	
 			IF eType=E_Element_Type.eTank THEN;
-				State:=E_Element_State_Long.eExpired;
+				//State:=E_Element_State_Long.eExpired;
+				CASE eElementID OF 
+					E_Element_List.eTank_1:;
+						IF fbTank1.bReady THEN;
+							State:=E_Element_State_Long.eExpired;
+						END_IF
+						
+					E_Element_List.eTank_2:;
+						IF fbTank2.bReady THEN;
+							State:=E_Element_State_Long.eExpired;
+						END_IF
+						
+					E_Element_List.eTank_3:;
+						IF fbTank3.bReady THEN;
+							State:=E_Element_State_Long.eExpired;
+						END_IF
+						
+					E_Element_List.eTank_4:;
+						IF fbTank4.bReady THEN;
+							State:=E_Element_State_Long.eExpired;
+						END_IF
+												
+				END_CASE
+				
 			ELSE;
 				State:=E_Element_State_Long.eNotClean;
 			END_IF
@@ -839,6 +862,15 @@ END_CASE
       <LineId Id="27" Count="2" />
       <LineId Id="25" Count="0" />
       <LineId Id="33" Count="1" />
+      <LineId Id="41" Count="1" />
+      <LineId Id="45" Count="3" />
+      <LineId Id="50" Count="4" />
+      <LineId Id="62" Count="0" />
+      <LineId Id="55" Count="3" />
+      <LineId Id="63" Count="0" />
+      <LineId Id="59" Count="2" />
+      <LineId Id="49" Count="0" />
+      <LineId Id="43" Count="1" />
       <LineId Id="36" Count="1" />
       <LineId Id="35" Count="0" />
       <LineId Id="15" Count="0" />

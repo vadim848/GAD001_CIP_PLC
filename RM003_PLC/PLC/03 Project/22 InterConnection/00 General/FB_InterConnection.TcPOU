@@ -269,7 +269,9 @@ CASE fbTargetElement.eType OF
 			bAvalableToDisconnect:=FALSE;
 		END_IF
 	E_Element_Type.eLine:;
-		IF bActive AND fbTankElement.eState_Long=E_Element_State_Long.eProduction THEN;
+		IF bActive AND (fbTankElement.eState_Long=E_Element_State_Long.eProduction 
+						OR fbTankElement.eState_Long_Expiered=E_Element_State_Long.eProduction)
+		THEN;
 			bAvalableToDisconnect:=TRUE;
 		ELSE;
 			bAvalableToDisconnect:=FALSE;
@@ -607,7 +609,10 @@ END_IF
       <LineId Id="163" Count="5" />
       <LineId Id="113" Count="0" />
       <LineId Id="169" Count="0" />
-      <LineId Id="117" Count="40" />
+      <LineId Id="117" Count="35" />
+      <LineId Id="180" Count="0" />
+      <LineId Id="179" Count="0" />
+      <LineId Id="153" Count="4" />
       <LineId Id="37" Count="0" />
     </LineIds>
     <LineIds Name="FB_InterConnection.m_At_Connected_Pause">

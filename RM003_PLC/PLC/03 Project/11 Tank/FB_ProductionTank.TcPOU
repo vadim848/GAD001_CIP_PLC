@@ -2807,7 +2807,34 @@ CASE refElement.eState_Long OF
 	E_Element_State_Long.eEmpty:;
 			IF eReq=E_Request_List.eFinish THEN;
 				mClearProduction(state:=E_Element_State_Long.eStandby);
+			END_IF	
+
+	E_Element_State_Long.eExpired:;
+		CASE refElement.eState_Long_Expiered OF
+			
+			E_Element_State_Long.eProduction:;	
+				IF eReq=E_Request_List.eDisconnectTank THEN;
+					eProcess:=E_Element_Process.eDisconnection;
+				END_IF
+				
+				IF fbInterConnection_ProL.bAvalableToDisconnect 
+				AND m_Production_Run_Pump()
+				THEN;
+					IF memo_Production_Storage_Mode THEN;
+						fb_PumpLine.m_Run(RPM:=stProdParam.stRecipe.FlowRate_Storage);
+					ELSE;
+						fb_PumpLine.m_Run(RPM:=stProdParam.stRecipe.FlowRate_Production);
+					END_IF
+					
+				ELSE;
+					fb_PumpLine.m_Stop();
+				END_IF	
+		ELSE
+			IF eReq=E_Request_List.eFinish THEN;
+				mClearProduction(state:=E_Element_State_Long.eStandby);
 			END_IF			
+		END_CASE
+		
 END_CASE
 		
 ]]></ST>
@@ -4592,7 +4619,9 @@ END_IF]]></ST>
     </Action>
     <Action Name="act_ExpirationTime" Id="{232636e3-8fdc-4b48-9446-c1ccdd8dae25}" FolderPath="Manage\">
       <Implementation>
-        <ST><![CDATA[IF stProdParam.eStatus=E_Prod_Status.Active THEN;
+        <ST><![CDATA[IF stProdParam.eStatus=E_Prod_Status.Active 
+AND refElement.State>=E_Element_State_Long.eWaterReady
+THEN;
 	IF refElement.memoDissolving_active 
 	OR eStatus>=E_Element_State_Long.eReady
 	THEN
@@ -28131,6 +28160,21 @@ END_IF
       <LineId Id="33" Count="2" />
       <LineId Id="37" Count="0" />
       <LineId Id="8" Count="0" />
+      <LineId Id="57" Count="0" />
+      <LineId Id="59" Count="0" />
+      <LineId Id="65" Count="0" />
+      <LineId Id="72" Count="0" />
+      <LineId Id="67" Count="0" />
+      <LineId Id="70" Count="1" />
+      <LineId Id="58" Count="0" />
+      <LineId Id="91" Count="0" />
+      <LineId Id="80" Count="10" />
+      <LineId Id="77" Count="0" />
+      <LineId Id="73" Count="0" />
+      <LineId Id="75" Count="1" />
+      <LineId Id="74" Count="0" />
+      <LineId Id="69" Count="0" />
+      <LineId Id="56" Count="0" />
       <LineId Id="7" Count="0" />
       <LineId Id="5" Count="0" />
       <LineId Id="4" Count="0" />
@@ -28233,6 +28277,8 @@ END_IF
     </LineIds>
     <LineIds Name="FB_ProductionTank.act_ExpirationTime">
       <LineId Id="6" Count="0" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="17" Count="0" />
       <LineId Id="10" Count="0" />
       <LineId Id="16" Count="0" />
       <LineId Id="15" Count="0" />
