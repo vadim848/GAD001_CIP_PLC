@@ -162,8 +162,15 @@ m_TimeToExpiration();
 		eState_Long_Expiered:=E_Element_State_Long.eOff;
 	END_IF
 
-	IF 	eState_Long>=E_Element_State_Long.eReady THEN;
-		IF NOT memoDissolving_active THEN; // state updated manualy
+	IF eState_Long=E_Element_State_Long.eWaterReady THEN;
+		IF  eState_Long_last=E_Element_State_Long.eCIP_5_Done THEN;
+			stStateChange:=stSystemTime;
+		ELSE;
+			// do nothing here...
+		END_IF
+	ELSIF eState_Long>=E_Element_State_Long.eReady THEN;
+		IF eState_Long=E_Element_State_Long.eReady
+		AND NOT memoDissolving_active THEN; // state updated manualy
 			memoDissolving_active:=TRUE;
 			stStateChange:=stSystemTime;
 		ELSE; // state update during dissolving status
@@ -203,7 +210,7 @@ CASE eState_Long OF
 	E_Element_State_Long.eCIP_3_Deterged_Clean,	
 	E_Element_State_Long.eCIP_4_Sanitized:;
 				eState_Short:=E_Element_State_Short.eNotClean;
-					tExpirationTime:=ExpirationTime_Default;
+					ExpirationTime:=ExpirationTime_Default;
 	E_Element_State_Long.eCIP_5_Done:;
 				eState_Short:=E_Element_State_Short.eClean;
 					memoDissolving_active:=FALSE;
@@ -576,7 +583,11 @@ END_VAR
 			ELSE;
 				State:=E_Element_State_Long.eNotClean;
 			END_IF
-				
+			
+		E_Element_State_Long.eExpired:;
+				IF eType=E_Element_Type.eLine OR eType=E_Element_Type.eTriBlender THEN;
+					State:=E_Element_State_Long.eNotClean;
+				END_IF
 END_CASE
 
 ]]></ST>
@@ -593,6 +604,11 @@ END_VAR
 ELSE;
 	tTimeToExpiration:=T#0S;
 	m_TimeExpiered();
+END_IF
+
+IF State=E_Element_State_Long.eExpired THEN;
+	//tTimeToExpiration:=T#0S;
+	m_TimeExpiered();	
 END_IF
 
 ]]></ST>
@@ -654,7 +670,7 @@ END_VAR
           <ST><![CDATA[
 CASE eState_Long OF 
 	E_Element_State_Long.eOff..			
-	E_Element_State_Long.eWaterReady:;
+	E_Element_State_Long.eCIP_5_Done:;
 				stStateChange:=StateTime;
 				
 				
@@ -681,7 +697,12 @@ END_CASE
       <LineId Id="22" Count="0" />
       <LineId Id="28" Count="0" />
       <LineId Id="27" Count="0" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="44" Count="2" />
+      <LineId Id="40" Count="0" />
+      <LineId Id="49" Count="0" />
       <LineId Id="30" Count="0" />
+      <LineId Id="51" Count="0" />
       <LineId Id="34" Count="0" />
       <LineId Id="36" Count="2" />
       <LineId Id="35" Count="0" />
@@ -873,7 +894,10 @@ END_CASE
       <LineId Id="43" Count="1" />
       <LineId Id="36" Count="1" />
       <LineId Id="35" Count="0" />
+      <LineId Id="67" Count="0" />
+      <LineId Id="64" Count="0" />
       <LineId Id="15" Count="0" />
+      <LineId Id="65" Count="1" />
       <LineId Id="9" Count="0" />
       <LineId Id="7" Count="0" />
       <LineId Id="12" Count="0" />
@@ -884,6 +908,10 @@ END_CASE
       <LineId Id="10" Count="1" />
       <LineId Id="15" Count="0" />
       <LineId Id="9" Count="0" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="21" Count="1" />
       <LineId Id="5" Count="0" />
       <LineId Id="7" Count="0" />
     </LineIds>
