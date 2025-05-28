@@ -40,9 +40,9 @@ VAR
 	stCIP_Request		: ST_CIP_Request;
 	stCIP_RequestActive	: ST_CIP_Request;
 
-	bTakePosInCIPBuffer_Partial: BOOL;
-	bTakePosInCIPBuffer_Full: BOOL;
-	bTakePosInCIPBuffer_Detergent: BOOL;
+	bTakePosInCIPBuffer_Partial		: BOOL;
+	bTakePosInCIPBuffer_Full		: BOOL;
+	bTakePosInCIPBuffer_Detergent	: BOOL;
 	bError: BOOL;	
 	
 	eProdStatus: E_Prod_Status;
@@ -52,8 +52,18 @@ VAR
 END_VAR
 
 VAR PERSISTENT
-	stStateChange		: TimeStruct;
-	tExpirationTime		: TIME:=T#48H;
+	tsStateChange				: TimeStruct;
+	tsCIP						: TimeStruct;
+	tsProduction				: TimeStruct;
+	tsProductionLine			: TimeStruct;
+	tsProductionLineStby		: TimeStruct;
+	
+	
+	tExpirationTime				: TIME:=T#48H;
+
+	
+	eExTime						: E_ExTime;
+
 
 END_VAR
 
@@ -164,20 +174,25 @@ m_TimeToExpiration();
 
 	IF eState_Long=E_Element_State_Long.eWaterReady THEN;
 		IF  eState_Long_last=E_Element_State_Long.eCIP_5_Done THEN;
-			stStateChange:=stSystemTime;
+			tsProduction:=stSystemTime;
 		ELSE;
 			// do nothing here...
 		END_IF
+		eExTime:=E_ExTime.eProduct;
+		
 	ELSIF eState_Long>=E_Element_State_Long.eReady THEN;
 		IF eState_Long=E_Element_State_Long.eReady
 		AND NOT memoDissolving_active THEN; // state updated manualy
 			memoDissolving_active:=TRUE;
-			stStateChange:=stSystemTime;
+			tsProduction:=stSystemTime;
 		ELSE; // state update during dissolving status
 			// do nothing here...
 		END_IF
+		eExTime:=E_ExTime.eProduct;
 	ELSE;
-		stStateChange:=stSystemTime;
+		tsCIP:=stSystemTime;
+		eExTime:=E_ExTime.eCIP;
+		
 	END_IF
 	
 	eState_Long_last:=eState_Long;
@@ -185,9 +200,9 @@ m_TimeToExpiration();
 	fbEvent_echo.event(); // for HMI
 END_IF
 
-tStateTime:=TO_TIME(SYSTEMTIME_TO_DT(stSystemTime)-SYSTEMTIME_TO_DT(stStateChange));
+tStateTime:=TO_TIME(SYSTEMTIME_TO_DT(stSystemTime)-SYSTEMTIME_TO_DT(tsStateChange));
 
-sState_Time:=prg_RealClock.m_DeltaTime(stStartTime:=stStateChange);
+sState_Time:=prg_RealClock.m_DeltaTime(stStartTime:=tsStateChange);
 sTimeToExpiration:=prg_RealClock.mTime_to_String_HMI(tInputTime:=tTimeToExpiration, iSecondDisplay:=TRUE);
 
 sState_Time:= CONCAT(sState_Time, '(');
@@ -250,6 +265,25 @@ END_IF
 *)]]></ST>
       </Implementation>
     </Action>
+    <Property Name="ExpirationMode" Id="{e272ce08-3353-4f37-8b69-bb279f090906}" FolderPath="Property\">
+      <Declaration><![CDATA[PROPERTY ExpirationMode : E_ExTime]]></Declaration>
+      <Get Name="Get" Id="{6f2c38fe-4df9-472f-aa93-91c22dd94c80}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[ExpirationMode:=eExTime;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{8ef68865-931e-45f9-90dd-d20b3c5e284e}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[eExTime:=ExpirationMode;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
     <Property Name="ExpirationTime" Id="{2df3d745-ae6c-40b9-bacc-a56f4fe0173c}" FolderPath="Property\">
       <Declaration><![CDATA[PROPERTY ExpirationTime : TIME]]></Declaration>
       <Get Name="Get" Id="{1b57346c-44cd-46d9-8e51-18e302aa4b85}">
@@ -392,6 +426,9 @@ OR eInterConnect=value
 THEN;
 	eInterConnect:=value;
 	m_InterConnect:=TRUE;
+	IF eInterConnect=E_InterConnection.ConnToCIP THEN;
+		eExTime:=E_ExTime.eCIP;
+	END_IF
 ELSE;
 	m_InterConnect:=FALSE;
 END_IF
@@ -424,7 +461,7 @@ END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[memoDissolving_active:=TRUE;
-stStateChange:=stSystemTime;
+tsProduction:=stSystemTime;
 fbEvent_echo.event();]]></ST>
       </Implementation>
     </Method>
@@ -611,6 +648,29 @@ IF State=E_Element_State_Long.eExpired THEN;
 	m_TimeExpiered();	
 END_IF
 
+CASE eExTime OF
+	E_ExTime.eCIP:;
+			tsStateChange:=tsCIP;
+	E_ExTime.eProduct:;
+			tsStateChange:=tsProduction;
+	E_ExTime.eLine :;
+			tsStateChange:=tsProductionLine;
+	E_ExTime.eLineStby:;
+			tsStateChange:=tsProductionLineStby;
+END_CASE
+
+CASE eInterConnect OF
+	E_InterConnection.NotConnected:;
+	
+	E_InterConnection.ConnToCIP:;
+	
+	E_InterConnection.ConnToTank:;
+	
+	E_InterConnection.ConnToLine:;
+	E_InterConnection.ConnToTriBlender:;
+	
+END_CASE
+
 ]]></ST>
       </Implementation>
     </Method>
@@ -659,7 +719,7 @@ END_VAR
 END_VAR
 ]]></Declaration>
         <Implementation>
-          <ST><![CDATA[StateTime:=stStateChange;]]></ST>
+          <ST><![CDATA[StateTime:=tsStateChange;]]></ST>
         </Implementation>
       </Get>
       <Set Name="Set" Id="{79374df6-a9bd-428c-a0c7-b15c90bc1b1d}">
@@ -671,7 +731,7 @@ END_VAR
 CASE eState_Long OF 
 	E_Element_State_Long.eOff..			
 	E_Element_State_Long.eCIP_5_Done:;
-				stStateChange:=StateTime;
+				tsStateChange:=StateTime;
 				
 				
 	//E_Element_State_Long.eOff:;
@@ -700,13 +760,16 @@ END_CASE
       <LineId Id="42" Count="0" />
       <LineId Id="44" Count="2" />
       <LineId Id="40" Count="0" />
+      <LineId Id="52" Count="1" />
       <LineId Id="49" Count="0" />
       <LineId Id="30" Count="0" />
       <LineId Id="51" Count="0" />
       <LineId Id="34" Count="0" />
       <LineId Id="36" Count="2" />
       <LineId Id="35" Count="0" />
+      <LineId Id="54" Count="0" />
       <LineId Id="32" Count="1" />
+      <LineId Id="55" Count="1" />
       <LineId Id="31" Count="0" />
       <LineId Id="29" Count="0" />
       <LineId Id="2" Count="0" />
@@ -756,6 +819,12 @@ END_CASE
       <LineId Id="7" Count="1" />
       <LineId Id="3" Count="0" />
       <LineId Id="10" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Element.ExpirationMode.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Element.ExpirationMode.Set">
+      <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="FB_Element.ExpirationTime.Get">
       <LineId Id="2" Count="0" />
@@ -810,7 +879,9 @@ END_CASE
       <LineId Id="17" Count="0" />
       <LineId Id="16" Count="0" />
       <LineId Id="14" Count="0" />
-      <LineId Id="18" Count="2" />
+      <LineId Id="18" Count="0" />
+      <LineId Id="25" Count="2" />
+      <LineId Id="19" Count="1" />
       <LineId Id="15" Count="0" />
       <LineId Id="7" Count="1" />
     </LineIds>
@@ -912,6 +983,28 @@ END_CASE
       <LineId Id="19" Count="0" />
       <LineId Id="23" Count="0" />
       <LineId Id="21" Count="1" />
+      <LineId Id="28" Count="0" />
+      <LineId Id="27" Count="0" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="36" Count="0" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="37" Count="0" />
+      <LineId Id="34" Count="0" />
+      <LineId Id="38" Count="0" />
+      <LineId Id="35" Count="0" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="30" Count="0" />
+      <LineId Id="40" Count="0" />
+      <LineId Id="39" Count="0" />
+      <LineId Id="44" Count="0" />
+      <LineId Id="52" Count="0" />
+      <LineId Id="45" Count="0" />
+      <LineId Id="50" Count="0" />
+      <LineId Id="46" Count="0" />
+      <LineId Id="51" Count="0" />
+      <LineId Id="47" Count="1" />
+      <LineId Id="43" Count="0" />
+      <LineId Id="42" Count="0" />
       <LineId Id="5" Count="0" />
       <LineId Id="7" Count="0" />
     </LineIds>
