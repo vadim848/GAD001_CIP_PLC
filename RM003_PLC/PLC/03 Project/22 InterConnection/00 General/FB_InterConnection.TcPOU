@@ -56,16 +56,23 @@ END_IF]]></ST>
         <ST><![CDATA[//fbTargetElement.eState_Long:=fbTankElement.eState_Long;
 IF bActive THEN;
 	fbTargetElement.m_InterConnected_State(eState_Long_Set:=fbTankElement.eState_Long);
-	fbTargetElement.ExpirationTime:=fbTankElement.ExpirationTime;
+	//fbTargetElement.ExpirationTime:=fbTankElement.ExpirationTime;
 	
 	CASE fbTargetElement.eType OF		
 		E_Element_Type.eLine:;
-			//fbTankElement.m_InterConnect(value:=E_InterConnection.ConnToLine);
+			//fbTankElement.m_InterConnect(value:=E_InterConnection.ConnToLine);			
 		E_Element_Type.eTriBlender:;
 			//fbTankElement.m_InterConnect(value:=E_InterConnection.ConnToTriBlender);		
 	END_CASE
 	//fbTargetElement.m_InterConnect(value:=E_InterConnection.ConnToTank);
+					CASE fbTankElement.eState_Short OF
+						E_Element_State_Short.eNotClean,
+						E_Element_State_Short.eClean:;
+								fbTargetElement.ExpirationMode:=E_ExTime.eCIP;
 	
+						E_Element_State_Short.eProduct:;
+								fbTargetElement.ExpirationMode:=E_ExTime.eLine;
+					END_CASE	
 
 ELSE;
 	//fbTankElement.m_Disconnect();
@@ -499,7 +506,13 @@ END_VAR
 	
 	fbTankElement.m_Disconnect();
 	fbTargetElement.m_Disconnect();
-	fbTargetElement.ExpirationTime:=T#2h;
+	
+	IF fbTankElement.ExpirationTime<T#2H THEN;
+		//fbTargetElement.ExpirationTime:=T#1H;
+	ELSE;
+		//fbTargetElement.ExpirationTime:=T#2h;
+	END_IF
+	
 	bActive:=FALSE;
 END_IF
 
@@ -522,6 +535,7 @@ END_IF
       <LineId Id="34" Count="0" />
       <LineId Id="25" Count="0" />
       <LineId Id="18" Count="0" />
+      <LineId Id="41" Count="6" />
       <LineId Id="35" Count="1" />
       <LineId Id="10" Count="0" />
       <LineId Id="13" Count="1" />
@@ -706,6 +720,10 @@ END_IF
       <LineId Id="52" Count="0" />
       <LineId Id="51" Count="0" />
       <LineId Id="46" Count="0" />
+      <LineId Id="72" Count="0" />
+      <LineId Id="67" Count="0" />
+      <LineId Id="70" Count="1" />
+      <LineId Id="68" Count="1" />
       <LineId Id="63" Count="0" />
       <LineId Id="43" Count="0" />
       <LineId Id="39" Count="0" />
