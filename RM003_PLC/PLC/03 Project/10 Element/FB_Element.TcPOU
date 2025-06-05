@@ -418,6 +418,37 @@ END_VAR
         <ST><![CDATA[m_Get_State_Short:=eState_Short;]]></ST>
       </Implementation>
     </Method>
+    <Method Name="m_Get_TimeToExpirationMode" Id="{d304daf3-a250-4e31-b078-0f17be3d063d}">
+      <Declaration><![CDATA[METHOD m_Get_TimeToExpirationMode : TIME
+VAR_INPUT
+	eExTime_check		: E_ExTime;
+END_VAR
+
+VAR
+	tsStateChange_local				: TimeStruct;
+	tModeTime		: TIME;
+	tModeDuration	: TIME;
+
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE eExTime OF
+	E_ExTime.eCIP:;
+			tsStateChange_local:=tsCIP;
+	E_ExTime.eWater:;
+			tsStateChange_local:=tsWater;
+	E_ExTime.eProduct:;
+			tsStateChange_local:=tsProduction;			
+	E_ExTime.eLine :;
+			tsStateChange_local:=tsProductionLine;
+	E_ExTime.eLineStby:;
+			tsStateChange_local:=tsProductionLineStby;
+END_CASE
+tModeTime:=TO_TIME(SYSTEMTIME_TO_DT(stSystemTime)-SYSTEMTIME_TO_DT(tsStateChange_local));
+
+
+]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="m_Get_Type" Id="{e3e31f5e-e6b1-403c-bb2b-b2d06d0264ea}">
       <Declaration><![CDATA[METHOD m_Get_Type : E_Element_Type
 VAR_INPUT
@@ -694,16 +725,18 @@ CASE eType OF
 					CASE eState_Short OF
 						E_Element_State_Short.eNotClean,
 						E_Element_State_Short.eClean:;
+								ExpirationTime:=ExpirationTime_Default;
 								eExTime:=E_ExTime.eCIP;
 	
 						E_Element_State_Short.eProduct:;
-								ExpirationTime:=ExpirationTime_Default_LineStandby;
 								IF TRUE THEN; // line remain time less then 2 hours
+									ExpirationTime:=ExpirationTime_Default_Line;
 									eExTime:=E_ExTime.eLine;
 								ELSE;
+									ExpirationTime:=ExpirationTime_Default_LineStandby;
 									eExTime:=E_ExTime.eLineStby;
 								END_IF
-								eExTime:=E_ExTime.eLineStby;
+								
 					END_CASE			
 				E_InterConnection.ConnToCIP:;
 						ExpirationTime:=ExpirationTime_Default;
@@ -948,6 +981,13 @@ END_CASE
     <LineIds Name="FB_Element.m_Get_State_Short">
       <LineId Id="5" Count="0" />
     </LineIds>
+    <LineIds Name="FB_Element.m_Get_TimeToExpirationMode">
+      <LineId Id="29" Count="10" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="40" Count="0" />
+      <LineId Id="44" Count="1" />
+      <LineId Id="43" Count="0" />
+    </LineIds>
     <LineIds Name="FB_Element.m_Get_Type">
       <LineId Id="5" Count="0" />
     </LineIds>
@@ -1078,11 +1118,13 @@ END_CASE
       <LineId Id="126" Count="0" />
       <LineId Id="129" Count="1" />
       <LineId Id="132" Count="0" />
+      <LineId Id="163" Count="0" />
       <LineId Id="140" Count="0" />
       <LineId Id="137" Count="1" />
-      <LineId Id="153" Count="0" />
       <LineId Id="156" Count="0" />
+      <LineId Id="161" Count="0" />
       <LineId Id="159" Count="1" />
+      <LineId Id="162" Count="0" />
       <LineId Id="157" Count="1" />
       <LineId Id="139" Count="0" />
       <LineId Id="128" Count="0" />
