@@ -4620,6 +4620,14 @@ END_IF]]></ST>
     <Action Name="act_ExpirationTime" Id="{232636e3-8fdc-4b48-9446-c1ccdd8dae25}" FolderPath="Manage\">
       <Implementation>
         <ST><![CDATA[IF stProdParam.eStatus=E_Prod_Status.Active 
+THEN;
+	refElement.m_Set_ExpirationDuration(eExTime_set:=E_ExTime.eProduct, setTime:=stProdParam.stRecipe.ExpirationTime);
+	refElement.m_Set_ExpirationDuration(eExTime_set:=E_ExTime.eWater, setTime:=stProdParam.stRecipe.ExpirationTime_Water);
+END_IF
+
+
+(*
+IF stProdParam.eStatus=E_Prod_Status.Active 
 AND refElement.State>=E_Element_State_Long.eWaterReady
 THEN;
 	IF refElement.memoDissolving_active 
@@ -4631,8 +4639,9 @@ THEN;
 	END_IF
 	
 ELSE;
-	refElement.ExpirationTime:=ExpirationTime_Default;
+	refElement.ExpirationTime:=ExDuration_Default;
 END_IF
+*)
 
 ]]></ST>
       </Implementation>
@@ -28278,8 +28287,16 @@ END_IF
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank.act_ExpirationTime">
-      <LineId Id="19" Count="12" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="31" Count="0" />
+      <LineId Id="90" Count="0" />
       <LineId Id="3" Count="0" />
+      <LineId Id="73" Count="1" />
+      <LineId Id="72" Count="0" />
+      <LineId Id="77" Count="12" />
+      <LineId Id="76" Count="0" />
+      <LineId Id="75" Count="0" />
       <LineId Id="33" Count="0" />
       <LineId Id="32" Count="0" />
     </LineIds>

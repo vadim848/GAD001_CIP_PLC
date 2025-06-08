@@ -65,14 +65,15 @@ IF bActive THEN;
 			//fbTankElement.m_InterConnect(value:=E_InterConnection.ConnToTriBlender);		
 	END_CASE
 	//fbTargetElement.m_InterConnect(value:=E_InterConnection.ConnToTank);
-					CASE fbTankElement.eState_Short OF
-						E_Element_State_Short.eNotClean,
-						E_Element_State_Short.eClean:;
-								fbTargetElement.ExpirationMode:=E_ExTime.eCIP;
 	
-						E_Element_State_Short.eProduct:;
-								fbTargetElement.ExpirationMode:=E_ExTime.eLine;
-					END_CASE	
+	CASE fbTankElement.eState_Short OF
+		E_Element_State_Short.eNotClean,
+		E_Element_State_Short.eClean:;
+				//fbTargetElement.ExpirationMode:=E_ExTime.eCIP;
+
+		E_Element_State_Short.eProduct:;
+				//fbTargetElement.ExpirationMode:=E_ExTime.eLine;
+	END_CASE	
 
 ELSE;
 	//fbTankElement.m_Disconnect();
@@ -535,6 +536,7 @@ END_IF
       <LineId Id="34" Count="0" />
       <LineId Id="25" Count="0" />
       <LineId Id="18" Count="0" />
+      <LineId Id="48" Count="0" />
       <LineId Id="41" Count="6" />
       <LineId Id="35" Count="1" />
       <LineId Id="10" Count="0" />

@@ -61,7 +61,8 @@ VAR PERSISTENT
 	
 	
 	tExpirationTime				: TIME:=T#48H;
-
+	ExDuration_Product			: TIME:=T#48H; 	//Expiration from loaded ricipe
+	ExDuration_Water			: TIME:=T#48H; 	//Expiration from loaded ricipe
 	
 	eExTime						: E_ExTime;
 
@@ -220,9 +221,7 @@ END_CASE
     </Action>
     <Action Name="act_StateMachine" Id="{f33c6159-2800-4ae4-981a-4a8c5e4774dd}" FolderPath="Manage\">
       <Implementation>
-        <ST><![CDATA[
-
-CASE eState_Long OF
+        <ST><![CDATA[CASE eState_Long OF
 	E_Element_State_Long.eOff,
 	E_Element_State_Long.eStandby,
 	E_Element_State_Long.eNotClean,
@@ -231,7 +230,7 @@ CASE eState_Long OF
 	E_Element_State_Long.eCIP_3_Deterged_Clean,	
 	E_Element_State_Long.eCIP_4_Sanitized:;
 				eState_Short:=E_Element_State_Short.eNotClean;
-					ExpirationTime:=ExpirationTime_Default;
+					ExpirationTime:=ExDuration_Default;
 	E_Element_State_Long.eCIP_5_Done:;
 				eState_Short:=E_Element_State_Short.eClean;
 					memoDissolving_active:=FALSE;
@@ -431,19 +430,25 @@ VAR
 
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[CASE eExTime OF
+        <ST><![CDATA[CASE eExTime_check OF
 	E_ExTime.eCIP:;
 			tsStateChange_local:=tsCIP;
+			tModeDuration:=ExDuration_Default;
 	E_ExTime.eWater:;
 			tsStateChange_local:=tsWater;
+			tModeDuration:=ExDuration_Water;
 	E_ExTime.eProduct:;
-			tsStateChange_local:=tsProduction;			
+			tsStateChange_local:=tsProduction;	
+			tModeDuration:=ExDuration_Product;
 	E_ExTime.eLine :;
 			tsStateChange_local:=tsProductionLine;
+			tModeDuration:=ExDuration_Default_Line;
 	E_ExTime.eLineStby:;
 			tsStateChange_local:=tsProductionLineStby;
+			tModeDuration:=ExDuration_Default_LineStandby;
 END_CASE
 tModeTime:=TO_TIME(SYSTEMTIME_TO_DT(stSystemTime)-SYSTEMTIME_TO_DT(tsStateChange_local));
+m_Get_TimeToExpirationMode:=tModeDuration-tModeTime;
 
 
 ]]></ST>
@@ -485,8 +490,9 @@ END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[
-IF eState_Long_Set>eState_Long 
-OR eState_Long_Set=E_Element_State_Long.eNotClean
+IF (eState_Long_Set>eState_Long 
+OR eState_Long_Set=E_Element_State_Long.eNotClean)
+AND eState_Long_Set<=E_Element_State_Long.eProduction
 THEN;
 	eState_Long:=eState_Long_Set;
 END_IF
@@ -513,6 +519,31 @@ END_VAR
 END_IF
 memoDissolving_active:=TRUE;
 fbEvent_echo.event();]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_Set_ExpirationDuration" Id="{d852322c-ba1c-43fa-ac6b-bcfdfd4889f5}" FolderPath="Manage\">
+      <Declaration><![CDATA[METHOD m_Set_ExpirationDuration : BOOL
+VAR_INPUT
+	eExTime_set		: E_ExTime;
+	setTime			: TIME;
+
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE eExTime_set OF
+	E_ExTime.eCIP:;
+			
+	E_ExTime.eWater:;
+			ExDuration_Product:=setTime;
+			m_Set_ExpirationDuration:=TRUE;
+	E_ExTime.eProduct:;
+			ExDuration_Product:=setTime;	
+			m_Set_ExpirationDuration:=TRUE;
+	E_ExTime.eLine :;
+			
+	E_ExTime.eLineStby:;
+			
+END_CASE]]></ST>
       </Implementation>
     </Method>
     <Method Name="m_Set_Oper_Pause" Id="{31bfa777-0c86-4838-93b6-ec28e092b686}">
@@ -694,27 +725,33 @@ ELSE;
 END_IF
 
 IF State=E_Element_State_Long.eExpired THEN;
-	//tTimeToExpiration:=T#0S;
 	m_TimeExpiered();	
 END_IF
 
+IF State=E_Element_State_Long.eNotClean THEN;
+	tTimeToExpiration:=T#0S;
+END_IF
 
 
 CASE eType OF
 	E_Element_Type.eTank:;		
 			CASE eState_Short OF
 				E_Element_State_Short.eNotClean:;
+						ExpirationTime:=ExDuration_Default;
 						eExTime:=E_ExTime.eCIP;
 				E_Element_State_Short.eClean:;
 						IF eState_Long=E_Element_State_Long.eWaterReady 
 						OR (eState_Long=E_Element_State_Long.eExpired
 							AND eState_Long_Expiered=E_Element_State_Long.eWaterReady)
 						THEN;
+							ExpirationTime:=ExDuration_Water;
 							eExTime:=E_ExTime.eWater;
 						ELSE;
+							ExpirationTime:=ExDuration_Default;
 							eExTime:=E_ExTime.eCIP;
 						END_IF
 				E_Element_State_Short.eProduct:;
+						ExpirationTime:=ExDuration_Product;
 						eExTime:=E_ExTime.eProduct;
 			END_CASE			
 			
@@ -725,26 +762,35 @@ CASE eType OF
 					CASE eState_Short OF
 						E_Element_State_Short.eNotClean,
 						E_Element_State_Short.eClean:;
-								ExpirationTime:=ExpirationTime_Default;
+								ExpirationTime:=ExDuration_Default;
 								eExTime:=E_ExTime.eCIP;
 	
 						E_Element_State_Short.eProduct:;
-								IF TRUE THEN; // line remain time less then 2 hours
-									ExpirationTime:=ExpirationTime_Default_Line;
+								IF m_Get_TimeToExpirationMode(eExTime_check:=E_ExTime.eLine)<ExDuration_Default_LineStandby THEN; // line remain time less then 2 hours
+									ExpirationTime:=ExDuration_Default_Line;
 									eExTime:=E_ExTime.eLine;
 								ELSE;
-									ExpirationTime:=ExpirationTime_Default_LineStandby;
+									ExpirationTime:=ExDuration_Default_LineStandby;
 									eExTime:=E_ExTime.eLineStby;
-								END_IF
-								
-					END_CASE			
+								END_IF								
+					END_CASE
+			
 				E_InterConnection.ConnToCIP:;
-						ExpirationTime:=ExpirationTime_Default;
+						ExpirationTime:=ExDuration_Default;
 						eExTime:=E_ExTime.eCIP;
+						
 				E_InterConnection.ConnToTank:;
-						ExpirationTime:=ExpirationTime_Default_Line;
-						//eExTime:=E_ExTime.eLine;
-						// will get from tank
+					CASE eState_Short OF
+						E_Element_State_Short.eNotClean,
+						E_Element_State_Short.eClean:;
+								ExpirationTime:=ExDuration_Default;
+								eExTime:=E_ExTime.eCIP;
+	
+						E_Element_State_Short.eProduct:;		
+								ExpirationTime:=ExDuration_Default_Line;
+								eExTime:=E_ExTime.eLine;				
+					END_CASE
+	
 						
 			ELSE;
 		END_CASE
@@ -892,25 +938,7 @@ END_CASE
       <LineId Id="14" Count="0" />
     </LineIds>
     <LineIds Name="FB_Element.act_StateMachine">
-      <LineId Id="2" Count="1" />
-      <LineId Id="1" Count="0" />
-      <LineId Id="8" Count="5" />
-      <LineId Id="7" Count="0" />
-      <LineId Id="15" Count="0" />
-      <LineId Id="18" Count="1" />
-      <LineId Id="33" Count="1" />
-      <LineId Id="16" Count="0" />
-      <LineId Id="30" Count="0" />
-      <LineId Id="36" Count="0" />
-      <LineId Id="31" Count="0" />
-      <LineId Id="35" Count="0" />
-      <LineId Id="32" Count="0" />
-      <LineId Id="23" Count="2" />
-      <LineId Id="27" Count="0" />
-      <LineId Id="37" Count="1" />
-      <LineId Id="17" Count="0" />
-      <LineId Id="5" Count="0" />
-      <LineId Id="29" Count="0" />
+      <LineId Id="39" Count="27" />
       <LineId Id="28" Count="0" />
     </LineIds>
     <LineIds Name="FB_Element.act_Tank">
@@ -982,10 +1010,21 @@ END_CASE
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_Element.m_Get_TimeToExpirationMode">
-      <LineId Id="29" Count="10" />
+      <LineId Id="29" Count="2" />
+      <LineId Id="47" Count="0" />
+      <LineId Id="32" Count="1" />
+      <LineId Id="48" Count="0" />
+      <LineId Id="34" Count="1" />
+      <LineId Id="49" Count="0" />
+      <LineId Id="36" Count="1" />
+      <LineId Id="50" Count="0" />
+      <LineId Id="38" Count="1" />
+      <LineId Id="51" Count="0" />
       <LineId Id="5" Count="0" />
       <LineId Id="40" Count="0" />
-      <LineId Id="44" Count="1" />
+      <LineId Id="44" Count="0" />
+      <LineId Id="52" Count="0" />
+      <LineId Id="45" Count="0" />
       <LineId Id="43" Count="0" />
     </LineIds>
     <LineIds Name="FB_Element.m_Get_Type">
@@ -1003,6 +1042,7 @@ END_CASE
     <LineIds Name="FB_Element.m_InterConnected_State">
       <LineId Id="14" Count="1" />
       <LineId Id="20" Count="0" />
+      <LineId Id="25" Count="0" />
       <LineId Id="19" Count="0" />
       <LineId Id="17" Count="1" />
       <LineId Id="16" Count="0" />
@@ -1018,6 +1058,14 @@ END_CASE
       <LineId Id="20" Count="0" />
       <LineId Id="5" Count="0" />
       <LineId Id="9" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Element.m_Set_ExpirationDuration">
+      <LineId Id="7" Count="4" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="12" Count="1" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="14" Count="3" />
+      <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_Element.m_Set_Oper_Pause">
       <LineId Id="9" Count="2" />
@@ -1094,67 +1142,32 @@ END_CASE
       <LineId Id="12" Count="0" />
     </LineIds>
     <LineIds Name="FB_Element.m_TimeToExpiration">
-      <LineId Id="6" Count="0" />
-      <LineId Id="8" Count="0" />
-      <LineId Id="10" Count="1" />
-      <LineId Id="15" Count="0" />
-      <LineId Id="9" Count="0" />
-      <LineId Id="20" Count="0" />
-      <LineId Id="19" Count="0" />
-      <LineId Id="23" Count="0" />
-      <LineId Id="21" Count="1" />
-      <LineId Id="56" Count="1" />
-      <LineId Id="72" Count="0" />
-      <LineId Id="58" Count="0" />
-      <LineId Id="76" Count="0" />
-      <LineId Id="109" Count="4" />
-      <LineId Id="151" Count="1" />
-      <LineId Id="150" Count="0" />
-      <LineId Id="114" Count="5" />
-      <LineId Id="108" Count="0" />
-      <LineId Id="90" Count="0" />
-      <LineId Id="77" Count="1" />
-      <LineId Id="122" Count="0" />
-      <LineId Id="126" Count="0" />
-      <LineId Id="129" Count="1" />
-      <LineId Id="132" Count="0" />
-      <LineId Id="163" Count="0" />
-      <LineId Id="140" Count="0" />
-      <LineId Id="137" Count="1" />
-      <LineId Id="156" Count="0" />
-      <LineId Id="161" Count="0" />
-      <LineId Id="159" Count="1" />
-      <LineId Id="162" Count="0" />
-      <LineId Id="157" Count="1" />
-      <LineId Id="139" Count="0" />
-      <LineId Id="128" Count="0" />
-      <LineId Id="127" Count="0" />
-      <LineId Id="155" Count="0" />
-      <LineId Id="124" Count="0" />
-      <LineId Id="143" Count="0" />
-      <LineId Id="154" Count="0" />
-      <LineId Id="141" Count="0" />
-      <LineId Id="144" Count="0" />
-      <LineId Id="142" Count="0" />
-      <LineId Id="125" Count="0" />
-      <LineId Id="104" Count="0" />
-      <LineId Id="74" Count="0" />
-      <LineId Id="59" Count="0" />
-      <LineId Id="28" Count="0" />
-      <LineId Id="27" Count="0" />
-      <LineId Id="32" Count="0" />
-      <LineId Id="36" Count="0" />
-      <LineId Id="146" Count="3" />
-      <LineId Id="34" Count="0" />
-      <LineId Id="38" Count="0" />
-      <LineId Id="35" Count="0" />
-      <LineId Id="31" Count="0" />
-      <LineId Id="30" Count="0" />
-      <LineId Id="40" Count="0" />
-      <LineId Id="39" Count="0" />
-      <LineId Id="44" Count="4" />
-      <LineId Id="42" Count="0" />
-      <LineId Id="5" Count="0" />
+      <LineId Id="250" Count="7" />
+      <LineId Id="259" Count="1" />
+      <LineId Id="342" Count="0" />
+      <LineId Id="340" Count="1" />
+      <LineId Id="261" Count="6" />
+      <LineId Id="336" Count="0" />
+      <LineId Id="268" Count="5" />
+      <LineId Id="337" Count="0" />
+      <LineId Id="274" Count="1" />
+      <LineId Id="338" Count="0" />
+      <LineId Id="276" Count="2" />
+      <LineId Id="339" Count="0" />
+      <LineId Id="279" Count="20" />
+      <LineId Id="301" Count="0" />
+      <LineId Id="356" Count="0" />
+      <LineId Id="302" Count="2" />
+      <LineId Id="355" Count="0" />
+      <LineId Id="305" Count="0" />
+      <LineId Id="343" Count="0" />
+      <LineId Id="348" Count="4" />
+      <LineId Id="346" Count="0" />
+      <LineId Id="354" Count="0" />
+      <LineId Id="353" Count="0" />
+      <LineId Id="347" Count="0" />
+      <LineId Id="345" Count="0" />
+      <LineId Id="309" Count="26" />
       <LineId Id="7" Count="0" />
     </LineIds>
     <LineIds Name="FB_Element.ProdStatus.Get">
