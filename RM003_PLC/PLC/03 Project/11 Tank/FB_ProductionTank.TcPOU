@@ -27337,8 +27337,10 @@ END_VAR
       <Implementation>
         <ST><![CDATA[IF TRUE
 AND trn_Tank_Color
-AND refState_Long=E_Element_State_Long.eProduction
-AND fbTarget.m_CheckStatus(eReqStatus:=E_Tank_Target.eOpen) 
+AND (refState_Long=E_Element_State_Long.eProduction
+	OR (refState_Long=E_Element_State_Long.eExpired 
+		AND refElement.eState_Long_Expiered =E_Element_State_Long.eProduction)
+AND fbTarget.m_CheckStatus(eReqStatus:=E_Tank_Target.eOpen)) 
 AND ((trn_Tank_A 
 	AND fbLineSource.m_CheckStatus(eReqStatus:=E_Line_Source.eTank_A) 
 	AND fbLineTarget.m_CheckStatus(eReqStatus:=E_Line_Target.eTank_A))
@@ -28407,7 +28409,9 @@ END_IF
     <LineIds Name="FB_ProductionTank.m_Production_Run_Pump">
       <LineId Id="6" Count="0" />
       <LineId Id="20" Count="0" />
-      <LineId Id="7" Count="2" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="31" Count="1" />
+      <LineId Id="8" Count="1" />
       <LineId Id="26" Count="0" />
       <LineId Id="24" Count="0" />
       <LineId Id="18" Count="1" />
