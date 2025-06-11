@@ -83,6 +83,9 @@ VAR
 	fbEvent_echo: FB_Event_echo;
 	memo_Production_Storage_Mode: BOOL;
 	memo_CIP_Pump_linked: BOOL;
+	
+	eFilling_State		: E_Filling_State;
+
 END_VAR
 VAR_IN_OUT
 
@@ -107,6 +110,7 @@ act_Oper();
 act_Call_Interface(); //There is no need to Call block if it comes from the outside
 act_TempCntrl();
 act_ExpirationTime();
+act_Filling();
 
 IF bTestingMode THEN;
 	IF bMoveStep THEN;
@@ -4642,6 +4646,33 @@ ELSE;
 	refElement.ExpirationTime:=ExDuration_Default;
 END_IF
 *)
+
+]]></ST>
+      </Implementation>
+    </Action>
+    <Action Name="act_Filling" Id="{3a2f8a6e-9784-4907-89fa-be7eb4d1b7eb}" FolderPath="Manage\">
+      <Implementation>
+        <ST><![CDATA[
+
+IF TRUE 
+AND bReady
+AND refElement.eState_Long=E_Element_State_Long.eProduction
+AND TRUE
+AND TRUE
+THEN;
+	CASE pFilling_State OF 
+		E_Filling_State.eNot_Ready:;
+				pFilling_State:=E_Filling_State.eReady_ToFill;
+				
+		E_Filling_State.eReady_ToFill:;
+				//
+		E_Filling_State.eFilling_InProcess:;
+				//
+		
+	END_CASE
+ELSE;
+	pFilling_State:=E_Filling_State.eNot_Ready;
+END_IF
 
 ]]></ST>
       </Implementation>
@@ -27567,6 +27598,25 @@ END_IF
 ]]></ST>
       </Implementation>
     </Method>
+    <Property Name="pFilling_State" Id="{dc44f564-aa7d-4e11-8e9c-e57e1d797297}" FolderPath="Manage\">
+      <Declaration><![CDATA[PROPERTY pFilling_State : E_Filling_State]]></Declaration>
+      <Get Name="Get" Id="{21a765eb-1b41-414a-bd4e-3741aa59b706}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[pFilling_State:=eFilling_State;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{2d78626e-f70c-4d07-994f-8331d9e5c207}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[eFilling_State:=pFilling_State;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
     <Transition Name="trn_Tank_A" Id="{7f0e7518-f66a-4b4a-b16b-a3f65f501415}">
       <Implementation>
         <ST><![CDATA[trn_Tank_A:=(eElementID=E_Element_List.eTank_1 OR eElementID=E_Element_List.eTank_3);]]></ST>
@@ -27588,7 +27638,9 @@ END_IF
       </Implementation>
     </Transition>
     <LineIds Name="FB_ProductionTank">
-      <LineId Id="742" Count="29" />
+      <LineId Id="742" Count="4" />
+      <LineId Id="874" Count="0" />
+      <LineId Id="747" Count="24" />
       <LineId Id="641" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank._aCheck_Condition_Prod_End_active">
@@ -28302,6 +28354,22 @@ END_IF
       <LineId Id="33" Count="0" />
       <LineId Id="32" Count="0" />
     </LineIds>
+    <LineIds Name="FB_ProductionTank.act_Filling">
+      <LineId Id="2" Count="1" />
+      <LineId Id="1" Count="0" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="11" Count="1" />
+      <LineId Id="6" Count="0" />
+      <LineId Id="43" Count="2" />
+      <LineId Id="51" Count="0" />
+      <LineId Id="46" Count="4" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="21" Count="1" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="35" Count="0" />
+    </LineIds>
     <LineIds Name="FB_ProductionTank.act_GetReference">
       <LineId Id="1" Count="2" />
       <LineId Id="11" Count="0" />
@@ -28516,6 +28584,12 @@ END_IF
       <LineId Id="19" Count="0" />
       <LineId Id="17" Count="0" />
       <LineId Id="7" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ProductionTank.pFilling_State.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_ProductionTank.pFilling_State.Set">
+      <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank.trn_Tank_A">
       <LineId Id="1" Count="0" />
