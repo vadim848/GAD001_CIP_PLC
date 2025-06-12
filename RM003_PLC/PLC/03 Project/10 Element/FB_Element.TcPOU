@@ -45,7 +45,8 @@ VAR
 	bTakePosInCIPBuffer_Detergent	: BOOL;
 	bError: BOOL;	
 	
-	eProdStatus: E_Prod_Status;
+	eProdStatus			: E_Prod_Status;
+	eFilling_State		: E_Filling_State;
 	
 	fbEvent_echo: FB_Event_echo;
 
@@ -526,7 +527,7 @@ memoDissolving_active:=TRUE;
 fbEvent_echo.event();]]></ST>
       </Implementation>
     </Method>
-    <Method Name="m_Set_ExpirationDuration" Id="{d852322c-ba1c-43fa-ac6b-bcfdfd4889f5}" FolderPath="Manage\">
+    <Method Name="m_Set_ExpirationDuration" Id="{d852322c-ba1c-43fa-ac6b-bcfdfd4889f5}">
       <Declaration><![CDATA[METHOD m_Set_ExpirationDuration : BOOL
 VAR_INPUT
 	eExTime_set		: E_ExTime;
@@ -777,7 +778,17 @@ END_VAR
 	tTimeToExpiration:=tExpirationTime-tStateTime;
 ELSE;
 	tTimeToExpiration:=T#0S;
-	m_TimeExpiered();
+	IF TRUE 
+	AND eFilling_State=E_Filling_State.eFilling_InProcess
+	AND eType=E_Element_Type.eTank
+	AND eInterConnect <> E_InterConnection.NotConnected
+	AND TRUE
+	THEN;
+		//Production filling in process 
+	ELSE;
+		m_TimeExpiered();
+	END_IF
+	
 END_IF
 
 IF State=E_Element_State_Long.eExpired THEN;
@@ -879,6 +890,25 @@ END_CASE
 ]]></ST>
       </Implementation>
     </Method>
+    <Property Name="pFilling_State" Id="{3fb22dff-576a-4883-be93-9c6c846c05ea}" FolderPath="Property\">
+      <Declaration><![CDATA[PROPERTY pFilling_State : E_Filling_State]]></Declaration>
+      <Get Name="Get" Id="{479b8e08-02fe-4667-920d-886fec9827b0}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[pFilling_State:=eFilling_State;]]></ST>
+        </Implementation>
+      </Get>
+      <Set Name="Set" Id="{3f3e119f-2905-4e48-a771-ff3266f5ea5f}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[eFilling_State:=pFilling_State;]]></ST>
+        </Implementation>
+      </Set>
+    </Property>
     <Property Name="ProdStatus" Id="{e4474016-ac40-43b2-890c-a624cfadb69e}" FolderPath="Property\">
       <Declaration><![CDATA[PROPERTY ProdStatus : E_Prod_Status]]></Declaration>
       <Get Name="Get" Id="{d8c98c4f-e4a7-4d29-8f1c-e4501e77bc63}">
@@ -1160,7 +1190,15 @@ END_CASE
       <LineId Id="12" Count="0" />
     </LineIds>
     <LineIds Name="FB_Element.m_TimeToExpiration">
-      <LineId Id="250" Count="7" />
+      <LineId Id="250" Count="3" />
+      <LineId Id="365" Count="0" />
+      <LineId Id="368" Count="0" />
+      <LineId Id="372" Count="2" />
+      <LineId Id="369" Count="0" />
+      <LineId Id="375" Count="0" />
+      <LineId Id="370" Count="0" />
+      <LineId Id="366" Count="1" />
+      <LineId Id="254" Count="3" />
       <LineId Id="259" Count="1" />
       <LineId Id="342" Count="0" />
       <LineId Id="340" Count="0" />
@@ -1190,6 +1228,12 @@ END_CASE
       <LineId Id="345" Count="0" />
       <LineId Id="309" Count="26" />
       <LineId Id="7" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Element.pFilling_State.Get">
+      <LineId Id="2" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Element.pFilling_State.Set">
+      <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="FB_Element.ProdStatus.Get">
       <LineId Id="2" Count="0" />
