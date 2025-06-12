@@ -2201,16 +2201,19 @@ END_IF]]></ST>
         <ST><![CDATA[bStepDone:=FALSE;
 IF fbInterConnection_TriB.bActive THEN;
 	bStepDone:=TRUE;
+	
+	refElement.m_Set_Dissolveng_active_memo();
+	IF trn_Tank_Marinade THEN;
+		fbElement[E_Element_List.eTriBlender_Marinada].m_Set_Dissolveng_active_memo();
+	ELSIF trn_Tank_Color THEN;
+		fbElement[E_Element_List.eTriBlender_Color].m_Set_Dissolveng_active_memo();
+	ELSE;
+		bStepDone:=FALSE;
+	END_IF	
+	
 END_IF
 
-refElement.m_Set_Dissolveng_active_memo();
-IF trn_Tank_Marinade THEN;
-	fbElement[E_Element_List.eTriBlender_Marinada].m_Set_Dissolveng_active_memo();
-ELSIF trn_Tank_Color THEN;
-	fbElement[E_Element_List.eTriBlender_Color].m_Set_Dissolveng_active_memo();
-ELSE;
-	bStepDone:=FALSE;
-END_IF]]></ST>
+]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -28094,9 +28097,12 @@ END_VAR
     </LineIds>
     <LineIds Name="FB_ProductionTank._aInterConnect_TriB_2_active">
       <LineId Id="2" Count="2" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="16" Count="6" />
+      <LineId Id="15" Count="0" />
+      <LineId Id="23" Count="0" />
       <LineId Id="1" Count="0" />
       <LineId Id="13" Count="0" />
-      <LineId Id="6" Count="6" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank._aInterConnect_TriB_2_entry">
