@@ -18,11 +18,12 @@ VAR_INPUT
 	//valDrain		: E_Pis_Name;//Comment?
 	//valCIP			: E_Pis_Name;//Comment?
 	
+	valFilling				: E_Pis_Name;
 	valFillWater			: E_Pis_Name;
 	valFillWaterDrain		: E_Pis_Name;
 	valDrainTapWater		: E_Pis_Name;
 	
-	eTank_Name: E_Tank_Name;
+	eTank_Name				: E_Tank_Name;
 
 	
 	sens_TankTemp			: E_ASense_Name	;//Tenk temperature sensor ID
@@ -36,6 +37,7 @@ END_VAR
 VAR_OUTPUT
 END_VAR
 VAR
+	sTank_Name			: STRING;
 	refElement			: REFERENCE TO FB_Element;
 	refState_Long		: REFERENCE TO E_Element_State_Long;
 	eReq				: E_Request_List;		
@@ -84,7 +86,9 @@ VAR
 	memo_Production_Storage_Mode: BOOL;
 	memo_CIP_Pump_linked: BOOL;
 	
-	eFilling_State		: E_Filling_State;
+	
+	fbFilling				: FB_Filling;		
+	eFilling_State			: E_Filling_State;
 
 END_VAR
 VAR_IN_OUT
@@ -97,7 +101,6 @@ VAR_IN_OUT
 	
 	fbInterConnection_TriB	: FB_InterConnection;
 	fbInterConnection_ProL	: FB_InterConnection;
-
 	
 
 	fb_PumpLine				: FB_Pump;
@@ -111,6 +114,13 @@ act_Call_Interface(); //There is no need to Call block if it comes from the outs
 act_TempCntrl();
 act_ExpirationTime();
 act_Filling();
+
+CASE eTank_Name OF
+	E_Tank_Name.T1: sTank_Name:='Production Tank-T1';
+	E_Tank_Name.T2: sTank_Name:='Production Tank-T2';
+	E_Tank_Name.T3: sTank_Name:='Production Tank-T3';
+	E_Tank_Name.T4: sTank_Name:='Production Tank-T4';
+END_CASE
 
 IF bTestingMode THEN;
 	IF bMoveStep THEN;
@@ -136,7 +146,8 @@ stProdParam.timeRemainToStart:=mTimeRemainToStart();
 stProdParam.timeProductionDuration:=mTimeProductionDuration();
 refElement.ProdStatus:=stProdParam.eStatus;
 m_Stirrer();
-m_HMI();]]></ST>
+m_HMI();
+]]></ST>
     </Implementation>
     <Folder Name="Manage" Id="{4859bb81-2525-4c2b-a781-1bdd74a1527c}" />
     <Action Name="_aCheck_Condition_Prod_End_active" Id="{ea934447-c608-4b2d-8492-54e27aff23a1}">
@@ -4472,6 +4483,196 @@ END_IF]]></ST>
                     </l2>
                     <l2 n="Connectors" />
                     <v n="Id">100L</v>
+                  </o>
+                  <o>
+                    <v n="ILActive">false</v>
+                    <v n="FBDValid">false</v>
+                    <v n="ILValid">false</v>
+                    <l2 n="ILLines" />
+                    <v n="Comment">""</v>
+                    <v n="Title">""</v>
+                    <v n="Label">""</v>
+                    <v n="OutCommented">false</v>
+                    <l2 n="NetworkItems" cet="BoxTreeBox">
+                      <o>
+                        <v n="BoxType">"FB_Filling"</v>
+                        <o n="Instance" t="Operand">
+                          <v n="Operand">"fbFilling"</v>
+                          <v n="Type">"FB_Filling"</v>
+                          <v n="Comment">""</v>
+                          <v n="SymbolComment">""</v>
+                          <v n="Address">""</v>
+                          <o n="Flags" t="Flags">
+                            <v n="Flags">0</v>
+                            <v n="Fixed">false</v>
+                            <v n="Extensible">false</v>
+                          </o>
+                          <v n="LValue">false</v>
+                          <v n="Boolean">false</v>
+                          <v n="IsInstance">true</v>
+                          <v n="Id">188L</v>
+                        </o>
+                        <o n="OutputItems" t="OutputItemList">
+                          <l2 n="OutputItems" cet="Operand">
+                            <n />
+                            <o>
+                              <v n="Operand">""</v>
+                              <n n="Type" />
+                              <v n="Comment">""</v>
+                              <v n="SymbolComment">""</v>
+                              <v n="Address">""</v>
+                              <o n="Flags" t="Flags">
+                                <v n="Flags">0</v>
+                                <v n="Fixed">false</v>
+                                <v n="Extensible">false</v>
+                              </o>
+                              <v n="LValue">true</v>
+                              <v n="Boolean">false</v>
+                              <v n="IsInstance">false</v>
+                              <v n="Id">190L</v>
+                            </o>
+                          </l2>
+                        </o>
+                        <o n="Flags" t="Flags">
+                          <v n="Flags">0</v>
+                          <v n="Fixed">true</v>
+                          <v n="Extensible">false</v>
+                        </o>
+                        <n n="InputFlags" />
+                        <l2 n="InputItems" cet="BoxTreeOperand">
+                          <o>
+                            <o n="Operand" t="Operand">
+                              <v n="Operand">"valFilling"</v>
+                              <v n="Type">"E_Pis_Name"</v>
+                              <v n="Comment">""</v>
+                              <v n="SymbolComment">""</v>
+                              <v n="Address">""</v>
+                              <o n="Flags" t="Flags">
+                                <v n="Flags">0</v>
+                                <v n="Fixed">false</v>
+                                <v n="Extensible">false</v>
+                              </o>
+                              <v n="LValue">false</v>
+                              <v n="Boolean">false</v>
+                              <v n="IsInstance">false</v>
+                              <v n="Id">179L</v>
+                            </o>
+                            <v n="Id">178L</v>
+                          </o>
+                          <o>
+                            <o n="Operand" t="Operand">
+                              <v n="Operand">""</v>
+                              <n n="Type" />
+                              <v n="Comment">""</v>
+                              <v n="SymbolComment">""</v>
+                              <v n="Address">""</v>
+                              <o n="Flags" t="Flags">
+                                <v n="Flags">0</v>
+                                <v n="Fixed">false</v>
+                                <v n="Extensible">false</v>
+                              </o>
+                              <v n="LValue">false</v>
+                              <v n="Boolean">false</v>
+                              <v n="IsInstance">false</v>
+                              <v n="Id">192L</v>
+                            </o>
+                            <v n="Id">191L</v>
+                          </o>
+                          <o>
+                            <o n="Operand" t="Operand">
+                              <v n="Operand">""</v>
+                              <n n="Type" />
+                              <v n="Comment">""</v>
+                              <v n="SymbolComment">""</v>
+                              <v n="Address">""</v>
+                              <o n="Flags" t="Flags">
+                                <v n="Flags">0</v>
+                                <v n="Fixed">false</v>
+                                <v n="Extensible">false</v>
+                              </o>
+                              <v n="LValue">false</v>
+                              <v n="Boolean">false</v>
+                              <v n="IsInstance">false</v>
+                              <v n="Id">194L</v>
+                            </o>
+                            <v n="Id">193L</v>
+                          </o>
+                          <o>
+                            <o n="Operand" t="Operand">
+                              <v n="Operand">""</v>
+                              <n n="Type" />
+                              <v n="Comment">""</v>
+                              <v n="SymbolComment">""</v>
+                              <v n="Address">""</v>
+                              <o n="Flags" t="Flags">
+                                <v n="Flags">0</v>
+                                <v n="Fixed">false</v>
+                                <v n="Extensible">false</v>
+                              </o>
+                              <v n="LValue">false</v>
+                              <v n="Boolean">false</v>
+                              <v n="IsInstance">false</v>
+                              <v n="Id">196L</v>
+                            </o>
+                            <v n="Id">195L</v>
+                          </o>
+                          <o>
+                            <o n="Operand" t="Operand">
+                              <v n="Operand">"eFilling_State"</v>
+                              <v n="Type">"E_Filling_State"</v>
+                              <v n="Comment">""</v>
+                              <v n="SymbolComment">""</v>
+                              <v n="Address">""</v>
+                              <o n="Flags" t="Flags">
+                                <v n="Flags">0</v>
+                                <v n="Fixed">false</v>
+                                <v n="Extensible">false</v>
+                              </o>
+                              <v n="LValue">false</v>
+                              <v n="Boolean">false</v>
+                              <v n="IsInstance">false</v>
+                              <v n="Id">187L</v>
+                            </o>
+                            <v n="Id">186L</v>
+                          </o>
+                        </l2>
+                        <o n="InputParam" t="ParamList">
+                          <l2 n="Names" cet="String">
+                            <v>valFilling</v>
+                            <v>setWeight</v>
+                            <v>actWeight</v>
+                            <v>Tolerance</v>
+                            <v>eFill_State</v>
+                          </l2>
+                          <l2 n="Types" cet="String">
+                            <v>E_Pis_Name</v>
+                            <v>REAL</v>
+                            <v>REAL</v>
+                            <v>REAL</v>
+                            <v>E_Filling_State[REF]</v>
+                          </l2>
+                        </o>
+                        <o n="OutputParam" t="ParamList">
+                          <l2 n="Names" cet="String">
+                            <v>eFill_State_HMI</v>
+                            <v>pumpFilling</v>
+                          </l2>
+                          <l2 n="Types" cet="String">
+                            <v>E_Filling_State</v>
+                            <v>BOOL</v>
+                          </l2>
+                        </o>
+                        <v n="CallType" t="Operator">FunctionBlock</v>
+                        <v n="EN">false</v>
+                        <v n="ENO">false</v>
+                        <n n="STSnippet" />
+                        <v n="ContainsExtensibleInputs">false</v>
+                        <v n="ProvidesSTSnippet">false</v>
+                        <v n="Id">189L</v>
+                      </o>
+                    </l2>
+                    <l2 n="Connectors" />
+                    <v n="Id">175L</v>
                   </o>
                   <o>
                     <v n="ILActive">false</v>
@@ -27654,8 +27855,13 @@ END_VAR
     <LineIds Name="FB_ProductionTank">
       <LineId Id="742" Count="4" />
       <LineId Id="874" Count="0" />
+      <LineId Id="990" Count="0" />
+      <LineId Id="989" Count="0" />
+      <LineId Id="993" Count="3" />
+      <LineId Id="992" Count="0" />
       <LineId Id="747" Count="24" />
       <LineId Id="641" Count="0" />
+      <LineId Id="986" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank._aCheck_Condition_Prod_End_active">
       <LineId Id="2" Count="2" />

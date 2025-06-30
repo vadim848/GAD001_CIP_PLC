@@ -3,30 +3,59 @@
   <POU Name="FB_Filling" Id="{57ce42fe-7c67-4e80-b858-2c5ec698a104}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK PUBLIC FB_Filling EXTENDS FB_SFC_Cycle IMPLEMENTS ITF_FB_SFC_Cycle
 VAR_INPUT
-	valFilling				:	E_Pis_Name	;
-END_VAR
-VAR_OUTPUT
+	valFilling				: E_Pis_Name	;
+	setWeight				: REAL:=200.0;	//kg
+	actWeight				: REAL:=100.0;	//kg
+	Tolerance				: REAL:=0.5;	//kg
+	
 END_VAR
 VAR
-	
-	fbPis					: FB_Piston;
-	
+	fbPis					: FB_Piston;	
 	stPis_Filling			: REFERENCE TO ST_Piston;
 	
+	MinWeight	: REAL;
+	MaxWeight	: REAL;
 	
+	reqTara		: BOOL;
+
 END_VAR
-]]></Declaration>
+VAR_IN_OUT
+	eFill_State				: E_Filling_State;
+END_VAR
+VAR_OUTPUT
+	eFill_State_HMI			: E_Filling_State;
+	pumpFilling				: BOOL;
+END_VAR]]></Declaration>
     <Implementation>
       <ST><![CDATA[act_GetReference();
 
-act_Oper();]]></ST>
+act_Oper();
+
+MinWeight:=setWeight-Tolerance;
+MaxWeight:=setWeight+Tolerance;
+eFill_State_HMI:=eFill_State;
+
+IF reqTara THEN;
+	IF m_Tara() THEN;
+		reqTara:=FALSE;
+	ELSE;
+		// tara command in process
+	END_IF
+END_IF]]></ST>
     </Implementation>
     <Action Name="_aCheck_Condition_active" Id="{52e30844-68a2-4937-9c55-054be0048d36}">
       <Implementation>
         <ST><![CDATA[// communication to weight
 
 
-// check tara == weghit value <= 0.5 kg and >= -0.5 kg ==> 0 +- 0.5]]></ST>
+// check tara == weghit value <= 0.5 kg and >= -0.5 kg ==> 0 +- 0.5
+bStepDone:=FALSE;
+IF actWeight >= -0.5 AND actWeight <= 0.5 
+AND eFill_State=E_Filling_State.eReady_ToFill
+AND TRUE
+THEN;
+	bStepDone:=TRUE;
+END_IF]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -44,7 +73,16 @@ act_Oper();]]></ST>
     </Action>
     <Action Name="_aFilling_Process_active" Id="{86a344ec-4f3b-47c2-bf07-c3fd927019f9}">
       <Implementation>
-        <ST><![CDATA[// check frow weight >= min value from recipe]]></ST>
+        <ST><![CDATA[// check frow weight >= min value from recipe
+
+pumpFilling:=m_FillingActive(); // Run autofiling process...
+eFill_State:=E_Filling_State.eFilling_InProcess;
+
+bStepDone:=FALSE;
+IF actWeight >= MinWeight THEN;
+	bStepDone:=TRUE;
+END_IF
+ ]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -63,6 +101,7 @@ act_Oper();]]></ST>
     <Action Name="_aFilling_Process_entry" Id="{a4bdcf2a-7b2e-4685-bd70-7299b1106ef5}">
       <Implementation>
         <ST><![CDATA[// open filling valve
+fbPis.m_SetByRecipe(stPis:=stPis_Filling, 			req:=E_Piston_Recipe_State.Act);
 // run pump]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -119,7 +158,14 @@ act_Oper();]]></ST>
     </Action>
     <Action Name="_aReset_entry" Id="{11253cd7-8b45-408b-91df-74590fbcd973}">
       <Implementation>
-        <ST><![CDATA[//close filing valve ]]></ST>
+        <ST><![CDATA[//close filing valve 
+fbPis.m_SetByRecipe(stPis:=stPis_Filling, 			req:=E_Piston_Recipe_State.Release);
+
+pumpFilling:=FALSE;
+IF eFill_State=E_Filling_State.eFilling_InProcess THEN;
+	eFill_State:=E_Filling_State.eReady_ToFill;
+END_IF
+bRun:=FALSE;]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -843,7 +889,7 @@ stPis_CIP_Sel			REF= g_Piston.stPis[valCIP_Sel];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"TRUE"</v>
+                                          <v n="Value">"bStepDone"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">57L</v>
@@ -1155,7 +1201,7 @@ stPis_CIP_Sel			REF= g_Piston.stPis[valCIP_Sel];
                                       <o>
                                         <v n="AttributeId">{cacf1a68-236e-47c2-b7b1-1cf9199718cb}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">""</v>
+                                          <v n="Value">"T#1s"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">108L</v>
@@ -1209,7 +1255,7 @@ stPis_CIP_Sel			REF= g_Piston.stPis[valCIP_Sel];
                                       <o>
                                         <v n="AttributeId">{38391c6d-6d4a-42f8-8ee7-9f45e5adafa8}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"TRUE"</v>
+                                          <v n="Value">"bStepDone"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">114L</v>
@@ -1625,7 +1671,7 @@ stPis_CIP_Sel			REF= g_Piston.stPis[valCIP_Sel];
                                       <o>
                                         <v n="AttributeId">{cacf1a68-236e-47c2-b7b1-1cf9199718cb}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">""</v>
+                                          <v n="Value">"T#2s"</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">166L</v>
@@ -2270,6 +2316,17 @@ stPis_CIP_Sel			REF= g_Piston.stPis[valCIP_Sel];
         </XmlArchive>
       </ObjectProperties>
     </Action>
+    <Method Name="m_FillingActive" Id="{e50ac11a-8566-4bd3-8e9e-4ca51d09cfb6}">
+      <Declaration><![CDATA[METHOD m_FillingActive : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[
+actWeight:=actWeight+0.1;
+m_FillingActive:=TRUE;]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="m_Set_SFCFlags_Reference" Id="{72f7dfaa-0d20-44b1-86c3-1f73dee8a36f}">
       <Declaration><![CDATA[{warning 'add method implementation '}
 METHOD m_Set_SFCFlags_Reference : BOOL
@@ -2294,20 +2351,50 @@ refSFC.SFCTipMode REF= SFCTipMode;
 m_SFC_Handle();]]></ST>
       </Implementation>
     </Method>
+    <Method Name="m_Tara" Id="{d585ec45-9719-4ad3-b51d-9430cbc3ebd5}">
+      <Declaration><![CDATA[METHOD m_Tara : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[actWeight:=0.0;
+m_Tara:=TRUE;]]></ST>
+      </Implementation>
+    </Method>
     <LineIds Name="FB_Filling">
-      <LineId Id="10" Count="1" />
-      <LineId Id="9" Count="0" />
+      <LineId Id="64" Count="5" />
+      <LineId Id="42" Count="0" />
+      <LineId Id="77" Count="0" />
+      <LineId Id="76" Count="0" />
+      <LineId Id="78" Count="0" />
+      <LineId Id="80" Count="0" />
+      <LineId Id="82" Count="1" />
+      <LineId Id="81" Count="0" />
+      <LineId Id="79" Count="0" />
     </LineIds>
     <LineIds Name="FB_Filling._aCheck_Condition_active">
       <LineId Id="1" Count="0" />
       <LineId Id="3" Count="1" />
       <LineId Id="2" Count="0" />
+      <LineId Id="5" Count="1" />
+      <LineId Id="11" Count="1" />
+      <LineId Id="9" Count="0" />
+      <LineId Id="7" Count="1" />
     </LineIds>
     <LineIds Name="FB_Filling._aFilling_Process_active">
       <LineId Id="1" Count="0" />
+      <LineId Id="3" Count="0" />
+      <LineId Id="2" Count="0" />
+      <LineId Id="5" Count="1" />
+      <LineId Id="4" Count="0" />
+      <LineId Id="7" Count="0" />
+      <LineId Id="9" Count="1" />
+      <LineId Id="8" Count="0" />
     </LineIds>
     <LineIds Name="FB_Filling._aFilling_Process_entry">
-      <LineId Id="1" Count="1" />
+      <LineId Id="1" Count="0" />
+      <LineId Id="3" Count="0" />
+      <LineId Id="2" Count="0" />
     </LineIds>
     <LineIds Name="FB_Filling._aFilling_Process_exit">
       <LineId Id="1" Count="0" />
@@ -2318,7 +2405,11 @@ m_SFC_Handle();]]></ST>
       <LineId Id="1" Count="0" />
     </LineIds>
     <LineIds Name="FB_Filling._aReset_entry">
-      <LineId Id="1" Count="0" />
+      <LineId Id="1" Count="1" />
+      <LineId Id="5" Count="0" />
+      <LineId Id="4" Count="0" />
+      <LineId Id="6" Count="2" />
+      <LineId Id="3" Count="0" />
     </LineIds>
     <LineIds Name="FB_Filling.act_GetReference">
       <LineId Id="2" Count="0" />
@@ -2334,9 +2425,16 @@ m_SFC_Handle();]]></ST>
       <LineId Id="1" Count="0" />
       <LineId Id="26" Count="1" />
     </LineIds>
+    <LineIds Name="FB_Filling.m_FillingActive">
+      <LineId Id="6" Count="1" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
     <LineIds Name="FB_Filling.m_Set_SFCFlags_Reference">
       <LineId Id="5" Count="15" />
       <LineId Id="4" Count="0" />
+    </LineIds>
+    <LineIds Name="FB_Filling.m_Tara">
+      <LineId Id="5" Count="1" />
     </LineIds>
   </POU>
 </TcPlcObject>
