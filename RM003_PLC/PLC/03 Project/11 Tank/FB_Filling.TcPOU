@@ -50,7 +50,9 @@ END_IF]]></ST>
 
 // check tara == weghit value <= 0.5 kg and >= -0.5 kg ==> 0 +- 0.5
 bStepDone:=FALSE;
-IF actWeight >= -0.5 AND actWeight <= 0.5 
+IF TRUE
+//AND actWeight >= -0.5 AND actWeight <= 0.5 
+AND actWeight < MinWeight 
 AND eFill_State=E_Filling_State.eReady_ToFill
 AND TRUE
 THEN;
@@ -1201,7 +1203,7 @@ stPis_CIP_Sel			REF= g_Piston.stPis[valCIP_Sel];
                                       <o>
                                         <v n="AttributeId">{cacf1a68-236e-47c2-b7b1-1cf9199718cb}</v>
                                         <o n="Value" t="StringValue">
-                                          <v n="Value">"T#1s"</v>
+                                          <v n="Value">""</v>
                                           <v n="DefaultValue">""</v>
                                         </o>
                                         <v n="Id">108L</v>
@@ -2377,6 +2379,7 @@ m_Tara:=TRUE;]]></ST>
       <LineId Id="3" Count="1" />
       <LineId Id="2" Count="0" />
       <LineId Id="5" Count="1" />
+      <LineId Id="14" Count="1" />
       <LineId Id="11" Count="1" />
       <LineId Id="9" Count="0" />
       <LineId Id="7" Count="1" />
