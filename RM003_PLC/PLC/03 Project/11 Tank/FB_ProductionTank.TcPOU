@@ -86,6 +86,9 @@ VAR
 	memo_Production_Storage_Mode: BOOL;
 	memo_CIP_Pump_linked: BOOL;
 	
+	bStateUpdate_Available_HMI	: BOOL;
+
+	
 	
 	fbFilling				: FB_Filling;		
 	eFilling_State			: E_Filling_State;
@@ -145,9 +148,24 @@ END_CASE
 stProdParam.timeRemainToStart:=mTimeRemainToStart();
 stProdParam.timeProductionDuration:=mTimeProductionDuration();
 refElement.ProdStatus:=stProdParam.eStatus;
+
+
+IF refElement.m_Get_InterConnection()=E_InterConnection.NotConnected 
+AND bReady
+THEN;
+	IF NOT bStateUpdate_Available_HMI THEN;
+		refElement.fbEvent_echo.event();
+		bStateUpdate_Available_HMI:=TRUE;
+	END_IF	
+ELSE; 
+	IF bStateUpdate_Available_HMI THEN;
+		refElement.fbEvent_echo.event();
+		bStateUpdate_Available_HMI:=FALSE;
+	END_IF
+END_IF
+
 m_Stirrer();
-m_HMI();
-]]></ST>
+m_HMI();]]></ST>
     </Implementation>
     <Folder Name="Manage" Id="{4859bb81-2525-4c2b-a781-1bdd74a1527c}" />
     <Action Name="_aCheck_Condition_Prod_End_active" Id="{ea934447-c608-4b2d-8492-54e27aff23a1}">
@@ -27871,8 +27889,23 @@ END_VAR
       <LineId Id="989" Count="0" />
       <LineId Id="993" Count="3" />
       <LineId Id="992" Count="0" />
-      <LineId Id="747" Count="24" />
+      <LineId Id="747" Count="23" />
       <LineId Id="641" Count="0" />
+      <LineId Id="1106" Count="0" />
+      <LineId Id="1105" Count="0" />
+      <LineId Id="1110" Count="0" />
+      <LineId Id="1109" Count="0" />
+      <LineId Id="1224" Count="0" />
+      <LineId Id="1226" Count="0" />
+      <LineId Id="1233" Count="0" />
+      <LineId Id="1227" Count="0" />
+      <LineId Id="1111" Count="0" />
+      <LineId Id="1228" Count="1" />
+      <LineId Id="1234" Count="0" />
+      <LineId Id="1230" Count="0" />
+      <LineId Id="1108" Count="0" />
+      <LineId Id="1232" Count="0" />
+      <LineId Id="1231" Count="0" />
       <LineId Id="986" Count="0" />
     </LineIds>
     <LineIds Name="FB_ProductionTank._aCheck_Condition_Prod_End_active">
