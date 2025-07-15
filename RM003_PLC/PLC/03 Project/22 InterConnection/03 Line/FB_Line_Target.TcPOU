@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
   <POU Name="FB_Line_Target" Id="{a73be08b-a059-412e-9240-f16489ac4962}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_Line_Target EXTENDS FB_SFC_Cycle IMPLEMENTS ITF_FB_SFC_Cycle
 VAR_INPUT
@@ -39,7 +39,7 @@ act_Oper();
 	act_Status();
 //END_IF
 
-tonDrainTime(PT:=T#1M, IN:=eStatus=E_Line_Target.eDrain);
+tonDrainTime(PT:=T#1M, IN:=eStatus=E_Line_Target.eDrain AND eReq=E_Line_Target.eNone);
 IF tonDrainTime.Q 
 AND eReq=E_Line_Target.eNone
 AND eProcess=E_Line_Target.eNone

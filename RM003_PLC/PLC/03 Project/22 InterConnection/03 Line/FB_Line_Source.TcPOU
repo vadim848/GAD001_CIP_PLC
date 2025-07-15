@@ -54,7 +54,7 @@ act_Oper();
 
 m_TapWaterNotInUse();
 
-tonDrainTime(PT:=T#1M, IN:=eStatus=E_Line_Source.eDrain);
+tonDrainTime(PT:=T#1M, IN:=eStatus=E_Line_Source.eDrain AND eReq=E_Line_Target.eNone);
 IF tonDrainTime.Q 
 AND eReq=E_Line_Source.eNone
 AND eProcess=E_Line_Source.eNone
