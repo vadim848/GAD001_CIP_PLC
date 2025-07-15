@@ -20,6 +20,8 @@ VAR_OUTPUT
 END_VAR
 VAR
 	eLightTowerState		: E_LightTowerState;
+	eLightTower_Type		: E_LightTower_Type:=E_LightTower_Type.eSingleLayer;
+
 	
 	ton_Blink				: TON;
 	ton_Buzzer				: TON;
@@ -36,7 +38,81 @@ END_VAR
 ]]></Declaration>
     <Implementation>
       <ST><![CDATA[ton_Blink(IN:=NOT ton_Blink.Q);
-CASE eLightTowerState OF
+CASE eLightTower_Type OF
+	E_LightTower_Type.eSingleLayer: m_Single_Layer();
+	E_LightTower_Type.eMultiLayer: m_Multi_Layer();
+	
+END_CASE
+
+
+ton_NoMessage(PT:=T#5S,IN:=bBuzzerMuteMemo AND iActErrors=0 AND iActWarning=0);
+
+IF (stOpMain.bSetPlay
+	(*OR stOpLoad.bSetPlay
+	OR stOpUnload.bSetPlay
+	OR stOpManip.bSetPlay
+	OR stOpHMI.bSetPlay
+	OR prg_Call_OpMode.fbModeIndex.rt_Play.Q
+	OR prg_Call_OpMode.fbModeLoad.rt_Play.Q
+	OR prg_Call_OpMode.fbModeUnload.rt_Play.Q
+	OR prg_Call_OpMode.fbModeManip.rt_Play.Q*)
+	OR ton_NoMessage.Q	
+)
+THEN;
+	ton_MuteBuzzer.IN:=TRUE;
+END_IF
+IF ton_MuteBuzzer.IN THEN;
+	bBuzzerMuteMemo:=FALSE;
+END_IF
+ton_MuteBuzzer(PT:=T#1S);
+IF ton_MuteBuzzer.Q THEN
+	ton_MuteBuzzer.IN:=FALSE;
+END_IF
+IF prg_Messages.ResetErrors OR ton_BuzzerLongTimeOn.Q THEN;// iActErrors=0 AND iActWarning=0
+	bBuzzerMuteMemo:=TRUE;
+END_IF
+ton_BuzzerLongTimeOn(PT:=T#30M,IN:=eBuzzerMode<>eBuzzerOff);
+
+(*
+TYPE E_BuzzerMode :
+(
+	eBuzzerOff := 0,
+	eBuzzerError,		//Short Delay Off
+	eBuzzerWarning		//Long Delay Off
+);
+END_TYPE
+*)
+
+IF NOT bBuzzerBypass THEN
+	ton_Buzzer();
+	CASE eBuzzerMode OF
+		eBuzzerOff :;
+			qBuzzer:=FALSE;
+			
+			ton_Buzzer.IN:=FALSE;
+		eBuzzerError:;			//Short Delay Off
+			qBuzzer:=TRUE;
+			ton_Buzzer.PT:=t_BuzzerErrorDelay;
+			ton_Buzzer.IN:=NOT ton_Buzzer.Q;
+			IF ton_Buzzer.ET>t_Buzzer THEN; qBuzzer:=FALSE; END_IF
+		eBuzzerWarning:;		//Long Delay Off
+			qBuzzer:=TRUE;
+			ton_Buzzer.PT:=t_BuzzerWarningDelay;
+			ton_Buzzer.IN:=NOT ton_Buzzer.Q;
+			IF ton_Buzzer.ET>t_BuzzerShort THEN; qBuzzer:=FALSE; END_IF
+	END_CASE	
+ELSE
+	qBuzzer:=FALSE;
+END_IF
+]]></ST>
+    </Implementation>
+    <Method Name="m_Multi_Layer" Id="{f813da95-f288-460b-9d28-4c9b377be341}">
+      <Declaration><![CDATA[METHOD m_Multi_Layer : BOOL
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[CASE eLightTowerState OF
 	E_LightTowerState.eLightsOff:;
 		qLedGreen	:=FALSE;
 		qLedYellow	:=FALSE;
@@ -125,75 +201,7 @@ CASE eLightTowerState OF
 		eBuzzerMode:=eBuzzerOff;	
 				
 END_CASE
-
-ton_NoMessage(PT:=T#5S,IN:=bBuzzerMuteMemo AND iActErrors=0 AND iActWarning=0);
-
-IF (stOpMain.bSetPlay
-	(*OR stOpLoad.bSetPlay
-	OR stOpUnload.bSetPlay
-	OR stOpManip.bSetPlay
-	OR stOpHMI.bSetPlay
-	OR prg_Call_OpMode.fbModeIndex.rt_Play.Q
-	OR prg_Call_OpMode.fbModeLoad.rt_Play.Q
-	OR prg_Call_OpMode.fbModeUnload.rt_Play.Q
-	OR prg_Call_OpMode.fbModeManip.rt_Play.Q*)
-	OR ton_NoMessage.Q	
-)
-THEN;
-	ton_MuteBuzzer.IN:=TRUE;
-END_IF
-IF ton_MuteBuzzer.IN THEN;
-	bBuzzerMuteMemo:=FALSE;
-END_IF
-ton_MuteBuzzer(PT:=T#1S);
-IF ton_MuteBuzzer.Q THEN
-	ton_MuteBuzzer.IN:=FALSE;
-END_IF
-IF prg_Messages.ResetErrors OR ton_BuzzerLongTimeOn.Q THEN;// iActErrors=0 AND iActWarning=0
-	bBuzzerMuteMemo:=TRUE;
-END_IF
-ton_BuzzerLongTimeOn(PT:=T#30M,IN:=eBuzzerMode<>eBuzzerOff);
-
-(*
-TYPE E_BuzzerMode :
-(
-	eBuzzerOff := 0,
-	eBuzzerError,		//Short Delay Off
-	eBuzzerWarning		//Long Delay Off
-);
-END_TYPE
-*)
-
-IF NOT bBuzzerBypass THEN
-	ton_Buzzer();
-	CASE eBuzzerMode OF
-		eBuzzerOff :;
-			qBuzzer:=FALSE;
-			
-			ton_Buzzer.IN:=FALSE;
-		eBuzzerError:;			//Short Delay Off
-			qBuzzer:=TRUE;
-			ton_Buzzer.PT:=t_BuzzerErrorDelay;
-			ton_Buzzer.IN:=NOT ton_Buzzer.Q;
-			IF ton_Buzzer.ET>t_Buzzer THEN; qBuzzer:=FALSE; END_IF
-		eBuzzerWarning:;		//Long Delay Off
-			qBuzzer:=TRUE;
-			ton_Buzzer.PT:=t_BuzzerWarningDelay;
-			ton_Buzzer.IN:=NOT ton_Buzzer.Q;
-			IF ton_Buzzer.ET>t_BuzzerShort THEN; qBuzzer:=FALSE; END_IF
-	END_CASE	
-ELSE
-	qBuzzer:=FALSE;
-END_IF
 ]]></ST>
-    </Implementation>
-    <Method Name="m_Multi_Layer" Id="{f813da95-f288-460b-9d28-4c9b377be341}">
-      <Declaration><![CDATA[METHOD m_Multi_Layer : BOOL
-VAR_INPUT
-END_VAR
-]]></Declaration>
-      <Implementation>
-        <ST><![CDATA[]]></ST>
       </Implementation>
     </Method>
     <Method Name="m_Op_Case1" Id="{a6b18087-02cb-4fbe-87dc-e00d38ec9f3d}">
@@ -321,7 +329,123 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[]]></ST>
+        <ST><![CDATA[CASE eLightTowerState OF
+	E_LightTowerState.eLightsOff:;
+		qLedGreen	:=FALSE;
+		qLedYellow	:=FALSE;
+		qLedRed		:=FALSE;
+		qLedBlue	:=FALSE;
+		eBuzzerMode:=eBuzzerOff;	
+		
+	E_LightTowerState.eGreen:;
+		qLedGreen	:=TRUE;
+		qLedYellow	:=FALSE;
+		qLedRed		:=FALSE;
+		qLedBlue	:=FALSE;
+		eBuzzerMode:=eBuzzerOff;	
+		
+	E_LightTowerState.eGreen_YellowBlink:;
+		qLedGreen	:=TRUE;
+		qLedYellow	:=TRUE;
+		qLedRed		:=FALSE;
+		qLedBlue	:=FALSE;
+		IF bBuzzerMuteMemo THEN;
+			eBuzzerMode:=eBuzzerOff;
+		ELSE
+			eBuzzerMode:=eBuzzerWarning;
+		END_IF
+		ton_Blink.PT:=T#1S;
+		IF ton_Blink.ET>T#0.5S THEN; qLedYellow:=FALSE; ELSE;qLedGreen:=FALSE; END_IF	
+		
+	E_LightTowerState.eGreenBlink:;
+		qLedGreen	:=TRUE;
+		qLedYellow	:=FALSE;
+		qLedRed		:=FALSE;
+		qLedBlue	:=FALSE;
+		eBuzzerMode:=eBuzzerOff;		
+		ton_Blink.PT:=T#1S;
+		IF ton_Blink.ET>T#0.5S THEN; qLedGreen:=FALSE; END_IF	
+
+	E_LightTowerState.eGreenBlink_YellowBlink:;
+		qLedGreen	:=TRUE;
+		qLedYellow	:=TRUE;
+		qLedRed		:=FALSE;
+		qLedBlue	:=FALSE;
+		IF bBuzzerMuteMemo THEN;
+			eBuzzerMode:=eBuzzerOff;
+		ELSE
+			eBuzzerMode:=eBuzzerWarning;
+		END_IF
+		ton_Blink.PT:=T#1S;
+		IF ton_Blink.ET>T#0.5S THEN; qLedYellow:=FALSE; ELSE;qLedGreen:=FALSE; END_IF
+
+	E_LightTowerState.eGreenBlink_RedBlink:;
+		qLedGreen	:=TRUE;
+		qLedYellow	:=FALSE;
+		qLedRed		:=TRUE;
+		qLedBlue	:=FALSE;
+		IF bBuzzerMuteMemo THEN;
+			eBuzzerMode:=eBuzzerOff;
+		ELSE
+			eBuzzerMode:=eBuzzerError;
+		END_IF
+		ton_Blink.PT:=T#1S;
+		IF ton_Blink.ET>T#0.5S THEN; qLedRed:=FALSE; ELSE;qLedGreen:=FALSE; END_IF
+		
+	E_LightTowerState.eYellow:;
+		qLedGreen	:=FALSE;
+		qLedYellow	:=TRUE;
+		qLedRed		:=FALSE;
+		qLedBlue	:=FALSE;
+		eBuzzerMode:=eBuzzerOff;	
+		
+	E_LightTowerState.eRed:;
+		qLedGreen	:=FALSE;
+		qLedYellow	:=FALSE;
+		qLedRed		:=TRUE;
+		qLedBlue	:=FALSE;
+		IF bBuzzerMuteMemo THEN;
+			eBuzzerMode:=eBuzzerOff;
+		ELSE
+			eBuzzerMode:=eBuzzerError;
+		END_IF
+		
+	E_LightTowerState.eBlue:;
+		qLedGreen	:=FALSE;
+		qLedYellow	:=FALSE;
+		qLedRed		:=FALSE;
+		qLedBlue	:=TRUE;
+		eBuzzerMode:=eBuzzerOff;	
+				
+END_CASE
+
+
+IF qLedRed THEN;
+	qSignal_1:=TRUE;	//wire BN
+	qSignal_2:=FALSE;	//wire GY
+	qSignal_3:=FALSE;	//wire BK
+	qSignal_4:=FALSE;	//wire WT	
+ELSIF qLedYellow THEN;
+	qSignal_1:=TRUE;	//wire BN
+	qSignal_2:=FALSE;	//wire GY
+	qSignal_3:=FALSE;	//wire BK
+	qSignal_4:=TRUE;	//wire WT	
+ELSIF qLedGreen THEN;
+	qSignal_1:=FALSE;	//wire BN
+	qSignal_2:=FALSE;	//wire GY
+	qSignal_3:=FALSE;	//wire BK
+	qSignal_4:=TRUE;	//wire WT	
+ELSIF qLedBlue THEN;
+	qSignal_1:=FALSE;	//wire BN
+	qSignal_2:=TRUE;	//wire GY
+	qSignal_3:=FALSE;	//wire BK
+	qSignal_4:=FALSE;	//wire WT	
+ELSE;
+	qSignal_1:=FALSE;	//wire BN
+	qSignal_2:=FALSE;	//wire GY
+	qSignal_3:=FALSE;	//wire BK
+	qSignal_4:=FALSE;	//wire WT
+END_IF]]></ST>
       </Implementation>
     </Method>
     <Property Name="pState" Id="{88d147a0-4679-47f6-a24a-a7b90f823d80}">
@@ -344,30 +468,17 @@ END_VAR
       </Set>
     </Property>
     <LineIds Name="FB_LightTower">
-      <LineId Id="26" Count="4" />
-      <LineId Id="162" Count="1" />
-      <LineId Id="32" Count="5" />
-      <LineId Id="164" Count="0" />
-      <LineId Id="38" Count="5" />
-      <LineId Id="165" Count="0" />
-      <LineId Id="44" Count="11" />
-      <LineId Id="166" Count="0" />
-      <LineId Id="56" Count="7" />
-      <LineId Id="167" Count="0" />
-      <LineId Id="64" Count="11" />
-      <LineId Id="168" Count="0" />
-      <LineId Id="76" Count="11" />
-      <LineId Id="169" Count="0" />
-      <LineId Id="88" Count="5" />
-      <LineId Id="170" Count="0" />
-      <LineId Id="94" Count="4" />
-      <LineId Id="171" Count="0" />
-      <LineId Id="173" Count="5" />
-      <LineId Id="172" Count="0" />
-      <LineId Id="99" Count="60" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="214" Count="0" />
+      <LineId Id="218" Count="1" />
+      <LineId Id="217" Count="0" />
+      <LineId Id="216" Count="0" />
+      <LineId Id="213" Count="0" />
+      <LineId Id="100" Count="59" />
       <LineId Id="9" Count="0" />
     </LineIds>
     <LineIds Name="FB_LightTower.m_Multi_Layer">
+      <LineId Id="9" Count="88" />
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_LightTower.m_Op_Case1">
@@ -382,7 +493,22 @@ END_VAR
       <LineId Id="5" Count="0" />
     </LineIds>
     <LineIds Name="FB_LightTower.m_Single_Layer">
+      <LineId Id="9" Count="90" />
       <LineId Id="5" Count="0" />
+      <LineId Id="113" Count="2" />
+      <LineId Id="100" Count="0" />
+      <LineId Id="104" Count="0" />
+      <LineId Id="117" Count="2" />
+      <LineId Id="116" Count="0" />
+      <LineId Id="105" Count="0" />
+      <LineId Id="121" Count="2" />
+      <LineId Id="120" Count="0" />
+      <LineId Id="106" Count="0" />
+      <LineId Id="125" Count="2" />
+      <LineId Id="124" Count="0" />
+      <LineId Id="107" Count="0" />
+      <LineId Id="109" Count="3" />
+      <LineId Id="101" Count="0" />
     </LineIds>
     <LineIds Name="FB_LightTower.pState.Get">
       <LineId Id="2" Count="0" />
