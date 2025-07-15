@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+  <POU Name="FB_LightTower_Control" Id="{d4c40c7e-8f0e-41b4-947c-71820532771c}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_LightTower_Control
+VAR_INPUT
+	ES_State		: BOOL;
+	RunProcess1		: BOOL;
+	RunProcess2		: BOOL;
+	RunProcess3		: BOOL;
+	ModeZone1		: E_ModeZone;
+	ModeZone2		: E_ModeZone;
+	ModeZone3		: E_ModeZone;
+END_VAR
+
+VAR_OUTPUT
+	eLightTowerState		: E_LightTowerState;
+END_VAR
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[IF ES_State THEN;
+	IF stOper[ModeZone1].iActOperation=E_OperationButtons.ePauseAll 
+	OR stOper[ModeZone2].iActOperation=E_OperationButtons.ePauseAll
+	OR stOper[ModeZone3].iActOperation=E_OperationButtons.ePauseAll
+	THEN;
+		eLightTowerState:= E_LightTowerState.eYellow;
+	ELSIF RunProcess1 OR RunProcess2 OR RunProcess3 THEN;
+		eLightTowerState:= E_LightTowerState.eGreen;
+	ELSE;
+		eLightTowerState:= E_LightTowerState.eBlue;
+	END_IF
+	
+ELSE;
+	eLightTowerState:= E_LightTowerState.eRed;
+END_IF]]></ST>
+    </Implementation>
+    <LineIds Name="FB_LightTower_Control">
+      <LineId Id="9" Count="0" />
+      <LineId Id="23" Count="0" />
+      <LineId Id="54" Count="1" />
+      <LineId Id="26" Count="0" />
+      <LineId Id="33" Count="0" />
+      <LineId Id="32" Count="0" />
+      <LineId Id="24" Count="0" />
+      <LineId Id="34" Count="1" />
+      <LineId Id="25" Count="0" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="21" Count="1" />
+      <LineId Id="20" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>
