@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.20">
   <POU Name="prg_MessageManager" Id="{95ae2e99-240d-4c04-a74a-5e6256dca08f}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM prg_MessageManager
 VAR
@@ -247,34 +247,37 @@ END_FOR
     </Action>
     <Action Name="act_Tanks_Lock" Id="{33f4d09a-f1e9-4133-b68f-7c920adc8446}">
       <Implementation>
-        <ST><![CDATA[
+        <ST><![CDATA[{IF defined (Production)}
+	IF NOT gIO.arSafe[1].stSafetyIn.TankLocked_CIP_T91 THEN
+		fbPrintErrMessageByID(sModuleDescription:='Tank Interlock',sActErrorID:='101x002xT91');
+	END_IF
+	IF NOT gIO.arSafe[1].stSafetyIn.TankLocked_CIP_T92 THEN
+		fbPrintErrMessageByID(sModuleDescription:='Tank Interlock',sActErrorID:='101x002xT92');
+	END_IF
+	IF NOT gIO.arSafe[1].stSafetyIn.TankLocked_CIP_T93 THEN
+		fbPrintErrMessageByID(sModuleDescription:='Tank Interlock',sActErrorID:='101x002xT93');
+	END_IF
+	IF NOT gIO.arSafe[1].stSafetyIn.TankLocked_CIP_T94 THEN
+		fbPrintErrMessageByID(sModuleDescription:='Tank Interlock',sActErrorID:='101x002xT94');
+	END_IF
+	
+	IF NOT gIO.arSafe[1].stSafetyIn.TankLocked_Marinade_T1 THEN
+		//fbPrintErrMessageByID(sModuleDescription:='Tank Interlock',sActErrorID:='101x002xT01');
+	END_IF
+	IF NOT gIO.arSafe[1].stSafetyIn.TankLocked_Marinade_T2 THEN
+		//fbPrintErrMessageByID(sModuleDescription:='Tank Interlock',sActErrorID:='101x002xT02');
+	END_IF
+	
+	IF NOT gIO.arSafe[1].stSafetyIn.TankLocked_Color_T3 THEN
+		fbPrintErrMessageByID(sModuleDescription:='Tank Interlock',sActErrorID:='101x002xT03');
+	END_IF
+	IF NOT gIO.arSafe[1].stSafetyIn.TankLocked_Color_T4 THEN
+		fbPrintErrMessageByID(sModuleDescription:='Tank Interlock',sActErrorID:='101x002xT04');
+	END_IF
+{ELSIF defined (Simulation_IO)}
+{END_IF}
 
-IF NOT gIO.arSafe[1].stSafetyIn.TankLocked_CIP_T91 THEN
-	fbPrintErrMessageByID(sModuleDescription:='Tank Interlock',sActErrorID:='101x002xT91');
-END_IF
-IF NOT gIO.arSafe[1].stSafetyIn.TankLocked_CIP_T92 THEN
-	fbPrintErrMessageByID(sModuleDescription:='Tank Interlock',sActErrorID:='101x002xT92');
-END_IF
-IF NOT gIO.arSafe[1].stSafetyIn.TankLocked_CIP_T93 THEN
-	fbPrintErrMessageByID(sModuleDescription:='Tank Interlock',sActErrorID:='101x002xT93');
-END_IF
-IF NOT gIO.arSafe[1].stSafetyIn.TankLocked_CIP_T94 THEN
-	fbPrintErrMessageByID(sModuleDescription:='Tank Interlock',sActErrorID:='101x002xT94');
-END_IF
 
-IF NOT gIO.arSafe[1].stSafetyIn.TankLocked_Marinade_T1 THEN
-	//fbPrintErrMessageByID(sModuleDescription:='Tank Interlock',sActErrorID:='101x002xT01');
-END_IF
-IF NOT gIO.arSafe[1].stSafetyIn.TankLocked_Marinade_T2 THEN
-	//fbPrintErrMessageByID(sModuleDescription:='Tank Interlock',sActErrorID:='101x002xT02');
-END_IF
-
-IF NOT gIO.arSafe[1].stSafetyIn.TankLocked_Color_T3 THEN
-	fbPrintErrMessageByID(sModuleDescription:='Tank Interlock',sActErrorID:='101x002xT03');
-END_IF
-IF NOT gIO.arSafe[1].stSafetyIn.TankLocked_Color_T4 THEN
-	fbPrintErrMessageByID(sModuleDescription:='Tank Interlock',sActErrorID:='101x002xT04');
-END_IF
 ]]></ST>
       </Implementation>
     </Action>
@@ -291,33 +294,38 @@ END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[
-IF TRUE
-//AND __ISVALIDREF(fbAnalogSensor[aSense_Name]) 
-THEN;
-	
-	temp_string:=TO_STRING(aSense_Name);
-	k:=MID(temp_string, 3, 3);
-	
-	IF fbAnalogSensor[aSense_Name].bLL_Warning THEN;
-		fbPrintErrMessageByID(sModuleDescription:='Air Pressure',sActErrorID:=concat ('101x003x01', k));
+{IF defined (Production)}
+	IF TRUE
+	//AND __ISVALIDREF(fbAnalogSensor[aSense_Name]) 
+	THEN;
+		
+		temp_string:=TO_STRING(aSense_Name);
+		k:=MID(temp_string, 3, 3);
+		
+		IF fbAnalogSensor[aSense_Name].bLL_Warning THEN;
+			fbPrintErrMessageByID(sModuleDescription:='Air Pressure',sActErrorID:=concat ('101x003x01', k));
+		END_IF
+		
+		IF fbAnalogSensor[aSense_Name].bHH_Warning THEN;
+			fbPrintErrMessageByID(sModuleDescription:='Air Pressure',sActErrorID:=concat ('101x003x02', k));
+		END_IF
+		
+		IF fbAnalogSensor[aSense_Name].bLL_Alarm THEN;
+			fbPrintErrMessageByID(sModuleDescription:='Air Pressure',sActErrorID:=concat ('101x003x11', k));
+		END_IF
+		
+		IF fbAnalogSensor[aSense_Name].bHH_Alarm THEN;
+			fbPrintErrMessageByID(sModuleDescription:='Air Pressure',sActErrorID:=concat ('101x003x12', k));
+		END_IF
+		
+		
+	ELSE;
+		RETURN;
 	END_IF
-	
-	IF fbAnalogSensor[aSense_Name].bHH_Warning THEN;
-		fbPrintErrMessageByID(sModuleDescription:='Air Pressure',sActErrorID:=concat ('101x003x02', k));
-	END_IF
-	
-	IF fbAnalogSensor[aSense_Name].bLL_Alarm THEN;
-		fbPrintErrMessageByID(sModuleDescription:='Air Pressure',sActErrorID:=concat ('101x003x11', k));
-	END_IF
-	
-	IF fbAnalogSensor[aSense_Name].bHH_Alarm THEN;
-		fbPrintErrMessageByID(sModuleDescription:='Air Pressure',sActErrorID:=concat ('101x003x12', k));
-	END_IF
-	
-	
-ELSE;
-	RETURN;
-END_IF]]></ST>
+{ELSIF defined (Simulation_IO)}
+{END_IF}
+
+]]></ST>
       </Implementation>
     </Method>
     <Method Name="m_Motor" Id="{ac9b50dd-4470-451b-b667-000b344bf669}">
@@ -338,163 +346,5 @@ IF g_Pump.fbPump[ePump_name].m_Error()<>'' THEN;
 END_IF]]></ST>
       </Implementation>
     </Method>
-    <LineIds Name="prg_MessageManager">
-      <LineId Id="24" Count="0" />
-      <LineId Id="83" Count="0" />
-      <LineId Id="85" Count="1" />
-      <LineId Id="82" Count="0" />
-      <LineId Id="122" Count="2" />
-      <LineId Id="46" Count="0" />
-      <LineId Id="125" Count="2" />
-      <LineId Id="131" Count="2" />
-      <LineId Id="135" Count="0" />
-      <LineId Id="138" Count="2" />
-      <LineId Id="137" Count="0" />
-      <LineId Id="136" Count="0" />
-      <LineId Id="130" Count="0" />
-      <LineId Id="129" Count="0" />
-    </LineIds>
-    <LineIds Name="prg_MessageManager.act_AirPressure">
-      <LineId Id="2" Count="0" />
-      <LineId Id="6" Count="3" />
-      <LineId Id="5" Count="0" />
-    </LineIds>
-    <LineIds Name="prg_MessageManager.act_Count">
-      <LineId Id="33" Count="0" />
-      <LineId Id="32" Count="0" />
-      <LineId Id="1" Count="1" />
-      <LineId Id="12" Count="0" />
-      <LineId Id="35" Count="4" />
-      <LineId Id="41" Count="0" />
-      <LineId Id="40" Count="0" />
-      <LineId Id="42" Count="0" />
-      <LineId Id="34" Count="0" />
-      <LineId Id="25" Count="2" />
-      <LineId Id="30" Count="0" />
-      <LineId Id="43" Count="0" />
-    </LineIds>
-    <LineIds Name="prg_MessageManager.act_GeneralMessage">
-      <LineId Id="0" Count="4" />
-      <LineId Id="225" Count="0" />
-      <LineId Id="5" Count="2" />
-      <LineId Id="13" Count="3" />
-      <LineId Id="29" Count="0" />
-      <LineId Id="40" Count="0" />
-      <LineId Id="66" Count="3" />
-      <LineId Id="344" Count="0" />
-      <LineId Id="342" Count="0" />
-      <LineId Id="340" Count="0" />
-      <LineId Id="347" Count="0" />
-      <LineId Id="349" Count="0" />
-      <LineId Id="348" Count="0" />
-      <LineId Id="232" Count="0" />
-      <LineId Id="71" Count="0" />
-      <LineId Id="350" Count="3" />
-      <LineId Id="360" Count="0" />
-      <LineId Id="354" Count="2" />
-      <LineId Id="361" Count="0" />
-      <LineId Id="357" Count="1" />
-      <LineId Id="337" Count="0" />
-      <LineId Id="359" Count="0" />
-      <LineId Id="362" Count="2" />
-      <LineId Id="234" Count="0" />
-      <LineId Id="74" Count="1" />
-      <LineId Id="235" Count="0" />
-      <LineId Id="77" Count="1" />
-      <LineId Id="236" Count="0" />
-      <LineId Id="80" Count="0" />
-      <LineId Id="366" Count="1" />
-      <LineId Id="365" Count="0" />
-      <LineId Id="81" Count="0" />
-      <LineId Id="237" Count="0" />
-      <LineId Id="83" Count="0" />
-      <LineId Id="339" Count="0" />
-      <LineId Id="343" Count="0" />
-      <LineId Id="368" Count="1" />
-      <LineId Id="371" Count="1" />
-      <LineId Id="370" Count="0" />
-      <LineId Id="91" Count="0" />
-      <LineId Id="335" Count="0" />
-      <LineId Id="270" Count="0" />
-      <LineId Id="287" Count="0" />
-      <LineId Id="275" Count="0" />
-      <LineId Id="273" Count="0" />
-      <LineId Id="277" Count="0" />
-      <LineId Id="288" Count="0" />
-      <LineId Id="278" Count="1" />
-      <LineId Id="282" Count="0" />
-      <LineId Id="289" Count="0" />
-      <LineId Id="283" Count="1" />
-      <LineId Id="286" Count="0" />
-      <LineId Id="280" Count="1" />
-      <LineId Id="276" Count="0" />
-      <LineId Id="274" Count="0" />
-      <LineId Id="272" Count="0" />
-      <LineId Id="334" Count="0" />
-      <LineId Id="271" Count="0" />
-      <LineId Id="92" Count="2" />
-      <LineId Id="242" Count="1" />
-      <LineId Id="241" Count="0" />
-      <LineId Id="95" Count="5" />
-      <LineId Id="325" Count="0" />
-      <LineId Id="101" Count="0" />
-      <LineId Id="333" Count="0" />
-      <LineId Id="332" Count="0" />
-      <LineId Id="292" Count="1" />
-      <LineId Id="295" Count="0" />
-      <LineId Id="307" Count="0" />
-      <LineId Id="311" Count="0" />
-      <LineId Id="302" Count="0" />
-      <LineId Id="327" Count="0" />
-      <LineId Id="326" Count="0" />
-      <LineId Id="296" Count="1" />
-      <LineId Id="314" Count="0" />
-      <LineId Id="318" Count="0" />
-      <LineId Id="303" Count="0" />
-      <LineId Id="329" Count="0" />
-      <LineId Id="328" Count="0" />
-      <LineId Id="298" Count="1" />
-      <LineId Id="321" Count="1" />
-      <LineId Id="304" Count="0" />
-      <LineId Id="331" Count="0" />
-      <LineId Id="330" Count="0" />
-      <LineId Id="300" Count="0" />
-      <LineId Id="305" Count="0" />
-      <LineId Id="323" Count="1" />
-      <LineId Id="306" Count="0" />
-      <LineId Id="301" Count="0" />
-      <LineId Id="294" Count="0" />
-      <LineId Id="106" Count="6" />
-      <LineId Id="249" Count="1" />
-      <LineId Id="336" Count="0" />
-      <LineId Id="116" Count="2" />
-      <LineId Id="132" Count="0" />
-      <LineId Id="217" Count="0" />
-    </LineIds>
-    <LineIds Name="prg_MessageManager.act_Tanks_Lock">
-      <LineId Id="2" Count="3" />
-      <LineId Id="1" Count="0" />
-      <LineId Id="7" Count="22" />
-      <LineId Id="6" Count="0" />
-    </LineIds>
-    <LineIds Name="prg_MessageManager.m_AirPressure">
-      <LineId Id="8" Count="0" />
-      <LineId Id="5" Count="0" />
-      <LineId Id="42" Count="0" />
-      <LineId Id="40" Count="0" />
-      <LineId Id="36" Count="3" />
-      <LineId Id="9" Count="0" />
-      <LineId Id="13" Count="2" />
-      <LineId Id="17" Count="11" />
-      <LineId Id="16" Count="0" />
-      <LineId Id="11" Count="1" />
-      <LineId Id="10" Count="0" />
-    </LineIds>
-    <LineIds Name="prg_MessageManager.m_Motor">
-      <LineId Id="5" Count="0" />
-      <LineId Id="14" Count="0" />
-      <LineId Id="13" Count="0" />
-      <LineId Id="15" Count="1" />
-    </LineIds>
   </POU>
 </TcPlcObject>
