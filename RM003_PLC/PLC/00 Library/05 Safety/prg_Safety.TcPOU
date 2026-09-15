@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.20">
   <POU Name="prg_Safety" Id="{db89eb8b-da04-4986-84d3-a7f6079fbab6}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM prg_Safety
 VAR
@@ -22,11 +22,23 @@ VAR
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[act_Call_TSs();
-bStateSafe_ES1:=arSafe[1].stSafetyIn.ES1_State;
-bStateSafe_ES2:=arSafe[1].stSafetyIn.ES2_State;
-bStateSafe_ES3:=arSafe[1].stSafetyIn.ES3_State;
-bStateSafe_ES4:=arSafe[1].stSafetyIn.ES4_State;
+      <ST><![CDATA[
+act_Call_TSs();
+
+
+{IF defined (Production)}
+	bStateSafe_ES1:=arSafe[1].stSafetyIn.ES1_State;
+	bStateSafe_ES2:=arSafe[1].stSafetyIn.ES2_State;
+	bStateSafe_ES3:=arSafe[1].stSafetyIn.ES3_State;
+	bStateSafe_ES4:=arSafe[1].stSafetyIn.ES4_State;
+{ELSIF defined (Simulation_IO)}
+	bES_Bypass:= TRUE;
+
+	bStateSafe_ES1:=TRUE;
+	bStateSafe_ES2:=TRUE;
+	bStateSafe_ES3:=TRUE;
+	bStateSafe_ES4:=TRUE;
+{END_IF}
 
 IF TRUE 
 AND bStateSafe_ES1
@@ -1157,71 +1169,5 @@ Buffer_Act_History[1].sErrorMessage:=CONCAT(Buffer_Act_History[1].sErrorMessage,
 	]]></ST>
       </Implementation>
     </Method>
-    <LineIds Name="prg_Safety">
-      <LineId Id="73" Count="0" />
-      <LineId Id="146" Count="3" />
-      <LineId Id="169" Count="0" />
-      <LineId Id="145" Count="0" />
-      <LineId Id="174" Count="3" />
-      <LineId Id="208" Count="1" />
-      <LineId Id="207" Count="0" />
-      <LineId Id="172" Count="0" />
-      <LineId Id="178" Count="0" />
-      <LineId Id="170" Count="0" />
-      <LineId Id="179" Count="0" />
-      <LineId Id="171" Count="0" />
-      <LineId Id="93" Count="1" />
-      <LineId Id="199" Count="0" />
-      <LineId Id="201" Count="5" />
-      <LineId Id="200" Count="0" />
-      <LineId Id="91" Count="0" />
-      <LineId Id="72" Count="0" />
-      <LineId Id="8" Count="0" />
-      <LineId Id="59" Count="3" />
-      <LineId Id="14" Count="0" />
-      <LineId Id="63" Count="0" />
-      <LineId Id="5" Count="2" />
-      <LineId Id="54" Count="0" />
-      <LineId Id="56" Count="0" />
-      <LineId Id="19" Count="3" />
-      <LineId Id="18" Count="0" />
-      <LineId Id="26" Count="0" />
-      <LineId Id="30" Count="0" />
-      <LineId Id="36" Count="1" />
-      <LineId Id="35" Count="0" />
-      <LineId Id="39" Count="0" />
-      <LineId Id="43" Count="0" />
-      <LineId Id="40" Count="1" />
-      <LineId Id="38" Count="0" />
-      <LineId Id="25" Count="0" />
-      <LineId Id="24" Count="0" />
-      <LineId Id="23" Count="0" />
-    </LineIds>
-    <LineIds Name="prg_Safety.m_Print_Error_Message">
-      <LineId Id="30" Count="0" />
-      <LineId Id="66" Count="0" />
-      <LineId Id="6" Count="0" />
-      <LineId Id="32" Count="0" />
-      <LineId Id="56" Count="1" />
-      <LineId Id="13" Count="3" />
-      <LineId Id="5" Count="0" />
-      <LineId Id="22" Count="1" />
-      <LineId Id="27" Count="0" />
-      <LineId Id="26" Count="0" />
-      <LineId Id="25" Count="0" />
-    </LineIds>
-    <LineIds Name="prg_Safety.m_Print_Success_Message">
-      <LineId Id="30" Count="0" />
-      <LineId Id="66" Count="0" />
-      <LineId Id="6" Count="0" />
-      <LineId Id="32" Count="0" />
-      <LineId Id="56" Count="1" />
-      <LineId Id="13" Count="3" />
-      <LineId Id="5" Count="0" />
-      <LineId Id="22" Count="1" />
-      <LineId Id="27" Count="0" />
-      <LineId Id="26" Count="0" />
-      <LineId Id="25" Count="0" />
-    </LineIds>
   </POU>
 </TcPlcObject>

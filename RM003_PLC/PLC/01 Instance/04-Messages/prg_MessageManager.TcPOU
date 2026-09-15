@@ -339,11 +339,14 @@ VAR
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[temp_string:=TO_STRING(ePump_name);
+        <ST><![CDATA[{IF defined (Production)}
+temp_string:=TO_STRING(ePump_name);
 
 IF g_Pump.fbPump[ePump_name].m_Error()<>'' THEN;
 	fbPrintErrMessageByID(sModuleDescription:='Motor', sActErrorID:=g_Pump.fbPump[ePump_name].m_Error());
-END_IF]]></ST>
+END_IF
+{ELSIF defined (Simulation_IO)}
+{END_IF}]]></ST>
       </Implementation>
     </Method>
   </POU>
