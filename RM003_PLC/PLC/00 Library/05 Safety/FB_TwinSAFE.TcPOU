@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.20">
   <POU Name="FB_TwinSAFE" Id="{4ab5defe-eed2-490f-bb56-b846d8da8e90}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_TwinSAFE
 VAR_INPUT
@@ -34,9 +34,9 @@ stTS.stSafetyOut.ES4_PB_Restart:=ES4_Restart;
 ton_TSafe_OK(IN:=stTS.TSafeIn.InRun AND NOT stTS.TSafeIn.COM_Err, PT:=T#1S );
 IF ton_TSafe_OK.Q 
 AND stTS.stSafetyIn.ES1_State
-AND stTS.stSafetyIn.ES2_State
+//AND stTS.stSafetyIn.ES2_State
 AND stTS.stSafetyIn.ES3_State
-AND stTS.stSafetyIn.ES4_State
+//AND stTS.stSafetyIn.ES4_State
 THEN;
 	outStateSafe:=TRUE;
 ELSE;
@@ -122,35 +122,5 @@ Buffer_Act_History[1].sErrorMessage:=CONCAT(Buffer_Act_History[1].sErrorMessage,
 	]]></ST>
       </Implementation>
     </Method>
-    <LineIds Name="FB_TwinSAFE">
-      <LineId Id="388" Count="38" />
-      <LineId Id="9" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_TwinSAFE.m_Print_Error_Message">
-      <LineId Id="30" Count="0" />
-      <LineId Id="66" Count="0" />
-      <LineId Id="6" Count="0" />
-      <LineId Id="32" Count="0" />
-      <LineId Id="56" Count="1" />
-      <LineId Id="13" Count="3" />
-      <LineId Id="5" Count="0" />
-      <LineId Id="22" Count="1" />
-      <LineId Id="27" Count="0" />
-      <LineId Id="26" Count="0" />
-      <LineId Id="25" Count="0" />
-    </LineIds>
-    <LineIds Name="FB_TwinSAFE.m_Print_Success_Message">
-      <LineId Id="30" Count="0" />
-      <LineId Id="66" Count="0" />
-      <LineId Id="6" Count="0" />
-      <LineId Id="32" Count="0" />
-      <LineId Id="56" Count="1" />
-      <LineId Id="13" Count="3" />
-      <LineId Id="5" Count="0" />
-      <LineId Id="22" Count="1" />
-      <LineId Id="27" Count="0" />
-      <LineId Id="26" Count="0" />
-      <LineId Id="25" Count="0" />
-    </LineIds>
   </POU>
 </TcPlcObject>
