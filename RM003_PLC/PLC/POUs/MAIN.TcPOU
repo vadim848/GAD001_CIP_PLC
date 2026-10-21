@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.21">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.20">
   <POU Name="MAIN" Id="{3441d04c-1b6a-45f8-92c9-effbc902d265}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM MAIN
 VAR
@@ -98,7 +98,8 @@ IF bSetExpeationTime THEN;
 		
 	END_FOR
 END_IF
-	
+g_Data.fbCIP.eCIP_Usage := hmi_CIP_Usage;
+hmi_CIP_Usage := g_Data.fbCIP.eCIP_Usage;
 
 mElementList_SetName();
 
@@ -21426,7 +21427,7 @@ END_CASE]]></ST>
                     <v n="Comment">""</v>
                     <v n="Title">""</v>
                     <v n="Label">""</v>
-                    <v n="OutCommented">true</v>
+                    <v n="OutCommented">false</v>
                     <l2 n="NetworkItems" cet="BoxTreeAssign">
                       <o>
                         <o n="OutputItems" t="OutputItemList">
