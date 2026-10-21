@@ -34,7 +34,7 @@ stProcessControl.rValue_Min_To_ReleaseControl:=15; //Degrees
 IF stHeatExchanger.bManual THEN;
 	fbProcessControl.mRun_PID(Set_Point:=stProcessControl.fCtrlOutput_Manual , controlManual:=TRUE);
 	//21_10 return
-	nAlagonValveCntrOut:=mCMD_to_Analog(fControl:=stHeatExchanger.fManualControl);
+	nAlagonValveCntrOut:=mCMD_to_Analog(fControl:=stProcessControl.fCtrlOutput_Manual);
 ELSE;
 	IF stProcessControl.bActiveCntr AND NOT stPis.st_Open THEN
 		stPis.req_Open:=TRUE;

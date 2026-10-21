@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.15">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.20">
   <GVL Name="gIO" Id="{d074f1fc-f55a-4f30-b093-dc5be34740ab}">
     <Declaration><![CDATA[//{attribute 'qualified_only'}
 VAR_GLOBAL
@@ -24,6 +24,9 @@ VAR_GLOBAL
 	bStateSafe_ES4	: BOOL;
 	
 	fbScaleFactor: ARRAY[0..E_ASense_Name.last] 		OF FB_ScaleFactor;
+	
+	Anybus_Inputs_Raw  AT %I* : ARRAY [0..15] OF BYTE; 
+    Anybus_Outputs_Raw AT %Q* : ARRAY [0..15] OF BYTE;
 
 	
 END_VAR]]></Declaration>
