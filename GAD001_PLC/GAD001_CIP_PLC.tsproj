@@ -2,31 +2,6 @@
 <TcSmProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2012/07/TcSmProject" TcSmVersion="1.0" TcVersion="3.1.4026.27" TcProjectVariant="Production">
 	<DataTypes>
 		<DataType>
-			<Name GUID="{0146173C-D895-D219-E209-CC005AC77636}" Namespace="Tc2_SerialCom" AutoDeleteType="true">EL6inData22B</Name>
-			<Comment><![CDATA[ This data type is corresponding to the
-   EL-6xxx data structure used in the
-   TwinCAT SystemManager
-   (EL-6xxx version using 22 data bytes) 
-]]></Comment>
-			<BitSize>192</BitSize>
-			<SubItem>
-				<Name>Status</Name>
-				<Type GUID="{18071995-0000-0000-0000-000000000004}">WORD</Type>
-				<BitSize>16</BitSize>
-				<BitOffs>0</BitOffs>
-			</SubItem>
-			<SubItem>
-				<Name>D</Name>
-				<Type GUID="{18071995-0000-0000-0000-000000000001}">BYTE</Type>
-				<ArrayInfo>
-					<LBound>0</LBound>
-					<Elements>22</Elements>
-				</ArrayInfo>
-				<BitSize>176</BitSize>
-				<BitOffs>16</BitOffs>
-			</SubItem>
-		</DataType>
-		<DataType>
 			<Name GUID="{8337191F-A112-5453-0643-1189EF3D2122}" AutoDeleteType="true">ST_VisuPLC_To_PLC</Name>
 			<BitSize>96</BitSize>
 			<SubItem>
@@ -489,31 +464,6 @@
 				<LBound>1</LBound>
 				<Elements>4</Elements>
 			</ArrayInfo>
-		</DataType>
-		<DataType>
-			<Name GUID="{D6B0A42D-897A-4B90-95E8-3C741C3CE3EE}" Namespace="Tc2_SerialCom" AutoDeleteType="true">EL6outData22B</Name>
-			<Comment><![CDATA[ This data type is corresponding to the
-   EL-6xxx data structure used in the
-   TwinCAT SystemManager
-   (EL-6xxx version using 22 data bytes) 
-]]></Comment>
-			<BitSize>192</BitSize>
-			<SubItem>
-				<Name>Ctrl</Name>
-				<Type GUID="{18071995-0000-0000-0000-000000000004}">WORD</Type>
-				<BitSize>16</BitSize>
-				<BitOffs>0</BitOffs>
-			</SubItem>
-			<SubItem>
-				<Name>D</Name>
-				<Type GUID="{18071995-0000-0000-0000-000000000001}">BYTE</Type>
-				<ArrayInfo>
-					<LBound>0</LBound>
-					<Elements>22</Elements>
-				</ArrayInfo>
-				<BitSize>176</BitSize>
-				<BitOffs>16</BitOffs>
-			</SubItem>
 		</DataType>
 		<DataType>
 			<Name GUID="{24C90CA1-76E9-2CC1-BDE2-50ABE5C8D163}" AutoDeleteType="true">E_Prod_Type</Name>
@@ -1252,9 +1202,6 @@
 				<Task Id="4" Priority="14" CycleTime="3000000" AmsPort="351" AdtTasks="true">
 					<Name>PlcTask_Recipe</Name>
 				</Task>
-				<Task Id="5" Priority="21" CycleTime="100000" AmsPort="352" AdtTasks="true">
-					<Name>PlcTask1</Name>
-				</Task>
 				<Task Id="6" Priority="30" CycleTime="2000000" AmsPort="353" DisableFpExceptions="true" AdtTasks="true">
 					<Name>VISU_TASK</Name>
 				</Task>
@@ -1263,7 +1210,7 @@
 				<Variant>
 					<Name>Production</Name>
 					<TargetNetId>5.107.140.174.1.1</TargetNetId>
-					<BuildConfig>Debug|TwinCAT RT (x64)</BuildConfig>
+					<BuildConfig>Debug|TwinCAT CE7 (ARMV7)</BuildConfig>
 				</Variant>
 				<Variant>
 					<Name>Simulation_IO</Name>
@@ -1277,23 +1224,18 @@
 				<ProjectVariant PvUseDefine="true">
 					<Variant>
 						<Name>Production</Name>
-						<Defines></Defines>
+						<Defines/>
 					</Variant>
 					<Variant>
 						<Name>Simulation_IO</Name>
-						<Defines/>
+						<Defines></Defines>
 					</Variant>
 				</ProjectVariant>
-				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcHash="{0A533B43-3E35-4E47-2F58-5E0B9593A80A}" TmcPath="PLC\PLC.tmc">
+				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcHash="{D8D6164F-21C0-8774-B0AB-31A381BE71E7}" TmcPath="PLC\PLC.tmc">
 					<Name>PLC Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Vars VarGrpType="2" ContextId="1" AreaNo="17">
 						<Name>PlcTask Outputs</Name>
-						<Var>
-							<Name>BackgroundPcCOM.stOut_PcCom</Name>
-							<Comment><![CDATA[ linked to the port in the TwinCAT System Manager ]]></Comment>
-							<Type GUID="{D6B0A42D-897A-4B90-95E8-3C741C3CE3EE}" Namespace="Tc2_SerialCom">EL6outData22B</Type>
-						</Var>
 						<Var>
 							<Name>g_HMI_Panel.q_stPLC_To_VisuPLC</Name>
 							<Type GUID="{1BD39364-7E9F-A0B8-CE5A-ACFBD7B36801}">ST_PLC_To_VisuPLC</Type>
@@ -1459,11 +1401,6 @@
 					</Vars>
 					<Vars VarGrpType="1" ContextId="1" AreaNo="16">
 						<Name>PlcTask Inputs</Name>
-						<Var>
-							<Name>BackgroundPcCOM.stIn_PcCom</Name>
-							<Comment><![CDATA[ linked to the port in the TwinCAT System Manager ]]></Comment>
-							<Type GUID="{0146173C-D895-D219-E209-CC005AC77636}" Namespace="Tc2_SerialCom">EL6inData22B</Type>
-						</Var>
 						<Var>
 							<Name>g_HMI_Panel.i_stVisuPLC_To_PLC</Name>
 							<Type GUID="{8337191F-A112-5453-0643-1189EF3D2122}">ST_VisuPLC_To_PLC</Type>
@@ -1668,50 +1605,6 @@
 					<TaskPouOids>
 						<TaskPouOid Prio="14" OTCID="#x08502002"/>
 						<TaskPouOid Prio="20" OTCID="#x08502001"/>
-					</TaskPouOids>
-				</Instance>
-			</Project>
-			<Project GUID="{E00FAC4C-0BC4-4F72-B79F-97B61CFC5710}" Name="VISU_plc" PrjFilePath="VISU_plc\VISU_plc.plcproj" TmcFilePath="VISU_plc\VISU_plc.tmc" ReloadTmc="true" AmsPort="852" FileArchiveSettings="#x000e" SymbolicMapping="true">
-				<Instance Id="#x08502040" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcHash="{7E733A25-F22A-A469-DE71-FB368BA8A165}" TmcPath="VISU_plc\VISU_plc.tmc">
-					<Name>VISU_plc Instance</Name>
-					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
-					<Vars VarGrpType="2" AreaNo="1">
-						<Name>PlcTask Outputs</Name>
-						<Var>
-							<Name>g_HMI_Panel.q_stVisuPLC_To_PLC</Name>
-							<Type GUID="{8337191F-A112-5453-0643-1189EF3D2122}">ST_VisuPLC_To_PLC</Type>
-						</Var>
-					</Vars>
-					<Vars VarGrpType="1">
-						<Name>PlcTask Inputs</Name>
-						<Var>
-							<Name>g_HMI_Panel.i_stPLC_To_VisuPLC</Name>
-							<Type GUID="{1BD39364-7E9F-A0B8-CE5A-ACFBD7B36801}">ST_PLC_To_VisuPLC</Type>
-						</Var>
-					</Vars>
-					<Contexts>
-						<Context>
-							<Id>0</Id>
-							<Name>PlcTask</Name>
-							<ManualConfig>
-								<OTCID>#x02010050</OTCID>
-							</ManualConfig>
-							<Priority>21</Priority>
-							<CycleTime>10000000</CycleTime>
-						</Context>
-						<Context>
-							<Id>1</Id>
-							<Name>VISU_TASK</Name>
-							<ManualConfig>
-								<OTCID>#x02010060</OTCID>
-							</ManualConfig>
-							<Priority>30</Priority>
-							<CycleTime>200000000</CycleTime>
-						</Context>
-					</Contexts>
-					<TaskPouOids>
-						<TaskPouOid Prio="21" OTCID="#x08502041"/>
-						<TaskPouOid Prio="30" OTCID="#x08502042"/>
 					</TaskPouOids>
 				</Instance>
 			</Project>
