@@ -482,6 +482,15 @@
 			</ArrayInfo>
 		</DataType>
 		<DataType>
+			<Name GUID="{9FC64FD6-2F79-DDE1-36AE-D3E654C53F16}" IecBaseType="true" AutoDeleteType="true">ARRAY [0..15] OF BYTE</Name>
+			<BitSize>128</BitSize>
+			<BaseType GUID="{18071995-0000-0000-0000-000000000001}">BYTE</BaseType>
+			<ArrayInfo>
+				<LBound>0</LBound>
+				<Elements>16</Elements>
+			</ArrayInfo>
+		</DataType>
+		<DataType>
 			<Name GUID="{D6B0A42D-897A-4B90-95E8-3C741C3CE3EE}" Namespace="Tc2_SerialCom" AutoDeleteType="true">EL6outData22B</Name>
 			<Comment><![CDATA[ This data type is corresponding to the
    EL-6xxx data structure used in the
@@ -1275,7 +1284,7 @@
 						<Defines></Defines>
 					</Variant>
 				</ProjectVariant>
-				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcHash="{C04E95CA-ED6D-456F-6CCD-4F7833DE2F11}" TmcPath="PLC\PLC.tmc">
+				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcHash="{5CA037AD-2F4B-4FD4-CDFC-8FB4E4201A94}" TmcPath="PLC\PLC.tmc">
 					<Name>PLC Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Vars VarGrpType="2" ContextId="1" AreaNo="17">
@@ -1443,6 +1452,10 @@
 							<Name>gIO.arSafe[1].stSafetyOut</Name>
 							<Type GUID="{ED87B2E9-90D4-39D6-E702-F125ABA1C4A3}">ST_SafeIn_PlcOut</Type>
 						</Var>
+						<Var>
+							<Name>gIO.Anybus_Outputs_Raw</Name>
+							<Type GUID="{9FC64FD6-2F79-DDE1-36AE-D3E654C53F16}">ARRAY [0..15] OF BYTE</Type>
+						</Var>
 					</Vars>
 					<Vars VarGrpType="1" ContextId="1" AreaNo="16">
 						<Name>PlcTask Inputs</Name>
@@ -1600,6 +1613,10 @@
 						<Var>
 							<Name>GVL_Safety.bInterlockZone</Name>
 							<Type GUID="{064EA673-04B6-D0C1-CD14-82E56022843A}">ARRAY [1..4] OF BOOL</Type>
+						</Var>
+						<Var>
+							<Name>gIO.Anybus_Inputs_Raw</Name>
+							<Type GUID="{9FC64FD6-2F79-DDE1-36AE-D3E654C53F16}">ARRAY [0..15] OF BYTE</Type>
 						</Var>
 					</Vars>
 					<UnrestoredVarLinks ImportTime="2024-05-29T13:24:37">
