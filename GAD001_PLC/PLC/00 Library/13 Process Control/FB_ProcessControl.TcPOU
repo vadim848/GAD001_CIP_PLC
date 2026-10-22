@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.20">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.21">
   <POU Name="FB_ProcessControl" Id="{a1972051-d534-4d79-bd7a-71cd1b516897}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_ProcessControl
 
@@ -602,6 +602,18 @@ IF stProcessControl.rValue>stProcessControl.rValue_Min_To_ReleaseControl THEN;
 ELSE;
 	mCtrlOutput_Max:=stProcessControl.fCtrlOutput_Min+(span*0.3);
 END_IF]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="mManual" Id="{1beeeb9a-e732-4638-8ad0-65b51ae96f3a}">
+      <Declaration><![CDATA[METHOD mManual : BOOL
+VAR_INPUT
+	value: BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[//PID manual request without starting control (bRun/bActiveCntr untouched)
+handling_PID_Manual(IN:=value);
+mManual:=stProcessControl.bManual;]]></ST>
       </Implementation>
     </Method>
     <Method Name="mPause" Id="{be53090d-a73d-45ab-9fd1-26dc14e563ed}">

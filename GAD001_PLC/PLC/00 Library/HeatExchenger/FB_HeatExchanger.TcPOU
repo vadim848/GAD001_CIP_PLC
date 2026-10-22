@@ -28,13 +28,13 @@ END_VAR
 
 stProcessControl.fCtrlOutput_Min:=0;
 stProcessControl.fCtrlOutput_Max:=100;
-stProcessControl.fCtrlOutput_Manual ;
 stProcessControl.rValue_Min_To_ReleaseControl:=15; //Degrees
 
-IF stHeatExchanger.bManual THEN;
-	//fbProcessControl.mRun_PID(Set_Point:=stHeatExchanger.fManualControl , controlManual:=TRUE);
-	//fbProcessControl.mRun_PID(Set_Point:=stProcessControl.fCtrlOutput_Manual , controlManual:=TRUE);  //21/10/2026
-ELSE;
+//PID MANUAL follows HMI request in any CIP state; in manual PID output = stProcessControl.fCtrlOutput_Manual (from HMI)
+fbProcessControl.mManual(value:=stHeatExchanger.bManual);
+
+//On-Off valve is controlled only in automatic
+IF NOT stHeatExchanger.bManual THEN;
 	IF stProcessControl.bActiveCntr AND NOT stPis.st_Open THEN
 		stPis.req_Open:=TRUE;
 	ELSIF NOT stProcessControl.bActiveCntr AND NOT stPis.st_Close THEN
@@ -42,7 +42,12 @@ ELSE;
 	END_IF
 	
 END_IF
-nAlagonValveCntrOut:=mCMD_to_Analog(fControl:=stProcessControl.fCtrlOutput);
+//Manual: output directly from HMI value (PID stays in MANUAL for bumpless return to automatic)
+IF stHeatExchanger.bManual THEN;
+	nAlagonValveCntrOut:=mCMD_to_Analog(fControl:=LIMIT(stProcessControl.fCtrlOutput_Min, stProcessControl.fCtrlOutput_Manual, stProcessControl.fCtrlOutput_Max));
+ELSE;
+	nAlagonValveCntrOut:=mCMD_to_Analog(fControl:=stProcessControl.fCtrlOutput);
+END_IF
 IF nAlagonValveCntrOut=0 AND NOT stPisAnalog.st_Close THEN;
 	stPisAnalog.req_Close:=TRUE;
 ELSIF nAlagonValveCntrOut<>0 AND NOT stPisAnalog.st_Open THEN;
