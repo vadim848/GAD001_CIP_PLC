@@ -551,7 +551,11 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF bRun THEN 
+        <ST><![CDATA[IF NOT __ISVALIDREF(stProcessControl) THEN
+	RETURN;
+END_IF
+
+IF bRun THEN 
 	stProcessControl.bActiveCntr:=TRUE; 
 ELSIF NOT bRun AND Call_ActDelayTON.Q THEN
 	stProcessControl.bActiveCntr:=FALSE;
