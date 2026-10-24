@@ -3,119 +3,14 @@
   <GVL Name="g_Data" Id="{d323a574-dba5-4513-95f5-99a87722cf92}">
     <Declaration><![CDATA[//{attribute 'qualified_only'}
 VAR_GLOBAL PERSISTENT
-	gCIP_ValvUL			:	ARRAY [1..8,1..6] OF E_Pis_Name	:=[
-																E_Pis_Name.V3004,E_Pis_Name.V3017,E_Pis_Name.V3023,E_Pis_Name.e0_not_in_use,E_Pis_Name.e0_not_in_use,E_Pis_Name.e0_not_in_use,
-																E_Pis_Name.V3010,E_Pis_Name.V3027,E_Pis_Name.V3028,E_Pis_Name.e0_not_in_use,E_Pis_Name.e0_not_in_use,E_Pis_Name.e0_not_in_use,
-																E_Pis_Name.V4034,E_Pis_Name.V4004,E_Pis_Name.V4017,E_Pis_Name.v4023,E_Pis_Name.e0_not_in_use,E_Pis_Name.e0_not_in_use,
-																E_Pis_Name.V4033,E_Pis_Name.V4010,E_Pis_Name.V4027,E_Pis_Name.V4028,E_Pis_Name.e0_not_in_use,E_Pis_Name.e0_not_in_use,
-																
-																E_Pis_Name.V3113,E_Pis_Name.V3004,E_Pis_Name.V3010,E_Pis_Name.V3023,E_Pis_Name.V3028,E_Pis_Name.e0_not_in_use,
-																E_Pis_Name.v2114,E_Pis_Name.V4004,E_Pis_Name.V4010,E_Pis_Name.V2116,E_Pis_Name.V4023,E_Pis_Name.V4028,
-																E_Pis_Name.V3017,E_Pis_Name.V3027,E_Pis_Name.e0_not_in_use,E_Pis_Name.e0_not_in_use,E_Pis_Name.e0_not_in_use,E_Pis_Name.e0_not_in_use,
-																E_Pis_Name.V4017,E_Pis_Name.v4027,E_Pis_Name.V2115,E_Pis_Name.V4034,E_Pis_Name.V4033,E_Pis_Name.e0_not_in_use														
-															];	
-	gCIP_ValvUL_Seat	:	ARRAY [1..8,1..6] OF BOOL :=[
-															0,1,1,0,0,0, // Client 1 eTank_1,
-															0,1,1,0,0,0, // Client 2 eTank_2,
-															0,0,1,1,0,0, // Client 3 eTank_3,
-															0,0,1,1,0,0, // Client 4 eTank_4,
-															0,1,1,0,0,0, // Client 5
-															0,1,1,0,0,0, // Client 6
-															0,0,0,0,0,0, // Client 7
-															0,0,0,1,1,0 // Client 8 
-														]	;	//0-Low, 1-Up
-
-	fbElement: ARRAY[1..8] OF FB_Element;
-	
-	fbIntCon_TriB_T1_Marin	: FB_InterConnection;
-	fbIntCon_TriB_T2_Marin	: FB_InterConnection;
-	fbIntCon_TriB_T3_Color	: FB_InterConnection;
-	fbIntCon_TriB_T4_Color	: FB_InterConnection;
-	fbIntCon_ProL_T1_Marin	: FB_InterConnection;
-	fbIntCon_ProL_T2_Marin	: FB_InterConnection;
-	fbIntCon_ProL_T3_Color	: FB_InterConnection;
-	fbIntCon_ProL_T4_Color	: FB_InterConnection;
-	
-	fbTank1					: FB_ProductionTank;
-	fbTank2					: FB_ProductionTank;
-	fbTank3					: FB_ProductionTank;
-	fbTank4					: FB_ProductionTank;
-
-	fbTankTarget_1				: FB_Tank_Target;
-	fbTankTarget_2				: FB_Tank_Target;
-	fbTankTarget_3				: FB_Tank_Target;
-	fbTankTarget_4				: FB_Tank_Target;
-
-	fbLineSource_Marinade		: FB_Line_Source;
-	fbTriBlenderSource_Marinade	: FB_Line_Source;
-	fbLineSource_Color			: FB_Line_Source;
-	fbTriBlenderSource_Color	: FB_Line_Source;
-	
-	fbLineTarget_Marinade		: FB_Line_Target;
-	fbTriBlenderTarget_Marinade	: FB_Line_Target;
-	fbLineTarget_Color			: FB_Line_Target;
-	fbTriBlenderTarget_Color	: FB_Line_Target;
-	
 	fbCIP						: FB_CIP;
 	
 	fbCIP_Source				: FB_CIP_Source;
 	fbCIP_Return				: FB_CIP_Return;
 	fbCIP_Client				: FB_CIP_Client;
 	
-	fbCIP_ClientTank_Marinade	: FB_CIP_ClientTank;
-	fbCIP_ClientTank_Color		: FB_CIP_ClientTank;
-
-	fbDissolving				: FB_Dissolving;
-	fbTriBlender_Select			: FB_TriBlender_Select;
-	eTriBlenderUsage	: E_TriBlenderUsage;
-	
-	eTriBlenderPipe		: E_TriBlenderPipe;
-	eTriBlenderPipe_In	: E_TriBlenderPipe;
-	eTriBlenderPipe_Out	: E_TriBlenderPipe;
-
-	ePrL_M_Usage		: E_PrLine_M_LineUsage;
-	ePrL_C_Usage		: E_PrLine_C_Usage;
-	
-	//Pumps
-	//fbPumpLine_P4001		:	FB_Pump	;
-	//fbPumpLine_P3001		:	FB_Pump	;
-	//fbPumpTriblender_TB001	:	FB_Pump	;
-	
 	arCIP_RequestBufer: ARRAY [0..9] OF ST_CIP_Request;
 
-	//stDev			: 	ARRAY[0..E_OwnerDevice.common] OF 	ST_DeviceErrorHandeling;
-	//stDev			: 	ARRAY[0..E_OwnerDevice.common] OF 	ST_OperationButtons;
-	
-	//Valves
-	arr_TankValves					:	ARRAY [1..4] OF st_TankValves		;
-	arr_LineSourceValves			:	ARRAY [1..4] OF st_LineSourceValves	;
-	arr_TriBlenderSourceValves		:	ARRAY [1..4] OF st_LineSourceValves	;
-	arr_LineTargetValves			:	ARRAY [1..4] OF st_LineTargetValves	;
-	arr_fbTriBlenderTargetValves	:	ARRAY [1..4] OF st_LineTargetValves	;
-	
-	
-	hmi_CIP_Usage: E_CIP_Usage;
-	//SensoE_CIP_Usagers
-	(*lvl_Tank_T91	: ST_Tank_Level	;
-	lvl_Tank_T92	: ST_Tank_Level	;
-	lvl_Tank_T93	: ST_Tank_Level	;
-	lvl_Tank_T94	: ST_Tank_Level	;
-	
-	lvl_Tank_T91_Analog	:	ST_AnalogSignal	;
-	lvl_Tank_T92_Analog	:	ST_AnalogSignal	;
-	lvl_Tank_T93_Analog	:	ST_AnalogSignal	;
-	lvl_Tank_T94_Analog	:	ST_AnalogSignal	;
-	
-	fbLvl_Tank_T91	:	FB_TankLevel	;
-	fbLvl_Tank_T92	:	FB_TankLevel	;
-	fbLvl_Tank_T93	:	FB_TankLevel	;
-	fbLvl_Tank_T94	:	FB_TankLevel	;
-	
-	fb_Tank_T91_Sensors	:	FB_TankSensors	;
-	fb_Tank_T92_Sensors	:	FB_TankSensors	;
-	fb_Tank_T93_Sensors	:	FB_TankSensors	;
-	fb_Tank_T94_Sensors	:	FB_TankSensors	;*)
-	
 	//Heat Exchanger
 	fbHeatExchenger	:	FB_HeatExchanger	;
 	stHeatExchanger	:	ST_HeatExchanger	;
@@ -125,21 +20,10 @@ VAR_GLOBAL PERSISTENT
 	stTanksSens		:	ARRAY [0..E_Tank_Name.last] OF ST_Tank_Level;
 	
 	////////////////////////////////////////////////////////////////
-	arr_CIP_Param		:	ARRAY [0..E_CIP_Usage.eLocal] OF ST_CIP_Param		;//9-local, 1..8 cleints
+	arr_CIP_Param		:	ARRAY [0..E_CIP_Usage.eLocal] OF ST_CIP_Param		;//only [eLocal] is used by the local CIP
 	
 	//additional variables
 	b_CIP_Run	:	BOOL	;
-	bDisolvingProcess_Active: BOOL;
-	bDisolvingProcess_Done: BOOL;
-	
-	ExDuration_Default				: TIME:=T#48H;	//Expiration
-	ExDuration_Default_Line			: TIME:=T#24H;	//Expiration
-	ExDuration_Default_LineStandby	: TIME:=T#2H;	//Expiration
-
-	//arr_ProdTank		:	ARRAY [0..E_Tank_Name.last] OF ST_ProdParams;
-	
-	//stTriBlender		: ST_TriBlender;		
-	//arrProductionComponents	: ARRAY [0..g_Prod.cMaxCompInProduct-1] OF ST_Component;
 END_VAR
 VAR_GLOBAL CONSTANT
 	
