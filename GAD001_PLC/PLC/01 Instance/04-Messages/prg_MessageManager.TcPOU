@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.20">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.21">
   <POU Name="prg_MessageManager" Id="{95ae2e99-240d-4c04-a74a-5e6256dca08f}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM prg_MessageManager
 VAR
@@ -125,35 +125,35 @@ END_FOR
 			fbPrintErrMessageByID(sModuleDescription:='Emergency 1',sActErrorID:='106x001x001');
 		END_IF
 		
-		IF NOT arSafe[1].stSafetyIn.ES2_State THEN
-			fbPrintErrMessageByID(sModuleDescription:='Emergency 2',sActErrorID:='106x002x001');
-		END_IF		
+// 		IF NOT arSafe[1].stSafetyIn.ES2_State THEN
+// 			fbPrintErrMessageByID(sModuleDescription:='Emergency 2',sActErrorID:='106x002x001');
+// 		END_IF		
 		
 		IF NOT arSafe[1].stSafetyIn.ES3_State THEN
 			fbPrintErrMessageByID(sModuleDescription:='Emergency 3',sActErrorID:='106x003x001');			
 		END_IF	
 	
-		IF NOT arSafe[1].stSafetyIn.ES4_State THEN
-			fbPrintErrMessageByID(sModuleDescription:='Emergency 4',sActErrorID:='106x004x001');
-		END_IF
+// 		IF NOT arSafe[1].stSafetyIn.ES4_State THEN
+// 			fbPrintErrMessageByID(sModuleDescription:='Emergency 4',sActErrorID:='106x004x001');
+// 		END_IF
 		
 		
 		//IF NOT bES_PB[1].State THEN
 		IF NOT arSafe[1].stSafetyIn.ES1_PB_State THEN
 			fbPrintErrMessageByID(sModuleDescription:='Emergency 1',sActErrorID:='106x001x002');
 		END_IF
-		IF NOT arSafe[1].stSafetyIn.ES2_PB_State THEN
-			fbPrintErrMessageByID(sModuleDescription:='Emergency 2',sActErrorID:='106x002x002');
-		END_IF
+// 		IF NOT arSafe[1].stSafetyIn.ES2_PB_State THEN
+// 			fbPrintErrMessageByID(sModuleDescription:='Emergency 2',sActErrorID:='106x002x002');
+// 		END_IF
 		IF NOT arSafe[1].stSafetyIn.ES3_PB1_State THEN
 			fbPrintErrMessageByID(sModuleDescription:='Emergency 3',sActErrorID:='106x003x002');
 		END_IF
 		IF NOT arSafe[1].stSafetyIn.ES3_PB2_State THEN
 			fbPrintErrMessageByID(sModuleDescription:='Emergency 3',sActErrorID:='106x003x003');
 		END_IF		
-		IF NOT arSafe[1].stSafetyIn.ES4_PB_State THEN
-			fbPrintErrMessageByID(sModuleDescription:='Emergency 4',sActErrorID:='106x004x002');
-		END_IF
+// 		IF NOT arSafe[1].stSafetyIn.ES4_PB_State THEN
+// 			fbPrintErrMessageByID(sModuleDescription:='Emergency 4',sActErrorID:='106x004x002');
+// 		END_IF
 		
 	END_IF
 	
@@ -261,19 +261,19 @@ END_FOR
 		fbPrintErrMessageByID(sModuleDescription:='Tank Interlock',sActErrorID:='101x002xT94');
 	END_IF
 	
-	IF NOT gIO.arSafe[1].stSafetyIn.TankLocked_Marinade_T1 THEN
-		//fbPrintErrMessageByID(sModuleDescription:='Tank Interlock',sActErrorID:='101x002xT01');
-	END_IF
-	IF NOT gIO.arSafe[1].stSafetyIn.TankLocked_Marinade_T2 THEN
-		//fbPrintErrMessageByID(sModuleDescription:='Tank Interlock',sActErrorID:='101x002xT02');
-	END_IF
+// 	IF NOT gIO.arSafe[1].stSafetyIn.TankLocked_Marinade_T1 THEN
+// 		//fbPrintErrMessageByID(sModuleDescription:='Tank Interlock',sActErrorID:='101x002xT01');
+// 	END_IF
+// 	IF NOT gIO.arSafe[1].stSafetyIn.TankLocked_Marinade_T2 THEN
+// 		//fbPrintErrMessageByID(sModuleDescription:='Tank Interlock',sActErrorID:='101x002xT02');
+// 	END_IF
 	
-	IF NOT gIO.arSafe[1].stSafetyIn.TankLocked_Color_T3 THEN
-		fbPrintErrMessageByID(sModuleDescription:='Tank Interlock',sActErrorID:='101x002xT03');
-	END_IF
-	IF NOT gIO.arSafe[1].stSafetyIn.TankLocked_Color_T4 THEN
-		fbPrintErrMessageByID(sModuleDescription:='Tank Interlock',sActErrorID:='101x002xT04');
-	END_IF
+// 	IF NOT gIO.arSafe[1].stSafetyIn.TankLocked_Color_T3 THEN
+// 		fbPrintErrMessageByID(sModuleDescription:='Tank Interlock',sActErrorID:='101x002xT03');
+// 	END_IF
+// 	IF NOT gIO.arSafe[1].stSafetyIn.TankLocked_Color_T4 THEN
+// 		fbPrintErrMessageByID(sModuleDescription:='Tank Interlock',sActErrorID:='101x002xT04');
+// 	END_IF
 {ELSIF defined (Simulation_IO)}
 {END_IF}
 
