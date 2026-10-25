@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.20">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.21">
   <POU Name="prg_Safety" Id="{db89eb8b-da04-4986-84d3-a7f6079fbab6}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM prg_Safety
 VAR
@@ -28,9 +28,9 @@ act_Call_TSs();
 
 {IF defined (Production)}
 	bStateSafe_ES1:=arSafe[1].stSafetyIn.ES1_State;
-	bStateSafe_ES2:=arSafe[1].stSafetyIn.ES2_State;
+	//bStateSafe_ES2:=arSafe[1].stSafetyIn.ES2_State;
 	bStateSafe_ES3:=arSafe[1].stSafetyIn.ES3_State;
-	bStateSafe_ES4:=arSafe[1].stSafetyIn.ES4_State;
+	//bStateSafe_ES4:=arSafe[1].stSafetyIn.ES4_State;
 {ELSIF defined (Simulation_IO)}
 	bES_Bypass:= TRUE;
 
@@ -42,9 +42,9 @@ act_Call_TSs();
 
 IF TRUE 
 AND bStateSafe_ES1
-AND bStateSafe_ES2
+//AND bStateSafe_ES2
 AND bStateSafe_ES3
-AND bStateSafe_ES4
+//AND bStateSafe_ES4
 
 OR bES_Bypass
 
