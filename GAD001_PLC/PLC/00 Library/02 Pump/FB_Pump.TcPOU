@@ -180,7 +180,12 @@ VAR
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[ton_RPM_feedback_lag_monitoring(PT:=T#10S);
+        <ST><![CDATA[//FB body not executed yet (first PLC cycle): Pump_ID and sID are not set
+IF sID='' OR Pump_ID=E_Pump_List.eNotSelected THEN;
+	RETURN;
+END_IF
+
+ton_RPM_feedback_lag_monitoring(PT:=T#10S);
 IF __ISVALIDREF(stNidec) THEN;
 	IF bRun
 	AND ABS(stNidec.targetVelocity - nRPM_fdbk) > 10 
