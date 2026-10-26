@@ -32,6 +32,8 @@ stProcessControl.rValue_Min_To_ReleaseControl:=15; //Degrees
 
 //PID MANUAL follows HMI request in any CIP state; in manual PID output = stProcessControl.fCtrlOutput_Manual (from HMI)
 fbProcessControl.mManual(value:=stHeatExchanger.bManual);
+//Automatic: PID held in reset while control is not active (output 0, every start begins from 0)
+stProcessControl.bReset:=NOT stHeatExchanger.bManual AND NOT stProcessControl.bActiveCntr;
 
 //On-Off valve is controlled only in automatic
 IF NOT stHeatExchanger.bManual THEN;
@@ -45,8 +47,11 @@ END_IF
 //Manual: output directly from HMI value (PID stays in MANUAL for bumpless return to automatic)
 IF stHeatExchanger.bManual THEN;
 	nAlagonValveCntrOut:=mCMD_to_Analog(fControl:=LIMIT(stProcessControl.fCtrlOutput_Min, stProcessControl.fCtrlOutput_Manual, stProcessControl.fCtrlOutput_Max));
-ELSE;
+ELSIF stProcessControl.bActiveCntr THEN;
 	nAlagonValveCntrOut:=mCMD_to_Analog(fControl:=stProcessControl.fCtrlOutput);
+ELSE;
+	//Control not active: analog valve closed, V1032 closes
+	nAlagonValveCntrOut:=0;
 END_IF
 IF nAlagonValveCntrOut=0 AND NOT stPisAnalog.st_Close THEN;
 	stPisAnalog.req_Close:=TRUE;

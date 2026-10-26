@@ -12,7 +12,8 @@ VAR
 	fbPID	: 	PID	;
 	hystCIP_SetPoint: FB_Hysteresis_REAL;
 	Call_ActDelayTON	: TON	;
-	
+	bRunCalled		: BOOL	;//mRun was called since the last body call
+
 	handling_PID_Manual: TON;
 
 END_VAR
@@ -22,7 +23,9 @@ END_VAR
 
 
 
-Call_ActDelayTON(IN:=stProcessControl.bActiveCntr , PT:=T#1S , Q=> , ET=> );
+//Deactivate control 1s after mRun stops being called (body may be called several times per cycle)
+Call_ActDelayTON(IN:=stProcessControl.bActiveCntr AND NOT bRunCalled , PT:=T#1S , Q=> , ET=> );
+bRunCalled:=FALSE;
 
 m_Check();
 
@@ -555,8 +558,9 @@ END_VAR
 	RETURN;
 END_IF
 
-IF bRun THEN 
-	stProcessControl.bActiveCntr:=TRUE; 
+IF bRun THEN
+	stProcessControl.bActiveCntr:=TRUE;
+	bRunCalled:=TRUE;
 ELSIF NOT bRun AND Call_ActDelayTON.Q THEN
 	stProcessControl.bActiveCntr:=FALSE;
 END_IF
