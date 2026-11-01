@@ -1,0 +1,270 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.20">
+  <POU Name="FB_Anybus_Interface" Id="{1c2f78c7-7b61-4fa7-a2fd-94a67d6e424d}" SpecialFunc="None">
+    <Declaration><![CDATA[//CIP <-> Siemens exchange through the Anybus Communicator, 128 bytes each direction.
+//Spec: "Интерфейс CIP ↔ Siemens через Anybus", meeting 28.10.2026.
+//Decodes the Siemens data, checks ALIVE and the values, encodes the CIP status.
+//While communication is lost all Siemens inputs are treated as 0 (REQUEST ON drops -> CIP pause).
+FUNCTION_BLOCK FB_Anybus_Interface
+VAR_INPUT
+	stStatus		: ST_Anybus_Outputs;	//CIP -> Siemens, filled by the CIP logic (bAlive is generated here)
+	bFieldbusOk		: BOOL := TRUE;			//gateway EtherCAT slave: State = OP and WcState = 0 (to be linked)
+	bSwapBytes		: BOOL := TRUE;			//TRUE: INT/DINT are big-endian (Profinet), swapped here
+	tAliveTimeout	: TIME := T#2S;			//Siemens ALIVE must toggle within this time
+	tNextStable		: TIME := T#3S;			//NEXT CLIENT / NEXT RECIPE must be stable this long
+END_VAR
+VAR_IN_OUT
+	arRawIn			: ARRAY[0..127] OF BYTE;	//gIO.Anybus_Inputs_Raw
+	arRawOut		: ARRAY[0..127] OF BYTE;	//gIO.Anybus_Outputs_Raw
+END_VAR
+VAR_OUTPUT
+	stIn			: ST_Anybus_Inputs;		//Siemens -> CIP, all 0 while communication is lost
+	stOut			: ST_Anybus_Outputs;	//CIP -> Siemens as actually sent (with ALIVE, alarm bit and code)
+	bCommOk			: BOOL;					//fieldbus OK and Siemens ALIVE toggles
+	eRequest		: E_Anybus_Request;		//combination of REQUEST ON / REQUEST OFF
+	bRequestOnEdge	: BOOL;					//one cycle when eRequest becomes eOn (start or resume)
+	bRequestOffEdge	: BOOL;					//one cycle when eRequest becomes eOff
+	bCurrentValid	: BOOL;					//CLIENT ID, RECIPE TYPE, CLIENT TYPE are in range
+	bNextValid		: BOOL;					//next client is in range and stable for tNextStable
+	nNextClient		: INT;					//accepted next client, 0 = none
+	eNextRecipe		: E_Anybus_RecipeType;	//accepted next recipe
+	eNextClientType	: E_Anybus_ClientType;	//accepted next client type, eNone = not sent
+	eAlarm			: E_Anybus_Alarm;		//interface alarm, eNone = OK
+END_VAR
+VAR
+	stRaw			: ST_Anybus_Inputs;		//decoded, before the communication check
+	stBlank			: ST_Anybus_Inputs;
+
+	//ALIVE
+	bAliveOut		: BOOL;
+	tonAliveOut		: TON;
+	tonAliveIn		: TON;
+	bAliveInMemo	: BOOL;
+	bAliveSeen		: BOOL;					//at least one toggle since start
+
+	rtRequestOn		: R_TRIG;
+	rtRequestOff	: R_TRIG;
+
+	//Next client
+	tonNextStable	: TON;
+	nNextClientMemo	: INT;
+	eNextRecipeMemo	: E_Anybus_RecipeType;
+	eNextTypeMemo	: E_Anybus_ClientType;
+	bNextInRange	: BOOL;
+END_VAR
+VAR CONSTANT
+	cnClientMax		: INT := 30;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[//Decode Siemens -> CIP
+//Bits are addressed by byte (Siemens x.y = byte x, bit y), no swap
+stRaw.bAlarm			:= arRawIn[0].0;
+stRaw.bReady			:= arRawIn[0].1;
+stRaw.bRequestOn		:= arRawIn[0].2;
+stRaw.bRequestOff		:= arRawIn[0].3;
+stRaw.bInletPumpEnable	:= arRawIn[0].4;
+stRaw.bPause			:= arRawIn[0].5;
+stRaw.bClientEmpty		:= arRawIn[0].6;
+stRaw.bAlive			:= arRawIn[0].7;
+stRaw.nClientId			:= m_GetInt(arRaw:=arRawIn, nWord:=1);
+stRaw.eRecipeType		:= m_GetInt(arRaw:=arRawIn, nWord:=2);
+stRaw.eClientType		:= m_GetInt(arRaw:=arRawIn, nWord:=3);
+stRaw.nNextClient		:= m_GetInt(arRaw:=arRawIn, nWord:=4);
+stRaw.eNextRecipe		:= m_GetInt(arRaw:=arRawIn, nWord:=5);
+stRaw.eNextClientType	:= m_GetInt(arRaw:=arRawIn, nWord:=6);
+
+//Siemens ALIVE watchdog
+IF stRaw.bAlive <> bAliveInMemo THEN;
+	bAliveInMemo:=stRaw.bAlive;
+	bAliveSeen:=TRUE;
+	tonAliveIn(IN:=FALSE);
+END_IF
+tonAliveIn(IN:=TRUE, PT:=tAliveTimeout);
+bCommOk:=bFieldbusOk AND bAliveSeen AND NOT tonAliveIn.Q;
+
+//Communication lost: the same as the gateway clearing the data
+IF bCommOk THEN;
+	stIn:=stRaw;
+ELSE;
+	stIn:=stBlank;
+END_IF
+
+//REQUEST ON / REQUEST OFF
+IF stIn.bRequestOn AND stIn.bRequestOff THEN;
+	eRequest:=E_Anybus_Request.eConflict;
+ELSIF stIn.bRequestOn THEN;
+	eRequest:=E_Anybus_Request.eOn;
+ELSIF stIn.bRequestOff THEN;
+	eRequest:=E_Anybus_Request.eOff;
+ELSE;
+	eRequest:=E_Anybus_Request.eNone;
+END_IF
+rtRequestOn(CLK:=eRequest=E_Anybus_Request.eOn);
+bRequestOnEdge:=rtRequestOn.Q;
+rtRequestOff(CLK:=eRequest=E_Anybus_Request.eOff);
+bRequestOffEdge:=rtRequestOff.Q;
+
+//Current client: checked here, latched by the CIP logic on bRequestOnEdge
+bCurrentValid:=TRUE
+	AND stIn.nClientId>=1 AND stIn.nClientId<=cnClientMax
+	AND stIn.eRecipeType>=E_Anybus_RecipeType.eFull AND stIn.eRecipeType<=E_Anybus_RecipeType.eDisinfection
+	AND stIn.eClientType>=E_Anybus_ClientType.eSprayBall AND stIn.eClientType<=E_Anybus_ClientType.eInlet;
+
+//Next client: any change cancels the accepted one, new values are taken after tNextStable
+bNextInRange:=TRUE
+	AND stIn.nNextClient>=1 AND stIn.nNextClient<=cnClientMax
+	AND stIn.eNextRecipe>=E_Anybus_RecipeType.eFull AND stIn.eNextRecipe<=E_Anybus_RecipeType.eDisinfection
+	AND stIn.eNextClientType>=E_Anybus_ClientType.eNone AND stIn.eNextClientType<=E_Anybus_ClientType.eInlet;
+IF stIn.nNextClient<>nNextClientMemo
+OR stIn.eNextRecipe<>eNextRecipeMemo
+OR stIn.eNextClientType<>eNextTypeMemo
+THEN;
+	nNextClientMemo:=stIn.nNextClient;
+	eNextRecipeMemo:=stIn.eNextRecipe;
+	eNextTypeMemo:=stIn.eNextClientType;
+	tonNextStable(IN:=FALSE);
+	bNextValid:=FALSE;
+	nNextClient:=0;
+	eNextRecipe:=E_Anybus_RecipeType.eNone;
+	eNextClientType:=E_Anybus_ClientType.eNone;
+END_IF
+tonNextStable(IN:=bNextInRange, PT:=tNextStable);
+IF tonNextStable.Q AND NOT bNextValid THEN;
+	bNextValid:=TRUE;
+	nNextClient:=nNextClientMemo;
+	eNextRecipe:=eNextRecipeMemo;
+	eNextClientType:=eNextTypeMemo;
+END_IF
+
+//Interface alarm, first cause wins
+IF NOT bFieldbusOk THEN;
+	eAlarm:=E_Anybus_Alarm.eFieldbus;
+ELSIF NOT bCommOk THEN;
+	eAlarm:=E_Anybus_Alarm.eAliveLost;
+ELSIF eRequest=E_Anybus_Request.eConflict THEN;
+	eAlarm:=E_Anybus_Alarm.eRequestConflict;
+ELSIF stIn.bRequestOn AND (stIn.nClientId<1 OR stIn.nClientId>cnClientMax) THEN;
+	eAlarm:=E_Anybus_Alarm.eInvalidClient;
+ELSIF stIn.bRequestOn AND NOT (stIn.eRecipeType>=E_Anybus_RecipeType.eFull AND stIn.eRecipeType<=E_Anybus_RecipeType.eDisinfection) THEN;
+	eAlarm:=E_Anybus_Alarm.eInvalidRecipe;
+ELSIF stIn.bRequestOn AND NOT bCurrentValid THEN;
+	eAlarm:=E_Anybus_Alarm.eInvalidClientType;
+ELSE;
+	eAlarm:=E_Anybus_Alarm.eNone;
+END_IF
+
+//CIP ALIVE, 0.5 s / 0.5 s
+tonAliveOut(IN:=NOT tonAliveOut.Q, PT:=T#500MS);
+IF tonAliveOut.Q THEN;
+	bAliveOut:=NOT bAliveOut;
+END_IF
+
+//CIP -> Siemens as sent: ALIVE generated here, interface alarm added
+stOut:=stStatus;
+stOut.bAlive:=bAliveOut;
+stOut.bAlarm:=stStatus.bAlarm OR (eAlarm<>E_Anybus_Alarm.eNone);
+//CIP alarm code first, interface alarm code otherwise
+IF stOut.nAlarmCode=0 THEN;
+	stOut.nAlarmCode:=eAlarm;
+END_IF
+
+//Encode CIP -> Siemens
+arRawOut[0].0	:= stOut.bAlarm;
+arRawOut[0].1	:= stOut.bReady;
+arRawOut[0].2	:= stOut.bWorking;
+arRawOut[0].3	:= stOut.bFinish;
+arRawOut[0].4	:= stOut.bEmptyingClient;
+arRawOut[0].5	:= stOut.bSendingPump;
+arRawOut[0].6	:= stOut.bPause;
+arRawOut[0].7	:= stOut.bAlive;
+arRawOut[1]		:= 0;
+m_SetInt(arRaw:=arRawOut, nWord:=1, nValue:=stOut.eActualMedia);
+m_SetDint(arRaw:=arRawOut, nWord:=2, nValue:=stOut.nRecipeProgress);
+m_SetDint(arRaw:=arRawOut, nWord:=4, nValue:=stOut.nActualProgress);
+m_SetInt(arRaw:=arRawOut, nWord:=6, nValue:=stOut.nAlarmCode);
+m_SetInt(arRaw:=arRawOut, nWord:=7, nValue:=stOut.nProgressUnit);
+m_SetInt(arRaw:=arRawOut, nWord:=8, nValue:=stOut.nActiveClient);
+m_SetInt(arRaw:=arRawOut, nWord:=9, nValue:=stOut.eActiveRecipe);
+]]></ST>
+    </Implementation>
+    <Method Name="m_GetInt" Id="{177ae305-2757-495a-9060-e139cf332aa2}">
+      <Declaration><![CDATA[//INT of word nWord (bytes 2n, 2n+1)
+METHOD PRIVATE m_GetInt : INT
+VAR_IN_OUT
+	arRaw	: ARRAY[0..127] OF BYTE;
+END_VAR
+VAR_INPUT
+	nWord	: INT;
+END_VAR
+VAR
+	nHi		: INT;	//byte index of the high byte
+	nLo		: INT;	//byte index of the low byte
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF bSwapBytes THEN;
+	nHi:=2*nWord;
+	nLo:=2*nWord+1;
+ELSE;
+	nHi:=2*nWord+1;
+	nLo:=2*nWord;
+END_IF
+m_GetInt:=WORD_TO_INT(SHL(BYTE_TO_WORD(arRaw[nHi]), 8) OR BYTE_TO_WORD(arRaw[nLo]));]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_SetInt" Id="{bca0e4a8-13b6-47d3-9b0c-fe6b5799be4c}">
+      <Declaration><![CDATA[//Writes INT to word nWord (bytes 2n, 2n+1)
+METHOD PRIVATE m_SetInt : BOOL
+VAR_IN_OUT
+	arRaw	: ARRAY[0..127] OF BYTE;
+END_VAR
+VAR_INPUT
+	nWord	: INT;
+	nValue	: INT;
+END_VAR
+VAR
+	wValue	: WORD;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[wValue:=INT_TO_WORD(nValue);
+IF bSwapBytes THEN;
+	arRaw[2*nWord]		:= WORD_TO_BYTE(SHR(wValue, 8));
+	arRaw[2*nWord+1]	:= WORD_TO_BYTE(wValue);
+ELSE;
+	arRaw[2*nWord]		:= WORD_TO_BYTE(wValue);
+	arRaw[2*nWord+1]	:= WORD_TO_BYTE(SHR(wValue, 8));
+END_IF
+m_SetInt:=TRUE;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_SetDint" Id="{1c46bea8-36d5-4705-b252-d26124136cfb}">
+      <Declaration><![CDATA[//Writes DINT to words nWord, nWord+1 (bytes 2n..2n+3)
+METHOD PRIVATE m_SetDint : BOOL
+VAR_IN_OUT
+	arRaw	: ARRAY[0..127] OF BYTE;
+END_VAR
+VAR_INPUT
+	nWord	: INT;
+	nValue	: DINT;
+END_VAR
+VAR
+	dwValue	: DWORD;
+	i		: INT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[dwValue:=DINT_TO_DWORD(nValue);
+FOR i:=0 TO 3 DO
+	IF bSwapBytes THEN;
+		arRaw[2*nWord+i]:=DWORD_TO_BYTE(SHR(dwValue, 8*(3-i)));	//most significant byte first
+	ELSE;
+		arRaw[2*nWord+i]:=DWORD_TO_BYTE(SHR(dwValue, 8*i));		//least significant byte first
+	END_IF
+END_FOR
+m_SetDint:=TRUE;]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

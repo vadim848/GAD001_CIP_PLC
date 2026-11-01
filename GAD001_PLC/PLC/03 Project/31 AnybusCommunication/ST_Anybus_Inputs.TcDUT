@@ -1,17 +1,25 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.20">
   <DUT Name="ST_Anybus_Inputs" Id="{b7f99439-3c82-4f86-87de-d393cd859208}">
-    <Declaration><![CDATA[TYPE ST_Anybus_Inputs :
+    <Declaration><![CDATA[//Siemens -> CIP, decoded from gIO.Anybus_Inputs_Raw
+TYPE ST_Anybus_Inputs :
 STRUCT
-	StatusWord 	: WORD;
-	Input1		: INT;
-	Input2		: INT;
-	Input3		: INT;
-	Input4		: INT;
-	Input5		: INT;
-	Input6		: INT;	
-	ErrorCode	: WORD;
- 
+	//Word 0, byte 0
+	bAlarm				: BOOL;	//0.0 plant alarm that stops CIP
+	bReady				: BOOL;	//0.1 plant ready
+	bRequestOn			: BOOL;	//0.2 start sending, held TRUE until REQUEST OFF
+	bRequestOff			: BOOL;	//0.3 full stop
+	bInletPumpEnable	: BOOL;	//0.4 enables the CIP sending pump
+	bPause				: BOOL;	//0.5 pause from plant
+	bClientEmpty		: BOOL;	//0.6 client is emptied (agreed 28.10.2026)
+	bAlive				: BOOL;	//0.7 toggles 0.5 s / 0.5 s
+
+	nClientId			: INT;					//word 1, 1..30
+	eRecipeType			: E_Anybus_RecipeType;	//word 2
+	eClientType			: E_Anybus_ClientType;	//word 3
+	nNextClient			: INT;					//word 4, 0 = none
+	eNextRecipe			: E_Anybus_RecipeType;	//word 5
+	eNextClientType		: E_Anybus_ClientType;	//word 6 (CIP proposal)
 END_STRUCT
 END_TYPE
 ]]></Declaration>

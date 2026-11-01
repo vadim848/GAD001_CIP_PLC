@@ -25,8 +25,9 @@ VAR_GLOBAL
 	
 	fbScaleFactor: ARRAY[0..E_ASense_Name.last] 		OF FB_ScaleFactor;
 	
-	Anybus_Inputs_Raw  AT %I* : ARRAY [0..15] OF BYTE; 
-    Anybus_Outputs_Raw AT %Q* : ARRAY [0..15] OF BYTE;
+	//Anybus Communicator (Box 40), 128 bytes each direction, decoded in g_Anybus.fbAnybus
+	Anybus_Inputs_Raw  AT %I* : ARRAY [0..127] OF BYTE;
+    Anybus_Outputs_Raw AT %Q* : ARRAY [0..127] OF BYTE;
 
 	
 END_VAR]]></Declaration>

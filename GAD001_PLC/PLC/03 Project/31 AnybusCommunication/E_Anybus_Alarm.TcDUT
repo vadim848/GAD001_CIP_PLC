@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.20">
+  <DUT Name="E_Anybus_Alarm" Id="{5e46cdf5-2273-4218-bc18-34c09a272777}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'to_string'}
+//Interface alarm codes 1..99; CIP process alarm codes start from 100 (same word 6)
+TYPE E_Anybus_Alarm :
+(
+	eNone				:= 0,
+	eFieldbus			:= 1,	// gateway EtherCAT slave not in OP
+	eAliveLost			:= 2,	// Siemens ALIVE does not toggle
+	eRequestConflict	:= 3,	// REQUEST ON and REQUEST OFF together
+	eInvalidClient		:= 4,	// CLIENT ID out of 1..30 with REQUEST ON
+	eInvalidRecipe		:= 5,	// RECIPE TYPE not defined with REQUEST ON
+	eInvalidClientType	:= 6	// CLIENT TYPE not defined with REQUEST ON
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>
