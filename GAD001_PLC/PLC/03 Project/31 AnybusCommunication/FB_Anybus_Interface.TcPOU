@@ -67,6 +67,7 @@ stRaw.bInletPumpEnable	:= arRawIn[0].4;
 stRaw.bPause			:= arRawIn[0].5;
 stRaw.bClientEmpty		:= arRawIn[0].6;
 stRaw.bAlive			:= arRawIn[0].7;
+stRaw.bSprinklerState	:= arRawIn[1].0;
 stRaw.nClientId			:= m_GetInt(arRaw:=arRawIn, nWord:=1);
 stRaw.eRecipeType		:= m_GetInt(arRaw:=arRawIn, nWord:=2);
 stRaw.eClientType		:= m_GetInt(arRaw:=arRawIn, nWord:=3);
@@ -179,6 +180,8 @@ arRawOut[0].5	:= stOut.bSendingPump;
 arRawOut[0].6	:= stOut.bPause;
 arRawOut[0].7	:= stOut.bAlive;
 arRawOut[1]		:= 0;
+arRawOut[1].0	:= stOut.bSprinklerRequestOn;
+arRawOut[1].1	:= stOut.bSprinklerRequestOff;
 m_SetInt(arRaw:=arRawOut, nWord:=1, nValue:=stOut.eActualMedia);
 m_SetDint(arRaw:=arRawOut, nWord:=2, nValue:=stOut.nRecipeProgress);
 m_SetDint(arRaw:=arRawOut, nWord:=4, nValue:=stOut.nActualProgress);
@@ -186,6 +189,8 @@ m_SetInt(arRaw:=arRawOut, nWord:=6, nValue:=stOut.nAlarmCode);
 m_SetInt(arRaw:=arRawOut, nWord:=7, nValue:=stOut.nProgressUnit);
 m_SetInt(arRaw:=arRawOut, nWord:=8, nValue:=stOut.nActiveClient);
 m_SetInt(arRaw:=arRawOut, nWord:=9, nValue:=stOut.eActiveRecipe);
+m_SetInt(arRaw:=arRawOut, nWord:=10, nValue:=stOut.nFlowRateSet);
+m_SetInt(arRaw:=arRawOut, nWord:=11, nValue:=stOut.nFlowRateActual);
 ]]></ST>
     </Implementation>
     <Method Name="m_GetInt" Id="{177ae305-2757-495a-9060-e139cf332aa2}">

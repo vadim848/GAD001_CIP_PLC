@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.20">
+  <DUT Name="E_Sim_Fault" Id="{6c1f0a54-2b7e-4f0e-9d3a-1e5b7a90c102}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'to_string'}
+TYPE E_Sim_Fault :
+(
+	eNone			:= 0,
+	ePause			:= 1,	// PAUSE from the plant
+	eInletOff		:= 2,	// INLET PUMP ENABLE = 0
+	eRequestDrop	:= 3,	// REQUEST ON lost, no REQUEST OFF
+	eRequestOff		:= 4,	// REQUEST OFF in the middle of the wash
+	eConflict		:= 5,	// REQUEST ON and OFF together
+	eAliveStop		:= 6,	// ALIVE does not toggle
+	eCable			:= 7,	// all data 0, like a pulled cable
+	eBadClient		:= 8,	// CLIENT ID out of range
+	eBadRecipe		:= 9,	// RECIPE TYPE out of range
+	eBadType		:= 10,	// CLIENT TYPE out of range
+	eNextUnstable	:= 11,	// NEXT CLIENT changes every second
+	eNoClientEmpty	:= 12,	// CLIENT EMPTY is not answered
+	eNoSprinkler	:= 13	// Sprinkler State is not answered
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

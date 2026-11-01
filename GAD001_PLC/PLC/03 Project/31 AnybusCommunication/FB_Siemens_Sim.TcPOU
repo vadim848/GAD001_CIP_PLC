@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.20">
+  <POU Name="FB_Siemens_Sim" Id="{6c1f0a54-2b7e-4f0e-9d3a-1e5b7a90c104}" SpecialFunc="None">
+    <Declaration><![CDATA[//Siemens PLC simulator for tests without the plant. Commissioning tool, off on site.
+//Fills the same 128 bytes as the gateway, so FB_Anybus_Interface is tested with its decoding.
+//Pumps and hydraulics of the plant are not simulated.
+FUNCTION_BLOCK FB_Siemens_Sim
+VAR_INPUT
+	eMode			: E_Sim_Mode;
+	bStart			: BOOL;					//start in eAuto / eQueue
+	bStop			: BOOL;					//REQUEST OFF and back to idle
+	eFault			: E_Sim_Fault;			//fault to apply
+	bFaultOn		: BOOL;					//fault active
+	stClient		: ST_Sim_Client := (nClient:=1, eRecipe:=E_Anybus_RecipeType.eFull, eType:=E_Anybus_ClientType.ePipe);
+	arQueue			: ARRAY[1..cnQueue] OF ST_Sim_Client;
+	stManual		: ST_Anybus_Inputs;		//used in eManual, ALIVE is generated here
+	tReplyEmpty		: TIME := T#5S;			//EMPTYING CLIENT -> CLIENT EMPTY
+	tReplySprinkler	: TIME := T#3S;			//Sprinkler Request -> Sprinkler State
+	tRequestOff		: TIME := T#2S;			//FINISH -> REQUEST OFF
+	bSwapBytes		: BOOL := TRUE;			//the same as in FB_Anybus_Interface
+END_VAR
+VAR_IN_OUT
+	arToCip			: ARRAY[0..127] OF BYTE;	//instead of gIO.Anybus_Inputs_Raw
+	arFromCip		: ARRAY[0..127] OF BYTE;	//gIO.Anybus_Outputs_Raw
+END_VAR
+VAR_OUTPUT
+	stSend			: ST_Anybus_Inputs;		//sent to CIP, after the fault
+	nStep			: INT;					//step of the auto cycle
+	nQueuePos		: INT;					//position in arQueue
+	bCipReady		: BOOL;					//from CIP
+	bCipWorking		: BOOL;
+	bCipFinish		: BOOL;
+	bCipEmptying	: BOOL;
+	bCipPause		: BOOL;
+	bCipAlive		: BOOL;
+	bCipSprinklerOn	: BOOL;
+	bCipSprinklerOff: BOOL;
+	//Text lines of vis_SiemensSim
+	sSim			: STRING(120);
+	sMode			: STRING(120);
+	sClient			: STRING(120);
+	sFault			: STRING(120);
+	sFromCip		: STRING(120);
+	sToCip			: STRING(120);
+	sManual			: STRING(120);
+	sInterface		: STRING(120);
+END_VAR
+VAR
+	stPlant			: ST_Anybus_Inputs;		//cycle result, before the fault
+	bAlive			: BOOL;
+	tonAlive		: TON;
+	tonEmpty		: TON;
+	tonSprinkler	: TON;
+	tonOff			: TON;
+	tonNext			: TON;
+	rtStart			: R_TRIG;
+	rtStop			: R_TRIG;
+	bSprinklerState	: BOOL;
+	nNextShift		: INT;
+	i				: INT;
+END_VAR
+VAR CONSTANT
+	cnQueue			: INT := 5;
+	cnBadValue		: INT := 99;
+	cnIdle			: INT := 0;
+	cnWaitReady		: INT := 10;
+	cnWaitWorking	: INT := 20;
+	cnWaitFinish	: INT := 30;
+	cnRequestOff	: INT := 40;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[//CIP -> Siemens
+bCipReady		:= arFromCip[0].1;
+bCipWorking		:= arFromCip[0].2;
+bCipFinish		:= arFromCip[0].3;
+bCipEmptying	:= arFromCip[0].4;
+bCipPause		:= arFromCip[0].6;
+bCipAlive		:= arFromCip[0].7;
+bCipSprinklerOn	:= arFromCip[1].0;
+bCipSprinklerOff:= arFromCip[1].1;
+
+//Plant answers
+tonEmpty(IN:=bCipEmptying, PT:=tReplyEmpty);
+IF bCipSprinklerOn THEN;
+	tonSprinkler(IN:=NOT bSprinklerState, PT:=tReplySprinkler);
+	IF tonSprinkler.Q THEN;
+		bSprinklerState:=TRUE;
+	END_IF
+ELSIF bCipSprinklerOff THEN;
+	tonSprinkler(IN:=bSprinklerState, PT:=tReplySprinkler);
+	IF tonSprinkler.Q THEN;
+		bSprinklerState:=FALSE;
+	END_IF
+ELSE;
+	tonSprinkler(IN:=FALSE);
+END_IF
+
+CASE eMode OF
+	E_Sim_Mode.eManual:;
+		nStep:=cnIdle;
+		stPlant:=stManual;
+	E_Sim_Mode.eAuto,
+	E_Sim_Mode.eQueue:;
+		act_Cycle();
+END_CASE
+bStart:=FALSE;
+bStop:=FALSE;
+
+stSend:=stPlant;
+IF eMode<>E_Sim_Mode.eManual THEN;
+	stSend.bClientEmpty:=tonEmpty.Q;
+	stSend.bSprinklerState:=bSprinklerState;
+END_IF
+act_Fault();
+
+//ALIVE 0.5 s / 0.5 s
+tonAlive(IN:=NOT tonAlive.Q, PT:=T#500MS);
+IF tonAlive.Q THEN;
+	bAlive:=NOT bAlive;
+END_IF
+IF NOT (bFaultOn AND eFault=E_Sim_Fault.eAliveStop) THEN;
+	stSend.bAlive:=bAlive;
+END_IF
+act_Status();
+
+//Encode Siemens -> CIP, the layout of FB_Anybus_Interface
+IF bFaultOn AND eFault=E_Sim_Fault.eCable THEN;
+	FOR i:=0 TO 127 DO
+		arToCip[i]:=0;
+	END_FOR
+	RETURN;
+END_IF
+arToCip[0].0	:= stSend.bAlarm;
+arToCip[0].1	:= stSend.bReady;
+arToCip[0].2	:= stSend.bRequestOn;
+arToCip[0].3	:= stSend.bRequestOff;
+arToCip[0].4	:= stSend.bInletPumpEnable;
+arToCip[0].5	:= stSend.bPause;
+arToCip[0].6	:= stSend.bClientEmpty;
+arToCip[0].7	:= stSend.bAlive;
+arToCip[1].0	:= stSend.bSprinklerState;
+m_SetInt(arToCip:=arToCip, nWord:=1, nValue:=stSend.nClientId);
+m_SetInt(arToCip:=arToCip, nWord:=2, nValue:=stSend.eRecipeType);
+m_SetInt(arToCip:=arToCip, nWord:=3, nValue:=stSend.eClientType);
+m_SetInt(arToCip:=arToCip, nWord:=4, nValue:=stSend.nNextClient);
+m_SetInt(arToCip:=arToCip, nWord:=5, nValue:=stSend.eNextRecipe);
+m_SetInt(arToCip:=arToCip, nWord:=6, nValue:=stSend.eNextClientType);
+]]></ST>
+    </Implementation>
+    <Action Name="act_Cycle" Id="{6c1f0a54-2b7e-4f0e-9d3a-1e5b7a90c105}">
+      <Implementation>
+        <ST><![CDATA[//The plant side of the sequence agreed on 28.10.2026
+rtStart(CLK:=bStart);
+rtStop(CLK:=bStop);
+tonOff(IN:=nStep=cnRequestOff, PT:=tRequestOff);
+
+IF rtStop.Q AND nStep<>cnIdle THEN;
+	stPlant.bRequestOn:=FALSE;
+	stPlant.bRequestOff:=TRUE;
+	nStep:=cnIdle;
+END_IF
+
+CASE nStep OF
+	cnIdle:;
+		stPlant.bReady:=TRUE;
+		stPlant.bInletPumpEnable:=TRUE;
+		IF rtStart.Q THEN;
+			nQueuePos:=1;
+			stPlant.bRequestOff:=FALSE;
+			m_LoadClient();
+			nStep:=cnWaitReady;
+		END_IF
+
+	cnWaitReady:;
+		IF bCipReady THEN;
+			stPlant.bRequestOn:=TRUE;
+			stPlant.nClientId:=stPlant.nNextClient;
+			stPlant.eRecipeType:=stPlant.eNextRecipe;
+			stPlant.eClientType:=stPlant.eNextClientType;
+			nStep:=cnWaitWorking;
+		END_IF
+
+	cnWaitWorking:;
+		IF bCipWorking THEN;
+			nStep:=cnWaitFinish;
+		END_IF
+
+	cnWaitFinish:;
+		IF bCipFinish THEN;
+			nStep:=cnRequestOff;
+		END_IF
+
+	cnRequestOff:;
+		IF tonOff.Q THEN;
+			stPlant.bRequestOn:=FALSE;
+			stPlant.bRequestOff:=TRUE;
+			nQueuePos:=nQueuePos+1;
+			IF eMode=E_Sim_Mode.eQueue
+			AND nQueuePos<=cnQueue
+			AND arQueue[nQueuePos].nClient<>0
+			THEN;
+				m_LoadClient();
+				nStep:=cnWaitReady;
+			ELSE;
+				nStep:=cnIdle;
+			END_IF
+		END_IF
+END_CASE
+
+//REQUEST OFF is held until CIP drops FINISH
+IF stPlant.bRequestOff AND NOT bCipFinish AND NOT bCipWorking THEN;
+	stPlant.bRequestOff:=FALSE;
+END_IF
+]]></ST>
+      </Implementation>
+    </Action>
+    <Action Name="act_Fault" Id="{6c1f0a54-2b7e-4f0e-9d3a-1e5b7a90c106}">
+      <Implementation>
+        <ST><![CDATA[tonNext(IN:=bFaultOn AND eFault=E_Sim_Fault.eNextUnstable AND NOT tonNext.Q, PT:=T#1S);
+IF tonNext.Q THEN;
+	nNextShift:=1-nNextShift;
+END_IF
+IF NOT bFaultOn THEN;
+	nNextShift:=0;
+	RETURN;
+END_IF
+
+CASE eFault OF
+	E_Sim_Fault.ePause:;
+		stSend.bPause:=TRUE;
+	E_Sim_Fault.eInletOff:;
+		stSend.bInletPumpEnable:=FALSE;
+	E_Sim_Fault.eRequestDrop:;
+		stSend.bRequestOn:=FALSE;
+		stSend.bRequestOff:=FALSE;
+	E_Sim_Fault.eRequestOff:;
+		stSend.bRequestOn:=FALSE;
+		stSend.bRequestOff:=TRUE;
+	E_Sim_Fault.eConflict:;
+		stSend.bRequestOn:=TRUE;
+		stSend.bRequestOff:=TRUE;
+	E_Sim_Fault.eBadClient:;
+		stSend.nClientId:=cnBadValue;
+	E_Sim_Fault.eBadRecipe:;
+		stSend.eRecipeType:=cnBadValue;
+	E_Sim_Fault.eBadType:;
+		stSend.eClientType:=cnBadValue;
+	E_Sim_Fault.eNextUnstable:;
+		stSend.nNextClient:=stSend.nNextClient+nNextShift;
+	E_Sim_Fault.eNoClientEmpty:;
+		stSend.bClientEmpty:=FALSE;
+	E_Sim_Fault.eNoSprinkler:;
+		stSend.bSprinklerState:=bCipSprinklerOff;
+END_CASE
+]]></ST>
+      </Implementation>
+    </Action>
+    <Action Name="act_Status" Id="{6c1f0a54-2b7e-4f0e-9d3a-1e5b7a90c109}">
+      <Implementation>
+        <ST><![CDATA[sSim:=CONCAT('Simulator: ', SEL(g_Anybus.bSimEnable, 'OFF', 'ON'));
+sMode:=CONCAT(CONCAT('Mode: ', TO_STRING(eMode)), CONCAT('   step ', TO_STRING(nStep)));
+sClient:=CONCAT(CONCAT('Client ', TO_STRING(stClient.nClient)),
+	CONCAT(CONCAT('   recipe ', TO_STRING(stClient.eRecipe)), CONCAT('   type ', TO_STRING(stClient.eType))));
+sFault:=CONCAT(CONCAT('Fault: ', TO_STRING(eFault)), SEL(bFaultOn, '   armed, not applied', '   APPLIED'));
+sFromCip:=CONCAT(CONCAT(CONCAT(CONCAT('CIP: ', m_Bit('READY', bCipReady)), m_Bit('WORKING', bCipWorking)),
+	CONCAT(m_Bit('FINISH', bCipFinish), m_Bit('EMPTYING', bCipEmptying))),
+	CONCAT(CONCAT(m_Bit('PAUSE', bCipPause), m_Bit('SPR_ON', bCipSprinklerOn)), m_Bit('SPR_OFF', bCipSprinklerOff)));
+sToCip:=CONCAT(CONCAT(CONCAT(CONCAT('Plant: ', m_Bit('READY', stSend.bReady)), m_Bit('REQ_ON', stSend.bRequestOn)),
+	CONCAT(m_Bit('REQ_OFF', stSend.bRequestOff), m_Bit('INLET', stSend.bInletPumpEnable))),
+	CONCAT(CONCAT(m_Bit('PAUSE', stSend.bPause), m_Bit('EMPTY', stSend.bClientEmpty)), m_Bit('SPR_STATE', stSend.bSprinklerState)));
+sManual:=CONCAT(CONCAT(CONCAT(CONCAT('Manual: ', m_Bit('READY', stManual.bReady)), m_Bit('REQ_ON', stManual.bRequestOn)),
+	CONCAT(m_Bit('REQ_OFF', stManual.bRequestOff), m_Bit('INLET', stManual.bInletPumpEnable))),
+	CONCAT(CONCAT(m_Bit('PAUSE', stManual.bPause), m_Bit('EMPTY', stManual.bClientEmpty)), m_Bit('SPR_STATE', stManual.bSprinklerState)));
+sInterface:=CONCAT(CONCAT(CONCAT('Interface: ', m_Bit('COMM_OK', g_Anybus.fbAnybus.bCommOk)), CONCAT('request ', TO_STRING(g_Anybus.fbAnybus.eRequest))),
+	CONCAT('   alarm ', TO_STRING(g_Anybus.fbAnybus.eAlarm)));
+]]></ST>
+      </Implementation>
+    </Action>
+    <Method Name="m_Bit" Id="{6c1f0a54-2b7e-4f0e-9d3a-1e5b7a90c10a}">
+      <Declaration><![CDATA[//Text of one signal for the panel
+METHOD PRIVATE m_Bit : STRING(24)
+VAR_INPUT
+	sName	: STRING(16);
+	bValue	: BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[m_Bit:=CONCAT(CONCAT(SEL(bValue, '.', '#'), sName), '  ');]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_LoadClient" Id="{6c1f0a54-2b7e-4f0e-9d3a-1e5b7a90c107}">
+      <Declaration><![CDATA[//NEXT CLIENT for the current position of the cycle
+METHOD PRIVATE m_LoadClient : BOOL
+VAR
+	stNext	: ST_Sim_Client;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF eMode=E_Sim_Mode.eQueue THEN;
+	stNext:=arQueue[nQueuePos];
+ELSE;
+	stNext:=stClient;
+END_IF
+stPlant.nNextClient:=stNext.nClient;
+stPlant.eNextRecipe:=stNext.eRecipe;
+stPlant.eNextClientType:=stNext.eType;
+m_LoadClient:=TRUE;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_SetInt" Id="{6c1f0a54-2b7e-4f0e-9d3a-1e5b7a90c108}">
+      <Declaration><![CDATA[//Writes INT to word nWord (bytes 2n, 2n+1) of arToCip
+METHOD PRIVATE m_SetInt : BOOL
+VAR_IN_OUT
+	arToCip	: ARRAY[0..127] OF BYTE;
+END_VAR
+VAR_INPUT
+	nWord	: INT;
+	nValue	: INT;
+END_VAR
+VAR
+	wValue	: WORD;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[wValue:=INT_TO_WORD(nValue);
+IF bSwapBytes THEN;
+	arToCip[2*nWord]	:= WORD_TO_BYTE(SHR(wValue, 8));
+	arToCip[2*nWord+1]	:= WORD_TO_BYTE(wValue);
+ELSE;
+	arToCip[2*nWord]	:= WORD_TO_BYTE(wValue);
+	arToCip[2*nWord+1]	:= WORD_TO_BYTE(SHR(wValue, 8));
+END_IF
+m_SetInt:=TRUE;]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>
