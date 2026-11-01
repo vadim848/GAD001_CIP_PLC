@@ -109,13 +109,13 @@ bRequestOffEdge:=rtRequestOff.Q;
 bCurrentValid:=TRUE
 	AND stIn.nClientId>=1 AND stIn.nClientId<=cnClientMax
 	AND stIn.eRecipeType>=E_Anybus_RecipeType.eFull AND stIn.eRecipeType<=E_Anybus_RecipeType.eDisinfection
-	AND stIn.eClientType>=E_Anybus_ClientType.eSprayBall AND stIn.eClientType<=E_Anybus_ClientType.eInlet;
+	AND stIn.eClientType>=E_Anybus_ClientType.ePipe AND stIn.eClientType<=E_Anybus_ClientType.eTank;
 
 //Next client: any change cancels the accepted one, new values are taken after tNextStable
 bNextInRange:=TRUE
 	AND stIn.nNextClient>=1 AND stIn.nNextClient<=cnClientMax
 	AND stIn.eNextRecipe>=E_Anybus_RecipeType.eFull AND stIn.eNextRecipe<=E_Anybus_RecipeType.eDisinfection
-	AND stIn.eNextClientType>=E_Anybus_ClientType.eNone AND stIn.eNextClientType<=E_Anybus_ClientType.eInlet;
+	AND stIn.eNextClientType>=E_Anybus_ClientType.eNone AND stIn.eNextClientType<=E_Anybus_ClientType.eTank;
 IF stIn.nNextClient<>nNextClientMemo
 OR stIn.eNextRecipe<>eNextRecipeMemo
 OR stIn.eNextClientType<>eNextTypeMemo

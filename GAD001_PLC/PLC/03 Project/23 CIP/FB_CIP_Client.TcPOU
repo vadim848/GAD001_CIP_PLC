@@ -333,7 +333,7 @@ fbPis.m_SetByRecipe(stPis:=stPis_S_Color_Up, 			req:=E_Piston_Recipe_State.Relea
 fbPis.m_SetByRecipe(stPis:=stPis_S_Color_Low, 			req:=E_Piston_Recipe_State.Release);
 fbPis.m_SetByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release);
 fbPis.m_SetByRecipe(stPis:=stPis_Loop, 					req:=E_Piston_Recipe_State.Release);
-fbPis.m_SetByRecipe(stPis:=stPis_S_Future, 				req:=E_Piston_Recipe_State.Act);]]></ST>
+fbPis.m_SetByRecipe(stPis:=stPis_S_Future, 				req:=E_Piston_Recipe_State.Release);	//route to the plant: only source and return open]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -4218,7 +4218,7 @@ stPis_S_Future				REF= g_Piston.stPis[valS_Future];]]></ST>
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Color_Low, 		req:=E_Piston_Recipe_State.Release)
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_Drain, 				req:=E_Piston_Recipe_State.Release)
 	AND fbPis.m_CheckByRecipe(stPis:=stPis_Loop, 				req:=E_Piston_Recipe_State.Release)
-	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Future, 			req:=E_Piston_Recipe_State.Act)
+	AND fbPis.m_CheckByRecipe(stPis:=stPis_S_Future, 			req:=E_Piston_Recipe_State.Release)
 	THEN;
 		eStatus:=E_CIP_Client_Selector.eFuture;
 	ELSE;
@@ -4240,6 +4240,8 @@ END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[CASE eReqStatus OF
+	E_CIP_Usage.eExternal:;
+				eReqStatusLocal	:=E_CIP_Client_Selector.eFuture;
 	E_CIP_Usage.eLocal:;
 				eReqStatusLocal	:=E_CIP_Client_Selector.eClose;
 	E_CIP_Usage.eTank_1,
@@ -4293,6 +4295,8 @@ VAR
 END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[CASE eReqProc OF
+	E_CIP_Usage.eExternal:;
+				eReqStatusLocal	:=E_CIP_Client_Selector.eFuture;
 	E_CIP_Usage.eLocal:;
 				eReqStatusLocal	:=E_CIP_Client_Selector.eClose;
 	E_CIP_Usage.eTank_1,
