@@ -1,0 +1,181 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.20">
+  <POU Name="FB_CIP_Siemens" Id="{7d3e91a2-4c56-4b18-8f27-2a6c0e5d1b01}" SpecialFunc="None">
+    <Declaration><![CDATA[//Siemens order -> FB_CIP through its existing request buffer, CIP state -> Siemens status.
+//Outside the CIP cycle, FB_CIP is not changed. Called in MAIN before act_Call_CIP while g_Anybus.bBridgeEnable.
+//Not here yet: preparing solutions for NEXT CLIENT, CLIENT EMPTY and Sprinkler (steps inside FB_CIP),
+//DISINFECTION type, progress, flow rate and sending pump.
+FUNCTION_BLOCK FB_CIP_Siemens
+VAR_INPUT
+	bWaterOnly		: BOOL;					//commissioning: any order runs as R_Water
+END_VAR
+VAR_OUTPUT
+	stStatus		: ST_Anybus_Outputs;	//to g_Anybus.fbAnybus.stStatus
+	bActive			: BOOL;					//wash of a Siemens order is in progress
+	bFinished		: BOOL;					//wash done, FINISH is held until REQUEST OFF
+	bRejected		: BOOL;					//last REQUEST ON was not accepted
+END_VAR
+VAR
+	stReq			: ST_CIP_Request;
+	eRecipe			: E_Anybus_RecipeType;
+	stBlank			: ST_CIP_Request;
+	bTaken			: BOOL;					//our order has reached slot 0 of the buffer
+	bBufferFree		: BOOL;
+	bPauseReq		: BOOL;
+	rtPause			: R_TRIG;
+	ftPause			: F_TRIG;
+	nStage			: INT;
+END_VAR
+VAR CONSTANT
+	cnNotSupported	: INT := 100;			//order not accepted: CIP busy or no such recipe type yet (proposal)
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[bBufferFree:=g_Data.arCIP_RequestBufer[0].eClient=E_CIP_Usage.eNotInUse;
+
+//Order
+IF g_Anybus.fbAnybus.bRequestOnEdge
+AND NOT bActive
+AND NOT bFinished
+THEN;
+	bRejected:=NOT m_Start();
+END_IF
+
+//End of the wash: _aDone_entry frees slot 0
+IF bActive THEN;
+	IF NOT bBufferFree THEN;
+		bTaken:=TRUE;
+	ELSIF bTaken THEN;
+		bActive:=FALSE;
+		bTaken:=FALSE;
+		bFinished:=TRUE;
+	END_IF
+END_IF
+
+//REQUEST OFF: confirms FINISH or stops the wash
+IF g_Anybus.fbAnybus.eRequest=E_Anybus_Request.eOff
+OR g_Anybus.fbAnybus.eRequest=E_Anybus_Request.eConflict
+THEN;
+	bFinished:=FALSE;
+	bRejected:=FALSE;
+	IF bActive THEN;
+		m_Stop();
+	END_IF
+END_IF
+
+//Pause, the existing CIP zone Pause / Play
+bPauseReq:=bActive AND (
+	g_Anybus.fbAnybus.eRequest=E_Anybus_Request.eNone
+	OR g_Anybus.fbAnybus.stIn.bPause
+	OR g_Anybus.fbAnybus.stIn.bAlarm
+	OR NOT g_Anybus.fbAnybus.stIn.bInletPumpEnable);
+rtPause(CLK:=bPauseReq);
+ftPause(CLK:=bPauseReq);
+IF rtPause.Q THEN;
+	stOper[E_ModeZone.eCIP].bSetPause:=TRUE;
+END_IF
+IF ftPause.Q THEN;
+	stOper[E_ModeZone.eCIP].bSetPlay:=TRUE;
+END_IF
+
+//Status
+stStatus.bReady:=TRUE
+	AND NOT bActive
+	AND NOT bFinished
+	AND bBufferFree
+	AND NOT g_Data.fbCIP.bRun
+	AND g_Data.fbCIP.eMode<>E_CIP_Mode.eOff
+	AND g_Anybus.fbAnybus.bCommOk;
+stStatus.bWorking:=bActive;
+stStatus.bFinish:=bFinished;
+stStatus.bPause:=bActive AND stOper[E_ModeZone.eCIP].iActOperation=E_OperationButtons.ePauseAll;
+stStatus.eActualMedia:=m_Media();
+IF bActive OR bFinished THEN;
+	stStatus.nActiveClient:=stReq.nClientId;
+	stStatus.eActiveRecipe:=eRecipe;
+ELSE;
+	stStatus.nActiveClient:=0;
+	stStatus.eActiveRecipe:=E_Anybus_RecipeType.eNone;
+END_IF
+IF bRejected THEN;
+	stStatus.nAlarmCode:=cnNotSupported;
+ELSE;
+	stStatus.nAlarmCode:=0;
+END_IF
+]]></ST>
+    </Implementation>
+    <Method Name="m_Start" Id="{7d3e91a2-4c56-4b18-8f27-2a6c0e5d1b02}">
+      <Declaration><![CDATA[//TRUE: the order is in the CIP buffer and the cycle is released
+METHOD PRIVATE m_Start : BOOL
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF NOT g_Anybus.fbAnybus.bCurrentValid
+OR NOT bBufferFree
+OR g_Data.fbCIP.bRun
+OR g_Data.fbCIP.eMode=E_CIP_Mode.eOff
+THEN;
+	RETURN;
+END_IF
+
+CASE g_Anybus.fbAnybus.stIn.eRecipeType OF
+	E_Anybus_RecipeType.eFull:;
+		stReq.eType:=E_CIP_Type.Full;
+	E_Anybus_RecipeType.eSoda:;
+		stReq.eType:=E_CIP_Type.Detergent;
+ELSE;
+	RETURN;
+END_CASE
+IF bWaterOnly THEN;
+	stReq.eType:=E_CIP_Type.R_Water;
+END_IF
+eRecipe:=g_Anybus.fbAnybus.stIn.eRecipeType;
+stReq.eClient:=E_CIP_Usage.eExternal;
+stReq.nClientId:=g_Anybus.fbAnybus.stIn.nClientId;
+stReq.eClientType:=g_Anybus.fbAnybus.stIn.eClientType;
+
+g_Data.fbCIP.m_TakePosInCIPBuffer(stCIP_Request:=stReq);
+g_Data.fbCIP.mRun();
+bActive:=TRUE;
+bTaken:=FALSE;
+m_Start:=TRUE;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_Stop" Id="{7d3e91a2-4c56-4b18-8f27-2a6c0e5d1b03}">
+      <Declaration><![CDATA[//REQUEST OFF during the wash, the existing Stop of the CIP zone
+METHOD PRIVATE m_Stop : BOOL
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[stOper[E_ModeZone.eCIP].bStopResetAll:=TRUE;
+g_Data.arCIP_RequestBufer[0]:=stBlank;
+g_Data.fbCIP.mResetCycle();
+bActive:=FALSE;
+bTaken:=FALSE;
+m_Stop:=TRUE;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_Media" Id="{7d3e91a2-4c56-4b18-8f27-2a6c0e5d1b04}">
+      <Declaration><![CDATA[//Actual Media by the dashboard stage of FB_CIP
+METHOD PRIVATE m_Media : E_Anybus_Media
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[m_Media:=E_Anybus_Media.eNone;
+IF NOT bActive THEN;
+	RETURN;
+END_IF
+nStage:=TO_INT(g_HMI.eCIP_DashStage_actual);
+CASE nStage OF
+	1..2:;
+		m_Media:=E_Anybus_Media.eFirstWater;
+	3..7:;
+		m_Media:=E_Anybus_Media.eSoda;
+	8..11:;
+		m_Media:=E_Anybus_Media.eIntermediateWater;
+	12..16:;
+		m_Media:=E_Anybus_Media.eDisinfection;
+	17..20:;
+		m_Media:=E_Anybus_Media.eLastWater;
+END_CASE]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>
