@@ -190,12 +190,11 @@ m_Start:=TRUE;]]></ST>
       </Implementation>
     </Method>
     <Method Name="m_Stop" Id="{7d3e91a2-4c56-4b18-8f27-2a6c0e5d1b03}">
-      <Declaration><![CDATA[//REQUEST OFF during the wash, the existing Stop of the CIP zone
+      <Declaration><![CDATA[//REQUEST OFF during the wash. Not bStopResetAll: it puts the CIP zone to Manual and Pause, the next order would not run
 METHOD PRIVATE m_Stop : BOOL
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[stOper[E_ModeZone.eCIP].bStopResetAll:=TRUE;
-g_Data.arCIP_RequestBufer[0]:=stBlank;
+        <ST><![CDATA[g_Data.arCIP_RequestBufer[0]:=stBlank;
 g_Data.fbCIP.mResetCycle();
 bStopping:=TRUE;
 bActive:=FALSE;
