@@ -4,8 +4,7 @@
     <Declaration><![CDATA[//Siemens order -> FB_CIP through its existing request buffer, CIP state -> Siemens status.
 //Outside the CIP cycle, FB_CIP is not changed. Called in MAIN before act_Call_CIP while g_Anybus.bBridgeEnable.
 //One Siemens order at a time: a new one is taken only when the buffer is free (decision B, 02.11.2026).
-//Not here yet: preparing solutions for NEXT CLIENT, CLIENT EMPTY and Sprinkler (steps inside FB_CIP),
-//progress, flow rate and sending pump. Reaction to ALARM (pause) is temporary, to be confirmed by GAD.
+//Not here yet: preparing solutions for NEXT CLIENT, progress, flow rate and sending pump. Reaction to ALARM (pause) is temporary, to be confirmed by GAD.
 FUNCTION_BLOCK FB_CIP_Siemens
 VAR_INPUT
 	bWaterOnly		: BOOL;					//commissioning: any order runs as R_Water
@@ -25,6 +24,7 @@ VAR
 	tonStopping		: TON;
 	bBufferFree		: BOOL;
 	bPauseReq		: BOOL;
+	bSprinklerReq	: BOOL;
 	rtPause			: R_TRIG;
 	ftPause			: F_TRIG;
 	nStage			: INT;
@@ -105,6 +105,20 @@ stStatus.bReady:=TRUE
 	AND g_Data.fbCIP.eMode<>E_CIP_Mode.eOff
 	AND g_Anybus.fbAnybus.bCommOk;
 stStatus.bWorking:=bActive;
+//EMPTYING CLIENT: Tank on a Tank_LowLevel step, the steps wait for CLIENT EMPTY
+stStatus.bEmptyingClient:=bActive
+	AND stReq.eClientType=E_Anybus_ClientType.eTank
+	AND FIND(g_Data.fbCIP.SFCCurrentStep, 'Tank_LowLevel')>0;
+//Sprinkler: on from CIPx_Conn_Sprinkler until FB_CIP leaves the spray ball, off until Siemens confirms.
+//bSprinkler alone is too early: the mix-proof steps set it before CIP2 and CIP4
+IF NOT bActive OR NOT g_Data.fbCIP.bSprinkler THEN;
+	bSprinklerReq:=FALSE;
+END_IF
+IF bActive AND FIND(g_Data.fbCIP.SFCCurrentStep, 'Conn_Sprinkler')>0 THEN;
+	bSprinklerReq:=TRUE;
+END_IF
+stStatus.bSprinklerRequestOn:=bSprinklerReq;
+stStatus.bSprinklerRequestOff:=NOT stStatus.bSprinklerRequestOn AND g_Anybus.fbAnybus.stIn.bSprinklerState;
 stStatus.bFinish:=bFinished;
 stStatus.bPause:=bActive AND stOper[E_ModeZone.eCIP].iActOperation=E_OperationButtons.ePauseAll;
 stStatus.eActualMedia:=m_Media();

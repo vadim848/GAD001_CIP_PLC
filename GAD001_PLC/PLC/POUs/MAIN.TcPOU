@@ -47,6 +47,11 @@ IF g_Anybus.bSimEnable THEN;
 ELSE;
 	g_Anybus.fbAnybus(arRawIn:=gIO.Anybus_Inputs_Raw, arRawOut:=gIO.Anybus_Outputs_Raw);
 END_IF
+//Requests do not survive a PLC restart (Vadim, 02.11.2026)
+IF NOT g_Anybus.bQueueCleared THEN;
+	g_Data.fbCIP.m_PosDeleteAll_HMI();
+	g_Anybus.bQueueCleared:=TRUE;
+END_IF
 IF g_Anybus.bBridgeEnable THEN;
 	g_Anybus.fbBridge();
 	g_Anybus.fbAnybus.stStatus:=g_Anybus.fbBridge.stStatus;

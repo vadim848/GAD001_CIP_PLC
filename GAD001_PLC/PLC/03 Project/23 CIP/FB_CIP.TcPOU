@@ -305,8 +305,8 @@ rAc:=arTestOverflow[3]);
     </Folder>
     <Action Name="_aCIP1_Conn_Sprinkler_active" Id="{4c796a07-4449-4c49-bcc2-457b99419775}">
       <Implementation>
-        <ST><![CDATA[//Sprinkler Request / State come with the Anybus step
-bStepDone:=TRUE;]]></ST>
+        <ST><![CDATA[//Spray ball route is set by Siemens
+bStepDone:=g_Anybus.fbAnybus.stIn.bSprinklerState;]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -366,8 +366,8 @@ tonr_CIP_Condition(ResetTime:=TRUE);
     </Action>
     <Action Name="_aCIP2_Conn_Sprinkler_active" Id="{fa73b005-a258-42c6-9c70-008e2384c458}">
       <Implementation>
-        <ST><![CDATA[//Sprinkler Request / State come with the Anybus step
-bStepDone:=TRUE;]]></ST>
+        <ST><![CDATA[//Spray ball route is set by Siemens
+bStepDone:=g_Anybus.fbAnybus.stIn.bSprinklerState;]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -513,8 +513,8 @@ END_IF]]></ST>
     </Action>
     <Action Name="_aCIP4_Conn_Sprinkler_active" Id="{74ae984f-0ae0-4e0b-96ce-fe160b8e69b3}">
       <Implementation>
-        <ST><![CDATA[//Sprinkler Request / State come with the Anybus step
-bStepDone:=TRUE;]]></ST>
+        <ST><![CDATA[//Spray ball route is set by Siemens
+bStepDone:=g_Anybus.fbAnybus.stIn.bSprinklerState;]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -702,8 +702,8 @@ END_IF
     </Action>
     <Action Name="_aCIP35_Conn_Sprinkler_active" Id="{e4186464-92a5-4be4-b6cb-cca91a77c405}">
       <Implementation>
-        <ST><![CDATA[//Sprinkler Request / State come with the Anybus step
-bStepDone:=TRUE;]]></ST>
+        <ST><![CDATA[//Spray ball route is set by Siemens
+bStepDone:=g_Anybus.fbAnybus.stIn.bSprinklerState;]]></ST>
       </Implementation>
       <ObjectProperties>
         <XmlArchive>
@@ -34969,8 +34969,19 @@ VAR_INPUT
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[//The client level is on the plant side, CLIENT EMPTY comes with the Anybus step
-m_Check_ProductionTank_Low_Level:=TRUE;]]></ST>
+        <ST><![CDATA[//The client level is on the plant side: Tank waits for CLIENT EMPTY, as senLL before, Pipe passes
+tonTankLowLevel.IN:=g_Anybus.fbAnybus.stIn.bClientEmpty;
+tonTankLowLevel(PT:=T#2S);
+IF bClientTypeIs_Tank
+AND tonTankLowLevel.Q
+THEN;
+	m_Check_ProductionTank_Low_Level:=TRUE;
+ELSIF NOT bClientTypeIs_Tank
+THEN;
+	m_Check_ProductionTank_Low_Level:=TRUE;
+ELSE;
+	m_Check_ProductionTank_Low_Level:=FALSE;
+END_IF]]></ST>
       </Implementation>
     </Method>
     <Method Name="m_CleanEmpty_Spaces" Id="{a02513cf-5921-4270-b511-66d8a68458f2}" FolderPath="Meth\HMI_queue_pos\">
