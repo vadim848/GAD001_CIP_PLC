@@ -109,13 +109,13 @@ bRequestOffEdge:=rtRequestOff.Q;
 //Current client: checked here, latched by the CIP logic on bRequestOnEdge
 bCurrentValid:=TRUE
 	AND stIn.nClientId>=1 AND stIn.nClientId<=cnClientMax
-	AND stIn.eRecipeType>=E_Anybus_RecipeType.eFull AND stIn.eRecipeType<=E_Anybus_RecipeType.eDisinfection
+	AND stIn.eRecipeType>=E_Anybus_RecipeType.eFlushOnly AND stIn.eRecipeType<=E_Anybus_RecipeType.eFull
 	AND stIn.eClientType>=E_Anybus_ClientType.ePipe AND stIn.eClientType<=E_Anybus_ClientType.eTank;
 
 //Next client: any change cancels the accepted one, new values are taken after tNextStable
 bNextInRange:=TRUE
 	AND stIn.nNextClient>=1 AND stIn.nNextClient<=cnClientMax
-	AND stIn.eNextRecipe>=E_Anybus_RecipeType.eFull AND stIn.eNextRecipe<=E_Anybus_RecipeType.eDisinfection
+	AND stIn.eNextRecipe>=E_Anybus_RecipeType.eFlushOnly AND stIn.eNextRecipe<=E_Anybus_RecipeType.eFull
 	AND stIn.eNextClientType>=E_Anybus_ClientType.eNone AND stIn.eNextClientType<=E_Anybus_ClientType.eTank;
 IF stIn.nNextClient<>nNextClientMemo
 OR stIn.eNextRecipe<>eNextRecipeMemo
@@ -147,7 +147,7 @@ ELSIF eRequest=E_Anybus_Request.eConflict THEN;
 	eAlarm:=E_Anybus_Alarm.eRequestConflict;
 ELSIF stIn.bRequestOn AND (stIn.nClientId<1 OR stIn.nClientId>cnClientMax) THEN;
 	eAlarm:=E_Anybus_Alarm.eInvalidClient;
-ELSIF stIn.bRequestOn AND NOT (stIn.eRecipeType>=E_Anybus_RecipeType.eFull AND stIn.eRecipeType<=E_Anybus_RecipeType.eDisinfection) THEN;
+ELSIF stIn.bRequestOn AND NOT (stIn.eRecipeType>=E_Anybus_RecipeType.eFlushOnly AND stIn.eRecipeType<=E_Anybus_RecipeType.eFull) THEN;
 	eAlarm:=E_Anybus_Alarm.eInvalidRecipe;
 ELSIF stIn.bRequestOn AND NOT bCurrentValid THEN;
 	eAlarm:=E_Anybus_Alarm.eInvalidClientType;
