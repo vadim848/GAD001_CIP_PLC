@@ -10,7 +10,7 @@
 FUNCTION_BLOCK FB_CIP_Siemens
 VAR_INPUT
 	bWaterOnly		: BOOL;					//commissioning: any order runs as R_Water, no preparation
-	bPrepOff		: BOOL;					//commissioning: no preparation by NEXT, READY as soon as CIP is free
+	bPrepOff		: BOOL := TRUE;			//no preparation by NEXT, READY as soon as CIP is free. TRUE until Vadim decides which chemistry is allowed
 	tPrepHold		: TIME := T#30M;		//READY held without circulation, then the preparation is refreshed
 	tPrepRetry		: TIME := T#1M;			//new attempt after a preparation that did not reach Done
 END_VAR
