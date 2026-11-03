@@ -4,16 +4,24 @@
     <Declaration><![CDATA[//Siemens order -> FB_CIP through its existing request buffer, CIP state -> Siemens status.
 //Outside the CIP cycle, FB_CIP is not changed. Called in MAIN before act_Call_CIP while g_Anybus.bBridgeEnable.
 //One Siemens order at a time: a new one is taken only when the buffer is free (decision B, 02.11.2026).
-//Not here yet: preparing solutions for NEXT CLIENT, flow rate. Reaction to ALARM (pause) is temporary, to be confirmed by GAD.
+//Preparing solutions by NEXT (Vadim 02.11.2026, item 8): a local request of FB_CIP, READY = solutions ready.
+//Open points are the agent's proposals, see work/vladimir/next_preparation_design.md. Not here yet: flow rate.
+//Reaction to ALARM (pause) is temporary, to be confirmed by GAD.
 FUNCTION_BLOCK FB_CIP_Siemens
 VAR_INPUT
-	bWaterOnly		: BOOL;					//commissioning: any order runs as R_Water
+	bWaterOnly		: BOOL;					//commissioning: any order runs as R_Water, no preparation
+	bPrepOff		: BOOL;					//commissioning: no preparation by NEXT, READY as soon as CIP is free
+	tPrepHold		: TIME := T#30M;		//READY held without circulation, then the preparation is refreshed
+	tPrepRetry		: TIME := T#1M;			//new attempt after a preparation that did not reach Done
 END_VAR
 VAR_OUTPUT
 	stStatus		: ST_Anybus_Outputs;	//to g_Anybus.fbAnybus.stStatus
 	bActive			: BOOL;					//wash of a Siemens order is in progress
 	bFinished		: BOOL;					//wash done, FINISH is held until REQUEST OFF
 	bRejected		: BOOL;					//last REQUEST ON was not accepted
+	nPrep			: INT;					//preparation state, cnPrep...
+	nPrepClient		: INT;					//NEXT CLIENT the solutions are prepared for, 0 = none
+	ePrepRecipe		: E_Anybus_RecipeType;	//NEXT RECIPE the solutions are prepared for
 END_VAR
 VAR
 	stReq			: ST_CIP_Request;
@@ -25,14 +33,27 @@ VAR
 	bBufferFree		: BOOL;
 	bPauseReq		: BOOL;
 	bSprinklerReq	: BOOL;
-	rtStart			: R_TRIG;				//REQUEST ON while Siemens READY
+	rtStart			: R_TRIG;				//REQUEST ON while Siemens READY and CIP READY
 	tonReadyLost	: TON;					//Siemens READY lost during the wash
 	rtPause			: R_TRIG;
 	ftPause			: F_TRIG;
 	nStage			: INT;
+	//Preparation by NEXT
+	stPrepReq		: ST_CIP_Request;
+	bPrepTaken		: BOOL;					//our local request has reached slot 0 of the buffer
+	bPrepMade		: BOOL;					//a local request was needed: refresh after tPrepHold
+	nNextNow		: INT;
+	eNextNow		: E_Anybus_RecipeType;
+	tonPrepHold		: TON;
+	tonPrepRetry	: TON;
 END_VAR
 VAR CONSTANT
 	cnNotSupported	: INT := 100;			//order not accepted: CIP busy (proposal)
+	cnPrepStart		: INT := 0;				//choose and start the local request when CIP is free
+	cnPrepRun		: INT := 1;				//local request in FB_CIP
+	cnPrepReady		: INT := 2;				//solutions ready, READY to Siemens
+	cnPrepRetry		: INT := 3;				//local request did not reach Done, wait tPrepRetry
+	cnPrepWash		: INT := 4;				//Siemens wash, no preparation
 END_VAR
 ]]></Declaration>
     <Implementation>
@@ -42,8 +63,9 @@ IF tonStopping.Q THEN;
 	bStopping:=FALSE;
 END_IF
 
-//Order: only while Siemens READY. REQUEST ON before READY starts the wash when READY comes (decision 02.11.2026)
-rtStart(CLK:=g_Anybus.fbAnybus.eRequest=E_Anybus_Request.eOn AND g_Anybus.fbAnybus.stIn.bReady);
+//Order: only while Siemens READY and CIP READY (solutions prepared). REQUEST ON held from earlier starts the wash
+//when both come, a new edge from Siemens is not needed (decisions 02.11.2026). stStatus.bReady of the last cycle
+rtStart(CLK:=g_Anybus.fbAnybus.eRequest=E_Anybus_Request.eOn AND g_Anybus.fbAnybus.stIn.bReady AND stStatus.bReady);
 IF rtStart.Q
 AND NOT bActive
 AND NOT bFinished
@@ -52,7 +74,7 @@ THEN;
 END_IF
 
 //The way back to Ready clears bRun (_ainit_exit, reset): keep the release until the order leaves Ready
-IF bActive
+IF (bActive OR nPrep=cnPrepRun)
 AND NOT bBufferFree
 AND NOT g_Data.b_CIP_Run
 AND NOT g_Data.fbCIP.bRun
@@ -83,6 +105,77 @@ THEN;
 	END_IF
 END_IF
 
+//Preparation by NEXT: free CIP prepares the solutions for the accepted NEXT, READY when done, refresh after tPrepHold.
+//A change of NEXT stops the preparation and starts it for the new NEXT
+IF g_Anybus.fbAnybus.bNextValid THEN;
+	nNextNow:=g_Anybus.fbAnybus.nNextClient;
+	eNextNow:=g_Anybus.fbAnybus.eNextRecipe;
+ELSE;
+	nNextNow:=0;
+	eNextNow:=E_Anybus_RecipeType.eNone;
+END_IF
+IF bActive OR bFinished THEN;
+	nPrep:=cnPrepWash;
+ELSIF (nPrep=cnPrepRun OR nPrep=cnPrepReady OR nPrep=cnPrepRetry)
+AND (nNextNow<>nPrepClient OR eNextNow<>ePrepRecipe)
+THEN;
+	IF nPrep=cnPrepRun THEN;
+		m_PrepStop();
+	END_IF
+	nPrep:=cnPrepStart;
+END_IF
+tonPrepHold(IN:=nPrep=cnPrepReady AND bPrepMade, PT:=tPrepHold);
+tonPrepRetry(IN:=nPrep=cnPrepRetry, PT:=tPrepRetry);
+CASE nPrep OF
+	cnPrepWash:;
+		IF NOT bActive AND NOT bFinished THEN;
+			nPrep:=cnPrepStart;
+		END_IF
+
+	cnPrepStart:;
+		IF bBufferFree
+		AND NOT bStopping
+		AND NOT g_Data.fbCIP.bRun
+		AND g_Data.fbCIP.SFCCurrentStep='Ready'
+		AND g_Data.fbCIP.eMode<>E_CIP_Mode.eOff
+		THEN;
+			nPrepClient:=nNextNow;
+			ePrepRecipe:=eNextNow;
+			bPrepMade:=NOT bPrepOff AND NOT bWaterOnly AND m_PrepRequest();
+			IF bPrepMade THEN;
+				g_Data.fbCIP.m_TakePosInCIPBuffer(stCIP_Request:=stPrepReq);
+				g_Data.fbCIP.mRun();
+				bPrepTaken:=FALSE;
+				nPrep:=cnPrepRun;
+			ELSE;
+				nPrep:=cnPrepReady;
+			END_IF
+		END_IF
+
+	cnPrepRun:;
+		//_aDone_entry frees slot 0; freed without Done = stopped from outside
+		IF NOT bBufferFree THEN;
+			bPrepTaken:=TRUE;
+		ELSIF bPrepTaken THEN;
+			bPrepTaken:=FALSE;
+			IF g_Data.fbCIP.bDone THEN;
+				nPrep:=cnPrepReady;
+			ELSE;
+				nPrep:=cnPrepRetry;
+			END_IF
+		END_IF
+
+	cnPrepReady:;
+		IF tonPrepHold.Q THEN;
+			nPrep:=cnPrepStart;
+		END_IF
+
+	cnPrepRetry:;
+		IF tonPrepRetry.Q THEN;
+			nPrep:=cnPrepStart;
+		END_IF
+END_CASE
+
 //Pause, the existing CIP zone Pause / Play. Play comes by itself when all causes are gone (decision 02.11.2026)
 tonReadyLost(IN:=bActive AND NOT g_Anybus.fbAnybus.stIn.bReady, PT:=T#1S);
 bPauseReq:=bActive AND (
@@ -109,7 +202,8 @@ stStatus.bReady:=TRUE
 	AND NOT g_Data.fbCIP.bRun
 	AND g_Data.fbCIP.SFCCurrentStep='Ready'
 	AND g_Data.fbCIP.eMode<>E_CIP_Mode.eOff
-	AND g_Anybus.fbAnybus.bCommOk;
+	AND g_Anybus.fbAnybus.bCommOk
+	AND nPrep=cnPrepReady;
 stStatus.bWorking:=bActive;
 //SENDING PUMP WORKING: the CIP sending pump P1001 runs during the Siemens wash, for indication in the plant
 stStatus.bSendingPump:=bActive AND g_Pump.fbPump[E_Pump_List.P1001].bRun;
@@ -220,6 +314,45 @@ bStopping:=TRUE;
 bActive:=FALSE;
 bTaken:=FALSE;
 m_Stop:=TRUE;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_PrepRequest" Id="{ac8c35bb-7632-4b38-ba4d-97a2c891aa7d}">
+      <Declaration><![CDATA[//Local request for ePrepRecipe, table of Vadim 02.11.2026. FALSE: no solution is needed (no NEXT, Flush_Only).
+//The start state is set as in the table, FB_CIP takes it for local requests only with item 7 (later)
+METHOD PRIVATE m_PrepRequest : BOOL
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[stPrepReq:=stBlank;
+stPrepReq.eClient:=E_CIP_Usage.eLocal;
+CASE ePrepRecipe OF
+	E_Anybus_RecipeType.eDetergent, E_Anybus_RecipeType.eDetergentOnly:;
+		//T92
+		stPrepReq.eType:=E_CIP_Type.Detergent;
+		stPrepReq.eStartState:=E_Element_State_Long.eCIP_1_Rinzed;
+	E_Anybus_RecipeType.eDisinfectionOnly:;
+		//T91
+		stPrepReq.eType:=E_CIP_Type.Full;
+		stPrepReq.eStartState:=E_Element_State_Long.eCIP_3_Deterged_Clean;
+	E_Anybus_RecipeType.eDetergentDisinfection, E_Anybus_RecipeType.eFull:;
+		//T92 and T91
+		stPrepReq.eType:=E_CIP_Type.Full;
+		stPrepReq.eStartState:=E_Element_State_Long.eCIP_1_Rinzed;
+ELSE;
+	RETURN;
+END_CASE
+m_PrepRequest:=TRUE;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="m_PrepStop" Id="{9ae72079-4a93-4d7f-9683-bf8f9397708a}">
+      <Declaration><![CDATA[//NEXT changed during the preparation: the same stop as on REQUEST OFF
+METHOD PRIVATE m_PrepStop : BOOL
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[g_Data.arCIP_RequestBufer[0]:=stBlank;
+g_Data.fbCIP.mResetCycle();
+bStopping:=TRUE;
+bPrepTaken:=FALSE;
+m_PrepStop:=TRUE;]]></ST>
       </Implementation>
     </Method>
     <Method Name="m_Media" Id="{7d3e91a2-4c56-4b18-8f27-2a6c0e5d1b04}">
