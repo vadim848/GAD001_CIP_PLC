@@ -176,6 +176,15 @@ CASE nPrep OF
 		END_IF
 END_CASE
 
+//Recipe of the local preparation in FB_CIP: the client of the wash, the NEXT client while preparing, else Local
+IF bActive THEN;
+	g_Data.fbCIP.nLocalRecipe:=stReq.nClientId;
+ELSIF nPrep=cnPrepRun THEN;
+	g_Data.fbCIP.nLocalRecipe:=nPrepClient;
+ELSE;
+	g_Data.fbCIP.nLocalRecipe:=0;
+END_IF
+
 //Pause, the existing CIP zone Pause / Play. Play comes by itself when all causes are gone (decision 02.11.2026)
 tonReadyLost(IN:=bActive AND NOT g_Anybus.fbAnybus.stIn.bReady, PT:=T#1S);
 bPauseReq:=bActive AND (

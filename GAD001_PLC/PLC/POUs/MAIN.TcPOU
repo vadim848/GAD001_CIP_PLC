@@ -55,6 +55,18 @@ END_IF
 IF g_Anybus.bBridgeEnable THEN;
 	g_Anybus.fbBridge();
 	g_Anybus.fbAnybus.stStatus:=g_Anybus.fbBridge.stStatus;
+ELSE;
+	g_Data.fbCIP.nLocalRecipe:=0;
+END_IF
+//One-time transfer of the old sets to the new recipes (Vadim 02.11.2026), the rest keeps the program defaults
+IF g_Data.bRecipeTransfer THEN;
+	g_Data.arr_CIP_Recipe[0]:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal];
+	g_Data.arr_CIP_Recipe[1]:=g_Data.arr_CIP_Param[E_CIP_Usage.eTank_3];
+	g_Data.arr_CIP_Recipe[2]:=g_Data.arr_CIP_Param[E_CIP_Usage.eLine_Color];
+	g_Data.arr_CIP_Description[0]:='Local';
+	g_Data.arr_CIP_Description[1]:='Tank - from Tank3 Color';
+	g_Data.arr_CIP_Description[2]:='Pipe - from Line Color';
+	g_Data.bRecipeTransfer:=FALSE;
 END_IF
 act_Call_CIP();
 

@@ -14,6 +14,7 @@ VAR_INPUT
 	lvlTank_T94			: ST_Tank_Level	;
 	
 	eCIP_Usage			: E_CIP_Usage;
+	nLocalRecipe		: INT;			//recipe of the local preparation: temperature, concentration, tank volumes (Vadim 02.11.2026, item 7)
 
 END_VAR
 VAR_OUTPUT
@@ -250,14 +251,14 @@ act_CallProcessControl();
 act_SprinklerCondition();
 //SUPER^();
 
-//Selecting client for CIP parameters
-//arr_CIP_Param ends at eLocal: a Siemens client uses the saved set of its type
-IF eReq.eClient<>E_CIP_Usage.eExternal THEN;
-	st_CIP_Param:=g_Data.arr_CIP_Param[eReq.eClient];
-ELSIF bClientTypeIs_Tank THEN;
-	st_CIP_Param:=g_Data.arr_CIP_Param[E_CIP_Usage.eTank_3];
+//Selecting client for CIP parameters: recipe = CLIENT ID of Siemens, 0 = Local (Vadim 02.11.2026)
+IF eReq.eClient=E_CIP_Usage.eExternal AND eReq.nClientId>=1 AND eReq.nClientId<=g_Data.cnRecipeMax THEN;
+	st_CIP_Param:=g_Data.arr_CIP_Recipe[eReq.nClientId];
 ELSE;
-	st_CIP_Param:=g_Data.arr_CIP_Param[E_CIP_Usage.eLine_Color];
+	st_CIP_Param:=g_Data.arr_CIP_Recipe[0];
+END_IF
+IF nLocalRecipe<0 OR nLocalRecipe>g_Data.cnRecipeMax THEN;
+	nLocalRecipe:=0;
 END_IF
 FOR i:=1 TO E_CIP_Usage.eLocal DO
 	g_Data.arr_CIP_Param[i].sName:=TO_STRING(i);
@@ -1083,7 +1084,7 @@ pcHeatExchanger.mRun_PID(Set_Point:=st_CIP_Param.r_Temper_Detergent, controlManu
 tonr_CIP_Condition(PT:=SECOND_TO_TIME(tConditionTime));
 IF TRUE 
 AND pcHeatExchanger.mRun_With_SP(Set_Point:=st_CIP_Param.r_Temper_Detergent, mRun_With_SP=>_cond[3])
-//AND pcTemperature_Deterg.mRun_With_SP(Set_Point:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Temper_Detergent, mRun_With_SP=>_cond[4])
+//AND pcTemperature_Deterg.mRun_With_SP(Set_Point:=g_Data.arr_CIP_Recipe[nLocalRecipe].r_Temper_Detergent, mRun_With_SP=>_cond[4])
 AND pcTemp_ClntReturn.mRun_With_SP(Set_Point:=st_CIP_Param.r_Temper_Detergent, mRun_With_SP=>_cond[5])
 AND pcDetergent.mRun_With_SP(Set_Point:=st_CIP_Param.r_DetergentConcentration, mRun_With_SP=>_cond[6])
 AND measure_Deterg_2.x
@@ -1193,7 +1194,7 @@ END_IF
     </Action>
     <Action Name="_aCondition_CIP2_Local_active" Id="{e5e07d09-44e8-4297-94d3-a998af75e5e0}">
       <Implementation>
-        <ST><![CDATA[fb_PumpCIP.m_Run(RPM:=pcFlow1_Rate.mRun_PID(Set_Point:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_Pipe,controlManual:=NOT(fb_PumpCIP.modeAuto)));
+        <ST><![CDATA[fb_PumpCIP.m_Run(RPM:=pcFlow1_Rate.mRun_PID(Set_Point:=g_Data.arr_CIP_Recipe[0].r_Flow_Pipe,controlManual:=NOT(fb_PumpCIP.modeAuto)));
 
 IF TRUE 
 AND pcFlow1_Rate.mRun(mRun=>_cond[1])
@@ -1205,13 +1206,13 @@ ELSE;
 	bCIP_Condition_Failed:=TRUE;
 END_IF
 
-pcHeatExchanger.mRun_PID(Set_Point:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Temper_Detergent, controlManual:=g_Data.stHeatExchanger.bManual ,mRun_PID=>_temp);
-tonr_CIP_Condition(PT:=SECOND_TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_ConditionDetergent), ResetTime:=FALSE);
+pcHeatExchanger.mRun_PID(Set_Point:=g_Data.arr_CIP_Recipe[nLocalRecipe].r_Temper_Detergent, controlManual:=g_Data.stHeatExchanger.bManual ,mRun_PID=>_temp);
+tonr_CIP_Condition(PT:=SECOND_TO_TIME(g_Data.arr_CIP_Recipe[0].t_ConditionDetergent), ResetTime:=FALSE);
 IF TRUE 
-AND pcHeatExchanger.mRun_With_SP(Set_Point:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Temper_Detergent, mRun_With_SP=>_cond[3])
-AND pcTemperature_Deterg.mRun_With_SP(Set_Point:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Temper_Detergent, mRun_With_SP=>_cond[4])
-AND pcTemp_ClntReturn.mRun_With_SP(Set_Point:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Temper_Detergent, mRun_With_SP=>_cond[5])
-AND pcDetergent.mRun_With_SP(Set_Point:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_DetergentConcentration, mRun_With_SP=>_cond[6])
+AND pcHeatExchanger.mRun_With_SP(Set_Point:=g_Data.arr_CIP_Recipe[nLocalRecipe].r_Temper_Detergent, mRun_With_SP=>_cond[3])
+AND pcTemperature_Deterg.mRun_With_SP(Set_Point:=g_Data.arr_CIP_Recipe[nLocalRecipe].r_Temper_Detergent, mRun_With_SP=>_cond[4])
+AND pcTemp_ClntReturn.mRun_With_SP(Set_Point:=g_Data.arr_CIP_Recipe[nLocalRecipe].r_Temper_Detergent, mRun_With_SP=>_cond[5])
+AND pcDetergent.mRun_With_SP(Set_Point:=g_Data.arr_CIP_Recipe[nLocalRecipe].r_DetergentConcentration, mRun_With_SP=>_cond[6])
 AND measure_Deterg.x
 AND TRUE
 THEN;
@@ -1255,8 +1256,8 @@ END_IF
 
 (*
 //ton_CIP_Condition(PT:=T#30S);
-IF (g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_ConditionDetergent-nDeter_CondActTime_Lcl)>0 THEN
-	tonr_CIP_Condition(PT:=SECOND_TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_ConditionDetergent-nDeter_CondActTime_Lcl));
+IF (g_Data.arr_CIP_Recipe[0].t_ConditionDetergent-nDeter_CondActTime_Lcl)>0 THEN
+	tonr_CIP_Condition(PT:=SECOND_TO_TIME(g_Data.arr_CIP_Recipe[0].t_ConditionDetergent-nDeter_CondActTime_Lcl));
 	bDeter_CondActTime_Lcl_Done:=FALSE;
 ELSE
 	bDeter_CondActTime_Lcl_Done:=TRUE;
@@ -1467,7 +1468,7 @@ END_IF
     </Action>
     <Action Name="_aCondition_CIP4_Local_active" Id="{df016d92-2d66-4702-a496-5eb5a36fcd94}">
       <Implementation>
-        <ST><![CDATA[fb_PumpCIP.m_Run(RPM:=pcFlow1_Rate.mRun_PID(Set_Point:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_Pipe,controlManual:=NOT(fb_PumpCIP.modeAuto)));
+        <ST><![CDATA[fb_PumpCIP.m_Run(RPM:=pcFlow1_Rate.mRun_PID(Set_Point:=g_Data.arr_CIP_Recipe[0].r_Flow_Pipe,controlManual:=NOT(fb_PumpCIP.modeAuto)));
 
 IF TRUE 
 AND pcFlow1_Rate.mRun(mRun=>_cond[1])
@@ -1479,13 +1480,13 @@ ELSE;
 	bCIP_Condition_Failed:=TRUE;
 END_IF
 
-pcHeatExchanger.mRun_PID(Set_Point:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Temper_DisInfection, controlManual:=g_Data.stHeatExchanger.bManual ,mRun_PID=>_temp);
-tonr_CIP_Condition(PT:=SECOND_TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_ConditionDisInfection));
+pcHeatExchanger.mRun_PID(Set_Point:=g_Data.arr_CIP_Recipe[nLocalRecipe].r_Temper_DisInfection, controlManual:=g_Data.stHeatExchanger.bManual ,mRun_PID=>_temp);
+tonr_CIP_Condition(PT:=SECOND_TO_TIME(g_Data.arr_CIP_Recipe[0].t_ConditionDisInfection));
 IF TRUE 
-AND pcHeatExchanger.mRun_With_SP(Set_Point:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Temper_DisInfection, mRun_With_SP=>_cond[3])
-AND pcTemperature_Dis.mRun_With_SP(Set_Point:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Temper_DisInfection, mRun_With_SP=>_cond[4])
-AND pcTemp_ClntReturn.mRun_With_SP(Set_Point:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Temper_DisInfection, mRun_With_SP=>_cond[5])
-AND pcDisInfectant.mRun_With_SP(Set_Point:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_DisInfectionConcentration, mRun_With_SP=>_cond[6])	
+AND pcHeatExchanger.mRun_With_SP(Set_Point:=g_Data.arr_CIP_Recipe[nLocalRecipe].r_Temper_DisInfection, mRun_With_SP=>_cond[3])
+AND pcTemperature_Dis.mRun_With_SP(Set_Point:=g_Data.arr_CIP_Recipe[nLocalRecipe].r_Temper_DisInfection, mRun_With_SP=>_cond[4])
+AND pcTemp_ClntReturn.mRun_With_SP(Set_Point:=g_Data.arr_CIP_Recipe[nLocalRecipe].r_Temper_DisInfection, mRun_With_SP=>_cond[5])
+AND pcDisInfectant.mRun_With_SP(Set_Point:=g_Data.arr_CIP_Recipe[nLocalRecipe].r_DisInfectionConcentration, mRun_With_SP=>_cond[6])	
 AND measure_Dis.x
 AND TRUE
 THEN;
@@ -1526,8 +1527,8 @@ END_IF
 *)
 (*
 //ton_CIP_Condition(PT:=T#30S);
-IF g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_ConditionDisInfection-nDisInf_CondActTime_Lcl>0 THEN
-	tonr_CIP_Condition(PT:=SECOND_TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_ConditionDisInfection-nDisInf_CondActTime_Lcl));
+IF g_Data.arr_CIP_Recipe[0].t_ConditionDisInfection-nDisInf_CondActTime_Lcl>0 THEN
+	tonr_CIP_Condition(PT:=SECOND_TO_TIME(g_Data.arr_CIP_Recipe[0].t_ConditionDisInfection-nDisInf_CondActTime_Lcl));
 	bDisInf_CondActTime_Lcl_Done:=FALSE;
 ELSE
 	bDisInf_CondActTime_Lcl_Done:=TRUE;
@@ -2271,7 +2272,7 @@ END_IF]]></ST>
     <Action Name="_aDeterg_Overflow_1_entry" Id="{f52b8f3a-d9dc-44f3-86b4-8408e5527d40}">
       <Implementation>
         <ST><![CDATA[rDeltaWater_DeterLocal:=m_OverFlowCorrect(
-							rTc:=stDetergent.rSetPoint , //g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_DetergentConcentration
+							rTc:=stDetergent.rSetPoint , //g_Data.arr_CIP_Recipe[nLocalRecipe].r_DetergentConcentration
 							rAv:=lvlTank_T92.rTankLevel , 
 							rAc:=stDetergent.rValue );
 
@@ -2512,7 +2513,7 @@ END_IF	]]></ST>
     <Action Name="_aDisinfct_Overflow_1_entry" Id="{2b4f5e27-bf29-490e-8560-26cd3cd60949}">
       <Implementation>
         <ST><![CDATA[rDeltaWater_DisInfLocal:=m_OverFlowCorrect(
-								rTc:=stDisInfectant.rSetPoint , //g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_DisInfectionConcentration
+								rTc:=stDisInfectant.rSetPoint , //g_Data.arr_CIP_Recipe[nLocalRecipe].r_DisInfectionConcentration
 								rAv:=lvlTank_T91.rTankLevel , 
 								rAc:=stDisInfectant.rValue );
 								
@@ -2835,12 +2836,12 @@ AND fbCIP_Return.m_CheckStatus(eReqStatus:=E_CIP_Return.eDrain)
 THEN;
 	//IF eReq.eClient=E_CIP_Usage.eLocal 
 	IF lvlTank_T91.e_state=E_Tank_Level.eLL
-	AND lvlTank_T91.rTankLevel>g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Tank91_Volume//250 // Local requered Level
+	AND lvlTank_T91.rTankLevel>g_Data.arr_CIP_Recipe[nLocalRecipe].r_Tank91_Volume//250 // Local requered Level
 	THEN;	
 		bStepDone:=TRUE;
 		fbPis.m_SetByRecipe(stPis:=stPis_FillWater_T91, req:=E_Piston_Recipe_State.Release);
 	(*ELSIF lvlTank_T91.e_state=E_Tank_Level.eLL
-	AND lvlTank_T91.rTankLevel>g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_TankLevel_2//300 // Client requered Level
+	AND lvlTank_T91.rTankLevel>g_Data.arr_CIP_Recipe[nLocalRecipe].r_TankLevel_2//300 // Client requered Level
 	THEN;
 		//Level OK
 		bStepDone:=TRUE;
@@ -3412,7 +3413,7 @@ _aGet_Client_active();
     <Action Name="_ameasureDelay_CIP2_1_active" Id="{eee92c62-884a-44e9-a331-0195a641ce83}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
-tMeasureDelayTime:=SECOND_TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_Measure_Delay);
+tMeasureDelayTime:=SECOND_TO_TIME(g_Data.arr_CIP_Recipe[0].t_Measure_Delay);
 IF measureDelay_CIP2_1.t > tMeasureDelayTime THEN;
 	bStepDone:=TRUE;
 END_IF
@@ -3501,7 +3502,7 @@ END_IF]]></ST>
     <Action Name="_ameasureDelay_CIP4_1_active" Id="{95864345-55ce-4583-98e3-3f17b2ed667c}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
-tMeasureDelayTime:=SECOND_TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_Measure_Delay);
+tMeasureDelayTime:=SECOND_TO_TIME(g_Data.arr_CIP_Recipe[0].t_Measure_Delay);
 IF measureDelay_CIP4_1.t > tMeasureDelayTime THEN;
 	bStepDone:=TRUE;
 END_IF
@@ -3640,8 +3641,9 @@ END_CASE
         <ST><![CDATA[eReq:=arCIP_RequestBufer[0];
 bClientTypeIs_Tank:=eReq.eClient=E_CIP_Usage.eExternal AND eReq.eClientType=E_Anybus_ClientType.eTank;
 
-//The order from Siemens is complete, nothing is remembered from earlier washes
-IF eReq.eClient=E_CIP_Usage.eExternal THEN;
+//The order from Siemens is complete, nothing is remembered from earlier washes.
+//Local requests of FB_CIP_Siemens carry their start too, requests of the HMI have none (item 7, 02.11.2026)
+IF eReq.eClient=E_CIP_Usage.eExternal OR eReq.eStartState<>E_Element_State_Long.eOff THEN;
 	eCIP_State:=eReq.eStartState;
 ELSIF eReq.eType=E_CIP_Type.Full THEN;
 	eCIP_State:=E_Element_State_Long.eNotClean;
@@ -4006,11 +4008,11 @@ tonr_CIP_Condition(ResetTime:=TRUE);
     <Action Name="_aStartPump_CIP2_01_active" Id="{c1fce140-5edc-4740-a154-cfbe59a57483}">
       <Implementation>
         <ST><![CDATA[IF TRUE 
-//AND stAnalogSensor[E_ASense_Name.FT1001].Value>=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_1 // 
-//AND stAnalogSensor[E_ASense_Name.FT1002].Value>=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_2 // 
-//AND stAnalogSensor[E_ASense_Name.PT1001].Value>=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Pressure // 
-//AND pcFlow1_Rate.mRun_With_SP(Set_Point:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_Pipe)
-//AND pcFlow2_Rate.mRun_With_SP(Set_Point:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_Pipe)
+//AND stAnalogSensor[E_ASense_Name.FT1001].Value>=g_Data.arr_CIP_Recipe[0].r_Flow_1 // 
+//AND stAnalogSensor[E_ASense_Name.FT1002].Value>=g_Data.arr_CIP_Recipe[0].r_Flow_2 // 
+//AND stAnalogSensor[E_ASense_Name.PT1001].Value>=g_Data.arr_CIP_Recipe[0].r_Pressure // 
+//AND pcFlow1_Rate.mRun_With_SP(Set_Point:=g_Data.arr_CIP_Recipe[0].r_Flow_Pipe)
+//AND pcFlow2_Rate.mRun_With_SP(Set_Point:=g_Data.arr_CIP_Recipe[0].r_Flow_Pipe)
 AND pcFlow1_Rate.mRun()
 AND pcFlow2_Rate.mRun()
 //AND pcPressure.mRun()
@@ -4020,7 +4022,7 @@ ELSE;
 	bStepDone:=FALSE;
 END_IF
 
-fb_PumpCIP.m_Run(RPM:=pcFlow1_Rate.mRun_PID(Set_Point:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_Pipe,controlManual:=NOT(fb_PumpCIP.modeAuto)));
+fb_PumpCIP.m_Run(RPM:=pcFlow1_Rate.mRun_PID(Set_Point:=g_Data.arr_CIP_Recipe[0].r_Flow_Pipe,controlManual:=NOT(fb_PumpCIP.modeAuto)));
 ]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -4123,13 +4125,13 @@ nStepHeat:=10;
     <Action Name="_aStartPump_CIP2_RPM_01_active" Id="{926fdc44-d8f2-4656-9732-79a85aef1568}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
-fb_PumpCIP.m_Run(RPM:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_CIP_Pump);//1500
+fb_PumpCIP.m_Run(RPM:=g_Data.arr_CIP_Recipe[0].r_CIP_Pump);//1500
 
 IF TRUE //Future condition
-AND StartPump_CIP2_RPM_01.t>SECOND_TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_PumpInitRun) 
-AND fb_PumpCIP.nRPM=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_CIP_Pump
-//AND stAnalogSensor[E_ASense_Name.FT1001].Value>=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_Pipe // 
-//AND stAnalogSensor[E_ASense_Name.FT1002].Value>=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_Pipe // 
+AND StartPump_CIP2_RPM_01.t>SECOND_TO_TIME(g_Data.arr_CIP_Recipe[0].t_PumpInitRun) 
+AND fb_PumpCIP.nRPM=g_Data.arr_CIP_Recipe[0].r_CIP_Pump
+//AND stAnalogSensor[E_ASense_Name.FT1001].Value>=g_Data.arr_CIP_Recipe[0].r_Flow_Pipe // 
+//AND stAnalogSensor[E_ASense_Name.FT1002].Value>=g_Data.arr_CIP_Recipe[0].r_Flow_Pipe // 
 THEN;
 	bStepDone:=TRUE;
 END_IF
@@ -4158,12 +4160,12 @@ fb_PumpCIP.m_Run(RPM:=st_CIP_Param.r_CIP_Pump);
 bStepDone:=TRUE;
 
 // to stas question ? deference:
-//fb_PumpCIP.m_Run(RPM:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_CIP_Pmp_1);//1500
+//fb_PumpCIP.m_Run(RPM:=g_Data.arr_CIP_Recipe[0].r_CIP_Pmp_1);//1500
 //fb_PumpCIP.m_Run(RPM:=st_CIP_Param.r_CIP_Pmp_1);
 (*
 IF TRUE //Future condition
 AND delta_T92_Volume < - st_CIP_Param.r_Volume_Solution_Fill // Volume 
-//AND StartPump_CIP2_RPM_02.t>SECOND_TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_PumpInitRun) 
+//AND StartPump_CIP2_RPM_02.t>SECOND_TO_TIME(g_Data.arr_CIP_Recipe[0].t_PumpInitRun) 
 THEN;
 	bStepDone:=TRUE;
 END_IF
@@ -4209,10 +4211,10 @@ tonr_CIP_Condition(ResetTime:=TRUE);]]></ST>
     <Action Name="_aStartPump_CIP4_RPM_01_active" Id="{7055f639-2c8c-427c-8372-ce3721630720}">
       <Implementation>
         <ST><![CDATA[bStepDone:=FALSE;
-fb_PumpCIP.m_Run(RPM:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_CIP_Pump);
+fb_PumpCIP.m_Run(RPM:=g_Data.arr_CIP_Recipe[0].r_CIP_Pump);
 
 IF TRUE //Future condition
-AND StartPump_CIP4_RPM_01.t>SECOND_TO_TIME(g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].t_PumpInitRun) 
+AND StartPump_CIP4_RPM_01.t>SECOND_TO_TIME(g_Data.arr_CIP_Recipe[0].t_PumpInitRun) 
 THEN;
 	bStepDone:=TRUE;
 END_IF
@@ -4262,9 +4264,9 @@ END_IF
     <Action Name="_aStartPump_CIP4_01_active" Id="{e6aa8b88-0a3e-4980-90b3-b28e3208ca1c}">
       <Implementation>
         <ST><![CDATA[IF TRUE 
-(*AND stAnalogSensor[E_ASense_Name.FT1001].Value>=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_1//200 // 
-AND stAnalogSensor[E_ASense_Name.FT1002].Value>=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_2//200 // 
-AND stAnalogSensor[E_ASense_Name.PT1001].Value>=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Pressure//0.5 //*)
+(*AND stAnalogSensor[E_ASense_Name.FT1001].Value>=g_Data.arr_CIP_Recipe[0].r_Flow_1//200 // 
+AND stAnalogSensor[E_ASense_Name.FT1002].Value>=g_Data.arr_CIP_Recipe[0].r_Flow_2//200 // 
+AND stAnalogSensor[E_ASense_Name.PT1001].Value>=g_Data.arr_CIP_Recipe[0].r_Pressure//0.5 //*)
 AND pcFlow1_Rate.mRun()
 AND pcFlow2_Rate.mRun()
 //AND pcPressure.mRun()
@@ -4274,7 +4276,7 @@ ELSE;
 	bStepDone:=FALSE;
 END_IF
 
-fb_PumpCIP.m_Run(RPM:=pcFlow1_Rate.mRun_PID(Set_Point:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Flow_Pipe,controlManual:=NOT(fb_PumpCIP.modeAuto)));
+fb_PumpCIP.m_Run(RPM:=pcFlow1_Rate.mRun_PID(Set_Point:=g_Data.arr_CIP_Recipe[0].r_Flow_Pipe,controlManual:=NOT(fb_PumpCIP.modeAuto)));
 ]]></ST>
       </Implementation>
       <ObjectProperties>
@@ -35491,8 +35493,8 @@ ELSE;
 END_IF
 
 reqVolume:=st_CIP_Param.r_Tank94_Volume;
-IF g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Tank94_Volume>reqVolume THEN;
-	reqVolume:=g_Data.arr_CIP_Param[E_CIP_Usage.eLocal].r_Tank94_Volume;
+IF g_Data.arr_CIP_Recipe[nLocalRecipe].r_Tank94_Volume>reqVolume THEN;
+	reqVolume:=g_Data.arr_CIP_Recipe[nLocalRecipe].r_Tank94_Volume;
 END_IF
 
 fbHysteresisFillT94(

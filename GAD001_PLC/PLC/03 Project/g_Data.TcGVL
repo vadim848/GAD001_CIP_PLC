@@ -20,13 +20,17 @@ VAR_GLOBAL PERSISTENT
 	stTanksSens		:	ARRAY [0..E_Tank_Name.last] OF ST_Tank_Level;
 	
 	////////////////////////////////////////////////////////////////
-	arr_CIP_Param		:	ARRAY [0..E_CIP_Usage.eLocal] OF ST_CIP_Param		;//only [eLocal] is used by the local CIP
-	
+	arr_CIP_Param		:	ARRAY [0..E_CIP_Usage.eLocal] OF ST_CIP_Param		;//old sets, not read by FB_CIP any more: source of the one-time transfer
+	//Recipes of FB_CIP (Vadim 02.11.2026): 0 = Local, 1..30 = CLIENT ID of Siemens
+	arr_CIP_Recipe		:	ARRAY [0..cnRecipeMax] OF ST_CIP_Param		;
+	arr_CIP_Description	:	ARRAY [0..cnRecipeMax] OF STRING(80)		;//text of the operator, FB_CIP does not read it
+	bRecipeTransfer		:	BOOL	;//one-time: old Local, Tank3 Color, Line Color -> recipes 0, 1, 2; reset by MAIN
+
 	//additional variables
 	b_CIP_Run	:	BOOL	;
 END_VAR
 VAR_GLOBAL CONSTANT
-	
+	cnRecipeMax			:	INT := 30	;//last recipe = last CLIENT ID
 END_VAR
 ]]></Declaration>
   </GVL>
