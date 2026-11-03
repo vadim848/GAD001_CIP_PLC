@@ -25,6 +25,8 @@ VAR
 	bBufferFree		: BOOL;
 	bPauseReq		: BOOL;
 	bSprinklerReq	: BOOL;
+	rtStart			: R_TRIG;				//REQUEST ON while Siemens READY
+	tonReadyLost	: TON;					//Siemens READY lost during the wash
 	rtPause			: R_TRIG;
 	ftPause			: F_TRIG;
 	nStage			: INT;
@@ -40,8 +42,9 @@ IF tonStopping.Q THEN;
 	bStopping:=FALSE;
 END_IF
 
-//Order
-IF g_Anybus.fbAnybus.bRequestOnEdge
+//Order: only while Siemens READY. REQUEST ON before READY starts the wash when READY comes (decision 02.11.2026)
+rtStart(CLK:=g_Anybus.fbAnybus.eRequest=E_Anybus_Request.eOn AND g_Anybus.fbAnybus.stIn.bReady);
+IF rtStart.Q
 AND NOT bActive
 AND NOT bFinished
 THEN;
@@ -80,9 +83,11 @@ THEN;
 	END_IF
 END_IF
 
-//Pause, the existing CIP zone Pause / Play
+//Pause, the existing CIP zone Pause / Play. Play comes by itself when all causes are gone (decision 02.11.2026)
+tonReadyLost(IN:=bActive AND NOT g_Anybus.fbAnybus.stIn.bReady, PT:=T#1S);
 bPauseReq:=bActive AND (
 	g_Anybus.fbAnybus.eRequest=E_Anybus_Request.eNone
+	OR tonReadyLost.Q
 	OR g_Anybus.fbAnybus.stIn.bPause
 	OR g_Anybus.fbAnybus.stIn.bAlarm
 	OR NOT g_Anybus.fbAnybus.stIn.bInletPumpEnable);
