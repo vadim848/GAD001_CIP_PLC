@@ -4,7 +4,7 @@
     <Declaration><![CDATA[//Siemens order -> FB_CIP through its existing request buffer, CIP state -> Siemens status.
 //Outside the CIP cycle, FB_CIP is not changed. Called in MAIN before act_Call_CIP while g_Anybus.bBridgeEnable.
 //One Siemens order at a time: a new one is taken only when the buffer is free (decision B, 02.11.2026).
-//Not here yet: preparing solutions for NEXT CLIENT, progress, flow rate and sending pump. Reaction to ALARM (pause) is temporary, to be confirmed by GAD.
+//Not here yet: preparing solutions for NEXT CLIENT, flow rate. Reaction to ALARM (pause) is temporary, to be confirmed by GAD.
 FUNCTION_BLOCK FB_CIP_Siemens
 VAR_INPUT
 	bWaterOnly		: BOOL;					//commissioning: any order runs as R_Water
@@ -111,6 +111,8 @@ stStatus.bReady:=TRUE
 	AND g_Data.fbCIP.eMode<>E_CIP_Mode.eOff
 	AND g_Anybus.fbAnybus.bCommOk;
 stStatus.bWorking:=bActive;
+//SENDING PUMP WORKING: the CIP sending pump P1001 runs during the Siemens wash, for indication in the plant
+stStatus.bSendingPump:=bActive AND g_Pump.fbPump[E_Pump_List.P1001].bRun;
 //EMPTYING CLIENT: Tank on a Tank_LowLevel step, the steps wait for CLIENT EMPTY
 stStatus.bEmptyingClient:=bActive
 	AND stReq.eClientType=E_Anybus_ClientType.eTank
@@ -128,6 +130,15 @@ stStatus.bSprinklerRequest:=bSprinklerReq;
 stStatus.bFinish:=bFinished;
 stStatus.bPause:=bActive AND stOper[E_ModeZone.eCIP].iActOperation=E_OperationButtons.ePauseAll;
 stStatus.eActualMedia:=m_Media();
+//Progress of the current medium in seconds (proposal, to be confirmed by Vadim): circulation timer of FB_CIP,
+//reset at the start of each medium. Remaining time to the next stage = recipe - actual
+IF bActive THEN;
+	stStatus.nRecipeProgress:=TIME_TO_DINT(g_Data.fbCIP.tonr_CIP_Condition.PT)/1000;
+	stStatus.nActualProgress:=TIME_TO_DINT(g_Data.fbCIP.tonr_CIP_Condition.ET)/1000;
+ELSE;
+	stStatus.nRecipeProgress:=0;
+	stStatus.nActualProgress:=0;
+END_IF
 IF bActive OR bFinished THEN;
 	stStatus.nActiveClient:=stReq.nClientId;
 	stStatus.eActiveRecipe:=eRecipe;
