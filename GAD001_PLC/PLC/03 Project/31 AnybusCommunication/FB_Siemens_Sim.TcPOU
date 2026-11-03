@@ -33,8 +33,7 @@ VAR_OUTPUT
 	bCipEmptying	: BOOL;
 	bCipPause		: BOOL;
 	bCipAlive		: BOOL;
-	bCipSprinklerOn	: BOOL;
-	bCipSprinklerOff: BOOL;
+	bCipSprinkler	: BOOL;
 	//Text lines of vis_SiemensSim
 	sSim			: STRING(120);
 	sMode			: STRING(120);
@@ -77,23 +76,14 @@ bCipFinish		:= arFromCip[0].3;
 bCipEmptying	:= arFromCip[0].4;
 bCipPause		:= arFromCip[0].6;
 bCipAlive		:= arFromCip[0].7;
-bCipSprinklerOn	:= arFromCip[1].0;
-bCipSprinklerOff:= arFromCip[1].1;
+bCipSprinkler	:= arFromCip[1].0;
 
 //Plant answers
 tonEmpty(IN:=bCipEmptying, PT:=tReplyEmpty);
-IF bCipSprinklerOn THEN;
-	tonSprinkler(IN:=NOT bSprinklerState, PT:=tReplySprinkler);
-	IF tonSprinkler.Q THEN;
-		bSprinklerState:=TRUE;
-	END_IF
-ELSIF bCipSprinklerOff THEN;
-	tonSprinkler(IN:=bSprinklerState, PT:=tReplySprinkler);
-	IF tonSprinkler.Q THEN;
-		bSprinklerState:=FALSE;
-	END_IF
-ELSE;
-	tonSprinkler(IN:=FALSE);
+//Sprinkler State follows the request level after tReplySprinkler
+tonSprinkler(IN:=bCipSprinkler<>bSprinklerState, PT:=tReplySprinkler);
+IF tonSprinkler.Q THEN;
+	bSprinklerState:=bCipSprinkler;
 END_IF
 
 CASE eMode OF
@@ -251,7 +241,7 @@ CASE eFault OF
 	E_Sim_Fault.eNoClientEmpty:;
 		stSend.bClientEmpty:=FALSE;
 	E_Sim_Fault.eNoSprinkler:;
-		stSend.bSprinklerState:=bCipSprinklerOff;
+		stSend.bSprinklerState:=NOT bCipSprinkler;
 	E_Sim_Fault.eReadyOff:;
 		stSend.bReady:=FALSE;
 END_CASE
@@ -267,7 +257,7 @@ sClient:=CONCAT(CONCAT('Client ', TO_STRING(stClient.nClient)),
 sFault:=CONCAT(CONCAT('Fault: ', TO_STRING(eFault)), SEL(bFaultOn, '   armed, not applied', '   APPLIED'));
 sFromCip:=CONCAT(CONCAT(CONCAT(CONCAT('CIP: ', m_Bit('READY', bCipReady)), m_Bit('WORKING', bCipWorking)),
 	CONCAT(m_Bit('FINISH', bCipFinish), m_Bit('EMPTYING', bCipEmptying))),
-	CONCAT(CONCAT(m_Bit('PAUSE', bCipPause), m_Bit('SPR_ON', bCipSprinklerOn)), m_Bit('SPR_OFF', bCipSprinklerOff)));
+	CONCAT(m_Bit('PAUSE', bCipPause), m_Bit('SPRINKLER', bCipSprinkler)));
 sToCip:=CONCAT(CONCAT(CONCAT(CONCAT('Plant: ', m_Bit('READY', stSend.bReady)), m_Bit('REQ_ON', stSend.bRequestOn)),
 	CONCAT(m_Bit('REQ_OFF', stSend.bRequestOff), m_Bit('INLET', stSend.bInletPumpEnable))),
 	CONCAT(CONCAT(m_Bit('PAUSE', stSend.bPause), m_Bit('EMPTY', stSend.bClientEmpty)), m_Bit('SPR_STATE', stSend.bSprinklerState)));

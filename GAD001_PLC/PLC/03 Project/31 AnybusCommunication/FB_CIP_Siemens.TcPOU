@@ -123,8 +123,8 @@ END_IF
 IF bActive AND FIND(g_Data.fbCIP.SFCCurrentStep, 'Conn_Sprinkler')>0 THEN;
 	bSprinklerReq:=TRUE;
 END_IF
-stStatus.bSprinklerRequestOn:=bSprinklerReq;
-stStatus.bSprinklerRequestOff:=NOT stStatus.bSprinklerRequestOn AND g_Anybus.fbAnybus.stIn.bSprinklerState;
+//One level bit: 0 asks Siemens back to the pipe, Sprinkler State 0 confirms (Vadim 02.11.2026, items 7-8)
+stStatus.bSprinklerRequest:=bSprinklerReq;
 stStatus.bFinish:=bFinished;
 stStatus.bPause:=bActive AND stOper[E_ModeZone.eCIP].iActOperation=E_OperationButtons.ePauseAll;
 stStatus.eActualMedia:=m_Media();
