@@ -107,6 +107,7 @@ stStatus.bReady:=TRUE
 	AND NOT bStopping
 	AND bBufferFree
 	AND NOT g_Data.fbCIP.bRun
+	AND g_Data.fbCIP.SFCCurrentStep='Ready'
 	AND g_Data.fbCIP.eMode<>E_CIP_Mode.eOff
 	AND g_Anybus.fbAnybus.bCommOk;
 stStatus.bWorking:=bActive;
@@ -146,10 +147,13 @@ END_IF
 METHOD PRIVATE m_Start : BOOL
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF NOT g_Anybus.fbAnybus.bCurrentValid
+        <ST><![CDATA[//Not before Ready: after a stop the way back to Ready (valves, client drain) takes more than bStopping,
+//_aReady_exit would be missed and eCIP_State of the order not taken
+IF NOT g_Anybus.fbAnybus.bCurrentValid
 OR bStopping
 OR NOT bBufferFree
 OR g_Data.fbCIP.bRun
+OR g_Data.fbCIP.SFCCurrentStep<>'Ready'
 OR g_Data.fbCIP.eMode=E_CIP_Mode.eOff
 THEN;
 	RETURN;
