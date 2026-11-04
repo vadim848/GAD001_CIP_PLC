@@ -8,7 +8,7 @@
 FUNCTION_BLOCK FB_Anybus_Interface
 VAR_INPUT
 	stStatus		: ST_Anybus_Outputs;	//CIP -> Siemens, filled by the CIP logic (bAlive is generated here)
-	bFieldbusOk		: BOOL := TRUE;			//gateway EtherCAT slave: State = OP and WcState = 0 (to be linked)
+	bFieldbusOk		: BOOL := TRUE;			//gateway EtherCAT slave: WcState = 0 (gIO.Anybus_WcState in MAIN)
 	bSwapBytes		: BOOL := TRUE;			//TRUE: INT/DINT are big-endian (Profinet), swapped here
 	tAliveTimeout	: TIME := T#2S;			//Siemens ALIVE must toggle within this time
 	tNextStable		: TIME := T#3S;			//NEXT CLIENT / NEXT RECIPE must be stable this long

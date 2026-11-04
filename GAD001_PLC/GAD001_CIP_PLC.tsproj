@@ -1021,7 +1021,7 @@
 						<Defines></Defines>
 					</Variant>
 				</ProjectVariant>
-				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcHash="{B27374B8-FE32-3EDF-AA7A-2D1BAF79AF2B}" TmcPath="PLC\PLC.tmc">
+				<Instance Id="#x08502000" TcSmClass="TComPlcObjDef" KeepUnrestoredLinks="2" TmcHash="{45DC26F4-5933-213E-3B2D-CD3F375BAE4B}" TmcPath="PLC\PLC.tmc">
 					<Name>PLC Instance</Name>
 					<CLSID ClassFactory="TcPlc30">{08500001-0000-0000-F000-000000000064}</CLSID>
 					<Vars VarGrpType="2" ContextId="1" AreaNo="17">
@@ -1187,6 +1187,11 @@
 					</Vars>
 					<Vars VarGrpType="1" ContextId="1" AreaNo="16">
 						<Name>PlcTask Inputs</Name>
+						<Var>
+							<Name>gIO.Anybus_WcState</Name>
+							<Comment><![CDATA[Box 40 WcState, TRUE = process data not valid (also when not in OP)]]></Comment>
+							<Type>BOOL</Type>
+						</Var>
 						<Var>
 							<Name>gIO.i_EL</Name>
 							<Type GUID="{830C7EAC-F4CF-1813-EC50-76D0026184F4}">ARRAY [1..27] OF ST_EL18x9</Type>
@@ -5019,6 +5024,265 @@ Bit1: Value bigger/equal Limit2]]></Comment>
 				<Link VarA="PlcTask Inputs^gIO.Nidec[6].actVelocity" VarB="Transmit PDO Mapping 6^vl velocity actual value"/>
 				<Link VarA="PlcTask Outputs^gIO.Nidec[6].ControlWord" VarB="Receive PDO Mapping 6^Control word"/>
 				<Link VarA="PlcTask Outputs^gIO.Nidec[6].targetVelocity" VarB="Receive PDO Mapping 6^vl target velocity"/>
+			</OwnerB>
+			<OwnerB Name="TIID^Device 2 (EtherCAT)^Box 2 (CU1128)^Box 40 (Anybus Communicator)">
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0001"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0002" Size="8" OffsA="8"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0003" Size="8" OffsA="16"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0004" Size="8" OffsA="24"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0005" Size="8" OffsA="32"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0006" Size="8" OffsA="40"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0007" Size="8" OffsA="48"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0008" Size="8" OffsA="56"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0009" Size="8" OffsA="64"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0010" Size="8" OffsA="72"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0011" Size="8" OffsA="80"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0012" Size="8" OffsA="88"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0013" Size="8" OffsA="96"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0014" Size="8" OffsA="104"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0015" Size="8" OffsA="112"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0016" Size="8" OffsA="120"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0017" Size="8" OffsA="128"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0018" Size="8" OffsA="136"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0019" Size="8" OffsA="144"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0020" Size="8" OffsA="152"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0021" Size="8" OffsA="160"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0022" Size="8" OffsA="168"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0023" Size="8" OffsA="176"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0024" Size="8" OffsA="184"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0025" Size="8" OffsA="192"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0026" Size="8" OffsA="200"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0027" Size="8" OffsA="208"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0028" Size="8" OffsA="216"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0029" Size="8" OffsA="224"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0030" Size="8" OffsA="232"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0031" Size="8" OffsA="240"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0032" Size="8" OffsA="248"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0033" Size="8" OffsA="256"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0034" Size="8" OffsA="264"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0035" Size="8" OffsA="272"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0036" Size="8" OffsA="280"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0037" Size="8" OffsA="288"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0038" Size="8" OffsA="296"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0039" Size="8" OffsA="304"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0040" Size="8" OffsA="312"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0041" Size="8" OffsA="320"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0042" Size="8" OffsA="328"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0043" Size="8" OffsA="336"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0044" Size="8" OffsA="344"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0045" Size="8" OffsA="352"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0046" Size="8" OffsA="360"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0047" Size="8" OffsA="368"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0048" Size="8" OffsA="376"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0049" Size="8" OffsA="384"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0050" Size="8" OffsA="392"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0051" Size="8" OffsA="400"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0052" Size="8" OffsA="408"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0053" Size="8" OffsA="416"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0054" Size="8" OffsA="424"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0055" Size="8" OffsA="432"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0056" Size="8" OffsA="440"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0057" Size="8" OffsA="448"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0058" Size="8" OffsA="456"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0059" Size="8" OffsA="464"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0060" Size="8" OffsA="472"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0061" Size="8" OffsA="480"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0062" Size="8" OffsA="488"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0063" Size="8" OffsA="496"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0064" Size="8" OffsA="504"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0065" Size="8" OffsA="512"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0066" Size="8" OffsA="520"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0067" Size="8" OffsA="528"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0068" Size="8" OffsA="536"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0069" Size="8" OffsA="544"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0070" Size="8" OffsA="552"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0071" Size="8" OffsA="560"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0072" Size="8" OffsA="568"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0073" Size="8" OffsA="576"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0074" Size="8" OffsA="584"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0075" Size="8" OffsA="592"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0076" Size="8" OffsA="600"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0077" Size="8" OffsA="608"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0078" Size="8" OffsA="616"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0079" Size="8" OffsA="624"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0080" Size="8" OffsA="632"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0081" Size="8" OffsA="640"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0082" Size="8" OffsA="648"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0083" Size="8" OffsA="656"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0084" Size="8" OffsA="664"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0085" Size="8" OffsA="672"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0086" Size="8" OffsA="680"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0087" Size="8" OffsA="688"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0088" Size="8" OffsA="696"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0089" Size="8" OffsA="704"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0090" Size="8" OffsA="712"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0091" Size="8" OffsA="720"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0092" Size="8" OffsA="728"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0093" Size="8" OffsA="736"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0094" Size="8" OffsA="744"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0095" Size="8" OffsA="752"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0096" Size="8" OffsA="760"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0097" Size="8" OffsA="768"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0098" Size="8" OffsA="776"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0099" Size="8" OffsA="784"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0100" Size="8" OffsA="792"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0101" Size="8" OffsA="800"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0102" Size="8" OffsA="808"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0103" Size="8" OffsA="816"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0104" Size="8" OffsA="824"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0105" Size="8" OffsA="832"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0106" Size="8" OffsA="840"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0107" Size="8" OffsA="848"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0108" Size="8" OffsA="856"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0109" Size="8" OffsA="864"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0110" Size="8" OffsA="872"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0111" Size="8" OffsA="880"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0112" Size="8" OffsA="888"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0113" Size="8" OffsA="896"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0114" Size="8" OffsA="904"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0115" Size="8" OffsA="912"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0116" Size="8" OffsA="920"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0117" Size="8" OffsA="928"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0118" Size="8" OffsA="936"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0119" Size="8" OffsA="944"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0120" Size="8" OffsA="952"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0121" Size="8" OffsA="960"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0122" Size="8" OffsA="968"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0123" Size="8" OffsA="976"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0124" Size="8" OffsA="984"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0125" Size="8" OffsA="992"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0126" Size="8" OffsA="1000"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0127" Size="8" OffsA="1008"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_Inputs_Raw" VarB="Transmit PDO Mapping^Input byte 0128" Size="8" OffsA="1016"/>
+				<Link VarA="PlcTask Inputs^gIO.Anybus_WcState" VarB="WcState^WcState"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0001"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0002" Size="8" OffsA="8"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0003" Size="8" OffsA="16"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0004" Size="8" OffsA="24"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0005" Size="8" OffsA="32"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0006" Size="8" OffsA="40"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0007" Size="8" OffsA="48"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0008" Size="8" OffsA="56"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0009" Size="8" OffsA="64"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0010" Size="8" OffsA="72"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0011" Size="8" OffsA="80"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0012" Size="8" OffsA="88"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0013" Size="8" OffsA="96"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0014" Size="8" OffsA="104"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0015" Size="8" OffsA="112"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0016" Size="8" OffsA="120"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0017" Size="8" OffsA="128"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0018" Size="8" OffsA="136"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0019" Size="8" OffsA="144"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0020" Size="8" OffsA="152"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0021" Size="8" OffsA="160"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0022" Size="8" OffsA="168"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0023" Size="8" OffsA="176"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0024" Size="8" OffsA="184"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0025" Size="8" OffsA="192"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0026" Size="8" OffsA="200"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0027" Size="8" OffsA="208"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0028" Size="8" OffsA="216"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0029" Size="8" OffsA="224"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0030" Size="8" OffsA="232"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0031" Size="8" OffsA="240"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0032" Size="8" OffsA="248"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0033" Size="8" OffsA="256"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0034" Size="8" OffsA="264"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0035" Size="8" OffsA="272"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0036" Size="8" OffsA="280"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0037" Size="8" OffsA="288"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0038" Size="8" OffsA="296"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0039" Size="8" OffsA="304"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0040" Size="8" OffsA="312"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0041" Size="8" OffsA="320"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0042" Size="8" OffsA="328"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0043" Size="8" OffsA="336"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0044" Size="8" OffsA="344"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0045" Size="8" OffsA="352"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0046" Size="8" OffsA="360"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0047" Size="8" OffsA="368"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0048" Size="8" OffsA="376"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0049" Size="8" OffsA="384"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0050" Size="8" OffsA="392"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0051" Size="8" OffsA="400"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0052" Size="8" OffsA="408"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0053" Size="8" OffsA="416"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0054" Size="8" OffsA="424"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0055" Size="8" OffsA="432"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0056" Size="8" OffsA="440"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0057" Size="8" OffsA="448"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0058" Size="8" OffsA="456"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0059" Size="8" OffsA="464"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0060" Size="8" OffsA="472"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0061" Size="8" OffsA="480"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0062" Size="8" OffsA="488"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0063" Size="8" OffsA="496"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0064" Size="8" OffsA="504"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0065" Size="8" OffsA="512"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0066" Size="8" OffsA="520"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0067" Size="8" OffsA="528"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0068" Size="8" OffsA="536"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0069" Size="8" OffsA="544"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0070" Size="8" OffsA="552"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0071" Size="8" OffsA="560"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0072" Size="8" OffsA="568"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0073" Size="8" OffsA="576"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0074" Size="8" OffsA="584"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0075" Size="8" OffsA="592"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0076" Size="8" OffsA="600"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0077" Size="8" OffsA="608"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0078" Size="8" OffsA="616"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0079" Size="8" OffsA="624"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0080" Size="8" OffsA="632"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0081" Size="8" OffsA="640"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0082" Size="8" OffsA="648"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0083" Size="8" OffsA="656"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0084" Size="8" OffsA="664"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0085" Size="8" OffsA="672"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0086" Size="8" OffsA="680"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0087" Size="8" OffsA="688"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0088" Size="8" OffsA="696"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0089" Size="8" OffsA="704"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0090" Size="8" OffsA="712"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0091" Size="8" OffsA="720"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0092" Size="8" OffsA="728"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0093" Size="8" OffsA="736"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0094" Size="8" OffsA="744"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0095" Size="8" OffsA="752"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0096" Size="8" OffsA="760"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0097" Size="8" OffsA="768"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0098" Size="8" OffsA="776"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0099" Size="8" OffsA="784"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0100" Size="8" OffsA="792"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0101" Size="8" OffsA="800"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0102" Size="8" OffsA="808"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0103" Size="8" OffsA="816"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0104" Size="8" OffsA="824"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0105" Size="8" OffsA="832"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0106" Size="8" OffsA="840"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0107" Size="8" OffsA="848"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0108" Size="8" OffsA="856"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0109" Size="8" OffsA="864"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0110" Size="8" OffsA="872"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0111" Size="8" OffsA="880"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0112" Size="8" OffsA="888"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0113" Size="8" OffsA="896"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0114" Size="8" OffsA="904"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0115" Size="8" OffsA="912"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0116" Size="8" OffsA="920"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0117" Size="8" OffsA="928"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0118" Size="8" OffsA="936"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0119" Size="8" OffsA="944"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0120" Size="8" OffsA="952"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0121" Size="8" OffsA="960"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0122" Size="8" OffsA="968"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0123" Size="8" OffsA="976"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0124" Size="8" OffsA="984"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0125" Size="8" OffsA="992"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0126" Size="8" OffsA="1000"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0127" Size="8" OffsA="1008"/>
+				<Link VarA="PlcTask Outputs^gIO.Anybus_Outputs_Raw" VarB="Receive PDO Mapping^Output byte 0128" Size="8" OffsA="1016"/>
 			</OwnerB>
 			<OwnerB Name="TIID^Device 2 (EtherCAT)^Box 2 (CU1128)^Box CIP (CTEU-EtherCAT Modular)">
 				<Link VarA="PlcTask Outputs^gIO.q_Manifold1[10]^sol_12" VarB="Module 1 (VAEM-L1-S-24-PT [48DO])^Outputs^C3 Output[3]"/>
