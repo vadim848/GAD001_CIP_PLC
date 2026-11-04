@@ -3164,6 +3164,20 @@ THEN;
 END_IF]]></ST>
       </Implementation>
     </Method>
+    <Method Name="m_IsFree" Id="{a4b5d4e1-e2d4-4154-aaad-2c5d3977e359}" FolderPath="Manage\">
+      <Declaration><![CDATA[METHOD m_IsFree : BOOL
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// In Ready with no request: a command given now will not be lost
+IF eProcess=E_CIP_Return.eNone
+AND eReq=E_CIP_Return.eNone
+AND bReady
+AND NOT bRun
+THEN;
+	m_IsFree:=TRUE;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="m_Request_Reset" Id="{ac6dd398-3bb0-4058-ad2c-0090a13dd452}" FolderPath="Manage\">
       <Declaration><![CDATA[METHOD m_Request_Reset : BOOL
 VAR_IN_OUT

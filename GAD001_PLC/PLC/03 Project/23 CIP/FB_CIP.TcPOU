@@ -5000,7 +5000,18 @@ bStepDone:=TRUE;]]></ST>
     </Action>
     <Action Name="_aWaiting_Client_Drain_Done_active" Id="{198d1e9a-548f-4e4c-b425-d71b6a65c8cc}">
       <Implementation>
-        <ST><![CDATA[_aDisconnect_n_Drain_CIP_Client_active();
+        <ST><![CDATA[// The command from Set_Valves_ToDeafult is lost if a sub-FB was in Init or busy: give it again
+IF fbCIP_Source.m_IsFree() AND NOT fbCIP_Source.m_CheckStatus(eReqStatus:=E_CIP_Source.eClose) THEN;
+	fbCIP_Source.m_Run(eReqProc:=E_CIP_Source.eClose);
+END_IF
+IF fbCIP_Usage.m_IsFree() AND NOT fbCIP_Usage.m_CheckStatus(eReqStatus:=E_CIP_Usage.eLocal) THEN;
+	fbCIP_Usage.m_Run(eReqProc:=E_CIP_Usage.eLocal);
+END_IF
+IF fbCIP_Return.m_IsFree() AND NOT fbCIP_Return.m_CheckStatus(eReqStatus:=E_CIP_Return.eDrain) THEN;
+	fbCIP_Return.m_Run(eReqProc:=E_CIP_Return.eDrain);
+END_IF
+
+_aDisconnect_n_Drain_CIP_Client_active();
 ]]></ST>
       </Implementation>
       <ObjectProperties>
